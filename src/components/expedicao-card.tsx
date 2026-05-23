@@ -2,13 +2,14 @@ import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
 import type { Expedicao } from "@/lib/expedicoes.functions";
 import { getExpedicaoImage } from "@/lib/expedicao-images";
+import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
 import { formatPrice } from "@/lib/format";
 
 export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
   return (
     <Link
       to="/expedicoes/$slug"
-      params={{ slug: expedicao.slug }}
+      params={{ slug: getPublicExpedicaoSlug(expedicao.slug) }}
       className="group relative block overflow-hidden rounded-sm bg-card shadow-card"
     >
       <div className="relative aspect-[4/5] overflow-hidden">
