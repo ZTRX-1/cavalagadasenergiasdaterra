@@ -17,10 +17,12 @@ export const IMAGES: Record<string, string> = {
 };
 
 export const SLUG_IMAGE: Record<string, string> = {
-  "vale-da-canastra": canastra,
-  "serra-do-cipo": cipo,
-  "chapada-diamantina": chapada,
-  "travessia-das-aguas": aerea,
+  "serra-da-canastra": canastra,
+  "mantiqueira-refugio": cipo,
+  "berco-do-marchador": chapada,
+  "jericoacoara": aerea,
+  "peru-vale-do-colca": chapada,
+  "patagonia-gaucha": aerea,
 };
 
 export function getExpedicaoImage(slug: string): string {

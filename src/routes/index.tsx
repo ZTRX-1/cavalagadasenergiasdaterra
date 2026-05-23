@@ -7,6 +7,9 @@ import { DataCard } from "@/components/data-card";
 import hero from "@/assets/hero-cavalgada.jpg";
 import cavaloCloseup from "@/assets/cavalo-closeup.jpg";
 import acampamento from "@/assets/acampamento.jpg";
+import logoCavalgadas from "@/assets/logo-cavalgadas.jpg";
+import logoCanastra from "@/assets/logo-canastra.jpg";
+import logoElas from "@/assets/logo-elas-na-sela.jpg";
 
 const expedicoesQO = queryOptions({ queryKey: ["expedicoes"], queryFn: () => listExpedicoes() });
 const datasQO = queryOptions({ queryKey: ["proximas-datas"], queryFn: () => listProximasDatas() });
@@ -75,21 +78,55 @@ function HomePage() {
 
         <div className="container-tight relative flex min-h-[100svh] flex-col justify-end pb-20 pt-32 md:pb-28 md:pt-40">
           <div className="max-w-3xl">
-            <div className="eyebrow text-cobre-soft">Energias da Terra · desde 2018</div>
-            <h1 className="mt-5 font-display text-5xl leading-[0.95] text-balance md:text-7xl lg:text-8xl">
-              Cavalgadas que <em className="not-italic text-cobre-soft">atravessam</em> o silêncio das serras.
+            <div className="eyebrow text-cobre-soft text-shadow-soft">Energias da Terra · Expedições imersivas</div>
+            <h1 className="mt-5 font-display text-5xl leading-[0.98] text-balance text-shadow-strong md:text-7xl lg:text-8xl">
+              Expedições imersivas <em className="not-italic text-cobre-soft">a cavalo</em> pelo Brasil e pelo mundo.
             </h1>
-            <p className="mt-6 max-w-xl text-lg text-areia/85 text-pretty">
-              Expedições cinematográficas a cavalo. Pequenos grupos. Natureza com profundidade, hospedagem premium e a chance rara de se reconectar com o essencial.
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-areia/95 text-shadow-soft text-pretty">
+              Experiências exclusivas para quem busca liberdade, natureza e aventura de verdade. Pequenos grupos, cavalos Mangalarga Marchador, hospedagens curadas.
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
               <Link to="/expedicoes" className="inline-flex items-center gap-2 rounded-full bg-cobre px-7 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">
                 Ver Expedições <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link to="/datas" className="inline-flex items-center gap-2 rounded-full border border-areia/40 px-7 py-4 text-sm uppercase tracking-widest text-areia hover:bg-areia/10">
+              <Link to="/datas" className="inline-flex items-center gap-2 rounded-full border border-areia/50 px-7 py-4 text-sm uppercase tracking-widest text-areia hover:bg-areia/10">
                 Próximas Datas
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ESCOLHA SUA EXPERIÊNCIA — 3 sub-marcas */}
+      <section className="relative bg-background py-24 md:py-32 texture-paper">
+        <div className="container-tight">
+          <div className="max-w-2xl">
+            <div className="eyebrow">Escolha sua experiência</div>
+            <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">Três caminhos. Uma mesma essência.</h2>
+            <p className="mt-5 text-lg leading-relaxed text-foreground/75 text-pretty">
+              Cada marca da Energias da Terra existe para uma forma específica de viver a cavalgada. Encontre a sua.
+            </p>
+          </div>
+          <div className="mt-14 grid gap-6 md:grid-cols-3">
+            {[
+              { logo: logoCavalgadas, nome: "Cavalgadas Energias da Terra", tagline: "Expedições imersivas pelo Brasil e pelo mundo.", to: "/expedicoes" as const },
+              { logo: logoElas, nome: "Elas na Sela", tagline: "Experiências exclusivas para mulheres que exploram o mundo a cavalo.", to: "/expedicoes" as const },
+              { logo: logoCanastra, nome: "Canastra a Cavalo", tagline: "Travessias premium na Serra da Canastra.", to: "/expedicoes/$slug" as const, params: { slug: "serra-da-canastra" } },
+            ].map((m) => (
+              <Link
+                key={m.nome}
+                to={m.to}
+                params={m.params}
+                className="group flex flex-col items-center bg-carvao p-10 text-center text-areia transition-transform hover:-translate-y-1"
+              >
+                <img src={m.logo} alt={m.nome} className="h-28 w-28 rounded-full object-cover ring-1 ring-cobre/40" />
+                <div className="mt-6 font-display text-2xl text-balance leading-tight">{m.nome}</div>
+                <p className="mt-3 text-sm leading-relaxed text-areia/75 text-pretty">{m.tagline}</p>
+                <span className="mt-6 inline-flex items-center gap-2 font-eyebrow text-[0.65rem] uppercase tracking-[0.32em] text-cobre-soft group-hover:text-areia">
+                  Explorar <ArrowRight className="h-3.5 w-3.5" />
+                </span>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -108,10 +145,10 @@ function HomePage() {
             </p>
             <div className="mt-10 grid gap-3 sm:grid-cols-2">
               {[
-                ["+ 7 anos", "produzindo expedições"],
-                ["100% pequenos grupos", "máximo de 14 cavaleiros"],
-                ["4.9 / 5", "avaliação média dos viajantes"],
-                ["Brasil profundo", "Canastra · Cipó · Chapada"],
+                ["Manada própria", "Mangalarga Marchador de alta performance"],
+                ["Grupos íntimos", "no máximo 14 cavaleiros por travessia"],
+                ["Brasil & mundo", "Canastra · Mantiqueira · Jeri · Peru · Patagônia"],
+                ["Seguro aventura", "guias, carro de apoio e cobertura completa"],
               ].map(([big, sub]) => (
                 <div key={big} className="border-l-2 border-cobre pl-4">
                   <div className="font-display text-2xl">{big}</div>

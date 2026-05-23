@@ -80,7 +80,7 @@
   --carvao: oklch(0.16 0.012 75);              /* preto carvão quente */
 
   /* Tokens semânticos (light = areia tostada) */
-  --background: var(--areia);
+  --background: oklch(0.965 0.014 78);
   --foreground: var(--carvao);
   --card: oklch(0.985 0.012 78);
   --card-foreground: var(--carvao);
@@ -187,21 +187,31 @@
   .text-balance { text-wrap: balance; }
   .text-pretty { text-wrap: pretty; }
 
-  /* Textura de papel/linho sutil em fundos claros */
+  /* Textura sutil de papel artesanal — quase invisível, sem cara de vintage */
   .texture-paper {
-    background-image:
-      radial-gradient(circle at 1px 1px, color-mix(in oklab, var(--carvao) 4%, transparent) 1px, transparent 0),
-      linear-gradient(0deg, color-mix(in oklab, var(--couro) 2%, transparent), color-mix(in oklab, var(--couro) 2%, transparent));
-    background-size: 18px 18px, 100% 100%;
+    position: relative;
   }
+  .texture-paper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(circle at 0.5px 0.5px, color-mix(in oklab, var(--carvao) 6%, transparent) 0.5px, transparent 0),
+      radial-gradient(circle at 7px 11px, color-mix(in oklab, var(--couro) 8%, transparent) 0.5px, transparent 0);
+    background-size: 13px 13px, 23px 23px;
+    opacity: 0.55;
+    mix-blend-mode: multiply;
+    z-index: 0;
+  }
+  .texture-paper > * { position: relative; z-index: 1; }
+
+  /* Reforço de contraste sobre fotografias claras (pôr do sol etc) */
+  .text-shadow-soft { text-shadow: 0 1px 2px color-mix(in oklab, var(--carvao) 35%, transparent), 0 0 24px color-mix(in oklab, var(--carvao) 25%, transparent); }
+  .text-shadow-strong { text-shadow: 0 2px 6px color-mix(in oklab, var(--carvao) 70%, transparent), 0 0 32px color-mix(in oklab, var(--carvao) 50%, transparent); }
 
   /* Divisor terroso */
-  .hr-rule {
-    border: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--cobre), transparent);
-    opacity: 0.5;
-  }
+  .hr-rule { border: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--cobre), transparent); opacity: 0.5; }
 
   /* Botão CTA premium */
   .btn-cobre {
@@ -209,9 +219,7 @@
     padding: 0.95rem 1.75rem;
     background: var(--cobre);
     color: var(--areia);
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.22em;
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.22em;
     font-family: var(--font-mono-display);
     border-radius: 999px;
     transition: background-color .2s ease, transform .2s ease;
@@ -223,12 +231,17 @@
     padding: 0.9rem 1.75rem;
     border: 1px solid var(--border);
     color: var(--foreground);
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.22em;
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.22em;
     font-family: var(--font-mono-display);
     border-radius: 999px;
     transition: border-color .2s ease, color .2s ease;
   }
   .btn-ghost:hover { border-color: var(--cobre); color: var(--cobre); }
+}
+
+/* Conforto de leitura no mobile */
+@media (max-width: 640px) {
+  body { line-height: 1.65; font-size: 16px; }
+  p { line-height: 1.7; }
+  h1, h2, h3 { line-height: 1.08; }
 }
