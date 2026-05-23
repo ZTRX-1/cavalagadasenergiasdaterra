@@ -153,7 +153,7 @@ export type Database = {
           expedicao_nome: string
           id?: string
           participantes?: Json
-          protocolo?: string
+          protocolo: string
           quantidade_participantes?: number
           responsavel: Json
           status?: string
