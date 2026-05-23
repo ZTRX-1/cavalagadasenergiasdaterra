@@ -50,12 +50,12 @@ export function SiteFooter() {
             <ul className="mt-5 space-y-3 text-[0.95rem] text-areia/85">
               <li>
                 <a href={buildContactWhatsappUrl()} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 hover:text-cobre">
-                  <Phone className="h-4 w-4 text-cobre-soft" /> (11) 94162-6907
+                  <Phone className="h-4 w-4 text-cobre-soft" /> <span>(11) 94162-6907</span>
                 </a>
               </li>
               <li>
                 <a href="mailto:contato@cavalgadasenergiasdaterra.com.br" className="inline-flex items-center gap-2 hover:text-cobre">
-                  <Mail className="h-4 w-4 text-cobre-soft" /> contato@cavalgadasenergiasdaterra.com.br
+                  <Mail className="h-4 w-4 text-cobre-soft" /> <span>contato@cavalgadasenergiasdaterra.com.br</span>
                 </a>
               </li>
               <li className="pt-2">
@@ -64,7 +64,7 @@ export function SiteFooter() {
                   {INSTAGRAMS.map((i) => (
                     <li key={i.handle}>
                       <a href={i.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 hover:text-cobre">
-                        <Instagram className="h-4 w-4 text-cobre-soft" /> {i.handle}
+                        <Instagram className="h-4 w-4 text-cobre-soft" /> <span>{i.handle}</span>
                       </a>
                     </li>
                   ))}
