@@ -15,6 +15,9 @@ import { Route as DatasRouteImport } from './routes/datas'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ReservaSlugRouteImport } from './routes/reserva.$slug'
+import { Route as MarcasElasNaSelaRouteImport } from './routes/marcas.elas-na-sela'
+import { Route as MarcasCavalgadasRouteImport } from './routes/marcas.cavalgadas'
+import { Route as MarcasCanastraACavaloRouteImport } from './routes/marcas.canastra-a-cavalo'
 import { Route as ExpedicoesSlugRouteImport } from './routes/expedicoes.$slug'
 
 const MinhaReservaRoute = MinhaReservaRouteImport.update({
@@ -47,6 +50,21 @@ const ReservaSlugRoute = ReservaSlugRouteImport.update({
   path: '/reserva/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MarcasElasNaSelaRoute = MarcasElasNaSelaRouteImport.update({
+  id: '/marcas/elas-na-sela',
+  path: '/marcas/elas-na-sela',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarcasCavalgadasRoute = MarcasCavalgadasRouteImport.update({
+  id: '/marcas/cavalgadas',
+  path: '/marcas/cavalgadas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarcasCanastraACavaloRoute = MarcasCanastraACavaloRouteImport.update({
+  id: '/marcas/canastra-a-cavalo',
+  path: '/marcas/canastra-a-cavalo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExpedicoesSlugRoute = ExpedicoesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -60,6 +78,9 @@ export interface FileRoutesByFullPath {
   '/expedicoes': typeof ExpedicoesRouteWithChildren
   '/minha-reserva': typeof MinhaReservaRoute
   '/expedicoes/$slug': typeof ExpedicoesSlugRoute
+  '/marcas/canastra-a-cavalo': typeof MarcasCanastraACavaloRoute
+  '/marcas/cavalgadas': typeof MarcasCavalgadasRoute
+  '/marcas/elas-na-sela': typeof MarcasElasNaSelaRoute
   '/reserva/$slug': typeof ReservaSlugRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +90,9 @@ export interface FileRoutesByTo {
   '/expedicoes': typeof ExpedicoesRouteWithChildren
   '/minha-reserva': typeof MinhaReservaRoute
   '/expedicoes/$slug': typeof ExpedicoesSlugRoute
+  '/marcas/canastra-a-cavalo': typeof MarcasCanastraACavaloRoute
+  '/marcas/cavalgadas': typeof MarcasCavalgadasRoute
+  '/marcas/elas-na-sela': typeof MarcasElasNaSelaRoute
   '/reserva/$slug': typeof ReservaSlugRoute
 }
 export interface FileRoutesById {
@@ -79,6 +103,9 @@ export interface FileRoutesById {
   '/expedicoes': typeof ExpedicoesRouteWithChildren
   '/minha-reserva': typeof MinhaReservaRoute
   '/expedicoes/$slug': typeof ExpedicoesSlugRoute
+  '/marcas/canastra-a-cavalo': typeof MarcasCanastraACavaloRoute
+  '/marcas/cavalgadas': typeof MarcasCavalgadasRoute
+  '/marcas/elas-na-sela': typeof MarcasElasNaSelaRoute
   '/reserva/$slug': typeof ReservaSlugRoute
 }
 export interface FileRouteTypes {
@@ -90,6 +117,9 @@ export interface FileRouteTypes {
     | '/expedicoes'
     | '/minha-reserva'
     | '/expedicoes/$slug'
+    | '/marcas/canastra-a-cavalo'
+    | '/marcas/cavalgadas'
+    | '/marcas/elas-na-sela'
     | '/reserva/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -99,6 +129,9 @@ export interface FileRouteTypes {
     | '/expedicoes'
     | '/minha-reserva'
     | '/expedicoes/$slug'
+    | '/marcas/canastra-a-cavalo'
+    | '/marcas/cavalgadas'
+    | '/marcas/elas-na-sela'
     | '/reserva/$slug'
   id:
     | '__root__'
@@ -108,6 +141,9 @@ export interface FileRouteTypes {
     | '/expedicoes'
     | '/minha-reserva'
     | '/expedicoes/$slug'
+    | '/marcas/canastra-a-cavalo'
+    | '/marcas/cavalgadas'
+    | '/marcas/elas-na-sela'
     | '/reserva/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -117,6 +153,9 @@ export interface RootRouteChildren {
   DatasRoute: typeof DatasRoute
   ExpedicoesRoute: typeof ExpedicoesRouteWithChildren
   MinhaReservaRoute: typeof MinhaReservaRoute
+  MarcasCanastraACavaloRoute: typeof MarcasCanastraACavaloRoute
+  MarcasCavalgadasRoute: typeof MarcasCavalgadasRoute
+  MarcasElasNaSelaRoute: typeof MarcasElasNaSelaRoute
   ReservaSlugRoute: typeof ReservaSlugRoute
 }
 
@@ -164,6 +203,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReservaSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/marcas/elas-na-sela': {
+      id: '/marcas/elas-na-sela'
+      path: '/marcas/elas-na-sela'
+      fullPath: '/marcas/elas-na-sela'
+      preLoaderRoute: typeof MarcasElasNaSelaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marcas/cavalgadas': {
+      id: '/marcas/cavalgadas'
+      path: '/marcas/cavalgadas'
+      fullPath: '/marcas/cavalgadas'
+      preLoaderRoute: typeof MarcasCavalgadasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marcas/canastra-a-cavalo': {
+      id: '/marcas/canastra-a-cavalo'
+      path: '/marcas/canastra-a-cavalo'
+      fullPath: '/marcas/canastra-a-cavalo'
+      preLoaderRoute: typeof MarcasCanastraACavaloRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/expedicoes/$slug': {
       id: '/expedicoes/$slug'
       path: '/$slug'
@@ -192,6 +252,9 @@ const rootRouteChildren: RootRouteChildren = {
   DatasRoute: DatasRoute,
   ExpedicoesRoute: ExpedicoesRouteWithChildren,
   MinhaReservaRoute: MinhaReservaRoute,
+  MarcasCanastraACavaloRoute: MarcasCanastraACavaloRoute,
+  MarcasCavalgadasRoute: MarcasCavalgadasRoute,
+  MarcasElasNaSelaRoute: MarcasElasNaSelaRoute,
   ReservaSlugRoute: ReservaSlugRoute,
 }
 export const routeTree = rootRouteImport
