@@ -66,10 +66,14 @@ export type Database = {
           id: string
           imagem_url: string | null
           inclui: Json
+          marca: string
+          moeda: string
           nivel: string
           nome: string
           ordem: number
+          pais: string
           preco: number
+          regiao: string | null
           requisitos: Json
           roteiro: Json
           slug: string
@@ -84,10 +88,14 @@ export type Database = {
           id?: string
           imagem_url?: string | null
           inclui?: Json
+          marca?: string
+          moeda?: string
           nivel: string
           nome: string
           ordem?: number
+          pais?: string
           preco: number
+          regiao?: string | null
           requisitos?: Json
           roteiro?: Json
           slug: string
@@ -102,10 +110,14 @@ export type Database = {
           id?: string
           imagem_url?: string | null
           inclui?: Json
+          marca?: string
+          moeda?: string
           nivel?: string
           nome?: string
           ordem?: number
+          pais?: string
           preco?: number
+          regiao?: string | null
           requisitos?: Json
           roteiro?: Json
           slug?: string
