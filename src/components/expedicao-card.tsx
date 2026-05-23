@@ -18,18 +18,21 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-carvao via-carvao/70 to-carvao/10" />
+        {/* Overlay forte: garante leitura absoluta sobre qualquer fotografia */}
+        <div className="absolute inset-0 bg-carvao/20" />
+        <div className="absolute inset-x-0 bottom-0 h-[78%] bg-gradient-to-t from-carvao via-carvao/85 to-transparent" />
 
-        <div className="absolute inset-x-0 bottom-0 p-6 text-areia md:p-7 [text-shadow:0_1px_2px_rgb(0_0_0/0.5)]">
+        <div className="absolute inset-x-0 bottom-0 p-6 text-areia md:p-7 [text-shadow:0_1px_3px_rgb(0_0_0/0.55)]">
           {expedicao.regiao && (
-            <div className="font-eyebrow text-[0.7rem] uppercase tracking-[0.28em] text-areia font-semibold">
+            <div className="font-eyebrow text-[0.72rem] uppercase tracking-[0.28em] text-cobre-soft font-medium">
               {expedicao.regiao}
             </div>
           )}
-          <h3 className="mt-2 font-display text-2xl md:text-3xl text-balance leading-[1.05]">
+          <h3 className="mt-2 font-display text-2xl md:text-3xl text-balance leading-[1.05] text-areia">
             {expedicao.nome}
           </h3>
-          <p className="mt-2 text-sm leading-relaxed text-areia/80 line-clamp-2 text-pretty">
+          <p className="mt-2 text-sm leading-relaxed text-areia/90 line-clamp-2 text-pretty">
+
             {expedicao.descricao_curta}
           </p>
           <div className="mt-4 flex items-center gap-3 text-[0.65rem] uppercase tracking-[0.22em] text-areia/70">

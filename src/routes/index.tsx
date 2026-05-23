@@ -10,6 +10,8 @@ import acampamento from "@/assets/acampamento.jpg";
 import logoCavalgadas from "@/assets/logo-cavalgadas.jpg";
 import logoCanastra from "@/assets/logo-canastra.jpg";
 import logoElas from "@/assets/logo-elas-na-sela.jpg";
+import { VideoCinematic } from "@/components/video-cinematic";
+
 
 const expedicoesQO = queryOptions({ queryKey: ["expedicoes"], queryFn: () => listExpedicoes() });
 const datasQO = queryOptions({ queryKey: ["proximas-datas"], queryFn: () => listProximasDatas() });
