@@ -82,7 +82,7 @@ export function SiteFooter() {
           </div>
           <div className="text-areia/55">
             Desenvolvido com <span className="text-cobre-soft">💙</span> pela{" "}
-            <a href="https://vxxoncompany.com.br" target="_blank" rel="noreferrer" className="text-areia/80 hover:text-cobre">
+            <a href="https://vexxoncompany.com/" target="_blank" rel="noreferrer" className="text-areia/80 hover:text-cobre">
               Vexxon Company
             </a>
           </div>
