@@ -16,6 +16,7 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
           src={getExpedicaoImage(expedicao.slug)}
           alt={expedicao.nome}
           loading="lazy"
+          decoding="async"
           className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
         />
         {/* Overlay forte: garante leitura absoluta sobre qualquer fotografia */}
@@ -47,6 +48,7 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
               <div className="font-display text-xl text-cobre-soft">{formatPrice(expedicao.preco, expedicao.moeda)}</div>
             </div>
             <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-areia/40 text-areia transition-all group-hover:bg-cobre group-hover:border-cobre">
+              <span className="sr-only">Abrir experiência {expedicao.nome}</span>
               <ArrowUpRight className="h-4 w-4" />
             </span>
           </div>
