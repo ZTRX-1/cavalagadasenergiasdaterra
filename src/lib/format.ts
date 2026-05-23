@@ -6,7 +6,6 @@ const MONTHS = [
 const MONTHS_SHORT = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"];
 
 function parseDate(iso: string): Date {
-  // iso is YYYY-MM-DD (date only) — interpret as local
   const [y, m, d] = iso.split("-").map(Number);
   return new Date(y, m - 1, d);
 }
@@ -31,6 +30,9 @@ export function formatDayShort(iso: string): { day: string; month: string } {
   return { day: String(d.getDate()).padStart(2, "0"), month: MONTHS_SHORT[d.getMonth()] };
 }
 
-export function formatPrice(n: number): string {
+export function formatPrice(n: number, moeda: string = "BRL"): string {
+  if (moeda === "USD") {
+    return `US$ ${n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+  }
   return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }

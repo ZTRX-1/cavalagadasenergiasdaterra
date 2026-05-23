@@ -11,6 +11,10 @@ export interface Expedicao {
   duracao: string;
   nivel: string;
   preco: number;
+  moeda: string;
+  marca: string;
+  pais: string;
+  regiao: string | null;
   imagem_url: string | null;
   galeria: string[];
   inclui: string[];
