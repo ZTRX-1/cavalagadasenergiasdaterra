@@ -163,6 +163,29 @@ function HomePage() {
         </div>
       </section>
 
+      {/* VÍDEO CINEMATOGRÁFICO */}
+      <section className="bg-carvao py-20 md:py-28">
+        <div className="container-tight">
+          <div className="mb-10 max-w-2xl md:mb-14">
+            <div className="eyebrow text-cobre-soft">Assista</div>
+            <h2 className="mt-4 font-display text-4xl text-balance text-areia md:text-5xl">
+              Um filme curto sobre o que vivemos.
+            </h2>
+            <p className="mt-4 text-areia/75 text-pretty">
+              Três minutos da nossa rotina nas trilhas — para você sentir, antes de embarcar.
+            </p>
+          </div>
+          <VideoCinematic
+            youtubeId="nPoJeABD5ko"
+            poster={acampamento}
+            eyebrow="Energias da Terra · filme oficial"
+            title="A travessia, antes da travessia."
+            subtitle="Toque para assistir com som"
+          />
+        </div>
+      </section>
+
+
       {/* INCLUI */}
       <section className="relative bg-floresta-deep py-24 text-areia md:py-32">
         <img src={cavaloCloseup} alt="" aria-hidden loading="lazy" decoding="async" className="absolute inset-y-0 right-0 hidden h-full w-1/3 object-cover opacity-25 lg:block" />
