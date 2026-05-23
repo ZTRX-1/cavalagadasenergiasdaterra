@@ -9,7 +9,6 @@ const NAV = [
   { to: "/", label: "Home" },
   { to: "/expedicoes", label: "Expedições" },
   { to: "/datas", label: "Próximas Datas" },
-  { to: "/contato", label: "Quem Somos" },
   { to: "/contato", label: "Contato" },
   { to: "/minha-reserva", label: "Minha Reserva" },
 ] as const;
@@ -63,12 +62,12 @@ export function SiteHeader() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden items-center gap-9 lg:flex">
+          <nav className="hidden items-center gap-7 xl:gap-10 lg:flex">
             {NAV.map((item) => (
               <Link
-                key={item.to}
+                key={item.label}
                 to={item.to}
-                className="font-eyebrow text-[0.72rem] uppercase tracking-[0.22em] text-areia/80 transition-colors hover:text-cobre-soft"
+                className="font-eyebrow text-[0.78rem] uppercase tracking-[0.2em] text-areia/85 transition-colors hover:text-cobre-soft whitespace-nowrap"
                 activeProps={{ className: "text-cobre-soft" }}
               >
                 {item.label}
@@ -127,7 +126,7 @@ export function SiteHeader() {
           <nav className="container-tight flex flex-col gap-1 pb-8 pt-2">
             {NAV.map((item) => (
               <Link
-                key={item.to}
+                key={item.label}
                 to={item.to}
                 onClick={() => setOpen(false)}
                 className="group flex items-center justify-between border-b border-border/50 py-4 font-display text-2xl text-foreground transition-colors hover:text-cobre"

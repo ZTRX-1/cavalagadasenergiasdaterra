@@ -91,7 +91,7 @@
   --secondary: oklch(0.91 0.022 75);
   --secondary-foreground: var(--carvao);
   --muted: oklch(0.91 0.018 75);
-  --muted-foreground: oklch(0.42 0.022 70);
+  --muted-foreground: oklch(0.36 0.022 70);
   --accent: var(--cobre);
   --accent-foreground: var(--areia);
   --destructive: oklch(0.52 0.18 25);
@@ -166,9 +166,9 @@
 
   .eyebrow {
     font-family: var(--font-mono-display);
-    font-size: 0.7rem;
+    font-size: 0.78rem;
     font-weight: 400;
-    letter-spacing: 0.32em;
+    letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--cobre);
   }

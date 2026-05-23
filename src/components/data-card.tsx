@@ -23,20 +23,20 @@ export function DataCard({ data }: { data: DataExpedicao }) {
   return (
     <div className="group relative flex flex-col gap-4 rounded-sm border border-border bg-card p-5 transition-colors hover:border-cobre/50 md:flex-row md:items-center md:gap-8 md:p-6">
       <div className="flex items-center gap-5 md:w-48">
-        <div className="flex h-16 w-16 flex-col items-center justify-center rounded-sm border border-border bg-secondary text-foreground md:h-20 md:w-20">
+        <div className="flex h-16 w-16 flex-col items-center justify-center rounded-sm border border-cobre/30 bg-floresta-deep text-areia md:h-20 md:w-20">
           <span className="font-display text-2xl leading-none md:text-3xl">{inicio.day}</span>
-          <span className="mt-1 text-[0.6rem] tracking-[0.2em] text-muted-foreground">{inicio.month}</span>
+          <span className="mt-1 font-eyebrow text-[0.6rem] tracking-[0.22em] text-cobre-soft">{inicio.month}</span>
         </div>
         <div className="md:hidden">
-          <div className="text-xs uppercase tracking-widest text-muted-foreground">{data.expedicao_nome}</div>
-          <div className="font-display text-lg leading-tight">{formatDateRange(data.data_inicio, data.data_fim)}</div>
+          <div className="font-eyebrow text-[0.7rem] uppercase tracking-[0.22em] text-cobre">{data.expedicao_nome}</div>
+          <div className="mt-1 font-display text-lg leading-tight text-foreground">{formatDateRange(data.data_inicio, data.data_fim)}</div>
         </div>
       </div>
 
       <div className="hidden md:block md:flex-1">
-        <div className="eyebrow">{data.expedicao_nome}</div>
-        <div className="mt-1 font-display text-xl">{formatDateRange(data.data_inicio, data.data_fim)}</div>
-        <div className="mt-1 text-sm text-muted-foreground">{data.vagas_disponiveis} de {data.vagas_total} vagas restantes</div>
+        <div className="font-eyebrow text-[0.72rem] uppercase tracking-[0.22em] text-cobre">{data.expedicao_nome}</div>
+        <div className="mt-1.5 font-display text-xl text-foreground">{formatDateRange(data.data_inicio, data.data_fim)}</div>
+        <div className="mt-1 text-sm text-foreground/65">{data.vagas_disponiveis} de {data.vagas_total} vagas restantes</div>
       </div>
 
       <div className="flex items-center justify-between gap-3 md:flex-col md:items-end md:gap-3">
