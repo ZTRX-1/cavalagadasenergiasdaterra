@@ -8,7 +8,7 @@ import {
 } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { WhatsappFloat } from "@/components/whatsapp-float";
+
 import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
@@ -97,7 +97,7 @@ function RootComponent() {
         <Outlet />
       </main>
       <SiteFooter />
-      <WhatsappFloat />
+      
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );

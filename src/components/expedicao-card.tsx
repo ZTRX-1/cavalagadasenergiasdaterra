@@ -18,11 +18,11 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-carvao via-carvao/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-carvao via-carvao/70 to-carvao/10" />
 
-        <div className="absolute inset-x-0 bottom-0 p-6 text-areia md:p-7">
+        <div className="absolute inset-x-0 bottom-0 p-6 text-areia md:p-7 [text-shadow:0_1px_2px_rgb(0_0_0/0.5)]">
           {expedicao.regiao && (
-            <div className="font-eyebrow text-[0.62rem] uppercase tracking-[0.32em] text-cobre-soft">
+            <div className="font-eyebrow text-[0.7rem] uppercase tracking-[0.28em] text-areia font-semibold">
               {expedicao.regiao}
             </div>
           )}
