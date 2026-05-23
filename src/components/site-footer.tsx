@@ -8,12 +8,23 @@ export function SiteFooter() {
       <div className="container-tight py-16 md:py-24">
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
-            <div className="font-display text-2xl">Cavalgadas</div>
-            <div className="eyebrow mt-1">Energias da Terra</div>
-            <p className="mt-6 max-w-md text-areia/70 text-pretty leading-relaxed">
-              Expedições a cavalo cuidadosamente desenhadas para quem busca
-              natureza com profundidade, silêncio com sofisticação e aventura
-              com requinte.
+            <div className="flex items-center gap-3">
+              <span className="flex h-11 w-11 items-center justify-center rounded-full border border-cobre/50">
+                <svg viewBox="0 0 24 24" className="h-6 w-6 text-cobre" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M3 17c2-1 3-3 3-5 0-2 1-3 3-3l2-1 2 2 3-1c2 0 3 1 4 3-1 1-2 3-2 5" />
+                  <path d="M6 17l-1 3M11 17l-1 3M14 17l1 3M19 17l1 3" />
+                  <path d="M9 8l-1-2M11 7V5" />
+                </svg>
+              </span>
+              <div>
+                <div className="font-display text-2xl leading-none">Cavalgadas</div>
+                <div className="font-eyebrow mt-1 text-[0.6rem] uppercase tracking-[0.32em] text-cobre">Energias da Terra</div>
+              </div>
+            </div>
+            <p className="mt-6 max-w-md leading-relaxed text-areia/70 text-pretty">
+              Produzimos expedições a cavalo pelo Brasil profundo. Pequenos grupos,
+              guias locais, hospedagens cuidadas — uma forma antiga de prestar
+              atenção ao mundo.
             </p>
           </div>
 

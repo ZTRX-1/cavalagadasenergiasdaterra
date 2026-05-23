@@ -2,8 +2,9 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { Loader2, Search } from "lucide-react";
+import { Loader2, Search, MessageCircle } from "lucide-react";
 import { consultarReserva } from "@/lib/reservas.functions";
+import { buildReservaWhatsappUrl } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 
 const searchSchema = z.object({ p: z.string().optional() });
@@ -99,6 +100,24 @@ function MinhaReserva() {
                   </ol>
                 )}
               </div>
+              {result.status !== "cancelada" && (
+                <div className="border-t border-border bg-secondary/50 p-6">
+                  <a
+                    href={buildReservaWhatsappUrl({
+                      nomeResponsavel: result.nome_responsavel,
+                      expedicaoNome: result.expedicao_nome,
+                      dataLabel: result.data_label,
+                      quantidadeParticipantes: result.quantidade_participantes,
+                      protocolo: result.protocolo,
+                    })}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-7 py-4 font-eyebrow text-[0.72rem] uppercase tracking-[0.22em] text-white sm:w-auto"
+                  >
+                    <MessageCircle className="h-4 w-4" /> Continuar pelo WhatsApp
+                  </a>
+                </div>
+              )}
             </div>
           ) : (
             <div className="mt-12 rounded-sm border border-destructive/30 bg-destructive/5 p-6 text-sm text-foreground">
