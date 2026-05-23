@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Outlet, createFileRoute, useRouterState } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { listExpedicoes } from "@/lib/expedicoes.functions";
 import { ExpedicaoCard } from "@/components/expedicao-card";
@@ -19,6 +19,15 @@ export const Route = createFileRoute("/expedicoes")({
 });
 
 function ExpedicoesPage() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const isCatalogRoute = pathname.replace(/\/+$/, "") === "/expedicoes";
+
+  if (!isCatalogRoute) return <Outlet />;
+
+  return <ExpedicoesCatalog />;
+}
+
+function ExpedicoesCatalog() {
   const { data: expedicoes } = useSuspenseQuery(qo);
   return (
     <div className="bg-background pb-24 pt-32 md:pb-32 md:pt-40">
