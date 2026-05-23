@@ -9,38 +9,147 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MinhaReservaRouteImport } from './routes/minha-reserva'
+import { Route as ExpedicoesRouteImport } from './routes/expedicoes'
+import { Route as DatasRouteImport } from './routes/datas'
+import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ReservaSlugRouteImport } from './routes/reserva.$slug'
+import { Route as ExpedicoesSlugRouteImport } from './routes/expedicoes.$slug'
 
+const MinhaReservaRoute = MinhaReservaRouteImport.update({
+  id: '/minha-reserva',
+  path: '/minha-reserva',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExpedicoesRoute = ExpedicoesRouteImport.update({
+  id: '/expedicoes',
+  path: '/expedicoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DatasRoute = DatasRouteImport.update({
+  id: '/datas',
+  path: '/datas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContatoRoute = ContatoRouteImport.update({
+  id: '/contato',
+  path: '/contato',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReservaSlugRoute = ReservaSlugRouteImport.update({
+  id: '/reserva/$slug',
+  path: '/reserva/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExpedicoesSlugRoute = ExpedicoesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ExpedicoesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/contato': typeof ContatoRoute
+  '/datas': typeof DatasRoute
+  '/expedicoes': typeof ExpedicoesRouteWithChildren
+  '/minha-reserva': typeof MinhaReservaRoute
+  '/expedicoes/$slug': typeof ExpedicoesSlugRoute
+  '/reserva/$slug': typeof ReservaSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/contato': typeof ContatoRoute
+  '/datas': typeof DatasRoute
+  '/expedicoes': typeof ExpedicoesRouteWithChildren
+  '/minha-reserva': typeof MinhaReservaRoute
+  '/expedicoes/$slug': typeof ExpedicoesSlugRoute
+  '/reserva/$slug': typeof ReservaSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/contato': typeof ContatoRoute
+  '/datas': typeof DatasRoute
+  '/expedicoes': typeof ExpedicoesRouteWithChildren
+  '/minha-reserva': typeof MinhaReservaRoute
+  '/expedicoes/$slug': typeof ExpedicoesSlugRoute
+  '/reserva/$slug': typeof ReservaSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/contato'
+    | '/datas'
+    | '/expedicoes'
+    | '/minha-reserva'
+    | '/expedicoes/$slug'
+    | '/reserva/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/contato'
+    | '/datas'
+    | '/expedicoes'
+    | '/minha-reserva'
+    | '/expedicoes/$slug'
+    | '/reserva/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/contato'
+    | '/datas'
+    | '/expedicoes'
+    | '/minha-reserva'
+    | '/expedicoes/$slug'
+    | '/reserva/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ContatoRoute: typeof ContatoRoute
+  DatasRoute: typeof DatasRoute
+  ExpedicoesRoute: typeof ExpedicoesRouteWithChildren
+  MinhaReservaRoute: typeof MinhaReservaRoute
+  ReservaSlugRoute: typeof ReservaSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/minha-reserva': {
+      id: '/minha-reserva'
+      path: '/minha-reserva'
+      fullPath: '/minha-reserva'
+      preLoaderRoute: typeof MinhaReservaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expedicoes': {
+      id: '/expedicoes'
+      path: '/expedicoes'
+      fullPath: '/expedicoes'
+      preLoaderRoute: typeof ExpedicoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/datas': {
+      id: '/datas'
+      path: '/datas'
+      fullPath: '/datas'
+      preLoaderRoute: typeof DatasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contato': {
+      id: '/contato'
+      path: '/contato'
+      fullPath: '/contato'
+      preLoaderRoute: typeof ContatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +157,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reserva/$slug': {
+      id: '/reserva/$slug'
+      path: '/reserva/$slug'
+      fullPath: '/reserva/$slug'
+      preLoaderRoute: typeof ReservaSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expedicoes/$slug': {
+      id: '/expedicoes/$slug'
+      path: '/$slug'
+      fullPath: '/expedicoes/$slug'
+      preLoaderRoute: typeof ExpedicoesSlugRouteImport
+      parentRoute: typeof ExpedicoesRoute
+    }
   }
 }
 
+interface ExpedicoesRouteChildren {
+  ExpedicoesSlugRoute: typeof ExpedicoesSlugRoute
+}
+
+const ExpedicoesRouteChildren: ExpedicoesRouteChildren = {
+  ExpedicoesSlugRoute: ExpedicoesSlugRoute,
+}
+
+const ExpedicoesRouteWithChildren = ExpedicoesRoute._addFileChildren(
+  ExpedicoesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ContatoRoute: ContatoRoute,
+  DatasRoute: DatasRoute,
+  ExpedicoesRoute: ExpedicoesRouteWithChildren,
+  MinhaReservaRoute: MinhaReservaRoute,
+  ReservaSlugRoute: ReservaSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
