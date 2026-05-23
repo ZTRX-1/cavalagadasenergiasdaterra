@@ -1,0 +1,59 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
+import hero from "@/assets/expedicao-canastra.jpg";
+import logo from "@/assets/logo-canastra.jpg";
+
+export const Route = createFileRoute("/marcas/canastra-a-cavalo")({
+  head: () => ({
+    meta: [
+      { title: "Canastra a Cavalo — Travessias premium na Serra da Canastra" },
+      { name: "description", content: "Expedições autorais pela Serra da Canastra, terra do queijo, do Mangalarga e das cabeceiras do São Francisco." },
+    ],
+  }),
+  component: Page,
+});
+
+function Page() {
+  return (
+    <>
+      <section className="relative min-h-[78svh] overflow-hidden text-areia">
+        <img src={hero} alt="" className="absolute inset-0 h-full w-full object-cover" fetchPriority="high" decoding="async" />
+        <div className="absolute inset-0 bg-carvao/65" />
+        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-carvao via-carvao/70 to-transparent" />
+        <div className="container-tight relative flex min-h-[78svh] flex-col justify-end pb-20 pt-32 md:pb-24 md:pt-40">
+          <img src={logo} alt="" loading="lazy" className="h-20 w-20 rounded-full ring-1 ring-cobre/40 object-cover" />
+          <div className="eyebrow mt-6 text-cobre-soft">Nosso território</div>
+          <h1 className="mt-3 font-display text-5xl text-balance md:text-7xl text-shadow-strong">
+            Canastra <em className="not-italic text-cobre-soft">a Cavalo</em>
+          </h1>
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-areia text-shadow-soft text-pretty">
+            Travessias premium pela Serra da Canastra — terra do queijo, do Mangalarga Marchador e das cabeceiras do São Francisco.
+          </p>
+        </div>
+      </section>
+
+      <section className="bg-background py-24 md:py-32">
+        <div className="container-tight grid gap-12 md:grid-cols-12">
+          <div className="md:col-span-5">
+            <div className="eyebrow">O território</div>
+            <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">Onde tudo começa: nossa casa.</h2>
+          </div>
+          <div className="md:col-span-7 text-lg leading-relaxed text-foreground/85 space-y-5">
+            <p>A Canastra é nosso ponto de origem. Aqui mantemos o haras, criamos os cavalos e conhecemos cada trilha — porque essas trilhas fazem parte da nossa vida há gerações.</p>
+            <p>Travessias pela Serra, visitas a produtores de queijo canastra premiados, hospedagens com história, gastronomia regional refinada.</p>
+            <p>Quem cavalga conosco na Canastra entra dentro de um modo de vida — não apenas de um roteiro.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-secondary/40 py-20 md:py-24">
+        <div className="container-tight text-center">
+          <h2 className="font-display text-4xl text-balance md:text-5xl">Atravesse a Canastra com quem mora nela.</h2>
+          <Link to="/expedicoes/$slug" params={{ slug: "serra-da-canastra" }} className="mt-8 inline-flex items-center gap-2 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia hover:bg-cobre-soft">
+            Ver travessia <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
+    </>
+  );
+}
