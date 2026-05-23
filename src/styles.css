@@ -1,5 +1,5 @@
-/* Tipografia premium: Fraunces (display serifado) + Inter (corpo) */
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap");
+/* Tipografia editorial: Cormorant Garamond (display serifado clássico) + Inter (corpo) + Tenor Sans (eyebrows). */
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Tenor+Sans&display=swap");
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -8,20 +8,21 @@
 
 /*
  * Cavalgadas Energias da Terra — Design System
- * Paleta eco-luxury: verde floresta, areia/off-white, marrom couro,
- * cobre/dourado queimado, preto carvão.
+ * Rústico premium / ecoturismo sofisticado.
+ * Paleta: verde-musgo, areia tostada, couro envelhecido, cobre fosco, carvão.
  */
 
 @theme inline {
-  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-display: "Cormorant Garamond", "Cormorant", ui-serif, Georgia, serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono-display: "Tenor Sans", "Inter", ui-sans-serif, sans-serif;
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-2xl: 12px;
+  --radius-3xl: 16px;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -48,71 +49,77 @@
   --color-floresta: var(--floresta);
   --color-floresta-deep: var(--floresta-deep);
   --color-areia: var(--areia);
+  --color-areia-warm: var(--areia-warm);
   --color-couro: var(--couro);
   --color-cobre: var(--cobre);
   --color-cobre-soft: var(--cobre-soft);
   --color-carvao: var(--carvao);
+  --color-musgo: var(--musgo);
 
-  --shadow-elegant: 0 24px 60px -28px color-mix(in oklab, var(--carvao) 45%, transparent);
-  --shadow-card: 0 12px 32px -16px color-mix(in oklab, var(--floresta-deep) 35%, transparent);
+  --shadow-elegant: 0 24px 60px -28px color-mix(in oklab, var(--carvao) 50%, transparent);
+  --shadow-card: 0 14px 38px -22px color-mix(in oklab, var(--floresta-deep) 38%, transparent);
+  --shadow-header: 0 8px 24px -16px color-mix(in oklab, var(--carvao) 28%, transparent);
 
   --gradient-hero: linear-gradient(180deg, transparent 0%, color-mix(in oklab, var(--carvao) 30%, transparent) 50%, var(--carvao) 100%);
   --gradient-cobre: linear-gradient(135deg, var(--cobre) 0%, var(--cobre-soft) 100%);
+  --gradient-floresta: linear-gradient(160deg, var(--floresta-deep) 0%, var(--musgo) 100%);
 }
 
 :root {
-  --radius: 0.5rem;
+  --radius: 0.25rem;
 
-  /* Paleta marca */
-  --floresta: oklch(0.32 0.045 155);          /* verde floresta */
-  --floresta-deep: oklch(0.22 0.04 155);      /* verde profundo */
-  --areia: oklch(0.965 0.012 80);             /* off-white quente */
-  --couro: oklch(0.42 0.08 50);               /* marrom couro */
-  --cobre: oklch(0.62 0.13 55);               /* cobre queimado */
-  --cobre-soft: oklch(0.72 0.11 70);          /* dourado claro */
-  --carvao: oklch(0.18 0.012 80);             /* preto carvão quente */
+  /* Paleta marca — tons orgânicos, profundidades terrosas */
+  --floresta: oklch(0.34 0.05 150);            /* verde-musgo */
+  --floresta-deep: oklch(0.21 0.038 150);      /* verde profundo da mata */
+  --musgo: oklch(0.40 0.055 145);              /* musgo iluminado */
+  --areia: oklch(0.958 0.018 78);              /* off-white tostado */
+  --areia-warm: oklch(0.92 0.025 75);          /* areia mais quente */
+  --couro: oklch(0.42 0.085 48);               /* couro envelhecido */
+  --cobre: oklch(0.58 0.115 52);               /* cobre fosco, sem brilho */
+  --cobre-soft: oklch(0.72 0.085 65);          /* dourado patinado */
+  --carvao: oklch(0.16 0.012 75);              /* preto carvão quente */
 
-  /* Tokens semânticos (light = areia) */
+  /* Tokens semânticos (light = areia tostada) */
   --background: var(--areia);
   --foreground: var(--carvao);
-  --card: oklch(0.99 0.005 80);
+  --card: oklch(0.985 0.012 78);
   --card-foreground: var(--carvao);
-  --popover: oklch(0.99 0.005 80);
+  --popover: oklch(0.985 0.012 78);
   --popover-foreground: var(--carvao);
   --primary: var(--floresta-deep);
   --primary-foreground: var(--areia);
-  --secondary: oklch(0.93 0.015 80);
+  --secondary: oklch(0.91 0.022 75);
   --secondary-foreground: var(--carvao);
-  --muted: oklch(0.93 0.012 80);
-  --muted-foreground: oklch(0.45 0.02 80);
+  --muted: oklch(0.91 0.018 75);
+  --muted-foreground: oklch(0.42 0.022 70);
   --accent: var(--cobre);
   --accent-foreground: var(--areia);
-  --destructive: oklch(0.55 0.2 25);
+  --destructive: oklch(0.52 0.18 25);
   --destructive-foreground: var(--areia);
-  --border: oklch(0.88 0.015 80);
-  --input: oklch(0.88 0.015 80);
+  --border: oklch(0.84 0.022 72);
+  --input: oklch(0.84 0.022 72);
   --ring: var(--cobre);
 }
 
 .dark {
   --background: var(--carvao);
   --foreground: var(--areia);
-  --card: oklch(0.22 0.015 80);
+  --card: oklch(0.22 0.015 78);
   --card-foreground: var(--areia);
-  --popover: oklch(0.22 0.015 80);
+  --popover: oklch(0.22 0.015 78);
   --popover-foreground: var(--areia);
   --primary: var(--cobre);
   --primary-foreground: var(--carvao);
-  --secondary: oklch(0.28 0.02 80);
+  --secondary: oklch(0.27 0.022 78);
   --secondary-foreground: var(--areia);
-  --muted: oklch(0.25 0.015 80);
-  --muted-foreground: oklch(0.7 0.02 80);
+  --muted: oklch(0.25 0.018 78);
+  --muted-foreground: oklch(0.7 0.022 75);
   --accent: var(--cobre);
   --accent-foreground: var(--carvao);
   --destructive: oklch(0.55 0.2 25);
   --destructive-foreground: var(--areia);
-  --border: oklch(0.3 0.015 80);
-  --input: oklch(0.3 0.015 80);
+  --border: oklch(0.3 0.018 78);
+  --input: oklch(0.3 0.018 78);
   --ring: var(--cobre);
 }
 
@@ -136,9 +143,14 @@
 
   h1, h2, h3, h4 {
     font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.012em;
+    line-height: 1.02;
+  }
+
+  h1 em, h2 em {
+    font-style: italic;
     font-weight: 400;
-    letter-spacing: -0.015em;
-    line-height: 1.05;
   }
 
   ::selection {
@@ -150,12 +162,13 @@
 @layer utilities {
   .font-display { font-family: var(--font-display); }
   .font-sans { font-family: var(--font-sans); }
+  .font-eyebrow { font-family: var(--font-mono-display); }
 
   .eyebrow {
-    font-family: var(--font-sans);
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.22em;
+    font-family: var(--font-mono-display);
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
     color: var(--cobre);
   }
@@ -173,4 +186,49 @@
 
   .text-balance { text-wrap: balance; }
   .text-pretty { text-wrap: pretty; }
+
+  /* Textura de papel/linho sutil em fundos claros */
+  .texture-paper {
+    background-image:
+      radial-gradient(circle at 1px 1px, color-mix(in oklab, var(--carvao) 4%, transparent) 1px, transparent 0),
+      linear-gradient(0deg, color-mix(in oklab, var(--couro) 2%, transparent), color-mix(in oklab, var(--couro) 2%, transparent));
+    background-size: 18px 18px, 100% 100%;
+  }
+
+  /* Divisor terroso */
+  .hr-rule {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cobre), transparent);
+    opacity: 0.5;
+  }
+
+  /* Botão CTA premium */
+  .btn-cobre {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.95rem 1.75rem;
+    background: var(--cobre);
+    color: var(--areia);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-family: var(--font-mono-display);
+    border-radius: 999px;
+    transition: background-color .2s ease, transform .2s ease;
+  }
+  .btn-cobre:hover { background: color-mix(in oklab, var(--cobre) 85%, var(--carvao)); }
+
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.9rem 1.75rem;
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-family: var(--font-mono-display);
+    border-radius: 999px;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .btn-ghost:hover { border-color: var(--cobre); color: var(--cobre); }
 }
