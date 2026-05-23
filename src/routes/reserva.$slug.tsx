@@ -446,10 +446,6 @@ function ReservaPage() {
         </div>
       </div>
 
-      <style>{`
-        .input { width: 100%; padding: 0.7rem 0.85rem; background: var(--card); border: 1px solid var(--border); border-radius: 2px; font-size: 0.95rem; color: var(--foreground); outline: none; transition: border-color .2s; }
-        .input:focus { border-color: var(--cobre); }
-      `}</style>
     </div>
   );
 }
