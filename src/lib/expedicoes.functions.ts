@@ -37,7 +37,7 @@ export const listExpedicoes = createServerFn({ method: "GET" }).handler(async ()
     .eq("ativo", true)
     .order("ordem", { ascending: true });
   if (error) throw new Error(error.message);
-  return (data ?? []) as Expedicao[];
+  return (data ?? []) as unknown as Expedicao[];
 });
 
 export const getExpedicaoBySlug = createServerFn({ method: "GET" })
@@ -60,7 +60,7 @@ export const getExpedicaoBySlug = createServerFn({ method: "GET" })
       .order("data_inicio", { ascending: true });
     if (e2) throw new Error(e2.message);
 
-    return { expedicao: exp as Expedicao, datas: (datas ?? []) as DataExpedicao[] };
+    return { expedicao: exp as unknown as Expedicao, datas: (datas ?? []) as unknown as DataExpedicao[] };
   });
 
 export const listProximasDatas = createServerFn({ method: "GET" }).handler(async () => {

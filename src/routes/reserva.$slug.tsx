@@ -1,0 +1,484 @@
+import { useState } from "react";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
+import { createReserva } from "@/lib/reservas.functions";
+import { buildReservaWhatsappUrl } from "@/lib/whatsapp";
+import { formatDateRange, formatPrice } from "@/lib/format";
+import { getExpedicaoImage } from "@/lib/expedicao-images";
+import { cn } from "@/lib/utils";
+
+const qo = (slug: string) =>
+  queryOptions({ queryKey: ["expedicao", slug], queryFn: () => getExpedicaoBySlug({ data: { slug } }) });
+
+const searchSchema = z.object({ data: z.string().optional() });
+
+export const Route = createFileRoute("/reserva/$slug")({
+  validateSearch: searchSchema,
+  head: ({ params }) => ({
+    meta: [
+      { title: `Pré-reserva — ${params.slug.replace(/-/g, " ")}` },
+      { name: "description", content: "Faça sua pré-reserva online em poucos minutos." },
+    ],
+  }),
+  loader: async ({ context, params }) => {
+    const data = await context.queryClient.ensureQueryData(qo(params.slug));
+    if (!data) throw notFound();
+    return data;
+  },
+  component: ReservaPage,
+});
+
+const schema = z.object({
+  data_id: z.string().uuid({ message: "Selecione uma data" }),
+  responsavel: z.object({
+    nome: z.string().trim().min(2, "Informe o nome completo"),
+    cpf: z.string().trim().min(11, "CPF inválido"),
+    telefone: z.string().trim().min(10, "Telefone inválido"),
+    email: z.string().trim().email("E-mail inválido"),
+    cidade: z.string().trim().min(2, "Informe a cidade"),
+    estado: z.string().trim().min(2, "Informe o estado"),
+  }),
+  participantes: z.array(z.object({
+    nome: z.string().trim().min(2, "Nome obrigatório"),
+    idade: z.coerce.number().int().min(1).max(110),
+    peso: z.coerce.number().min(20).max(200),
+    experiencia: z.enum(["nenhuma", "iniciante", "intermediario", "avancado"]),
+  })).min(1),
+  adicionais: z.object({
+    tipo_grupo: z.string().min(2, "Selecione"),
+    forma_pagamento: z.string().min(2, "Selecione"),
+    como_conheceu: z.string().min(2, "Selecione"),
+    restricoes: z.string().optional().default(""),
+    observacoes: z.string().optional().default(""),
+  }),
+  aceites: z.object({
+    responsabilidade: z.literal(true, { errorMap: () => ({ message: "Necessário aceitar" }) }),
+    cancelamento: z.literal(true, { errorMap: () => ({ message: "Necessário aceitar" }) }),
+    riscos: z.literal(true, { errorMap: () => ({ message: "Necessário aceitar" }) }),
+  }),
+});
+
+type FormValues = z.infer<typeof schema>;
+
+const STEPS = ["Responsável", "Participantes", "Adicionais", "Aceites", "Confirmação"];
+
+function ReservaPage() {
+  const { slug } = Route.useParams();
+  const search = Route.useSearch();
+  const { data } = useSuspenseQuery(qo(slug));
+  const createReservaFn = useServerFn(createReserva);
+
+  const [step, setStep] = useState(0);
+  const [submitted, setSubmitted] = useState<null | Awaited<ReturnType<typeof createReserva>>>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      data_id: search.data ?? "",
+      responsavel: { nome: "", cpf: "", telefone: "", email: "", cidade: "", estado: "" },
+      participantes: [{ nome: "", idade: 18, peso: 70, experiencia: "nenhuma" }],
+      adicionais: { tipo_grupo: "casal", forma_pagamento: "pix", como_conheceu: "instagram", restricoes: "", observacoes: "" },
+      aceites: { responsabilidade: false as unknown as true, cancelamento: false as unknown as true, riscos: false as unknown as true },
+    },
+    mode: "onTouched",
+  });
+
+  const { fields, append, remove } = useFieldArray({ control: form.control, name: "participantes" });
+
+  if (!data) return null;
+  const { expedicao, datas } = data;
+
+  if (submitted) {
+    const dt = datas.find((d) => d.id === form.getValues("data_id"));
+    const dataLabel = dt ? formatDateRange(dt.data_inicio, dt.data_fim) : "";
+    const waUrl = buildReservaWhatsappUrl({
+      nomeResponsavel: submitted.nome_responsavel,
+      expedicaoNome: submitted.expedicao_nome,
+      dataLabel,
+      quantidadeParticipantes: submitted.quantidade_participantes,
+      protocolo: submitted.protocolo,
+    });
+    return <SucessoView protocolo={submitted.protocolo} waUrl={waUrl} nome={submitted.expedicao_nome} dataLabel={dataLabel} />;
+  }
+
+  const next = async () => {
+    const fieldsByStep: (keyof FormValues | `${keyof FormValues}.${string}`)[][] = [
+      ["data_id", "responsavel"],
+      ["participantes"],
+      ["adicionais"],
+      ["aceites"],
+      [],
+    ];
+    const ok = await form.trigger(fieldsByStep[step] as any, { shouldFocus: true });
+    if (!ok) {
+      toast.error("Revise os campos destacados.");
+      return;
+    }
+    setStep((s) => Math.min(s + 1, STEPS.length - 1));
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const back = () => setStep((s) => Math.max(s - 1, 0));
+
+  const onSubmit = form.handleSubmit(async (values) => {
+    setSubmitting(true);
+    try {
+      const res = await createReservaFn({
+        data: {
+          expedicao_id: expedicao.id,
+          data_id: values.data_id,
+          responsavel: values.responsavel,
+          participantes: values.participantes,
+          adicionais: values.adicionais,
+          aceites: values.aceites,
+        },
+      });
+      setSubmitted(res);
+      const dt = datas.find((d) => d.id === values.data_id);
+      const dataLabel = dt ? formatDateRange(dt.data_inicio, dt.data_fim) : "";
+      const waUrl = buildReservaWhatsappUrl({
+        nomeResponsavel: res.nome_responsavel,
+        expedicaoNome: res.expedicao_nome,
+        dataLabel,
+        quantidadeParticipantes: res.quantidade_participantes,
+        protocolo: res.protocolo,
+      });
+      if (typeof window !== "undefined") setTimeout(() => window.open(waUrl, "_blank"), 800);
+    } catch (e: any) {
+      toast.error(e?.message ?? "Erro ao enviar reserva. Tente novamente.");
+    } finally {
+      setSubmitting(false);
+    }
+  });
+
+  return (
+    <div className="bg-background pb-24 pt-28 md:pt-36">
+      <div className="container-tight grid gap-10 lg:grid-cols-12">
+        {/* Resumo sticky */}
+        <aside className="lg:col-span-4">
+          <div className="lg:sticky lg:top-28">
+            <Link to="/expedicoes/$slug" params={{ slug }} className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-cobre">
+              <ArrowLeft className="h-3 w-3" /> Voltar à expedição
+            </Link>
+            <div className="mt-6 overflow-hidden rounded-sm border border-border bg-card shadow-card">
+              <img src={getExpedicaoImage(expedicao.slug)} alt={expedicao.nome} className="h-48 w-full object-cover" />
+              <div className="p-6">
+                <div className="eyebrow">{expedicao.duracao} · {expedicao.nivel}</div>
+                <h2 className="mt-2 font-display text-2xl">{expedicao.nome}</h2>
+                <div className="mt-3 text-sm text-muted-foreground">{expedicao.descricao_curta}</div>
+                <div className="mt-5 border-t border-border pt-4">
+                  <div className="text-[0.65rem] uppercase tracking-widest text-muted-foreground">A partir de</div>
+                  <div className="font-display text-2xl text-cobre">{formatPrice(expedicao.preco)}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        {/* Form */}
+        <div className="lg:col-span-8">
+          <div className="eyebrow">Pré-reserva</div>
+          <h1 className="mt-3 font-display text-4xl md:text-5xl">Reserve sua vaga em 5 passos</h1>
+
+          {/* Stepper */}
+          <ol className="mt-10 grid grid-cols-5 gap-1.5">
+            {STEPS.map((label, i) => (
+              <li key={label} className="flex flex-col items-stretch gap-2">
+                <div className={cn("h-1 rounded-full transition-colors", i <= step ? "bg-cobre" : "bg-border")} />
+                <span className={cn("hidden text-[0.65rem] uppercase tracking-widest md:block", i === step ? "text-foreground" : "text-muted-foreground")}>
+                  {String(i + 1).padStart(2, "0")}. {label}
+                </span>
+              </li>
+            ))}
+          </ol>
+          <p className="mt-4 text-sm text-muted-foreground md:hidden">Etapa {step + 1} de {STEPS.length} · <span className="text-foreground">{STEPS[step]}</span></p>
+
+          <form onSubmit={onSubmit} className="mt-10">
+            {step === 0 && (
+              <Step title="Dados do responsável" desc="Quem ficará como contato principal pela reserva.">
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <Field label="Nome completo" error={form.formState.errors.responsavel?.nome?.message}>
+                    <Input {...form.register("responsavel.nome")} />
+                  </Field>
+                  <Field label="CPF" error={form.formState.errors.responsavel?.cpf?.message}>
+                    <Input {...form.register("responsavel.cpf")} placeholder="000.000.000-00" />
+                  </Field>
+                  <Field label="Telefone (WhatsApp)" error={form.formState.errors.responsavel?.telefone?.message}>
+                    <Input {...form.register("responsavel.telefone")} placeholder="(11) 99999-9999" />
+                  </Field>
+                  <Field label="E-mail" error={form.formState.errors.responsavel?.email?.message}>
+                    <Input type="email" {...form.register("responsavel.email")} />
+                  </Field>
+                  <Field label="Cidade" error={form.formState.errors.responsavel?.cidade?.message}>
+                    <Input {...form.register("responsavel.cidade")} />
+                  </Field>
+                  <Field label="Estado" error={form.formState.errors.responsavel?.estado?.message}>
+                    <Input {...form.register("responsavel.estado")} />
+                  </Field>
+                  <Field label="Data desejada" error={form.formState.errors.data_id?.message} className="sm:col-span-2">
+                    <select className="input" {...form.register("data_id")}>
+                      <option value="">Selecione a data</option>
+                      {datas.map((d) => (
+                        <option key={d.id} value={d.id} disabled={d.status === "esgotado"}>
+                          {formatDateRange(d.data_inicio, d.data_fim)} {d.status === "esgotado" ? " — esgotado" : d.status === "poucas_vagas" ? " — poucas vagas" : ""}
+                        </option>
+                      ))}
+                    </select>
+                  </Field>
+                </div>
+              </Step>
+            )}
+
+            {step === 1 && (
+              <Step title="Participantes" desc="Informe os dados de cada participante.">
+                <Field label="Tipo de grupo">
+                  <select className="input" {...form.register("adicionais.tipo_grupo")}>
+                    <option value="individual">Individual</option>
+                    <option value="casal">Casal</option>
+                    <option value="familia">Família</option>
+                    <option value="amigos">Grupo de amigos</option>
+                    <option value="corporativo">Corporativo</option>
+                  </select>
+                </Field>
+
+                <div className="mt-6 space-y-4">
+                  {fields.map((f, i) => (
+                    <div key={f.id} className="rounded-sm border border-border bg-card p-5">
+                      <div className="flex items-center justify-between">
+                        <div className="font-display text-lg">Participante {i + 1}</div>
+                        {fields.length > 1 && (
+                          <button type="button" onClick={() => remove(i)} className="text-xs uppercase tracking-widest text-muted-foreground hover:text-destructive">Remover</button>
+                        )}
+                      </div>
+                      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                        <Field label="Nome" error={form.formState.errors.participantes?.[i]?.nome?.message}>
+                          <Input {...form.register(`participantes.${i}.nome`)} />
+                        </Field>
+                        <Field label="Idade" error={form.formState.errors.participantes?.[i]?.idade?.message}>
+                          <Input type="number" {...form.register(`participantes.${i}.idade`)} />
+                        </Field>
+                        <Field label="Peso (kg)" error={form.formState.errors.participantes?.[i]?.peso?.message}>
+                          <Input type="number" step="0.1" {...form.register(`participantes.${i}.peso`)} />
+                        </Field>
+                        <Field label="Experiência com cavalgada">
+                          <select className="input" {...form.register(`participantes.${i}.experiencia`)}>
+                            <option value="nenhuma">Nenhuma</option>
+                            <option value="iniciante">Iniciante</option>
+                            <option value="intermediario">Intermediário</option>
+                            <option value="avancado">Avançado</option>
+                          </select>
+                        </Field>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => append({ nome: "", idade: 18, peso: 70, experiencia: "nenhuma" })}
+                    className="w-full rounded-sm border border-dashed border-border bg-secondary/30 py-4 text-sm uppercase tracking-widest text-muted-foreground hover:border-cobre hover:text-cobre"
+                  >+ Adicionar participante</button>
+                </div>
+              </Step>
+            )}
+
+            {step === 2 && (
+              <Step title="Informações adicionais" desc="Para deixarmos tudo afinado para você.">
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <Field label="Forma pretendida de pagamento">
+                    <select className="input" {...form.register("adicionais.forma_pagamento")}>
+                      <option value="pix">Pix</option>
+                      <option value="transferencia">Transferência</option>
+                      <option value="cartao">Cartão (parcelado)</option>
+                      <option value="boleto">Boleto</option>
+                    </select>
+                  </Field>
+                  <Field label="Como nos conheceu?">
+                    <select className="input" {...form.register("adicionais.como_conheceu")}>
+                      <option value="instagram">Instagram</option>
+                      <option value="indicacao">Indicação</option>
+                      <option value="google">Google</option>
+                      <option value="evento">Evento</option>
+                      <option value="outros">Outros</option>
+                    </select>
+                  </Field>
+                  <Field label="Restrições alimentares" className="sm:col-span-2">
+                    <textarea className="input min-h-[80px]" {...form.register("adicionais.restricoes")} placeholder="Vegetarianos, alergias, intolerâncias..." />
+                  </Field>
+                  <Field label="Observações" className="sm:col-span-2">
+                    <textarea className="input min-h-[100px]" {...form.register("adicionais.observacoes")} placeholder="Algo mais que devamos saber?" />
+                  </Field>
+                </div>
+              </Step>
+            )}
+
+            {step === 3 && (
+              <Step title="Aceite jurídico" desc="Leia atentamente e confirme para prosseguir.">
+                <div className="space-y-4">
+                  <AceiteItem
+                    name="aceites.responsabilidade"
+                    control={form.control}
+                    error={form.formState.errors.aceites?.responsabilidade?.message}
+                    title="Termo de responsabilidade"
+                    text="Declaro estar ciente de que a expedição envolve atividades físicas ao ar livre com cavalos e assumo a responsabilidade pelas informações de saúde e condicionamento físico informadas."
+                  />
+                  <AceiteItem
+                    name="aceites.cancelamento"
+                    control={form.control}
+                    error={form.formState.errors.aceites?.cancelamento?.message}
+                    title="Política de cancelamento"
+                    text="Estou ciente de que cancelamentos com menos de 30 dias de antecedência podem implicar retenção parcial ou total do valor pago, conforme política detalhada no contrato."
+                  />
+                  <AceiteItem
+                    name="aceites.riscos"
+                    control={form.control}
+                    error={form.formState.errors.aceites?.riscos?.message}
+                    title="Aceite de riscos"
+                    text="Reconheço que a cavalgada é uma atividade de aventura sujeita a riscos inerentes (clima, terreno, comportamento animal), os quais foram esclarecidos e aceito participar de livre e espontânea vontade."
+                  />
+                </div>
+              </Step>
+            )}
+
+            {step === 4 && (
+              <Step title="Confirmação" desc="Revise os dados e finalize sua pré-reserva.">
+                <ResumoConfirmacao expedicaoNome={expedicao.nome} datas={datas} values={form.getValues()} />
+              </Step>
+            )}
+
+            {/* Nav */}
+            <div className="mt-10 flex flex-col-reverse items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <button type="button" onClick={back} disabled={step === 0} className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3 text-sm uppercase tracking-widest text-foreground disabled:opacity-40">
+                <ArrowLeft className="h-4 w-4" /> Voltar
+              </button>
+              {step < STEPS.length - 1 ? (
+                <button type="button" onClick={next} className="inline-flex items-center justify-center gap-2 rounded-full bg-floresta-deep px-7 py-3 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre">
+                  Continuar <ArrowRight className="h-4 w-4" />
+                </button>
+              ) : (
+                <button type="submit" disabled={submitting} className="inline-flex items-center justify-center gap-2 rounded-full bg-cobre px-8 py-3 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft disabled:opacity-60">
+                  {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Enviando...</> : <>Finalizar pré-reserva <Check className="h-4 w-4" /></>}
+                </button>
+              )}
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <style>{`
+        .input { width: 100%; padding: 0.7rem 0.85rem; background: var(--card); border: 1px solid var(--border); border-radius: 2px; font-size: 0.95rem; color: var(--foreground); outline: none; transition: border-color .2s; }
+        .input:focus { border-color: var(--cobre); }
+      `}</style>
+    </div>
+  );
+}
+
+function Step({ title, desc, children }: { title: string; desc: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <h2 className="font-display text-2xl md:text-3xl">{title}</h2>
+      <p className="mt-1 text-sm text-muted-foreground">{desc}</p>
+      <div className="mt-8">{children}</div>
+    </div>
+  );
+}
+
+function Field({ label, error, children, className }: { label: string; error?: string; children: React.ReactNode; className?: string }) {
+  return (
+    <label className={cn("flex flex-col gap-1.5", className)}>
+      <span className="text-xs uppercase tracking-widest text-muted-foreground">{label}</span>
+      {children}
+      {error && <span className="text-xs text-destructive">{error}</span>}
+    </label>
+  );
+}
+
+function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
+  return <input {...props} className="input" />;
+}
+
+function AceiteItem({ name, control, title, text, error }: any) {
+  return (
+    <Controller
+      name={name}
+      control={control}
+      render={({ field }) => (
+        <label className={cn("flex cursor-pointer gap-4 rounded-sm border bg-card p-5 transition-colors", error ? "border-destructive" : "border-border hover:border-cobre/60")}>
+          <input
+            type="checkbox"
+            checked={!!field.value}
+            onChange={(e) => field.onChange(e.target.checked)}
+            className="mt-1 h-5 w-5 shrink-0 accent-cobre"
+          />
+          <div>
+            <div className="font-display text-lg">{title}</div>
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{text}</p>
+            {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
+          </div>
+        </label>
+      )}
+    />
+  );
+}
+
+function ResumoConfirmacao({ expedicaoNome, datas, values }: any) {
+  const dt = datas.find((d: any) => d.id === values.data_id);
+  return (
+    <div className="space-y-5 rounded-sm border border-border bg-card p-6">
+      <ResumoRow label="Expedição" value={expedicaoNome} />
+      <ResumoRow label="Data" value={dt ? formatDateRange(dt.data_inicio, dt.data_fim) : "—"} />
+      <ResumoRow label="Responsável" value={`${values.responsavel.nome} · ${values.responsavel.email}`} />
+      <ResumoRow label="Participantes" value={String(values.participantes.length)} />
+      <ResumoRow label="Forma de pagamento" value={values.adicionais.forma_pagamento} />
+      <p className="border-t border-border pt-4 text-sm text-muted-foreground">
+        Ao finalizar, geraremos seu <strong className="text-foreground">protocolo</strong> e abriremos o WhatsApp com a mensagem para nossa equipe confirmar a vaga.
+      </p>
+    </div>
+  );
+}
+
+function ResumoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-start justify-between gap-4 text-sm">
+      <span className="text-muted-foreground">{label}</span>
+      <span className="text-right font-medium text-foreground">{value}</span>
+    </div>
+  );
+}
+
+function SucessoView({ protocolo, waUrl, nome, dataLabel }: { protocolo: string; waUrl: string; nome: string; dataLabel: string }) {
+  return (
+    <div className="min-h-screen bg-background pb-24 pt-32 md:pt-40">
+      <div className="container-tight max-w-2xl text-center">
+        <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-floresta-deep text-areia">
+          <Check className="h-7 w-7" />
+        </div>
+        <div className="eyebrow mt-8">Pré-reserva confirmada</div>
+        <h1 className="mt-4 font-display text-4xl md:text-5xl">Sua trilha começou.</h1>
+        <p className="mt-4 text-muted-foreground">
+          Recebemos sua pré-reserva para <strong className="text-foreground">{nome}</strong> em {dataLabel}.
+          Em instantes você será direcionado ao WhatsApp para conversar com nossa equipe.
+        </p>
+        <div className="mt-10 rounded-sm border border-border bg-card p-8">
+          <div className="eyebrow">Seu protocolo</div>
+          <div className="mt-3 font-display text-4xl text-cobre">{protocolo}</div>
+          <p className="mt-3 text-xs text-muted-foreground">Guarde este número. Você pode consultar o status em "Minha Reserva".</p>
+        </div>
+        <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:justify-center">
+          <a href={waUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-7 py-3 text-sm uppercase tracking-widest text-white">
+            Abrir WhatsApp
+          </a>
+          <Link to="/minha-reserva" search={{ p: protocolo }} className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-7 py-3 text-sm uppercase tracking-widest text-foreground hover:border-cobre hover:text-cobre">
+            Consultar reserva
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
