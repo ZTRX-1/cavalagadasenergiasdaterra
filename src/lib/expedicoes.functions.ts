@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { getCanonicalExpedicaoSlug } from "@/lib/expedicao-slugs";
 
 export interface Expedicao {
   id: string;
@@ -47,10 +48,11 @@ export const listExpedicoes = createServerFn({ method: "GET" }).handler(async ()
 export const getExpedicaoBySlug = createServerFn({ method: "GET" })
   .inputValidator((d: { slug: string }) => z.object({ slug: z.string().min(1).max(120) }).parse(d))
   .handler(async ({ data }) => {
+    const canonicalSlug = getCanonicalExpedicaoSlug(data.slug);
     const { data: exp, error } = await supabaseAdmin
       .from("expedicoes")
       .select("*")
-      .eq("slug", data.slug)
+      .eq("slug", canonicalSlug)
       .eq("ativo", true)
       .maybeSingle();
     if (error) throw new Error(error.message);
