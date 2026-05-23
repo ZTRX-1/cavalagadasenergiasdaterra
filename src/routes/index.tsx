@@ -10,6 +10,8 @@ import acampamento from "@/assets/acampamento.jpg";
 import logoCavalgadas from "@/assets/logo-cavalgadas.jpg";
 import logoCanastra from "@/assets/logo-canastra.jpg";
 import logoElas from "@/assets/logo-elas-na-sela.jpg";
+import { VideoCinematic } from "@/components/video-cinematic";
+
 
 const expedicoesQO = queryOptions({ queryKey: ["expedicoes"], queryFn: () => listExpedicoes() });
 const datasQO = queryOptions({ queryKey: ["proximas-datas"], queryFn: () => listProximasDatas() });
@@ -160,6 +162,29 @@ function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* VÍDEO CINEMATOGRÁFICO */}
+      <section className="bg-carvao py-20 md:py-28">
+        <div className="container-tight">
+          <div className="mb-10 max-w-2xl md:mb-14">
+            <div className="eyebrow text-cobre-soft">Assista</div>
+            <h2 className="mt-4 font-display text-4xl text-balance text-areia md:text-5xl">
+              Um filme curto sobre o que vivemos.
+            </h2>
+            <p className="mt-4 text-areia/75 text-pretty">
+              Três minutos da nossa rotina nas trilhas — para você sentir, antes de embarcar.
+            </p>
+          </div>
+          <VideoCinematic
+            youtubeId="nPoJeABD5ko"
+            poster={acampamento}
+            eyebrow="Energias da Terra · filme oficial"
+            title="A travessia, antes da travessia."
+            subtitle="Toque para assistir com som"
+          />
+        </div>
+      </section>
+
 
       {/* INCLUI */}
       <section className="relative bg-floresta-deep py-24 text-areia md:py-32">

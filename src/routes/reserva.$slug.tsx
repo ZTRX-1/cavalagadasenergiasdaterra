@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
@@ -12,7 +12,9 @@ import { createReserva } from "@/lib/reservas.functions";
 import { buildReservaWhatsappUrl } from "@/lib/whatsapp";
 import { formatDateRange, formatPrice } from "@/lib/format";
 import { getExpedicaoImage } from "@/lib/expedicao-images";
+import { ESTADOS_BR, maskCPF, maskPhone, ageFromDateString } from "@/lib/br-estados";
 import { cn } from "@/lib/utils";
+
 
 const qo = (slug: string) =>
   queryOptions({ queryKey: ["expedicao", slug], queryFn: () => getExpedicaoBySlug({ data: { slug } }) });
@@ -91,7 +93,31 @@ function ReservaPage() {
     mode: "onTouched",
   });
 
-  const { fields, append, remove } = useFieldArray({ control: form.control, name: "participantes" });
+  const { fields, append, remove, replace } = useFieldArray({ control: form.control, name: "participantes" });
+  const [responsavelParticipa, setResponsavelParticipa] = useState(true);
+  const [qtdTotal, setQtdTotal] = useState(1);
+
+  // Sincroniza quantidade de participantes com o total escolhido
+  useEffect(() => {
+    const current = form.getValues("participantes");
+    if (qtdTotal === current.length) return;
+    if (qtdTotal > current.length) {
+      const toAdd = qtdTotal - current.length;
+      for (let i = 0; i < toAdd; i++) append({ nome: "", idade: 18, peso: 70, experiencia: "nenhuma" });
+    } else {
+      replace(current.slice(0, qtdTotal));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [qtdTotal]);
+
+  // "Você também participa?" — copia dados do responsável para participante 1
+  const resp = form.watch("responsavel");
+  useEffect(() => {
+    if (!responsavelParticipa) return;
+    if (resp.nome) form.setValue("participantes.0.nome", resp.nome, { shouldValidate: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [responsavelParticipa, resp.nome]);
+
 
   if (!data) return null;
   const { expedicao, datas } = data;
@@ -195,8 +221,9 @@ function ReservaPage() {
 
       <div className="container-tight mt-12 grid gap-10 lg:mt-16 lg:grid-cols-12">
         {/* Resumo sticky */}
-        <aside className="lg:col-span-4 lg:order-2">
-          <div className="lg:sticky lg:top-28">
+        <aside className="lg:col-span-4 lg:order-2 lg:self-start">
+          <div className="lg:sticky lg:top-24">
+
             <div className="overflow-hidden rounded-sm border border-border bg-card shadow-card">
               <img src={getExpedicaoImage(expedicao.slug)} alt={expedicao.nome} className="h-44 w-full object-cover" />
               <div className="p-6">
@@ -248,23 +275,52 @@ function ReservaPage() {
             {step === 0 && (
               <Step title="Dados do responsável" desc="Quem ficará como contato principal pela reserva.">
                 <div className="grid gap-5 sm:grid-cols-2">
-                  <Field label="Nome completo" error={form.formState.errors.responsavel?.nome?.message}>
-                    <Input {...form.register("responsavel.nome")} />
+                  <Field label="Nome completo" error={form.formState.errors.responsavel?.nome?.message} className="sm:col-span-2">
+                    <Input {...form.register("responsavel.nome")} placeholder="Como aparece no documento" />
                   </Field>
                   <Field label="CPF" error={form.formState.errors.responsavel?.cpf?.message}>
-                    <Input {...form.register("responsavel.cpf")} placeholder="000.000.000-00" />
+                    <Controller
+                      control={form.control}
+                      name="responsavel.cpf"
+                      render={({ field }) => (
+                        <input
+                          className="input"
+                          inputMode="numeric"
+                          placeholder="000.000.000-00"
+                          value={field.value}
+                          onChange={(e) => field.onChange(maskCPF(e.target.value))}
+                        />
+                      )}
+                    />
                   </Field>
                   <Field label="Telefone (WhatsApp)" error={form.formState.errors.responsavel?.telefone?.message}>
-                    <Input {...form.register("responsavel.telefone")} placeholder="(11) 99999-9999" />
+                    <Controller
+                      control={form.control}
+                      name="responsavel.telefone"
+                      render={({ field }) => (
+                        <input
+                          className="input"
+                          inputMode="tel"
+                          placeholder="(11) 99999-9999"
+                          value={field.value}
+                          onChange={(e) => field.onChange(maskPhone(e.target.value))}
+                        />
+                      )}
+                    />
                   </Field>
-                  <Field label="E-mail" error={form.formState.errors.responsavel?.email?.message}>
-                    <Input type="email" {...form.register("responsavel.email")} />
-                  </Field>
-                  <Field label="Cidade" error={form.formState.errors.responsavel?.cidade?.message}>
-                    <Input {...form.register("responsavel.cidade")} />
+                  <Field label="E-mail" error={form.formState.errors.responsavel?.email?.message} className="sm:col-span-2">
+                    <Input type="email" inputMode="email" placeholder="voce@exemplo.com" {...form.register("responsavel.email")} />
                   </Field>
                   <Field label="Estado" error={form.formState.errors.responsavel?.estado?.message}>
-                    <Input {...form.register("responsavel.estado")} />
+                    <select className="input" {...form.register("responsavel.estado")}>
+                      <option value="">Selecione</option>
+                      {ESTADOS_BR.map((e) => (
+                        <option key={e.sigla} value={e.sigla}>{e.sigla} — {e.nome}</option>
+                      ))}
+                    </select>
+                  </Field>
+                  <Field label="Cidade" error={form.formState.errors.responsavel?.cidade?.message}>
+                    <Input {...form.register("responsavel.cidade")} placeholder="Sua cidade" />
                   </Field>
                   <Field label="Data desejada" error={form.formState.errors.data_id?.message} className="sm:col-span-2">
                     <select className="input" {...form.register("data_id")}>
@@ -280,56 +336,118 @@ function ReservaPage() {
               </Step>
             )}
 
+
             {step === 1 && (
-              <Step title="Participantes" desc="Informe os dados de cada participante.">
-                <Field label="Tipo de grupo">
-                  <select className="input" {...form.register("adicionais.tipo_grupo")}>
-                    <option value="individual">Individual</option>
-                    <option value="casal">Casal</option>
-                    <option value="familia">Família</option>
-                    <option value="amigos">Grupo de amigos</option>
-                    <option value="corporativo">Corporativo</option>
-                  </select>
-                </Field>
+              <Step title="Participantes" desc="Informe quantas pessoas embarcam nesta travessia.">
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <Field label="Tipo de grupo">
+                    <select className="input" {...form.register("adicionais.tipo_grupo")}>
+                      <option value="individual">Individual</option>
+                      <option value="casal">Casal</option>
+                      <option value="familia">Família</option>
+                      <option value="amigos">Grupo de amigos</option>
+                      <option value="corporativo">Corporativo</option>
+                    </select>
+                  </Field>
+                  <Field label="Quantidade total de participantes">
+                    <select
+                      className="input"
+                      value={qtdTotal}
+                      onChange={(e) => setQtdTotal(Math.max(1, Math.min(20, Number(e.target.value))))}
+                    >
+                      {Array.from({ length: 20 }, (_, i) => i + 1).map((n) => (
+                        <option key={n} value={n}>{n} {n === 1 ? "pessoa" : "pessoas"}</option>
+                      ))}
+                    </select>
+                  </Field>
+                </div>
+
+                <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-sm border border-border bg-card p-4 transition-colors hover:border-cobre/60">
+                  <input
+                    type="checkbox"
+                    checked={responsavelParticipa}
+                    onChange={(e) => setResponsavelParticipa(e.target.checked)}
+                    className="mt-0.5 h-5 w-5 accent-cobre"
+                  />
+                  <div>
+                    <div className="font-display text-base">Você também participará da experiência?</div>
+                    <p className="mt-0.5 text-xs text-muted-foreground">Se sim, copiaremos seus dados para o Participante 1 automaticamente.</p>
+                  </div>
+                </label>
 
                 <div className="mt-6 space-y-4">
                   {fields.map((f, i) => (
                     <div key={f.id} className="rounded-sm border border-border bg-card p-5">
                       <div className="flex items-center justify-between">
-                        <div className="font-display text-lg">Participante {i + 1}</div>
-                        {fields.length > 1 && (
-                          <button type="button" onClick={() => remove(i)} className="text-xs uppercase tracking-widest text-muted-foreground hover:text-destructive">Remover</button>
+                        <div className="font-display text-lg">
+                          Participante {i + 1}
+                          {i === 0 && responsavelParticipa && (
+                            <span className="ml-2 font-eyebrow text-[0.6rem] uppercase tracking-[0.22em] text-cobre">Responsável</span>
+                          )}
+                        </div>
+                        {fields.length > 1 && i > 0 && (
+                          <button type="button" onClick={() => { remove(i); setQtdTotal((q) => Math.max(1, q - 1)); }} className="text-xs uppercase tracking-widest text-muted-foreground hover:text-destructive">Remover</button>
                         )}
                       </div>
                       <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                        <Field label="Nome" error={form.formState.errors.participantes?.[i]?.nome?.message}>
-                          <Input {...form.register(`participantes.${i}.nome`)} />
+                        <Field label="Nome completo" error={form.formState.errors.participantes?.[i]?.nome?.message} className="sm:col-span-2">
+                          <Input {...form.register(`participantes.${i}.nome`)} placeholder="Como aparece no documento" />
                         </Field>
-                        <Field label="Idade" error={form.formState.errors.participantes?.[i]?.idade?.message}>
-                          <Input type="number" {...form.register(`participantes.${i}.idade`)} />
+                        <Field label="Data de nascimento" error={form.formState.errors.participantes?.[i]?.idade?.message}>
+                          <Controller
+                            control={form.control}
+                            name={`participantes.${i}.idade`}
+                            render={({ field }) => (
+                              <input
+                                type="date"
+                                className="input"
+                                max={new Date().toISOString().slice(0, 10)}
+                                min="1920-01-01"
+                                onChange={(e) => {
+                                  const age = ageFromDateString(e.target.value);
+                                  if (age != null && age > 0) field.onChange(age);
+                                }}
+                              />
+                            )}
+                          />
+                          <span className="text-[0.7rem] text-muted-foreground">Idade calculada: {form.watch(`participantes.${i}.idade`) || "—"} anos</span>
                         </Field>
                         <Field label="Peso (kg)" error={form.formState.errors.participantes?.[i]?.peso?.message}>
-                          <Input type="number" step="0.1" {...form.register(`participantes.${i}.peso`)} />
+                          <Input type="number" inputMode="decimal" step="0.1" {...form.register(`participantes.${i}.peso`)} />
                         </Field>
-                        <Field label="Experiência com cavalgada">
-                          <select className="input" {...form.register(`participantes.${i}.experiencia`)}>
-                            <option value="nenhuma">Nenhuma</option>
-                            <option value="iniciante">Iniciante</option>
-                            <option value="intermediario">Intermediário</option>
-                            <option value="avancado">Avançado</option>
-                          </select>
+                        <Field label="Experiência com cavalgada" className="sm:col-span-2">
+                          <Controller
+                            control={form.control}
+                            name={`participantes.${i}.experiencia`}
+                            render={({ field }) => (
+                              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                                {[
+                                  { v: "nenhuma", t: "Nenhuma" },
+                                  { v: "iniciante", t: "Iniciante" },
+                                  { v: "intermediario", t: "Intermediário" },
+                                  { v: "avancado", t: "Avançado" },
+                                ].map((o) => (
+                                  <button
+                                    key={o.v}
+                                    type="button"
+                                    onClick={() => field.onChange(o.v)}
+                                    data-active={field.value === o.v}
+                                    className="option-card items-center text-center"
+                                  >
+                                    <span className="font-eyebrow text-[0.7rem] uppercase tracking-[0.2em]">{o.t}</span>
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          />
                         </Field>
                       </div>
                     </div>
                   ))}
-                  <button
-                    type="button"
-                    onClick={() => append({ nome: "", idade: 18, peso: 70, experiencia: "nenhuma" })}
-                    className="w-full rounded-sm border border-dashed border-border bg-secondary/30 py-4 text-sm uppercase tracking-widest text-muted-foreground hover:border-cobre hover:text-cobre"
-                  >+ Adicionar participante</button>
                 </div>
               </Step>
             )}
+
 
             {step === 2 && (
               <Step title="Informações adicionais" desc="Para deixarmos tudo afinado para você.">

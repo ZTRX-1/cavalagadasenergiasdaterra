@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowLeft } from "lucide-react";
 import hero from "@/assets/hero-cavalgada.jpg";
 import logo from "@/assets/logo-cavalgadas.jpg";
+import { MarcaCrossNav } from "@/components/marca-cross-nav";
+
 
 export const Route = createFileRoute("/marcas/cavalgadas")({
   head: () => ({
@@ -21,6 +23,9 @@ function Page() {
         <div className="absolute inset-0 bg-carvao/65" />
         <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-carvao via-carvao/70 to-transparent" />
         <div className="container-tight relative flex min-h-[78svh] flex-col justify-end pb-20 pt-32 md:pb-24 md:pt-40">
+          <Link to="/" className="absolute left-5 top-28 inline-flex items-center gap-2 font-eyebrow text-[0.65rem] uppercase tracking-[0.28em] text-areia/80 hover:text-cobre-soft md:left-8 md:top-32">
+            <ArrowLeft className="h-3 w-3" /> Voltar para o início
+          </Link>
           <img src={logo} alt="" loading="lazy" className="h-20 w-20 rounded-full ring-1 ring-cobre/40 object-cover" />
           <div className="eyebrow mt-6 text-cobre-soft">A marca-mãe</div>
           <h1 className="mt-3 font-display text-5xl text-balance md:text-7xl text-shadow-strong">
@@ -31,6 +36,7 @@ function Page() {
             Brasil e mundo, em pequenos grupos, com a alma de quem cria seus próprios cavalos.
           </p>
         </div>
+
       </section>
 
       <section className="bg-background py-24 md:py-32">
@@ -55,6 +61,9 @@ function Page() {
           </Link>
         </div>
       </section>
+
+      <MarcaCrossNav current="cavalgadas" />
     </>
   );
 }
+
