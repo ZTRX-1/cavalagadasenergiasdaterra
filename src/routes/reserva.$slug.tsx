@@ -207,7 +207,7 @@ function ReservaPage() {
                   <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Duração</dt><dd className="font-medium">{expedicao.duracao}</dd></div>
                   <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Nível</dt><dd className="font-medium">{expedicao.nivel}</dd></div>
                   <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Participantes</dt><dd className="font-medium">{qtdParts}</dd></div>
-                  <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Pagamento</dt><dd className="font-medium capitalize">{formaPag === "cartao" ? "Cartão (6x)" : formaPag === "pix" ? "PIX à vista" : formaPag}</dd></div>
+                  <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Pagamento</dt><dd className="font-medium">{formaPag === "cartao" ? "Cartão 6x" : formaPag === "pix" ? "PIX à vista" : formaPag === "sinal" ? "Sinal + Saldo" : formaPag}</dd></div>
                 </dl>
                 <div className="mt-5 border-t border-border pt-4">
                   <div className="flex items-baseline justify-between">
