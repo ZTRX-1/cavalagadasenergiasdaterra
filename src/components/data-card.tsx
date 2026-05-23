@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import type { DataExpedicao } from "@/lib/expedicoes.functions";
+import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
 import { formatDateRange, formatDayShort } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -48,7 +49,7 @@ export function DataCard({ data }: { data: DataExpedicao }) {
         ) : (
           <Link
             to="/reserva/$slug"
-            params={{ slug: data.expedicao_slug ?? "" }}
+            params={{ slug: getPublicExpedicaoSlug(data.expedicao_slug ?? "") }}
             search={{ data: data.id }}
             className="inline-flex items-center gap-2 rounded-full bg-floresta-deep px-4 py-2 text-xs uppercase tracking-widest text-areia transition-colors hover:bg-cobre"
           >
