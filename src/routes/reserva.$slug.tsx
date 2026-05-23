@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
@@ -12,7 +12,9 @@ import { createReserva } from "@/lib/reservas.functions";
 import { buildReservaWhatsappUrl } from "@/lib/whatsapp";
 import { formatDateRange, formatPrice } from "@/lib/format";
 import { getExpedicaoImage } from "@/lib/expedicao-images";
+import { ESTADOS_BR, maskCPF, maskPhone, ageFromDateString } from "@/lib/br-estados";
 import { cn } from "@/lib/utils";
+
 
 const qo = (slug: string) =>
   queryOptions({ queryKey: ["expedicao", slug], queryFn: () => getExpedicaoBySlug({ data: { slug } }) });
@@ -91,7 +93,31 @@ function ReservaPage() {
     mode: "onTouched",
   });
 
-  const { fields, append, remove } = useFieldArray({ control: form.control, name: "participantes" });
+  const { fields, append, remove, replace } = useFieldArray({ control: form.control, name: "participantes" });
+  const [responsavelParticipa, setResponsavelParticipa] = useState(true);
+  const [qtdTotal, setQtdTotal] = useState(1);
+
+  // Sincroniza quantidade de participantes com o total escolhido
+  useEffect(() => {
+    const current = form.getValues("participantes");
+    if (qtdTotal === current.length) return;
+    if (qtdTotal > current.length) {
+      const toAdd = qtdTotal - current.length;
+      for (let i = 0; i < toAdd; i++) append({ nome: "", idade: 18, peso: 70, experiencia: "nenhuma" });
+    } else {
+      replace(current.slice(0, qtdTotal));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [qtdTotal]);
+
+  // "Você também participa?" — copia dados do responsável para participante 1
+  const resp = form.watch("responsavel");
+  useEffect(() => {
+    if (!responsavelParticipa) return;
+    if (resp.nome) form.setValue("participantes.0.nome", resp.nome, { shouldValidate: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [responsavelParticipa, resp.nome]);
+
 
   if (!data) return null;
   const { expedicao, datas } = data;
