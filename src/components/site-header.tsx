@@ -6,9 +6,11 @@ import { buildContactWhatsappUrl } from "@/lib/whatsapp";
 import logoCavalgadas from "@/assets/logo-cavalgadas.jpg";
 
 const NAV = [
+  { to: "/", label: "Home" },
   { to: "/expedicoes", label: "Expedições" },
   { to: "/datas", label: "Próximas Datas" },
-  { to: "/contato", label: "Quem Somos · FAQ" },
+  { to: "/contato", label: "Quem Somos" },
+  { to: "/contato", label: "Contato" },
   { to: "/minha-reserva", label: "Minha Reserva" },
 ] as const;
 
