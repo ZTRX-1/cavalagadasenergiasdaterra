@@ -70,17 +70,38 @@ function ContatoPage() {
         <div className="container-tight grid gap-12 md:grid-cols-12">
           <div className="md:col-span-4">
             <div className="eyebrow text-cobre-soft">Quem somos</div>
-            <h2 className="mt-4 font-display text-4xl md:text-5xl">Uma produtora de travessias.</h2>
+            <h2 className="mt-4 font-display text-4xl md:text-5xl">Apaixonados por cavalos, natureza e experiências transformadoras.</h2>
           </div>
-          <div className="md:col-span-8 space-y-6 text-lg leading-relaxed text-areia/80 text-pretty">
+          <div className="md:col-span-8 space-y-6 text-lg leading-relaxed text-areia/85 text-pretty">
             <p>
-              Nascemos em 2018 com uma obsessão: oferecer expedições a cavalo no Brasil com o mesmo nível de cuidado, curadoria e estética que se vê nas melhores experiências do mundo.
+              A Cavalgadas Energias da Terra nasceu do desejo de unir turismo, cultura, aventura e o universo equestre em jornadas cuidadosamente planejadas para pessoas que buscam algo além do turismo convencional.
             </p>
             <p>
-              Cada roteiro é construído com guias locais, produtores rurais, chefs e horsemen que conhecem profundamente o território. Cuidamos do que importa para que você só precise estar presente.
+              Como criadores de cavalos, proprietários de haras e operadores de experiências equestres, vivemos esse universo diariamente.
             </p>
-            <p className="text-cobre-soft">
-              "Cavalgar é uma forma antiga de prestar atenção ao mundo."
+          </div>
+        </div>
+      </section>
+
+      {/* Nosso diferencial */}
+      <section className="bg-background py-24 md:py-32">
+        <div className="container-tight grid gap-12 md:grid-cols-12">
+          <div className="md:col-span-4">
+            <div className="eyebrow">Nosso diferencial</div>
+            <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">Não vendemos cavalgadas — criamos experiências boutique.</h2>
+          </div>
+          <div className="md:col-span-8 space-y-6 text-lg leading-relaxed text-foreground/80 text-pretty">
+            <p>
+              Criamos experiências equestres boutique para pequenos grupos, acompanhando pessoalmente cada etapa da jornada e cuidando de cada detalhe para que nossos clientes possam simplesmente viver o momento.
+            </p>
+            <p>
+              Além de operar expedições no Brasil e no exterior, também somos criadores de cavalos da raça Mangalarga Marchador.
+            </p>
+            <p>
+              Cada roteiro é desenvolvido para proporcionar muito mais do que uma viagem: uma imersão na cultura local, paisagens extraordinárias, conexão com os cavalos e encontros entre pessoas que compartilham a mesma paixão.
+            </p>
+            <p className="font-display text-2xl text-cobre">
+              Mais do que clientes, formamos uma verdadeira manada.
             </p>
           </div>
         </div>

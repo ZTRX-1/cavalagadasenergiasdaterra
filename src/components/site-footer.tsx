@@ -57,9 +57,15 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col items-start justify-between gap-4 border-t border-areia/10 pt-8 text-xs text-areia/50 md:flex-row md:items-center">
-          <span>© {new Date().getFullYear()} Cavalgadas Energias da Terra. Todos os direitos reservados.</span>
-          <span className="font-mono">{`+${WHATSAPP_NUMBER.slice(0,2)} ${WHATSAPP_NUMBER.slice(2,4)} ${WHATSAPP_NUMBER.slice(4,9)}-${WHATSAPP_NUMBER.slice(9)}`}</span>
+        <div className="mt-16 flex flex-col items-start justify-between gap-3 border-t border-areia/10 pt-8 text-xs text-areia/55 md:flex-row md:items-center">
+          <div className="space-y-1">
+            <div>© {new Date().getFullYear()} Cavalgadas Energias da Terra · Todos os direitos reservados.</div>
+            <div className="text-areia/45">CNPJ 60.252.479/0001-85</div>
+          </div>
+          <div className="flex flex-col items-start gap-1 md:items-end">
+            <span className="font-mono text-areia/55">{`+${WHATSAPP_NUMBER.slice(0,2)} ${WHATSAPP_NUMBER.slice(2,4)} ${WHATSAPP_NUMBER.slice(4,9)}-${WHATSAPP_NUMBER.slice(9)}`}</span>
+            <span className="text-areia/45">Desenvolvido com <span className="text-cobre-soft">💙</span> pela <a href="https://vexxon.com.br" target="_blank" rel="noreferrer" className="hover:text-cobre">Vexxon Company</a></span>
+          </div>
         </div>
       </div>
     </footer>

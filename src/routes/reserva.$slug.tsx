@@ -159,24 +159,67 @@ function ReservaPage() {
     }
   });
 
+  const selectedDate = datas.find((d) => d.id === form.watch("data_id"));
+  const formaPag = form.watch("adicionais.forma_pagamento");
+  const qtdParts = form.watch("participantes")?.length ?? 1;
+  const totalBase = expedicao.preco * qtdParts;
+  const totalCartao = totalBase * 1.0599; // acréscimo cartão (~5.99%)
+  const parcelas6x = totalCartao / 6;
+
   return (
-    <div className="bg-background pb-24 pt-28 md:pt-36">
-      <div className="container-tight grid gap-10 lg:grid-cols-12">
+    <div className="bg-background pb-24">
+      {/* HERO da reserva — cinematográfico */}
+      <section className="relative isolate overflow-hidden text-areia">
+        <img src={getExpedicaoImage(expedicao.slug)} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-b from-carvao/85 via-carvao/70 to-carvao/95" />
+        <div className="container-tight relative pb-14 pt-32 md:pb-20 md:pt-40">
+          <Link to="/expedicoes/$slug" params={{ slug }} className="inline-flex items-center gap-2 font-eyebrow text-[0.65rem] uppercase tracking-[0.28em] text-areia/75 hover:text-cobre-soft">
+            <ArrowLeft className="h-3 w-3" /> Trocar expedição ou data
+          </Link>
+          <div className="eyebrow mt-7 text-cobre-soft">Pré-reserva boutique</div>
+          <h1 className="mt-3 font-display text-4xl text-balance text-shadow-strong md:text-6xl">{expedicao.nome}</h1>
+          <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-areia/85">
+            {selectedDate && <span className="rounded-full border border-areia/25 px-3 py-1 font-eyebrow text-[0.62rem] uppercase tracking-[0.22em]">{formatDateRange(selectedDate.data_inicio, selectedDate.data_fim)}</span>}
+            <span className="rounded-full border border-areia/25 px-3 py-1 font-eyebrow text-[0.62rem] uppercase tracking-[0.22em]">{expedicao.duracao}</span>
+            <span className="rounded-full border border-areia/25 px-3 py-1 font-eyebrow text-[0.62rem] uppercase tracking-[0.22em]">{expedicao.nivel}</span>
+            {selectedDate && selectedDate.status === "poucas_vagas" && (
+              <span className="rounded-full bg-cobre/90 px-3 py-1 font-eyebrow text-[0.62rem] uppercase tracking-[0.22em] text-areia">Últimas vagas</span>
+            )}
+            {selectedDate && (
+              <span className="rounded-full border border-areia/25 px-3 py-1 font-eyebrow text-[0.62rem] uppercase tracking-[0.22em]">{selectedDate.vagas_disponiveis} vagas restantes</span>
+            )}
+          </div>
+          <p className="mt-6 max-w-xl text-areia/80">A partir de <span className="font-display text-xl text-areia">{formatPrice(expedicao.preco, expedicao.moeda)}</span> por participante · concierge dedicado em todas as etapas.</p>
+        </div>
+      </section>
+
+      <div className="container-tight mt-12 grid gap-10 lg:mt-16 lg:grid-cols-12">
         {/* Resumo sticky */}
-        <aside className="lg:col-span-4">
+        <aside className="lg:col-span-4 lg:order-2">
           <div className="lg:sticky lg:top-28">
-            <Link to="/expedicoes/$slug" params={{ slug }} className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-cobre">
-              <ArrowLeft className="h-3 w-3" /> Voltar à expedição
-            </Link>
-            <div className="mt-6 overflow-hidden rounded-sm border border-border bg-card shadow-card">
-              <img src={getExpedicaoImage(expedicao.slug)} alt={expedicao.nome} className="h-48 w-full object-cover" />
+            <div className="overflow-hidden rounded-sm border border-border bg-card shadow-card">
+              <img src={getExpedicaoImage(expedicao.slug)} alt={expedicao.nome} className="h-44 w-full object-cover" />
               <div className="p-6">
-                <div className="eyebrow">{expedicao.duracao} · {expedicao.nivel}</div>
+                <div className="eyebrow">Resumo da reserva</div>
                 <h2 className="mt-2 font-display text-2xl">{expedicao.nome}</h2>
-                <div className="mt-3 text-sm text-muted-foreground">{expedicao.descricao_curta}</div>
+                <dl className="mt-5 space-y-2.5 text-sm">
+                  <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Data</dt><dd className="text-right font-medium">{selectedDate ? formatDateRange(selectedDate.data_inicio, selectedDate.data_fim) : "—"}</dd></div>
+                  <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Duração</dt><dd className="font-medium">{expedicao.duracao}</dd></div>
+                  <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Nível</dt><dd className="font-medium">{expedicao.nivel}</dd></div>
+                  <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Participantes</dt><dd className="font-medium">{qtdParts}</dd></div>
+                  <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Pagamento</dt><dd className="font-medium">{formaPag === "cartao" ? "Cartão 6x" : formaPag === "pix" ? "PIX à vista" : formaPag === "sinal" ? "Sinal + Saldo" : formaPag}</dd></div>
+                </dl>
                 <div className="mt-5 border-t border-border pt-4">
-                  <div className="text-[0.65rem] uppercase tracking-widest text-muted-foreground">A partir de</div>
-                  <div className="font-display text-2xl text-cobre">{formatPrice(expedicao.preco)}</div>
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-[0.65rem] uppercase tracking-widest text-muted-foreground">Total</span>
+                    <span className="font-display text-3xl text-cobre">{formatPrice(formaPag === "cartao" ? totalCartao : totalBase, expedicao.moeda)}</span>
+                  </div>
+                  {formaPag === "cartao" && (
+                    <div className="mt-1 text-right text-xs text-muted-foreground">6x de {formatPrice(parcelas6x, expedicao.moeda)} · acréscimo de cartão incluso</div>
+                  )}
+                  {formaPag === "pix" && qtdParts > 0 && (
+                    <div className="mt-1 text-right text-xs text-muted-foreground">{qtdParts} × {formatPrice(expedicao.preco, expedicao.moeda)}</div>
+                  )}
                 </div>
               </div>
             </div>
@@ -184,22 +227,22 @@ function ReservaPage() {
         </aside>
 
         {/* Form */}
-        <div className="lg:col-span-8">
+        <div className="lg:col-span-8 lg:order-1">
           <div className="eyebrow">Pré-reserva</div>
-          <h1 className="mt-3 font-display text-4xl md:text-5xl">Reserve sua vaga em 5 passos</h1>
+          <h2 className="mt-3 font-display text-3xl md:text-4xl">Reserve sua vaga em 5 passos</h2>
 
-          {/* Stepper */}
+          {/* Stepper premium */}
           <ol className="mt-10 grid grid-cols-5 gap-1.5">
             {STEPS.map((label, i) => (
               <li key={label} className="flex flex-col items-stretch gap-2">
-                <div className={cn("h-1 rounded-full transition-colors", i <= step ? "bg-cobre" : "bg-border")} />
-                <span className={cn("hidden text-[0.65rem] uppercase tracking-widest md:block", i === step ? "text-foreground" : "text-muted-foreground")}>
-                  {String(i + 1).padStart(2, "0")}. {label}
+                <div className={cn("h-[3px] rounded-full transition-all duration-500", i < step ? "bg-cobre" : i === step ? "bg-gradient-to-r from-cobre to-cobre-soft" : "bg-border")} />
+                <span className={cn("hidden text-[0.6rem] font-eyebrow uppercase tracking-[0.22em] transition-colors md:block", i === step ? "text-cobre" : i < step ? "text-foreground/70" : "text-muted-foreground")}>
+                  {String(i + 1).padStart(2, "0")} · {label}
                 </span>
               </li>
             ))}
           </ol>
-          <p className="mt-4 text-sm text-muted-foreground md:hidden">Etapa {step + 1} de {STEPS.length} · <span className="text-foreground">{STEPS[step]}</span></p>
+          <p className="mt-4 text-sm text-muted-foreground md:hidden">Etapa {step + 1} de {STEPS.length} · <span className="text-cobre">{STEPS[step]}</span></p>
 
           <form onSubmit={onSubmit} className="mt-10">
             {step === 0 && (
@@ -290,30 +333,62 @@ function ReservaPage() {
 
             {step === 2 && (
               <Step title="Informações adicionais" desc="Para deixarmos tudo afinado para você.">
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <Field label="Forma pretendida de pagamento">
-                    <select className="input" {...form.register("adicionais.forma_pagamento")}>
-                      <option value="pix">Pix</option>
-                      <option value="transferencia">Transferência</option>
-                      <option value="cartao">Cartão (parcelado)</option>
-                      <option value="boleto">Boleto</option>
-                    </select>
-                  </Field>
-                  <Field label="Como nos conheceu?">
-                    <select className="input" {...form.register("adicionais.como_conheceu")}>
-                      <option value="instagram">Instagram</option>
-                      <option value="indicacao">Indicação</option>
-                      <option value="google">Google</option>
-                      <option value="evento">Evento</option>
-                      <option value="outros">Outros</option>
-                    </select>
-                  </Field>
-                  <Field label="Restrições alimentares" className="sm:col-span-2">
-                    <textarea className="input min-h-[80px]" {...form.register("adicionais.restricoes")} placeholder="Vegetarianos, alergias, intolerâncias..." />
-                  </Field>
-                  <Field label="Observações" className="sm:col-span-2">
-                    <textarea className="input min-h-[100px]" {...form.register("adicionais.observacoes")} placeholder="Algo mais que devamos saber?" />
-                  </Field>
+                <div className="space-y-8">
+                  <div>
+                    <div className="eyebrow mb-3">Forma de pagamento</div>
+                    <Controller
+                      control={form.control}
+                      name="adicionais.forma_pagamento"
+                      render={({ field }) => (
+                        <div className="grid gap-3 sm:grid-cols-3">
+                          {[
+                            { v: "pix", t: "PIX à vista", d: "Sem acréscimo · 5% de desconto possível", price: totalBase },
+                            { v: "sinal", t: "Sinal + Saldo", d: "30% sinal + saldo até 30 dias antes", price: totalBase },
+                            { v: "cartao", t: "Cartão em 6x", d: `Acréscimo ~5,99% incluso`, price: totalCartao },
+                          ].map((opt) => (
+                            <button
+                              key={opt.v}
+                              type="button"
+                              onClick={() => field.onChange(opt.v)}
+                              data-active={field.value === opt.v}
+                              className="option-card"
+                            >
+                              <div className="font-display text-lg">{opt.t}</div>
+                              <div className="text-xs text-muted-foreground">{opt.d}</div>
+                              <div className="mt-1 font-eyebrow text-[0.7rem] uppercase tracking-[0.18em] text-cobre">{formatPrice(opt.price, expedicao.moeda)}</div>
+                              {opt.v === "cartao" && <div className="text-[0.7rem] text-muted-foreground">6× {formatPrice(parcelas6x, expedicao.moeda)}</div>}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    />
+                  </div>
+
+                  <div>
+                    <div className="eyebrow mb-3">Como nos conheceu?</div>
+                    <Controller
+                      control={form.control}
+                      name="adicionais.como_conheceu"
+                      render={({ field }) => (
+                        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
+                          {["instagram","facebook","tiktok","indicacao","google","outros"].map((v) => (
+                            <button key={v} type="button" onClick={() => field.onChange(v)} data-active={field.value === v} className="option-card items-center text-center capitalize">
+                              <span className="font-eyebrow text-[0.72rem] uppercase tracking-[0.2em]">{v === "outros" ? "Outro" : v}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <Field label="Restrições alimentares" className="sm:col-span-2">
+                      <textarea className="input min-h-[88px]" {...form.register("adicionais.restricoes")} placeholder="Vegetarianos, alergias, intolerâncias..." />
+                    </Field>
+                    <Field label="Observações" className="sm:col-span-2">
+                      <textarea className="input min-h-[110px]" {...form.register("adicionais.observacoes")} placeholder="Algo mais que devamos saber?" />
+                    </Field>
+                  </div>
                 </div>
               </Step>
             )}
@@ -371,10 +446,6 @@ function ReservaPage() {
         </div>
       </div>
 
-      <style>{`
-        .input { width: 100%; padding: 0.7rem 0.85rem; background: var(--card); border: 1px solid var(--border); border-radius: 2px; font-size: 0.95rem; color: var(--foreground); outline: none; transition: border-color .2s; }
-        .input:focus { border-color: var(--cobre); }
-      `}</style>
     </div>
   );
 }
