@@ -3,6 +3,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight, Check } from "lucide-react";
 import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
 import { getExpedicaoImage, getImageByKey } from "@/lib/expedicao-images";
+import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
 import { formatDateRange, formatPrice } from "@/lib/format";
 import { DataCard } from "@/components/data-card";
 
@@ -32,6 +33,7 @@ function DetalhesExpedicao() {
   const { data } = useSuspenseQuery(qo(slug));
   if (!data) return null;
   const { expedicao, datas } = data;
+  const publicSlug = getPublicExpedicaoSlug(expedicao.slug);
   const heroImg = getExpedicaoImage(expedicao.slug);
   const galeria = (expedicao.galeria ?? []).map(getImageByKey);
 
@@ -52,7 +54,7 @@ function DetalhesExpedicao() {
           <h1 className="mt-5 max-w-3xl font-display text-5xl text-balance md:text-7xl">{expedicao.nome}</h1>
           <p className="mt-5 max-w-2xl text-lg text-areia/85 text-pretty">{expedicao.descricao_curta}</p>
           {datas.length > 0 && (
-            <Link to="/reserva/$slug" params={{ slug: expedicao.slug }} className="mt-10 inline-flex w-fit items-center gap-2 rounded-full bg-cobre px-7 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">
+            <Link to="/reserva/$slug" params={{ slug: publicSlug }} className="mt-10 inline-flex w-fit items-center gap-2 rounded-full bg-cobre px-7 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">
               Fazer pré-reserva <ArrowRight className="h-4 w-4" />
             </Link>
           )}
@@ -137,7 +139,7 @@ function DetalhesExpedicao() {
           ) : (
             <div className="mt-10 space-y-3">
               {datas.map((d) => (
-                <DataCard key={d.id} data={{ ...d, expedicao_nome: expedicao.nome, expedicao_slug: expedicao.slug }} />
+                <DataCard key={d.id} data={{ ...d, expedicao_nome: expedicao.nome, expedicao_slug: publicSlug }} />
               ))}
             </div>
           )}
@@ -149,7 +151,7 @@ function DetalhesExpedicao() {
         <div className="container-tight text-center">
           <h2 className="font-display text-3xl text-balance md:text-5xl">Pronto para reservar sua vaga?</h2>
           <p className="mx-auto mt-4 max-w-xl text-areia/75">Pré-reserva em poucos minutos. Sem compromisso de pagamento — nossa equipe entra em contato para confirmar.</p>
-          <Link to="/reserva/$slug" params={{ slug: expedicao.slug }} className="mt-8 inline-flex items-center gap-2 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">
+          <Link to="/reserva/$slug" params={{ slug: publicSlug }} className="mt-8 inline-flex items-center gap-2 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">
             Fazer pré-reserva <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
