@@ -55,8 +55,8 @@ const schema = z.object({
     tipo_grupo: z.string().min(2, "Selecione"),
     forma_pagamento: z.string().min(2, "Selecione"),
     como_conheceu: z.string().min(2, "Selecione"),
-    restricoes: z.string().optional().default(""),
-    observacoes: z.string().optional().default(""),
+    restricoes: z.string().optional(),
+    observacoes: z.string().optional(),
   }),
   aceites: z.object({
     responsabilidade: z.literal(true, { errorMap: () => ({ message: "Necessário aceitar" }) }),
