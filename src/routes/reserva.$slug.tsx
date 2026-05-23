@@ -333,30 +333,62 @@ function ReservaPage() {
 
             {step === 2 && (
               <Step title="Informações adicionais" desc="Para deixarmos tudo afinado para você.">
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <Field label="Forma pretendida de pagamento">
-                    <select className="input" {...form.register("adicionais.forma_pagamento")}>
-                      <option value="pix">Pix</option>
-                      <option value="transferencia">Transferência</option>
-                      <option value="cartao">Cartão (parcelado)</option>
-                      <option value="boleto">Boleto</option>
-                    </select>
-                  </Field>
-                  <Field label="Como nos conheceu?">
-                    <select className="input" {...form.register("adicionais.como_conheceu")}>
-                      <option value="instagram">Instagram</option>
-                      <option value="indicacao">Indicação</option>
-                      <option value="google">Google</option>
-                      <option value="evento">Evento</option>
-                      <option value="outros">Outros</option>
-                    </select>
-                  </Field>
-                  <Field label="Restrições alimentares" className="sm:col-span-2">
-                    <textarea className="input min-h-[80px]" {...form.register("adicionais.restricoes")} placeholder="Vegetarianos, alergias, intolerâncias..." />
-                  </Field>
-                  <Field label="Observações" className="sm:col-span-2">
-                    <textarea className="input min-h-[100px]" {...form.register("adicionais.observacoes")} placeholder="Algo mais que devamos saber?" />
-                  </Field>
+                <div className="space-y-8">
+                  <div>
+                    <div className="eyebrow mb-3">Forma de pagamento</div>
+                    <Controller
+                      control={form.control}
+                      name="adicionais.forma_pagamento"
+                      render={({ field }) => (
+                        <div className="grid gap-3 sm:grid-cols-3">
+                          {[
+                            { v: "pix", t: "PIX à vista", d: "Sem acréscimo · 5% de desconto possível", price: totalBase },
+                            { v: "sinal", t: "Sinal + Saldo", d: "30% sinal + saldo até 30 dias antes", price: totalBase },
+                            { v: "cartao", t: "Cartão em 6x", d: `Acréscimo ~5,99% incluso`, price: totalCartao },
+                          ].map((opt) => (
+                            <button
+                              key={opt.v}
+                              type="button"
+                              onClick={() => field.onChange(opt.v)}
+                              data-active={field.value === opt.v}
+                              className="option-card"
+                            >
+                              <div className="font-display text-lg">{opt.t}</div>
+                              <div className="text-xs text-muted-foreground">{opt.d}</div>
+                              <div className="mt-1 font-eyebrow text-[0.7rem] uppercase tracking-[0.18em] text-cobre">{formatPrice(opt.price, expedicao.moeda)}</div>
+                              {opt.v === "cartao" && <div className="text-[0.7rem] text-muted-foreground">6× {formatPrice(parcelas6x, expedicao.moeda)}</div>}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    />
+                  </div>
+
+                  <div>
+                    <div className="eyebrow mb-3">Como nos conheceu?</div>
+                    <Controller
+                      control={form.control}
+                      name="adicionais.como_conheceu"
+                      render={({ field }) => (
+                        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
+                          {["instagram","facebook","tiktok","indicacao","google","outros"].map((v) => (
+                            <button key={v} type="button" onClick={() => field.onChange(v)} data-active={field.value === v} className="option-card items-center text-center capitalize">
+                              <span className="font-eyebrow text-[0.72rem] uppercase tracking-[0.2em]">{v === "outros" ? "Outro" : v}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <Field label="Restrições alimentares" className="sm:col-span-2">
+                      <textarea className="input min-h-[88px]" {...form.register("adicionais.restricoes")} placeholder="Vegetarianos, alergias, intolerâncias..." />
+                    </Field>
+                    <Field label="Observações" className="sm:col-span-2">
+                      <textarea className="input min-h-[110px]" {...form.register("adicionais.observacoes")} placeholder="Algo mais que devamos saber?" />
+                    </Field>
+                  </div>
                 </div>
               </Step>
             )}
