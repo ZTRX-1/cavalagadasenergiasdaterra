@@ -72,24 +72,26 @@ function HomePage() {
     <>
       {/* HERO */}
       <section className="relative min-h-[100svh] overflow-hidden text-areia">
-        <img src={hero} alt="Cavaleiro ao pôr do sol nas montanhas" className="absolute inset-0 h-full w-full object-cover" fetchPriority="high" />
-        <div className="absolute inset-0 bg-carvao/40" />
-        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-carvao via-carvao/60 to-transparent" />
+        <img src={hero} alt="Cavaleiro ao pôr do sol nas montanhas" className="absolute inset-0 h-full w-full object-cover" fetchPriority="high" decoding="async" />
+        {/* Overlay reforçado: garante legibilidade absoluta sobre pôr-do-sol */}
+        <div className="absolute inset-0 bg-carvao/55" />
+        <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-carvao via-carvao/80 to-transparent" />
+        <div className="absolute inset-y-0 left-0 w-full md:w-2/3 bg-gradient-to-r from-carvao/70 via-carvao/30 to-transparent" />
 
         <div className="container-tight relative flex min-h-[100svh] flex-col justify-end pb-20 pt-32 md:pb-28 md:pt-40">
           <div className="max-w-3xl">
-            <div className="eyebrow text-cobre-soft text-shadow-soft">Energias da Terra · Expedições imersivas</div>
-            <h1 className="mt-5 font-display text-5xl leading-[0.98] text-balance text-shadow-strong md:text-7xl lg:text-8xl">
+            <div className="eyebrow text-areia text-shadow-strong">Energias da Terra · Expedições imersivas</div>
+            <h1 className="mt-5 font-display text-5xl leading-[0.98] text-balance text-shadow-strong md:text-7xl lg:text-8xl text-areia">
               Expedições imersivas <em className="not-italic text-cobre-soft">a cavalo</em> pelo Brasil e pelo mundo.
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-areia/95 text-shadow-soft text-pretty">
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-areia text-shadow-soft text-pretty">
               Experiências exclusivas para quem busca liberdade, natureza e aventura de verdade. Pequenos grupos, cavalos Mangalarga Marchador, hospedagens curadas.
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
               <Link to="/expedicoes" className="inline-flex items-center gap-2 rounded-full bg-cobre px-7 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">
                 Ver Expedições <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link to="/datas" className="inline-flex items-center gap-2 rounded-full border border-areia/50 px-7 py-4 text-sm uppercase tracking-widest text-areia hover:bg-areia/10">
+              <Link to="/datas" className="inline-flex items-center gap-2 rounded-full border border-areia/60 bg-carvao/30 backdrop-blur-sm px-7 py-4 text-sm uppercase tracking-widest text-areia hover:bg-areia/15">
                 Próximas Datas
               </Link>
             </div>
@@ -109,21 +111,20 @@ function HomePage() {
           </div>
           <div className="mt-14 grid gap-6 md:grid-cols-3">
             {[
-              { logo: logoCavalgadas, nome: "Cavalgadas Energias da Terra", tagline: "Expedições imersivas pelo Brasil e pelo mundo.", to: "/expedicoes" as const },
-              { logo: logoElas, nome: "Elas na Sela", tagline: "Experiências exclusivas para mulheres que exploram o mundo a cavalo.", to: "/expedicoes" as const },
-              { logo: logoCanastra, nome: "Canastra a Cavalo", tagline: "Travessias premium na Serra da Canastra.", to: "/expedicoes/$slug" as const, params: { slug: "serra-da-canastra" } },
+              { logo: logoCavalgadas, nome: "Cavalgadas Energias da Terra", tagline: "Expedições imersivas pelo Brasil e pelo mundo.", to: "/marcas/cavalgadas" as const },
+              { logo: logoElas, nome: "Elas na Sela", tagline: "Experiências exclusivas para mulheres que exploram o mundo a cavalo.", to: "/marcas/elas-na-sela" as const },
+              { logo: logoCanastra, nome: "Canastra a Cavalo", tagline: "Travessias premium na Serra da Canastra.", to: "/marcas/canastra-a-cavalo" as const },
             ].map((m) => (
               <Link
                 key={m.nome}
                 to={m.to}
-                params={m.params}
                 className="group flex flex-col items-center bg-carvao p-10 text-center text-areia transition-transform hover:-translate-y-1"
               >
-                <img src={m.logo} alt={m.nome} className="h-28 w-28 rounded-full object-cover ring-1 ring-cobre/40" />
+                <img src={m.logo} alt={m.nome} loading="lazy" decoding="async" className="h-28 w-28 rounded-full object-cover ring-1 ring-cobre/40" />
                 <div className="mt-6 font-display text-2xl text-balance leading-tight">{m.nome}</div>
-                <p className="mt-3 text-sm leading-relaxed text-areia/75 text-pretty">{m.tagline}</p>
+                <p className="mt-3 text-sm leading-relaxed text-areia/80 text-pretty">{m.tagline}</p>
                 <span className="mt-6 inline-flex items-center gap-2 font-eyebrow text-[0.65rem] uppercase tracking-[0.32em] text-cobre-soft group-hover:text-areia">
-                  Explorar <ArrowRight className="h-3.5 w-3.5" />
+                  Conhecer a marca <ArrowRight className="h-3.5 w-3.5" />
                 </span>
               </Link>
             ))}
@@ -162,7 +163,7 @@ function HomePage() {
 
       {/* INCLUI */}
       <section className="relative bg-floresta-deep py-24 text-areia md:py-32">
-        <img src={cavaloCloseup} alt="" aria-hidden className="absolute inset-y-0 right-0 hidden h-full w-1/3 object-cover opacity-25 lg:block" />
+        <img src={cavaloCloseup} alt="" aria-hidden loading="lazy" decoding="async" className="absolute inset-y-0 right-0 hidden h-full w-1/3 object-cover opacity-25 lg:block" />
         <div className="absolute inset-0 bg-gradient-to-r from-floresta-deep via-floresta-deep to-transparent" />
         <div className="container-tight relative">
           <div className="max-w-2xl">
@@ -238,7 +239,7 @@ function HomePage() {
 
       {/* DEPOIMENTOS */}
       <section className="relative overflow-hidden bg-carvao py-24 text-areia md:py-32">
-        <img src={acampamento} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-20" />
+        <img src={acampamento} alt="" aria-hidden loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover opacity-20" />
         <div className="container-tight relative">
           <div className="eyebrow text-cobre-soft">Quem viveu</div>
           <h2 className="mt-4 max-w-2xl font-display text-4xl text-balance md:text-5xl">Histórias de quem atravessou conosco.</h2>
@@ -284,7 +285,7 @@ function HomePage() {
 
       {/* CTA FINAL */}
       <section className="relative isolate overflow-hidden bg-floresta-deep py-32 text-areia md:py-40">
-        <img src={hero} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-30" />
+        <img src={hero} alt="" aria-hidden loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover opacity-30" />
         <div className="absolute inset-0 bg-gradient-to-t from-carvao via-floresta-deep/80 to-floresta-deep/40" />
         <div className="container-tight relative text-center">
           <div className="eyebrow text-cobre-soft">Sua próxima travessia</div>
