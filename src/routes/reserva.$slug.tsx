@@ -221,8 +221,9 @@ function ReservaPage() {
 
       <div className="container-tight mt-12 grid gap-10 lg:mt-16 lg:grid-cols-12">
         {/* Resumo sticky */}
-        <aside className="lg:col-span-4 lg:order-2">
-          <div className="lg:sticky lg:top-28">
+        <aside className="lg:col-span-4 lg:order-2 lg:self-start">
+          <div className="lg:sticky lg:top-24">
+
             <div className="overflow-hidden rounded-sm border border-border bg-card shadow-card">
               <img src={getExpedicaoImage(expedicao.slug)} alt={expedicao.nome} className="h-44 w-full object-cover" />
               <div className="p-6">
@@ -274,23 +275,52 @@ function ReservaPage() {
             {step === 0 && (
               <Step title="Dados do responsável" desc="Quem ficará como contato principal pela reserva.">
                 <div className="grid gap-5 sm:grid-cols-2">
-                  <Field label="Nome completo" error={form.formState.errors.responsavel?.nome?.message}>
-                    <Input {...form.register("responsavel.nome")} />
+                  <Field label="Nome completo" error={form.formState.errors.responsavel?.nome?.message} className="sm:col-span-2">
+                    <Input {...form.register("responsavel.nome")} placeholder="Como aparece no documento" />
                   </Field>
                   <Field label="CPF" error={form.formState.errors.responsavel?.cpf?.message}>
-                    <Input {...form.register("responsavel.cpf")} placeholder="000.000.000-00" />
+                    <Controller
+                      control={form.control}
+                      name="responsavel.cpf"
+                      render={({ field }) => (
+                        <input
+                          className="input"
+                          inputMode="numeric"
+                          placeholder="000.000.000-00"
+                          value={field.value}
+                          onChange={(e) => field.onChange(maskCPF(e.target.value))}
+                        />
+                      )}
+                    />
                   </Field>
                   <Field label="Telefone (WhatsApp)" error={form.formState.errors.responsavel?.telefone?.message}>
-                    <Input {...form.register("responsavel.telefone")} placeholder="(11) 99999-9999" />
+                    <Controller
+                      control={form.control}
+                      name="responsavel.telefone"
+                      render={({ field }) => (
+                        <input
+                          className="input"
+                          inputMode="tel"
+                          placeholder="(11) 99999-9999"
+                          value={field.value}
+                          onChange={(e) => field.onChange(maskPhone(e.target.value))}
+                        />
+                      )}
+                    />
                   </Field>
-                  <Field label="E-mail" error={form.formState.errors.responsavel?.email?.message}>
-                    <Input type="email" {...form.register("responsavel.email")} />
-                  </Field>
-                  <Field label="Cidade" error={form.formState.errors.responsavel?.cidade?.message}>
-                    <Input {...form.register("responsavel.cidade")} />
+                  <Field label="E-mail" error={form.formState.errors.responsavel?.email?.message} className="sm:col-span-2">
+                    <Input type="email" inputMode="email" placeholder="voce@exemplo.com" {...form.register("responsavel.email")} />
                   </Field>
                   <Field label="Estado" error={form.formState.errors.responsavel?.estado?.message}>
-                    <Input {...form.register("responsavel.estado")} />
+                    <select className="input" {...form.register("responsavel.estado")}>
+                      <option value="">Selecione</option>
+                      {ESTADOS_BR.map((e) => (
+                        <option key={e.sigla} value={e.sigla}>{e.sigla} — {e.nome}</option>
+                      ))}
+                    </select>
+                  </Field>
+                  <Field label="Cidade" error={form.formState.errors.responsavel?.cidade?.message}>
+                    <Input {...form.register("responsavel.cidade")} placeholder="Sua cidade" />
                   </Field>
                   <Field label="Data desejada" error={form.formState.errors.data_id?.message} className="sm:col-span-2">
                     <select className="input" {...form.register("data_id")}>
@@ -305,6 +335,7 @@ function ReservaPage() {
                 </div>
               </Step>
             )}
+
 
             {step === 1 && (
               <Step title="Participantes" desc="Informe os dados de cada participante.">
