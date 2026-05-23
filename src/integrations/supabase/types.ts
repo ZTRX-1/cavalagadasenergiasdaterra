@@ -14,13 +14,188 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      datas: {
+        Row: {
+          created_at: string
+          data_fim: string
+          data_inicio: string
+          expedicao_id: string
+          id: string
+          status: string
+          vagas_disponiveis: number
+          vagas_total: number
+        }
+        Insert: {
+          created_at?: string
+          data_fim: string
+          data_inicio: string
+          expedicao_id: string
+          id?: string
+          status?: string
+          vagas_disponiveis?: number
+          vagas_total?: number
+        }
+        Update: {
+          created_at?: string
+          data_fim?: string
+          data_inicio?: string
+          expedicao_id?: string
+          id?: string
+          status?: string
+          vagas_disponiveis?: number
+          vagas_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "datas_expedicao_id_fkey"
+            columns: ["expedicao_id"]
+            isOneToOne: false
+            referencedRelation: "expedicoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expedicoes: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          descricao_curta: string
+          descricao_longa: string
+          duracao: string
+          galeria: Json
+          id: string
+          imagem_url: string | null
+          inclui: Json
+          nivel: string
+          nome: string
+          ordem: number
+          preco: number
+          requisitos: Json
+          roteiro: Json
+          slug: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          descricao_curta: string
+          descricao_longa: string
+          duracao: string
+          galeria?: Json
+          id?: string
+          imagem_url?: string | null
+          inclui?: Json
+          nivel: string
+          nome: string
+          ordem?: number
+          preco: number
+          requisitos?: Json
+          roteiro?: Json
+          slug: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          descricao_curta?: string
+          descricao_longa?: string
+          duracao?: string
+          galeria?: Json
+          id?: string
+          imagem_url?: string | null
+          inclui?: Json
+          nivel?: string
+          nome?: string
+          ordem?: number
+          preco?: number
+          requisitos?: Json
+          roteiro?: Json
+          slug?: string
+        }
+        Relationships: []
+      }
+      protocolo_counter: {
+        Row: {
+          ano: number
+          valor: number
+        }
+        Insert: {
+          ano: number
+          valor?: number
+        }
+        Update: {
+          ano?: number
+          valor?: number
+        }
+        Relationships: []
+      }
+      reservas: {
+        Row: {
+          aceites: Json
+          adicionais: Json
+          created_at: string
+          data_id: string | null
+          data_label: string
+          expedicao_id: string | null
+          expedicao_nome: string
+          id: string
+          participantes: Json
+          protocolo: string
+          quantidade_participantes: number
+          responsavel: Json
+          status: string
+        }
+        Insert: {
+          aceites?: Json
+          adicionais?: Json
+          created_at?: string
+          data_id?: string | null
+          data_label: string
+          expedicao_id?: string | null
+          expedicao_nome: string
+          id?: string
+          participantes?: Json
+          protocolo?: string
+          quantidade_participantes?: number
+          responsavel: Json
+          status?: string
+        }
+        Update: {
+          aceites?: Json
+          adicionais?: Json
+          created_at?: string
+          data_id?: string | null
+          data_label?: string
+          expedicao_id?: string | null
+          expedicao_nome?: string
+          id?: string
+          participantes?: Json
+          protocolo?: string
+          quantidade_participantes?: number
+          responsavel?: Json
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservas_data_id_fkey"
+            columns: ["data_id"]
+            isOneToOne: false
+            referencedRelation: "datas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reservas_expedicao_id_fkey"
+            columns: ["expedicao_id"]
+            isOneToOne: false
+            referencedRelation: "expedicoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      gerar_protocolo: { Args: never; Returns: string }
     }
     Enums: {
       [_ in never]: never
