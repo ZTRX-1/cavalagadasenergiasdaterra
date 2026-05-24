@@ -45,7 +45,7 @@ export function SiteHeader() {
           scrolled && "shadow-header",
         )}
       >
-        <div className="mx-auto flex h-16 max-w-[96rem] items-center justify-between gap-10 px-5 md:h-[5.25rem] md:px-10 xl:gap-14 xl:px-12">
+        <div className="mx-auto flex h-16 max-w-[110rem] items-center justify-between gap-10 px-5 md:h-[5.5rem] md:px-10 xl:gap-16 xl:px-16 2xl:px-20">
           <Link
             to="/"
             className="group flex shrink-0 items-center gap-3.5"
@@ -64,12 +64,12 @@ export function SiteHeader() {
             </span>
           </Link>
 
-          <nav className="hidden flex-1 items-center justify-center gap-9 2xl:gap-12 xl:flex">
+          <nav className="hidden flex-1 items-center justify-center gap-8 xl:flex xl:gap-10 2xl:gap-14">
             {NAV.map((item) => (
               <Link
                 key={item.label}
                 to={item.to}
-                className="font-eyebrow text-[0.72rem] uppercase tracking-[0.22em] text-areia/85 transition-colors hover:text-cobre-soft whitespace-nowrap"
+                className="font-eyebrow text-[0.82rem] uppercase tracking-[0.22em] text-areia/85 transition-colors hover:text-cobre-soft whitespace-nowrap antialiased"
                 activeProps={{ className: "text-cobre-soft" }}
               >
                 {item.label}
@@ -77,11 +77,11 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <div className="flex shrink-0 items-center gap-6">
+          <div className="flex shrink-0 items-center gap-6 xl:gap-8">
             <LanguageSwitcher className="hidden md:inline-flex" />
             <Link
               to="/expedicoes"
-              className="hidden rounded-full bg-cobre px-8 py-3.5 font-eyebrow text-[0.74rem] uppercase tracking-[0.24em] text-areia shadow-elegant transition-colors hover:bg-couro xl:inline-flex whitespace-nowrap"
+              className="hidden rounded-full bg-cobre px-10 py-4 font-eyebrow text-[0.78rem] uppercase tracking-[0.24em] text-areia shadow-elegant transition-colors hover:bg-couro xl:inline-flex whitespace-nowrap"
             >
               {t("nav.reservar")}
             </Link>
@@ -122,7 +122,7 @@ export function SiteHeader() {
             open ? "translate-y-0" : "-translate-y-full",
           )}
         >
-          <div className="h-16 md:h-[5.25rem]" />
+          <div className="h-16 md:h-[5.5rem]" />
           <nav className="container-tight flex flex-col gap-1 pb-8 pt-2">
             {NAV.map((item) => (
               <Link
