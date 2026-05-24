@@ -59,33 +59,34 @@ const DIFERENCIAIS = [
 function QuemSomosPage() {
   return (
     <div className="bg-background">
-      {/* HERO — faixa cinematográfica editorial */}
-      <section className="relative h-[64svh] min-h-[480px] overflow-hidden text-areia md:h-[68svh] md:min-h-[560px]">
-        <img
-          src={ligia}
-          alt="Lígia atravessando o rio a cavalo"
-          className="absolute inset-0 h-full w-full object-cover object-[55%_25%] md:object-[60%_30%]"
-          fetchPriority="high"
-        />
-        <div className="absolute inset-0 bg-carvao/45" />
-        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-carvao via-carvao/70 to-transparent" />
-        <div className="absolute inset-y-0 left-0 w-full md:w-2/3 bg-gradient-to-r from-carvao/70 via-carvao/20 to-transparent" />
+      {/* HERO — faixa cinematográfica minimalista */}
+      <section className="relative bg-carvao text-areia">
+        <div className="relative h-[52svh] min-h-[420px] max-h-[640px] overflow-hidden md:h-[58svh]">
+          <img
+            src={ligia}
+            alt="Lígia atravessando o rio a cavalo"
+            className="absolute inset-0 h-full w-full object-cover [object-position:47%_24%]"
+            fetchPriority="high"
+          />
+          <div className="absolute inset-0 bg-carvao/35" />
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-carvao to-transparent" />
+        </div>
 
-        <div className="container-tight relative flex h-full flex-col justify-end pb-14 pt-28 md:pb-20 md:pt-32">
-          <div className="max-w-3xl">
-            <div className="eyebrow text-cobre-soft text-shadow-soft">
-              Boutique equestrian expeditions
-            </div>
-            <h1 className="mt-5 font-display text-4xl leading-[1] text-balance text-shadow-strong md:text-6xl lg:text-[4.25rem]">
+        <div className="container-tight relative -mt-24 pb-20 md:-mt-32 md:pb-28">
+          <div className="max-w-2xl">
+            <div className="eyebrow text-cobre-soft">Boutique equestrian expeditions</div>
+            <h1 className="mt-5 font-display text-4xl leading-[1.02] text-balance md:text-6xl">
               Quem cuida da <em className="not-italic text-cobre-soft">travessia</em>.
             </h1>
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-areia/90 text-shadow-soft md:text-lg">
-              Marca brasileira de expedições equestres boutique. Cavalos próprios, guias
-              bilíngues, hospedagens curadas e direção autoral.
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-areia/80 md:text-lg">
+              Marca brasileira de expedições equestres boutique. Cavalos próprios criados no
+              Refúgio &amp; Haras Energias da Terra, guias bilíngues, hospedagens curadas e
+              direção autoral.
             </p>
           </div>
         </div>
       </section>
+
 
       {/* HISTÓRIA DA MARCA — editorial */}
       <section className="bg-background py-28 md:py-36 texture-paper">
