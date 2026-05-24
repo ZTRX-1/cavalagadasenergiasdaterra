@@ -4,7 +4,7 @@ import { ArrowRight, Mountain, ShieldCheck, Sparkles, Utensils, Tent, Compass } 
 import { listExpedicoes, listProximasDatas } from "@/lib/expedicoes.functions";
 import { ExpedicaoCard } from "@/components/expedicao-card";
 import { DataCard } from "@/components/data-card";
-import hero from "@/assets/hero-cavalgada.jpg";
+import hero from "@/assets/fotos/canastra/21.jpg";
 import cavaloCloseup from "@/assets/cavalo-closeup.jpg";
 import acampamento from "@/assets/acampamento.jpg";
 import logoCavalgadas from "@/assets/logo-cavalgadas.jpg";
