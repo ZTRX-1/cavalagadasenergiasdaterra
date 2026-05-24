@@ -66,11 +66,12 @@ function QuemSomosPage() {
       <section className="relative bg-carvao text-areia">
         <div className="relative h-[52svh] min-h-[420px] max-h-[640px] overflow-hidden md:h-[58svh]">
           <img
-            src={ligia}
-            alt="Lígia atravessando o rio a cavalo"
-            className="absolute inset-0 h-full w-full object-cover [object-position:47%_24%]"
+            src={heroPaisagem}
+            alt="Cavaleira atravessando o vale da Mantiqueira"
+            className="absolute inset-0 h-full w-full object-cover object-center"
             fetchPriority="high"
           />
+
           <div className="absolute inset-0 bg-carvao/35" />
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-carvao to-transparent" />
         </div>
