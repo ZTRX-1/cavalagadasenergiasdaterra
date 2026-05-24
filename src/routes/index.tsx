@@ -8,7 +8,8 @@ import { DataCard } from "@/components/data-card";
 import { HistoriasEditorial } from "@/components/historias-editorial";
 import { VideoCinematic } from "@/components/video-cinematic";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import hero from "@/assets/fotos/canastra/21.jpg";
+import { NaMidia } from "@/components/na-midia";
+import hero from "@/assets/founders/ligia-rio.jpg";
 import manifestoImg from "@/assets/fotos/mantiqueira/13.jpg";
 import ctaFinal from "@/assets/fotos/canastra/26.jpg";
 import acampamento from "@/assets/acampamento.jpg";
@@ -132,10 +133,11 @@ function HomePage() {
     <>
       {/* HERO — cinematográfico, sem ruído */}
       <section className="relative min-h-[100svh] overflow-hidden text-areia">
-        <img src={hero} alt="" className="absolute inset-0 h-full w-full object-cover" fetchPriority="high" decoding="async" />
-        <div className="absolute inset-0 bg-carvao/65 md:bg-carvao/55" />
+        <img src={hero} alt="" className="absolute inset-0 h-full w-full object-cover object-[60%_center] md:object-center" fetchPriority="high" decoding="async" />
+        <div className="absolute inset-0 bg-carvao/55 md:bg-carvao/45" />
         <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-carvao via-carvao/80 to-transparent" />
-        <div className="absolute inset-y-0 left-0 w-full md:w-2/3 bg-gradient-to-r from-carvao/70 via-carvao/30 to-transparent" />
+        <div className="absolute inset-y-0 left-0 w-full md:w-2/3 bg-gradient-to-r from-carvao/75 via-carvao/35 to-transparent" />
+
 
         <div className="container-tight relative flex min-h-[100svh] flex-col justify-end pb-24 pt-32 md:pb-32 md:pt-40">
           <div className="max-w-3xl">
