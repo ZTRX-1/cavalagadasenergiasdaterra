@@ -50,7 +50,9 @@ const schema = z.object({
   participantes: z.array(z.object({
     nome: z.string().trim().min(2, "Nome obrigatório"),
     idade: z.coerce.number().int().min(1).max(110),
-    peso: z.coerce.number().min(20).max(200),
+    peso: z.coerce.number({ invalid_type_error: "Informe o peso" })
+      .min(20, "Peso mínimo 20 kg")
+      .max(110, "Por bem-estar dos cavalos, o peso máximo permitido é 110 kg."),
     experiencia: z.enum(["nenhuma", "iniciante", "intermediario", "avancado"]),
   })).min(1),
   adicionais: z.object({
@@ -421,8 +423,9 @@ function ReservaPage() {
                           />
                           <span className="text-[0.7rem] text-muted-foreground">Idade calculada: {form.watch(`participantes.${i}.idade`) || "—"} anos</span>
                         </Field>
-                        <Field label="Peso (kg)" error={form.formState.errors.participantes?.[i]?.peso?.message}>
-                          <Input type="number" inputMode="decimal" step="0.1" {...form.register(`participantes.${i}.peso`)} />
+                        <Field label="Peso (kg) · máx. 110 kg" error={form.formState.errors.participantes?.[i]?.peso?.message}>
+                          <Input type="number" inputMode="decimal" step="0.1" min={20} max={110} {...form.register(`participantes.${i}.peso`)} />
+                          <span className="text-[0.7rem] text-muted-foreground">Por bem-estar e segurança dos cavalos, o peso máximo permitido por cavaleiro é <strong>110 kg</strong>. Travessias longas com sobrepeso comprometem a saúde do animal.</span>
                         </Field>
                         <Field label="Experiência com cavalgada" className="sm:col-span-2">
                           <Controller
