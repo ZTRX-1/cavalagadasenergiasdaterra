@@ -3,6 +3,8 @@ import { ArrowRight, ArrowLeft } from "lucide-react";
 import hero from "@/assets/expedicao-canastra.jpg";
 import logo from "@/assets/logo-canastra.jpg";
 import { MarcaCrossNav } from "@/components/marca-cross-nav";
+import { GaleriaEditorial } from "@/components/galeria-editorial";
+import { GALERIA_CANASTRA_MARCA, FOTO_EQUIPE } from "@/lib/expedicao-images";
 
 
 export const Route = createFileRoute("/marcas/canastra-a-cavalo")({
@@ -45,9 +47,34 @@ function Page() {
             <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">Onde tudo começa: nossa casa.</h2>
           </div>
           <div className="md:col-span-7 text-lg leading-relaxed text-foreground/85 space-y-5">
-            <p>A Canastra é nosso ponto de origem. Aqui mantemos o haras, criamos os cavalos e conhecemos cada trilha — porque essas trilhas fazem parte da nossa vida há gerações.</p>
+            <p>A Canastra é nosso ponto de origem. Aqui mantemos o haras, criamos os cavalos e conhecemos cada trilha, porque essas trilhas fazem parte da nossa vida há gerações.</p>
             <p>Travessias pela Serra, visitas a produtores de queijo canastra premiados, hospedagens com história, gastronomia regional refinada.</p>
-            <p>Quem cavalga conosco na Canastra entra dentro de um modo de vida — não apenas de um roteiro.</p>
+            <p>Quem cavalga conosco na Canastra entra dentro de um modo de vida, não apenas de um roteiro.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-background pb-24 md:pb-32">
+        <div className="container-tight">
+          <div className="max-w-2xl">
+            <div className="eyebrow">Galeria</div>
+            <h2 className="mt-4 font-display text-3xl md:text-4xl">Imagens da Serra.</h2>
+          </div>
+          <div className="mt-12">
+            <GaleriaEditorial fotos={GALERIA_CANASTRA_MARCA} alt="Canastra a Cavalo" />
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-secondary/40 py-20 md:py-24">
+        <div className="container-tight grid items-center gap-12 md:grid-cols-2">
+          <img src={FOTO_EQUIPE} alt="Equipe Mangalarga Marchador" loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover shadow-card" />
+          <div>
+            <div className="eyebrow">Quem conduz</div>
+            <h2 className="mt-4 font-display text-3xl md:text-4xl">A equipe que vive a Canastra.</h2>
+            <p className="mt-5 text-lg leading-relaxed text-foreground/80 text-pretty">
+              Cavaleiros, guias e amigos. Gente que nasceu aqui, monta há décadas e conhece o terreno como ninguém.
+            </p>
           </div>
         </div>
       </section>
