@@ -11,6 +11,8 @@ import { SiteFooter } from "@/components/site-footer";
 
 import { Toaster } from "@/components/ui/sonner";
 
+import "@/i18n";
+
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
