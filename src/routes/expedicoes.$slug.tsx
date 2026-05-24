@@ -2,7 +2,8 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight, Check } from "lucide-react";
 import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
-import { getExpedicaoImage, getImageByKey } from "@/lib/expedicao-images";
+import { getExpedicaoImage, getExpedicaoGaleria } from "@/lib/expedicao-images";
+import { GaleriaEditorial } from "@/components/galeria-editorial";
 import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
 import { formatDateRange, formatPrice } from "@/lib/format";
 import { DataCard } from "@/components/data-card";
@@ -35,7 +36,7 @@ function DetalhesExpedicao() {
   const { expedicao, datas } = data;
   const publicSlug = getPublicExpedicaoSlug(expedicao.slug);
   const heroImg = getExpedicaoImage(expedicao.slug);
-  const galeria = (expedicao.galeria ?? []).map(getImageByKey);
+  const galeria = getExpedicaoGaleria(expedicao.slug);
 
   return (
     <>
@@ -118,12 +119,15 @@ function DetalhesExpedicao() {
       {galeria.length > 0 && (
         <section className="bg-background py-24 md:py-32">
           <div className="container-tight">
-            <div className="eyebrow">Galeria</div>
-            <h2 className="mt-4 font-display text-3xl md:text-4xl">Imagens da travessia</h2>
-            <div className="mt-12 grid gap-3 md:grid-cols-3">
-              {galeria.map((src, i) => (
-                <img key={i} src={src} loading="lazy" alt="" className="aspect-[4/5] w-full object-cover" />
-              ))}
+            <div className="max-w-2xl">
+              <div className="eyebrow">Galeria</div>
+              <h2 className="mt-4 font-display text-3xl md:text-4xl">A travessia em imagens</h2>
+              <p className="mt-4 text-foreground/70 text-pretty">
+                Cenas reais das nossas expedições, registradas em campo.
+              </p>
+            </div>
+            <div className="mt-14">
+              <GaleriaEditorial fotos={galeria} alt={`Galeria ${expedicao.nome}`} />
             </div>
           </div>
         </section>
