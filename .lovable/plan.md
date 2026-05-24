@@ -1,115 +1,143 @@
-## Refinamento cirúrgico final — curadoria visual + i18n PT/EN/ES
 
-Foco: **reduzir**, não adicionar. Recuperar o respiro premium da Home e instalar arquitetura multilíngue elegante.
+# Refinamento Final — Storytelling, Autoridade e Experiência Premium
 
----
-
-### 1. Curadoria visual (reduzir imagens)
-
-**Princípio:** apenas 1 imagem-âncora por seção. Blocos de texto vivem em fundo `carvao`/`areia` com tipografia respirada.
-
-- **Home** — manter apenas: hero, 1 imagem cinematográfica em "Quem somos", cards de expedição (já têm foto), 1 still atmosférico antes do CTA final. Remover: imagem em "Inclui", "Passos", "FAQ", "Depoimentos".
-- **Páginas de marca** (`canastra-a-cavalo`, `elas-na-sela`, `cavalgadas`) — reduzir galerias de 20+ para **6-8 imagens curadas**, escolhidas por força cinematográfica (drone, silhueta, atmosfera, cavalo/natureza).
-- **Página de expedição** (`expedicoes.$slug`) — hero + galeria editorial enxuta (máx 8 imagens).
-- Curar `SLUG_GALERIA` em `expedicao-images.ts` priorizando frames com composição forte (drones de cachoeira, silhuetas, pôr-do-sol, retratos de cavalo). Excluir fotos de almoço, mesa, bandeiras, grupos posados.
-
-### 2. Galeria editorial v2
-
-Reescrever `galeria-editorial.tsx`:
-- Ritmo editorial: **1 full-bleed → 2 lado a lado → 1 retrato grande + 1 paisagem → 1 full-bleed final**.
-- Máx 6-8 fotos. Espaçamento generoso (gap-8 → gap-12). Aspect ratios variados (16/9, 4/5, 3/2).
-- Sem hover-zoom barulhento, apenas fade sutil. Legendas opcionais em `font-eyebrow` discretas.
-
-### 3. Contraste e legibilidade
-
-- Overlay padrão em hero: `bg-carvao/65` + gradient inferior. Padronizar via classe utilitária `.hero-scrim` em `styles.css`.
-- Textos sobre imagem **sempre** dentro de container com gradient ou scrim. Auditar `marcas.*.tsx` e `expedicoes.$slug.tsx`.
-- Mobile: aumentar overlay para `/75` (texto pequeno sofre mais).
-
-### 4. Home — recuperar minimalismo
-
-Estrutura final enxuta:
-```
-HERO (full-screen, headline + 1 CTA)
-QUEM SOMOS (texto + 1 imagem lateral)
-EXPEDIÇÕES EM DESTAQUE (3 cards)
-INCLUI (6 ícones, sem imagem)
-PRÓXIMAS DATAS (lista enxuta)
-HISTÓRIAS (bloco emocional — ver §5)
-COMO FUNCIONA (4 passos, sem imagem)
-FAQ (acordeão, sem imagem)
-CTA FINAL (1 imagem cinematográfica + headline)
-```
-
-### 5. Histórias de quem atravessou conosco
-
-Transformar de cards genéricos em **bloco editorial emocional**:
-- Layout tipo "diário de expedição": citação grande em `font-display` itálico, nome/local discreto, **1 imagem em retrato** ao lado do relato em destaque (rotativo / carrossel suave).
-- Fundo `carvao` profundo, tipografia respirada, scroll horizontal sutil em desktop.
-- Sem estrelas, sem cards uniformes — sensação de página de revista.
-
-### 6. Multilíngue (PT/EN/ES)
-
-**Stack:** `react-i18next` + `i18next` + `i18next-browser-languagedetector` (SSR-safe, leve, padrão).
-
-Estrutura:
-```
-src/i18n/
-  index.ts              -> init i18next
-  locales/
-    pt/common.json
-    en/common.json
-    es/common.json
-```
-
-Implementação:
-- Init em `src/start.ts` (client) — fallback PT, detecção via localStorage + navigator.
-- Provider montado em `__root.tsx`.
-- Hook `useTranslation()` em todos os componentes de texto.
-- **Seletor no header** — versão minimalista: `PT · EN · ES` em `font-eyebrow text-[0.7rem]`, separador `·`, ativo em `text-cobre-soft`, inativo em `text-areia/50`. No mobile, dentro do drawer abaixo dos links.
-- Persistência em `localStorage` (`i18nextLng`).
-
-**Escopo da tradução inicial** (chaves organizadas por namespace):
-- `header` (nav, CTA "Reservar")
-- `home.hero`, `home.quemsomos`, `home.inclui`, `home.passos`, `home.faq`, `home.historias`, `home.cta`
-- `expedicoes.*` (labels: "A partir de", "Próximas datas", "Inclui", "Roteiro", "Requisitos", "Pré-reservar")
-- `reserva.*` (formulário)
-- `footer.*`
-
-Conteúdo dinâmico do banco (nome de expedição, descrição, roteiro) permanece em PT na v1 — adicionar colunas `_en`/`_es` é fora de escopo deste refinamento (sinalizar como próxima fase).
-
-### 7. Direção final
-
-- Tipografia: aumentar `tracking` e `leading` em headlines display.
-- Espaçamento vertical entre seções: padronizar `py-24 md:py-32` (mais respiro).
-- Animações: fade-in suave on-scroll (já existe via framer-motion onde aplicável), nada agressivo.
-- Remover quaisquer hovers "saltitantes" remanescentes.
+Recebi as duas fotos (Lígia atravessando o rio + Alinne no Pantanal). Vou usá-las como peças centrais do novo storytelling. Não vou refatorar layout nem mexer na identidade visual já aprovada — apenas elevar.
 
 ---
 
-### Arquivos afetados
+## 1. Assets
 
-**Modificar:**
-- `src/routes/index.tsx` (reduzir imagens, reescrever Histórias)
-- `src/routes/marcas.*.tsx` (curar galerias)
-- `src/routes/expedicoes.$slug.tsx` (galeria enxuta)
-- `src/components/galeria-editorial.tsx` (reescrita v2)
-- `src/components/site-header.tsx` (seletor de idioma)
-- `src/components/site-footer.tsx` (i18n)
-- `src/lib/expedicao-images.ts` (curar arrays)
-- `src/styles.css` (utilitário `.hero-scrim`, espaçamentos)
-- `src/start.ts` + `src/routes/__root.tsx` (init i18n)
+- Copiar `user-uploads://fundo_hero_-_lidia.jfif` → `src/assets/founders/ligia-rio.jpg`
+- Copiar `user-uploads://Alinne.jfif` → `src/assets/founders/alinne-pantanal.jpg`
+- Reaproveitar imagens já existentes em `src/lib/expedicao-images.ts` para os blocos de apoio (sem gerar novas).
+
+---
+
+## 2. Nova página `/quem-somos` (`src/routes/quem-somos.tsx`)
+
+Estrutura editorial cinematográfica, leitura fluida, blocos curtos com muito respiro:
+
+1. **Hero institucional** — full-bleed da Lígia no rio, gradient cinematográfico, eyebrow `BOUTIQUE EQUESTRIAN EXPEDITIONS`, título display e subtítulo curto.
+2. **História da marca** — duas colunas, texto editorial com drop-cap, parágrafos curtos, citação em destaque.
+3. **Diferenciais** — 4 itens em grid minimalista (criação própria de cavalos, curadoria boutique, conexão com natureza, transformação real). Ícones discretos line-art.
+4. **Fundadoras** — bloco premium:
+   - Lígia: portrait editorial (foto do rio) em moldura orgânica + storytelling de transformação/cura/propósito.
+   - Alinne: portrait (foto Pantanal) + storytelling estrutura/gestão/expansão.
+   - Composição assimétrica, offset refinado, eyebrow com nome + papel.
+5. **Na Mídia** (replicado da Home, versão expandida) — Globo, Revista Portugal, Revista Horse.
+6. **Encerramento emocional** — frase manifesto + CTA duplo (`/expedicoes` + WhatsApp).
+
+Adicionar `head()` com meta próprias (title, description, og).
+Adicionar link no header (`src/components/site-header.tsx`) e no footer.
+
+---
+
+## 3. Componente `EditorialFrame` (`src/components/editorial-frame.tsx`)
+
+Wrapper reutilizável para imagens premium. Variantes:
+- `portrait` — proporção 4/5, leve offset com bloco de cor cobre/floresta atrás, sombra suave.
+- `landscape` — proporção 21/9, borda interna sutil 1px areia/20, grão editorial leve via `mix-blend-overlay`.
+- `organic` — borda com `border-radius` assimétrico suave (não exagerado).
+
+Aplicar em: Quem Somos (fundadoras + hero blocos), Home (bloco história), página de expedição (gallery hero).
+
+---
+
+## 4. Novo Hero da Home (`src/routes/index.tsx`)
+
+- Substituir fundo atual pela foto da Lígia (`ligia-rio.jpg`).
+- Manter overlay cinematográfico (gradient carvao→transparente esquerda + base).
+- Manter copy, eyebrow, CTAs e LanguageSwitcher mobile.
+- Ajustar `object-position` para manter o rosto/cavalo no foco em todos os breakpoints.
+- Preload da imagem no `head()` da rota.
+
+---
+
+## 5. Bloco "Na Mídia" (`src/components/na-midia.tsx`)
+
+Faixa discreta, premium, **na Home** (entre seções existentes, sem inflar) e **em /quem-somos** (versão maior).
+
+- Eyebrow: `RECONHECIDAS POR`
+- 3 cards horizontais minimalistas com wordmark editorial (tipografia serif/uppercase — sem logos oficiais, evita problema de marca):
+  - **GLOBO** → abre modal com embed YouTube `lAsPBK_D7Mw` (reaproveitar `VideoCinematic` modal).
+  - **REVISTA HORSE** → abre nova aba (`revistahorse.com.br/...`).
+  - **REVISTA BSC PORTUGAL** → tenta modal iframe; fallback botão "Abrir revista" em nova aba (X-Frame-Options costuma bloquear).
+- Hover sutil cobre, divisores verticais finos entre itens, sem bagunça visual.
+
+---
+
+## 6. Termos / Políticas — refinamento visual
+
+Refinar (sem mudar conteúdo legal estrutural) `src/routes/termos.tsx`, `src/routes/regras.tsx`, `src/routes/privacidade.tsx`:
+
+- Layout editorial: coluna max-w-3xl, tipografia display nos títulos, eyebrow numerada por seção (`01 — RESPONSABILIDADE`).
+- Drop-cap no primeiro parágrafo.
+- Bloco de destaque para itens críticos (peso 110kg, risco, cancelamento) com borda cobre à esquerda.
+- Sumário lateral sticky em desktop com âncoras.
+- Aviso elegante no topo: "Documento em revisão jurídica final".
+
+Na página de reserva, melhorar o card de aceites (checkboxes) com micro-tipografia premium e ícone discreto de ferradura/cavalo.
+
+---
+
+## 7. Consentimento de Cookies (`src/components/cookie-consent.tsx`)
+
+Barra inferior premium, persistida em `localStorage`:
+
+- Largura `max-w-4xl`, fundo `bg-carvao/95 backdrop-blur`, borda cobre 1px topo.
+- SVG inline minimalista de silhueta de cavalo à esquerda (line-art, traço 1px cobre).
+- Texto curto + 2 botões: `Aceitar` (cobre filled) e `Apenas essenciais` (outline).
+- Link discreto para `/privacidade`.
+- Slide-up sutil ao montar; fade-out ao escolher.
+- Montar uma vez em `__root.tsx`.
+
+---
+
+## 8. Modais — padronização premium
+
+Criar `src/components/premium-modal.tsx` (wrapper sobre `Dialog`) com:
+- Overlay `bg-carvao/85 backdrop-blur-md`
+- Container `bg-areia/98`, borda fina cobre/15, sombra elegante
+- Botão fechar circular cobre top-right
+- Animação fade+scale suave
+
+Aplicar onde já existem dialogs (reserva sucesso, vídeo, mídia).
+
+---
+
+## 9. i18n
+
+Adicionar chaves novas (`quemSomos.*`, `naMidia.*`, `cookies.*`, `editorial.*`) nos 3 locales (`pt`, `en`, `es`). Textos institucionais traduzidos com tom premium.
+
+---
+
+## 10. Performance
+
+- `loading="lazy"` + `decoding="async"` em todas as novas imagens (exceto hero).
+- Preload do novo hero da Lígia.
+- Componente Na Mídia carrega iframe YouTube **só ao abrir** modal (já é o padrão do `VideoCinematic`).
+- Cookie banner monta com `requestIdleCallback` fallback `setTimeout(800)` para não atrapalhar LCP.
+
+---
+
+## Arquivos
 
 **Criar:**
-- `src/i18n/index.ts`
+- `src/routes/quem-somos.tsx`
+- `src/components/editorial-frame.tsx`
+- `src/components/na-midia.tsx`
+- `src/components/cookie-consent.tsx`
+- `src/components/premium-modal.tsx`
+- `src/assets/founders/ligia-rio.jpg` (copy)
+- `src/assets/founders/alinne-pantanal.jpg` (copy)
+
+**Editar:**
+- `src/routes/index.tsx` (hero novo + bloco Na Mídia)
+- `src/routes/termos.tsx`, `src/routes/regras.tsx`, `src/routes/privacidade.tsx` (refinamento editorial)
+- `src/routes/reserva.$slug.tsx` (card de aceites premium)
+- `src/components/site-header.tsx` (link Quem Somos)
+- `src/components/site-footer.tsx` (link Quem Somos)
+- `src/routes/__root.tsx` (montar CookieConsent)
 - `src/i18n/locales/{pt,en,es}/common.json`
-- `src/components/language-switcher.tsx`
-- `src/components/historias-editorial.tsx` (nova seção emocional)
 
-**Instalar:**
-- `i18next`, `react-i18next`, `i18next-browser-languagedetector`
-
-### Fora de escopo (sinalizar)
-
-- Tradução do conteúdo dinâmico do banco (nomes/descrições de expedição) — requer migração com colunas `_en`/`_es`. Posso fazer em seguida se quiser.
-- Geração de novas imagens — vamos apenas selecionar entre as existentes.
+**Não tocar:** identidade visual em `src/styles.css`, estrutura de expedições, lógica de reserva (apenas o visual dos aceites), tokens de cor.
