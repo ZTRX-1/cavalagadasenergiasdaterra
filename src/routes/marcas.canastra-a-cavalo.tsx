@@ -10,7 +10,7 @@ import { GALERIA_CANASTRA_MARCA, FOTO_EQUIPE } from "@/lib/expedicao-images";
 export const Route = createFileRoute("/marcas/canastra-a-cavalo")({
   head: () => ({
     meta: [
-      { title: "Canastra a Cavalo — Travessias premium na Serra da Canastra" },
+      { title: "Canastra a Cavalo · Travessias premium na Serra da Canastra" },
       { name: "description", content: "Expedições autorais pela Serra da Canastra, terra do queijo, do Mangalarga e das cabeceiras do São Francisco." },
     ],
   }),
@@ -34,7 +34,7 @@ function Page() {
             Canastra <em className="not-italic text-cobre-soft">a Cavalo</em>
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-areia text-shadow-soft text-pretty">
-            Travessias premium pela Serra da Canastra — terra do queijo, do Mangalarga Marchador e das cabeceiras do São Francisco.
+            Travessias premium pela Serra da Canastra · terra do queijo, do Mangalarga Marchador e das cabeceiras do São Francisco.
           </p>
         </div>
 

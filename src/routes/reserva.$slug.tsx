@@ -25,7 +25,7 @@ export const Route = createFileRoute("/reserva/$slug")({
   validateSearch: searchSchema,
   head: ({ params }) => ({
     meta: [
-      { title: `Pré-reserva — ${params.slug.replace(/-/g, " ")}` },
+      { title: `Pré-reserva · ${params.slug.replace(/-/g, " ")}` },
       { name: "description", content: "Faça sua pré-reserva online em poucos minutos." },
     ],
   }),
@@ -110,7 +110,7 @@ function ReservaPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qtdTotal]);
 
-  // "Você também participa?" — copia dados do responsável para participante 1
+  // "Você também participa?" · copia dados do responsável para participante 1
   const resp = form.watch("responsavel");
   useEffect(() => {
     if (!responsavelParticipa) return;
@@ -194,7 +194,7 @@ function ReservaPage() {
 
   return (
     <div className="bg-background pb-24">
-      {/* HERO da reserva — cinematográfico */}
+      {/* HERO da reserva · cinematográfico */}
       <section className="relative isolate overflow-hidden text-areia">
         <img src={getExpedicaoImage(expedicao.slug)} alt="" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-carvao/85 via-carvao/70 to-carvao/95" />
@@ -315,7 +315,7 @@ function ReservaPage() {
                     <select className="input" {...form.register("responsavel.estado")}>
                       <option value="">Selecione</option>
                       {ESTADOS_BR.map((e) => (
-                        <option key={e.sigla} value={e.sigla}>{e.sigla} — {e.nome}</option>
+                        <option key={e.sigla} value={e.sigla}>{e.sigla} · {e.nome}</option>
                       ))}
                     </select>
                   </Field>
@@ -327,7 +327,7 @@ function ReservaPage() {
                       <option value="">Selecione a data</option>
                       {datas.map((d) => (
                         <option key={d.id} value={d.id} disabled={d.status === "esgotado"}>
-                          {formatDateRange(d.data_inicio, d.data_fim)} {d.status === "esgotado" ? " — esgotado" : d.status === "poucas_vagas" ? " — poucas vagas" : ""}
+                          {formatDateRange(d.data_inicio, d.data_fim)} {d.status === "esgotado" ? " · esgotado" : d.status === "poucas_vagas" ? " · poucas vagas" : ""}
                         </option>
                       ))}
                     </select>

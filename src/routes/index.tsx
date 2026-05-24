@@ -19,7 +19,7 @@ const datasQO = queryOptions({ queryKey: ["proximas-datas"], queryFn: () => list
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Cavalgadas Energias da Terra — Expedições a cavalo premium" },
+      { title: "Cavalgadas Energias da Terra · Expedições a cavalo premium" },
       { name: "description", content: "Expedições cinematográficas a cavalo pelas serras do Brasil. Natureza, sofisticação e aventura em pequenos grupos selecionados." },
       { property: "og:title", content: "Cavalgadas Energias da Terra" },
       { property: "og:description", content: "Expedições cinematográficas a cavalo pelas serras do Brasil." },
@@ -53,14 +53,14 @@ const PASSOS = [
 ];
 
 const DEPOIMENTOS = [
-  { nome: "Fernanda M.", local: "São Paulo", texto: "A travessia da Canastra mudou minha relação com o tempo. Cada detalhe foi impecável — da seleção dos cavalos ao jantar à fogueira." },
+  { nome: "Fernanda M.", local: "São Paulo", texto: "A travessia da Canastra mudou minha relação com o tempo. Cada detalhe foi impecável · da seleção dos cavalos ao jantar à fogueira." },
   { nome: "Ricardo A.", local: "Rio de Janeiro", texto: "Já fiz cavalgadas em várias partes do mundo. Esta foi a mais bem produzida que vivi no Brasil. Premium de verdade." },
-  { nome: "Juliana e Pedro", local: "Belo Horizonte", texto: "Saímos transformados. Hospedagem, gastronomia, condução — tudo num nível raro. Já estamos planejando a próxima." },
+  { nome: "Juliana e Pedro", local: "Belo Horizonte", texto: "Saímos transformados. Hospedagem, gastronomia, condução · tudo num nível raro. Já estamos planejando a próxima." },
 ];
 
 const FAQ = [
   { q: "Preciso ter experiência prévia?", a: "Não. Temos expedições para todos os níveis, desde iniciantes até cavaleiros avançados. Indicamos a melhor opção conforme seu perfil." },
-  { q: "Como funciona o pagamento?", a: "Após a pré-reserva, nossa equipe entra em contato via WhatsApp para alinhar o pagamento — aceitamos Pix, transferência e cartão parcelado." },
+  { q: "Como funciona o pagamento?", a: "Após a pré-reserva, nossa equipe entra em contato via WhatsApp para alinhar o pagamento · aceitamos Pix, transferência e cartão parcelado." },
   { q: "E se eu precisar cancelar?", a: "Aplicamos nossa política de cancelamento, transparente e proporcional ao tempo de antecedência. Detalhamos tudo antes da confirmação." },
   { q: "Vocês oferecem transfer?", a: "Sim. Todas as expedições incluem transfer do aeroporto/ponto combinado até a base da experiência." },
 ];
@@ -101,7 +101,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ESCOLHA SUA EXPERIÊNCIA — 3 sub-marcas */}
+      {/* ESCOLHA SUA EXPERIÊNCIA · 3 sub-marcas */}
       <section className="relative bg-background py-24 md:py-32 texture-paper">
         <div className="container-tight">
           <div className="max-w-2xl">

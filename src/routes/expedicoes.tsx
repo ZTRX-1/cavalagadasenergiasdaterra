@@ -8,9 +8,9 @@ const qo = queryOptions({ queryKey: ["expedicoes"], queryFn: () => listExpedicoe
 export const Route = createFileRoute("/expedicoes")({
   head: () => ({
     meta: [
-      { title: "Expedições — Cavalgadas Energias da Terra" },
+      { title: "Expedições, Cavalgadas Energias da Terra" },
       { name: "description", content: "Conheça nossas expedições a cavalo: Vale da Canastra, Serra do Cipó, Chapada Diamantina e mais." },
-      { property: "og:title", content: "Expedições — Cavalgadas Energias da Terra" },
+      { property: "og:title", content: "Expedições, Cavalgadas Energias da Terra" },
       { property: "og:description", content: "Roteiros cinematográficos a cavalo pelo Brasil." },
     ],
   }),

@@ -6,7 +6,7 @@ import cavaloCloseup from "@/assets/cavalo-closeup.jpg";
 export const Route = createFileRoute("/contato")({
   head: () => ({
     meta: [
-      { title: "Contato, FAQ e Quem Somos — Cavalgadas Energias da Terra" },
+      { title: "Contato, FAQ e Quem Somos, Cavalgadas Energias da Terra" },
       { name: "description", content: "Fale conosco, conheça nossa história e tire suas dúvidas sobre as expedições." },
     ],
   }),
@@ -20,7 +20,7 @@ const FAQ = [
   { q: "E em caso de chuva?", a: "Operamos com chuva leve. Em caso de tempestades, ajustamos o roteiro para garantir segurança. Em situações extremas, remarcamos sem custo." },
   { q: "Os cavalos são treinados?", a: "Sim. Todos os cavalos são treinados, descansados entre expedições e acompanhados por equipe profissional." },
   { q: "Posso fazer uma expedição privada?", a: "Sim. Organizamos expedições privadas para grupos, casais e empresas. Fale conosco para um orçamento personalizado." },
-  { q: "Qual a melhor época para ir?", a: "Cada região tem sua melhor janela. Em geral, abril a outubro são meses ideais — clima seco e paisagens em equilíbrio." },
+  { q: "Qual a melhor época para ir?", a: "Cada região tem sua melhor janela. Em geral, abril a outubro são meses ideais · clima seco e paisagens em equilíbrio." },
   { q: "Como faço o pagamento?", a: "Aceitamos Pix, transferência, boleto e cartão parcelado. Combinamos tudo via WhatsApp após a pré-reserva." },
 ];
 
@@ -88,7 +88,7 @@ function ContatoPage() {
         <div className="container-tight grid gap-12 md:grid-cols-12">
           <div className="md:col-span-4">
             <div className="eyebrow">Nosso diferencial</div>
-            <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">Não vendemos cavalgadas — criamos experiências boutique.</h2>
+            <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">Não vendemos cavalgadas · criamos experiências boutique.</h2>
           </div>
           <div className="md:col-span-8 space-y-6 text-lg leading-relaxed text-foreground/80 text-pretty">
             <p>

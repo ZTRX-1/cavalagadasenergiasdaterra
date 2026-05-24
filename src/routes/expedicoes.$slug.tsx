@@ -17,7 +17,7 @@ const qo = (slug: string) =>
 export const Route = createFileRoute("/expedicoes/$slug")({
   head: ({ params }) => ({
     meta: [
-      { title: `${params.slug.replace(/-/g, " ")} — Cavalgadas Energias da Terra` },
+      { title: `${params.slug.replace(/-/g, " ")}, Cavalgadas Energias da Terra` },
       { name: "description", content: "Detalhes da expedição: roteiro, itens inclusos, requisitos e próximas datas." },
     ],
   }),
@@ -154,7 +154,7 @@ function DetalhesExpedicao() {
       <section className="bg-floresta-deep py-20 text-areia md:py-28">
         <div className="container-tight text-center">
           <h2 className="font-display text-3xl text-balance md:text-5xl">Pronto para reservar sua vaga?</h2>
-          <p className="mx-auto mt-4 max-w-xl text-areia/75">Pré-reserva em poucos minutos. Sem compromisso de pagamento — nossa equipe entra em contato para confirmar.</p>
+          <p className="mx-auto mt-4 max-w-xl text-areia/75">Pré-reserva em poucos minutos. Sem compromisso de pagamento · nossa equipe entra em contato para confirmar.</p>
           <Link to="/reserva/$slug" params={{ slug: publicSlug }} className="mt-8 inline-flex items-center gap-2 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">
             Fazer pré-reserva <ArrowRight className="h-4 w-4" />
           </Link>
