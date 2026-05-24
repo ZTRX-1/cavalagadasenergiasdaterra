@@ -24,8 +24,9 @@ export const Route = createFileRoute("/quem-somos")({
         property: "og:description",
         content: "Boutique brasileira de expedições equestres premium.",
       },
-      { property: "og:image", content: ligia },
-      { name: "twitter:image", content: ligia },
+      { property: "og:image", content: heroPaisagem },
+      { name: "twitter:image", content: heroPaisagem },
+
     ],
   }),
   component: QuemSomosPage,
