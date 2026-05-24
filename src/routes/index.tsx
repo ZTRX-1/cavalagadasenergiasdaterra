@@ -153,6 +153,12 @@ function HomePage() {
                 {t("hero.ctaSecondary")}
               </Link>
             </div>
+
+            {/* Seletor de idioma visível no mobile/tablet — discreto, premium */}
+            <div className="mt-8 flex items-center gap-3 xl:hidden">
+              <span className="h-px w-8 bg-areia/30" />
+              <LanguageSwitcher />
+            </div>
           </div>
         </div>
       </section>
