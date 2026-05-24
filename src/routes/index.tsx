@@ -132,11 +132,11 @@ function HomePage() {
   return (
     <>
       {/* HERO — cinematográfico, sem ruído */}
-      <section className="relative h-[88svh] min-h-[560px] max-h-[920px] overflow-hidden text-areia md:h-[92svh]">
+      <section className="relative h-screen min-h-[640px] overflow-hidden text-areia">
         <img
           src={hero}
           alt=""
-          className="absolute inset-0 h-full w-full object-cover [object-position:47%_24%]"
+          className="absolute inset-0 h-full w-full object-cover [object-position:48%_38%]"
           fetchPriority="high"
           decoding="async"
         />
@@ -148,13 +148,13 @@ function HomePage() {
         <div className="container-tight relative flex h-full flex-col justify-end pb-20 pt-28 md:pb-24 md:pt-28">
           <div className="max-w-3xl">
             <div className="eyebrow text-areia text-shadow-strong">{t("hero.eyebrow")}</div>
-            <h1 className="mt-6 font-display text-5xl leading-[0.98] text-balance text-shadow-strong md:text-7xl lg:text-[5.5rem] text-areia">
+            <h1 className="mt-5 font-display text-5xl leading-[0.98] text-balance text-shadow-strong md:text-6xl lg:text-7xl text-areia">
               {t("hero.titlePart1")} <em className="not-italic text-cobre-soft">{t("hero.titleAccent")}</em> {t("hero.titlePart2")}
             </h1>
-            <p className="mt-7 max-w-xl text-lg leading-relaxed text-areia text-shadow-soft text-pretty">
+            <p className="mt-6 max-w-lg text-lg leading-relaxed text-areia text-shadow-soft text-pretty">
               {t("hero.subtitle")}
             </p>
-            <div className="mt-10 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap gap-3">
               <Link to="/expedicoes" className="inline-flex items-center gap-2 rounded-full bg-cobre px-7 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">
                 {t("hero.ctaPrimary")} <ArrowRight className="h-4 w-4" />
               </Link>
@@ -164,13 +164,14 @@ function HomePage() {
             </div>
 
             {/* Seletor de idioma visível no mobile/tablet — discreto, premium */}
-            <div className="mt-8 flex items-center gap-3 xl:hidden">
+            <div className="mt-6 flex items-center gap-3 xl:hidden">
               <span className="h-px w-8 bg-areia/30" />
               <LanguageSwitcher />
             </div>
           </div>
         </div>
       </section>
+
 
       {/* TRÊS MARCAS — sem fundo de imagem */}
       <section className="relative bg-background py-28 md:py-36 texture-paper">
