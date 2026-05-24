@@ -134,13 +134,8 @@ export const GALERIA_CAVALGADAS = [
 ];
 
 export const GALERIA_ELAS_NA_SELA = [
-  man01, can22, can24, can10, can11ImgPlaceholder(), peru12, man19, can29,
+  man01, can22, can24, can10, peru12, man19, can29, man27,
 ];
-
-function can11ImgPlaceholder() {
-  // pequena guarda para evitar import circular se can11 for adicionado no futuro
-  return man19;
-}
 
 export const GALERIA_CANASTRA_MARCA = [
   can26, can37, can15, can18, can25, can20, can13, can22,
