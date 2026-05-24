@@ -65,12 +65,12 @@ export function SiteHeader() {
             </span>
           </Link>
 
-          <nav className="hidden flex-1 items-center justify-center gap-8 xl:flex xl:gap-10 2xl:gap-14">
+          <nav className="hidden flex-1 items-center justify-center gap-6 xl:flex xl:gap-8 2xl:gap-12">
             {NAV.map((item) => (
               <Link
                 key={item.label}
                 to={item.to}
-                className="font-eyebrow text-[0.82rem] uppercase tracking-[0.22em] text-areia/85 transition-colors hover:text-cobre-soft whitespace-nowrap antialiased"
+                className="font-eyebrow text-[0.78rem] uppercase tracking-[0.24em] text-areia/85 transition-colors hover:text-cobre-soft whitespace-nowrap antialiased subpixel-antialiased 2xl:text-[0.84rem]"
                 activeProps={{ className: "text-cobre-soft" }}
               >
                 {item.label}
@@ -78,11 +78,11 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <div className="flex shrink-0 items-center gap-6 xl:gap-8">
+          <div className="flex shrink-0 items-center gap-5 xl:gap-7">
             <LanguageSwitcher className="hidden md:inline-flex" />
             <Link
               to="/expedicoes"
-              className="hidden rounded-full bg-cobre px-10 py-4 font-eyebrow text-[0.78rem] uppercase tracking-[0.24em] text-areia shadow-elegant transition-colors hover:bg-couro xl:inline-flex whitespace-nowrap"
+              className="hidden rounded-full bg-cobre px-9 py-[0.95rem] font-eyebrow text-[0.78rem] uppercase tracking-[0.26em] text-areia shadow-elegant transition-all hover:bg-couro hover:shadow-[0_18px_40px_-15px_rgba(0,0,0,0.55)] xl:inline-flex whitespace-nowrap 2xl:px-11 2xl:py-[1.05rem] 2xl:text-[0.82rem]"
             >
               {t("nav.reservar")}
             </Link>
