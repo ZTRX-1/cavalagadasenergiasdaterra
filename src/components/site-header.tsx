@@ -44,10 +44,10 @@ export function SiteHeader() {
           scrolled && "shadow-header",
         )}
       >
-        <div className="container-tight flex h-16 items-center justify-between md:h-20">
+        <div className="mx-auto flex h-16 max-w-[88rem] items-center justify-between gap-8 px-5 md:h-20 md:px-8">
           <Link
             to="/"
-            className="group flex items-center gap-3"
+            className="group flex shrink-0 items-center gap-3"
             aria-label="Cavalgadas Energias da Terra"
           >
             <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-carvao ring-1 ring-cobre/40 md:h-12 md:w-12">
@@ -63,12 +63,12 @@ export function SiteHeader() {
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-7 xl:gap-10 lg:flex">
+          <nav className="hidden flex-1 items-center justify-center gap-8 xl:gap-12 xl:flex">
             {NAV.map((item) => (
               <Link
                 key={item.label}
                 to={item.to}
-                className="font-eyebrow text-[0.78rem] uppercase tracking-[0.2em] text-areia/85 transition-colors hover:text-cobre-soft whitespace-nowrap"
+                className="font-eyebrow text-[0.72rem] uppercase tracking-[0.22em] text-areia/85 transition-colors hover:text-cobre-soft whitespace-nowrap"
                 activeProps={{ className: "text-cobre-soft" }}
               >
                 {item.label}
@@ -76,11 +76,11 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex shrink-0 items-center gap-5">
             <LanguageSwitcher className="hidden md:inline-flex" />
             <Link
               to="/expedicoes"
-              className="hidden rounded-full bg-cobre px-5 py-2.5 font-eyebrow text-[0.7rem] uppercase tracking-[0.22em] text-areia transition-colors hover:bg-couro lg:inline-flex"
+              className="hidden rounded-full bg-cobre px-5 py-2.5 font-eyebrow text-[0.7rem] uppercase tracking-[0.22em] text-areia transition-colors hover:bg-couro xl:inline-flex whitespace-nowrap"
             >
               {t("nav.reservar")}
             </Link>
@@ -90,17 +90,18 @@ export function SiteHeader() {
               aria-label={open ? "Fechar menu" : "Abrir menu"}
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-areia/30 bg-carvao text-areia transition-colors hover:border-cobre hover:text-cobre-soft lg:hidden"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-areia/30 bg-carvao text-areia transition-colors hover:border-cobre hover:text-cobre-soft xl:hidden"
             >
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
         </div>
+
       </header>
 
       <div
         className={cn(
-          "fixed inset-0 z-40 lg:hidden",
+          "fixed inset-0 z-40 xl:hidden",
           open ? "pointer-events-auto" : "pointer-events-none",
         )}
         aria-hidden={!open}
