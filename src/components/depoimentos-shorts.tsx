@@ -6,14 +6,16 @@ type Short = {
   nome: string;
   legenda: string;
   capitulo: string;
+  src?: string;
 };
 
 const SHORTS: Short[] = [
   {
-    id: "uzejZ5z_p1w",
+    id: "depoimento-local-1",
     nome: "Energias da Terra",
     legenda: "Quando o cavalo nos devolve ao essencial.",
     capitulo: "Capítulo I",
+    src: "/depoimentos/depoimento-1.mp4",
   },
   {
     id: "zTldVJWyVR8",
