@@ -1,22 +1,25 @@
 import { useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, X, MessageCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { buildContactWhatsappUrl } from "@/lib/whatsapp";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import logoCavalgadas from "@/assets/logo-cavalgadas.jpg";
 
-const NAV = [
-  { to: "/", label: "Home" },
-  { to: "/expedicoes", label: "Expedições" },
-  { to: "/datas", label: "Próximas Datas" },
-  { to: "/contato", label: "Contato" },
-  { to: "/minha-reserva", label: "Minha Reserva" },
-] as const;
-
 export function SiteHeader() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const path = useRouterState({ select: (s) => s.location.pathname });
+
+  const NAV = [
+    { to: "/", label: t("nav.home") },
+    { to: "/expedicoes", label: t("nav.expedicoes") },
+    { to: "/datas", label: t("nav.datas") },
+    { to: "/contato", label: t("nav.contato") },
+    { to: "/minha-reserva", label: t("nav.minhaReserva") },
+  ] as const;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -30,7 +33,6 @@ export function SiteHeader() {
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  // Fecha drawer ao trocar de rota
   useEffect(() => { setOpen(false); }, [path]);
 
   return (
@@ -46,7 +48,7 @@ export function SiteHeader() {
           <Link
             to="/"
             className="group flex items-center gap-3"
-            aria-label="Cavalgadas Energias da Terra — início"
+            aria-label="Cavalgadas Energias da Terra"
           >
             <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-carvao ring-1 ring-cobre/40 md:h-12 md:w-12">
               <img src={logoCavalgadas} alt="" className="h-full w-full object-cover" />
@@ -61,7 +63,6 @@ export function SiteHeader() {
             </span>
           </Link>
 
-          {/* Desktop nav */}
           <nav className="hidden items-center gap-7 xl:gap-10 lg:flex">
             {NAV.map((item) => (
               <Link
@@ -75,15 +76,15 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
+            <LanguageSwitcher className="hidden md:inline-flex" />
             <Link
               to="/expedicoes"
               className="hidden rounded-full bg-cobre px-5 py-2.5 font-eyebrow text-[0.7rem] uppercase tracking-[0.22em] text-areia transition-colors hover:bg-couro lg:inline-flex"
             >
-              Reservar
+              {t("nav.reservar")}
             </Link>
 
-            {/* Mobile toggle */}
             <button
               type="button"
               aria-label={open ? "Fechar menu" : "Abrir menu"}
@@ -97,7 +98,6 @@ export function SiteHeader() {
         </div>
       </header>
 
-      {/* Mobile drawer — slide do topo, full-bleed */}
       <div
         className={cn(
           "fixed inset-0 z-40 lg:hidden",
@@ -105,7 +105,6 @@ export function SiteHeader() {
         )}
         aria-hidden={!open}
       >
-        {/* overlay */}
         <button
           tabIndex={-1}
           onClick={() => setOpen(false)}
@@ -115,7 +114,6 @@ export function SiteHeader() {
             open ? "opacity-100" : "opacity-0",
           )}
         />
-        {/* painel */}
         <div
           className={cn(
             "absolute inset-x-0 top-0 bg-background border-b border-border shadow-elegant transition-transform duration-500 ease-out",
@@ -137,12 +135,16 @@ export function SiteHeader() {
               </Link>
             ))}
 
+            <div className="mt-6 flex items-center justify-center border-t border-border/50 pt-6">
+              <LanguageSwitcher align="drawer" />
+            </div>
+
             <Link
               to="/expedicoes"
               onClick={() => setOpen(false)}
               className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-cobre px-6 py-4 font-eyebrow text-[0.72rem] uppercase tracking-[0.22em] text-areia"
             >
-              Fazer pré-reserva
+              {t("nav.preReserva")}
             </Link>
             <a
               href={buildContactWhatsappUrl()}
@@ -151,7 +153,7 @@ export function SiteHeader() {
               onClick={() => setOpen(false)}
               className="mt-2 inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-4 font-eyebrow text-[0.72rem] uppercase tracking-[0.22em] text-foreground hover:border-cobre hover:text-cobre"
             >
-              <MessageCircle className="h-4 w-4" /> WhatsApp
+              <MessageCircle className="h-4 w-4" /> {t("nav.whatsapp")}
             </a>
           </nav>
         </div>
