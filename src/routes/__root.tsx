@@ -105,6 +105,7 @@ function RootComponent() {
       </main>
       <SiteFooter />
 
+      <CookieConsent />
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );
