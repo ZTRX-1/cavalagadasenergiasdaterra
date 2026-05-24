@@ -45,10 +45,10 @@ export function SiteHeader() {
           scrolled && "shadow-header",
         )}
       >
-        <div className="mx-auto flex h-16 max-w-[88rem] items-center justify-between gap-8 px-5 md:h-20 md:px-8">
+        <div className="mx-auto flex h-16 max-w-[96rem] items-center justify-between gap-10 px-5 md:h-[5.25rem] md:px-10 xl:gap-14 xl:px-12">
           <Link
             to="/"
-            className="group flex shrink-0 items-center gap-3"
+            className="group flex shrink-0 items-center gap-3.5"
             aria-label="Cavalgadas Energias da Terra"
           >
             <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-carvao ring-1 ring-cobre/40 md:h-12 md:w-12">
@@ -64,7 +64,7 @@ export function SiteHeader() {
             </span>
           </Link>
 
-          <nav className="hidden flex-1 items-center justify-center gap-8 xl:gap-12 xl:flex">
+          <nav className="hidden flex-1 items-center justify-center gap-9 2xl:gap-12 xl:flex">
             {NAV.map((item) => (
               <Link
                 key={item.label}
@@ -77,11 +77,11 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <div className="flex shrink-0 items-center gap-5">
+          <div className="flex shrink-0 items-center gap-6">
             <LanguageSwitcher className="hidden md:inline-flex" />
             <Link
               to="/expedicoes"
-              className="hidden rounded-full bg-cobre px-5 py-2.5 font-eyebrow text-[0.7rem] uppercase tracking-[0.22em] text-areia transition-colors hover:bg-couro xl:inline-flex whitespace-nowrap"
+              className="hidden rounded-full bg-cobre px-8 py-3.5 font-eyebrow text-[0.74rem] uppercase tracking-[0.24em] text-areia shadow-elegant transition-colors hover:bg-couro xl:inline-flex whitespace-nowrap"
             >
               {t("nav.reservar")}
             </Link>
@@ -122,7 +122,7 @@ export function SiteHeader() {
             open ? "translate-y-0" : "-translate-y-full",
           )}
         >
-          <div className="h-16 md:h-20" />
+          <div className="h-16 md:h-[5.25rem]" />
           <nav className="container-tight flex flex-col gap-1 pb-8 pt-2">
             {NAV.map((item) => (
               <Link
