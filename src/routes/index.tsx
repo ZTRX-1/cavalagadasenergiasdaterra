@@ -131,39 +131,53 @@ function HomePage() {
 
   return (
     <>
-      {/* HERO — cinematográfico, sem ruído */}
-      <section className="relative h-screen min-h-[640px] overflow-hidden text-areia">
+      {/* HERO — focal points por breakpoint, preservando rosto + cavalo */}
+      <section className="relative h-screen min-h-[680px] overflow-hidden text-areia md:min-h-[720px]">
         <img
           src={hero}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover [object-position:48%_38%]"
+          alt="Lígia montando a cavalo em travessia pelo rio"
+          className="absolute inset-0 h-full w-full object-cover object-[56%_16%] md:hidden"
           fetchPriority="high"
           decoding="async"
         />
-        <div className="absolute inset-0 bg-carvao/45" />
-        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-carvao via-carvao/75 to-transparent" />
-        <div className="absolute inset-y-0 left-0 w-full md:w-2/3 bg-gradient-to-r from-carvao/75 via-carvao/30 to-transparent" />
+        <img
+          src={hero}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 hidden h-full w-full object-cover object-[50%_18%] md:block xl:hidden"
+          fetchPriority="high"
+          decoding="async"
+        />
+        <img
+          src={hero}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 hidden h-full w-full object-cover object-[46%_22%] xl:block"
+          fetchPriority="high"
+          decoding="async"
+        />
+        <div className="absolute inset-0 bg-carvao/40" />
+        <div className="absolute inset-x-0 bottom-0 h-[72%] bg-gradient-to-t from-carvao via-carvao/70 to-transparent" />
+        <div className="absolute inset-y-0 left-0 w-full md:w-[68%] bg-gradient-to-r from-carvao/80 via-carvao/38 to-transparent" />
 
-
-        <div className="container-tight relative flex h-full flex-col justify-end pb-20 pt-28 md:pb-24 md:pt-28">
+        <div className="container-tight relative flex h-full flex-col justify-end pb-16 pt-28 md:pb-20 md:pt-28 lg:pb-24">
           <div className="max-w-3xl">
             <div className="eyebrow text-areia text-shadow-strong">{t("hero.eyebrow")}</div>
-            <h1 className="mt-5 font-display text-5xl leading-[0.98] text-balance text-shadow-strong md:text-6xl lg:text-7xl text-areia">
+            <h1 className="mt-5 font-display text-5xl leading-[0.98] text-balance text-shadow-strong text-areia md:text-6xl lg:text-7xl">
               {t("hero.titlePart1")} <em className="not-italic text-cobre-soft">{t("hero.titleAccent")}</em> {t("hero.titlePart2")}
             </h1>
-            <p className="mt-6 max-w-lg text-lg leading-relaxed text-areia text-shadow-soft text-pretty">
+            <p className="mt-5 max-w-lg text-lg leading-relaxed text-areia text-shadow-soft text-pretty">
               {t("hero.subtitle")}
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-7 flex flex-wrap gap-3">
               <Link to="/expedicoes" className="inline-flex items-center gap-2 rounded-full bg-cobre px-7 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">
                 {t("hero.ctaPrimary")} <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link to="/datas" className="inline-flex items-center gap-2 rounded-full border border-areia/60 bg-carvao/30 backdrop-blur-sm px-7 py-4 text-sm uppercase tracking-widest text-areia hover:bg-areia/15">
+              <Link to="/datas" className="inline-flex items-center gap-2 rounded-full border border-areia/60 bg-carvao/30 px-7 py-4 text-sm uppercase tracking-widest text-areia backdrop-blur-sm hover:bg-areia/15">
                 {t("hero.ctaSecondary")}
               </Link>
             </div>
 
-            {/* Seletor de idioma visível no mobile/tablet — discreto, premium */}
             <div className="mt-6 flex items-center gap-3 xl:hidden">
               <span className="h-px w-8 bg-areia/30" />
               <LanguageSwitcher />
