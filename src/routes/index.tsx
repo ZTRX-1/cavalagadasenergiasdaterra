@@ -288,6 +288,10 @@ function HomePage() {
       {/* HISTÓRIAS — bloco editorial emocional */}
       <HistoriasEditorial />
 
+      {/* NA MÍDIA — autoridade discreta */}
+      <NaMidia variant="compact" />
+
+
       {/* COMO FUNCIONA — sem imagem */}
       <section className="bg-background py-28 md:py-36">
         <div className="container-tight">
