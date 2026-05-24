@@ -9,6 +9,9 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermosRouteImport } from './routes/termos'
+import { Route as RegrasRouteImport } from './routes/regras'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as MinhaReservaRouteImport } from './routes/minha-reserva'
 import { Route as ExpedicoesRouteImport } from './routes/expedicoes'
 import { Route as DatasRouteImport } from './routes/datas'
@@ -20,6 +23,21 @@ import { Route as MarcasCavalgadasRouteImport } from './routes/marcas.cavalgadas
 import { Route as MarcasCanastraACavaloRouteImport } from './routes/marcas.canastra-a-cavalo'
 import { Route as ExpedicoesSlugRouteImport } from './routes/expedicoes.$slug'
 
+const TermosRoute = TermosRouteImport.update({
+  id: '/termos',
+  path: '/termos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegrasRoute = RegrasRouteImport.update({
+  id: '/regras',
+  path: '/regras',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MinhaReservaRoute = MinhaReservaRouteImport.update({
   id: '/minha-reserva',
   path: '/minha-reserva',
@@ -77,6 +95,9 @@ export interface FileRoutesByFullPath {
   '/datas': typeof DatasRoute
   '/expedicoes': typeof ExpedicoesRouteWithChildren
   '/minha-reserva': typeof MinhaReservaRoute
+  '/privacidade': typeof PrivacidadeRoute
+  '/regras': typeof RegrasRoute
+  '/termos': typeof TermosRoute
   '/expedicoes/$slug': typeof ExpedicoesSlugRoute
   '/marcas/canastra-a-cavalo': typeof MarcasCanastraACavaloRoute
   '/marcas/cavalgadas': typeof MarcasCavalgadasRoute
@@ -89,6 +110,9 @@ export interface FileRoutesByTo {
   '/datas': typeof DatasRoute
   '/expedicoes': typeof ExpedicoesRouteWithChildren
   '/minha-reserva': typeof MinhaReservaRoute
+  '/privacidade': typeof PrivacidadeRoute
+  '/regras': typeof RegrasRoute
+  '/termos': typeof TermosRoute
   '/expedicoes/$slug': typeof ExpedicoesSlugRoute
   '/marcas/canastra-a-cavalo': typeof MarcasCanastraACavaloRoute
   '/marcas/cavalgadas': typeof MarcasCavalgadasRoute
@@ -102,6 +126,9 @@ export interface FileRoutesById {
   '/datas': typeof DatasRoute
   '/expedicoes': typeof ExpedicoesRouteWithChildren
   '/minha-reserva': typeof MinhaReservaRoute
+  '/privacidade': typeof PrivacidadeRoute
+  '/regras': typeof RegrasRoute
+  '/termos': typeof TermosRoute
   '/expedicoes/$slug': typeof ExpedicoesSlugRoute
   '/marcas/canastra-a-cavalo': typeof MarcasCanastraACavaloRoute
   '/marcas/cavalgadas': typeof MarcasCavalgadasRoute
@@ -116,6 +143,9 @@ export interface FileRouteTypes {
     | '/datas'
     | '/expedicoes'
     | '/minha-reserva'
+    | '/privacidade'
+    | '/regras'
+    | '/termos'
     | '/expedicoes/$slug'
     | '/marcas/canastra-a-cavalo'
     | '/marcas/cavalgadas'
@@ -128,6 +158,9 @@ export interface FileRouteTypes {
     | '/datas'
     | '/expedicoes'
     | '/minha-reserva'
+    | '/privacidade'
+    | '/regras'
+    | '/termos'
     | '/expedicoes/$slug'
     | '/marcas/canastra-a-cavalo'
     | '/marcas/cavalgadas'
@@ -140,6 +173,9 @@ export interface FileRouteTypes {
     | '/datas'
     | '/expedicoes'
     | '/minha-reserva'
+    | '/privacidade'
+    | '/regras'
+    | '/termos'
     | '/expedicoes/$slug'
     | '/marcas/canastra-a-cavalo'
     | '/marcas/cavalgadas'
@@ -153,6 +189,9 @@ export interface RootRouteChildren {
   DatasRoute: typeof DatasRoute
   ExpedicoesRoute: typeof ExpedicoesRouteWithChildren
   MinhaReservaRoute: typeof MinhaReservaRoute
+  PrivacidadeRoute: typeof PrivacidadeRoute
+  RegrasRoute: typeof RegrasRoute
+  TermosRoute: typeof TermosRoute
   MarcasCanastraACavaloRoute: typeof MarcasCanastraACavaloRoute
   MarcasCavalgadasRoute: typeof MarcasCavalgadasRoute
   MarcasElasNaSelaRoute: typeof MarcasElasNaSelaRoute
@@ -161,6 +200,27 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/termos': {
+      id: '/termos'
+      path: '/termos'
+      fullPath: '/termos'
+      preLoaderRoute: typeof TermosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/regras': {
+      id: '/regras'
+      path: '/regras'
+      fullPath: '/regras'
+      preLoaderRoute: typeof RegrasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/minha-reserva': {
       id: '/minha-reserva'
       path: '/minha-reserva'
@@ -252,6 +312,9 @@ const rootRouteChildren: RootRouteChildren = {
   DatasRoute: DatasRoute,
   ExpedicoesRoute: ExpedicoesRouteWithChildren,
   MinhaReservaRoute: MinhaReservaRoute,
+  PrivacidadeRoute: PrivacidadeRoute,
+  RegrasRoute: RegrasRoute,
+  TermosRoute: TermosRoute,
   MarcasCanastraACavaloRoute: MarcasCanastraACavaloRoute,
   MarcasCavalgadasRoute: MarcasCavalgadasRoute,
   MarcasElasNaSelaRoute: MarcasElasNaSelaRoute,
