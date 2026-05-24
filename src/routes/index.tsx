@@ -132,14 +132,14 @@ function HomePage() {
   return (
     <>
       {/* HERO — cinematográfico, sem ruído */}
-      <section className="relative min-h-[100svh] overflow-hidden text-areia">
-        <img src={hero} alt="" className="absolute inset-0 h-full w-full object-cover object-[60%_center] md:object-center" fetchPriority="high" decoding="async" />
-        <div className="absolute inset-0 bg-carvao/55 md:bg-carvao/45" />
-        <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-carvao via-carvao/80 to-transparent" />
-        <div className="absolute inset-y-0 left-0 w-full md:w-2/3 bg-gradient-to-r from-carvao/75 via-carvao/35 to-transparent" />
+      <section className="relative min-h-[92svh] overflow-hidden text-areia md:min-h-[94svh]">
+        <img src={hero} alt="" className="absolute inset-0 h-full w-full object-cover object-[55%_22%] md:object-[60%_28%]" fetchPriority="high" decoding="async" />
+        <div className="absolute inset-0 bg-carvao/50 md:bg-carvao/40" />
+        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-carvao via-carvao/75 to-transparent" />
+        <div className="absolute inset-y-0 left-0 w-full md:w-2/3 bg-gradient-to-r from-carvao/75 via-carvao/30 to-transparent" />
 
 
-        <div className="container-tight relative flex min-h-[100svh] flex-col justify-end pb-24 pt-32 md:pb-32 md:pt-40">
+        <div className="container-tight relative flex min-h-[92svh] flex-col justify-end pb-20 pt-28 md:min-h-[94svh] md:pb-24 md:pt-28">
           <div className="max-w-3xl">
             <div className="eyebrow text-areia text-shadow-strong">{t("hero.eyebrow")}</div>
             <h1 className="mt-6 font-display text-5xl leading-[0.98] text-balance text-shadow-strong md:text-7xl lg:text-[5.5rem] text-areia">
