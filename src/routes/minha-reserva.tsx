@@ -13,7 +13,7 @@ export const Route = createFileRoute("/minha-reserva")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "Minha Reserva — Cavalgadas Energias da Terra" },
+      { title: "Minha Reserva, Cavalgadas Energias da Terra" },
       { name: "description", content: "Consulte o status da sua pré-reserva pelo protocolo." },
     ],
   }),

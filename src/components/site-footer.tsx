@@ -25,7 +25,7 @@ export function SiteFooter() {
               </div>
             </div>
             <p className="mt-6 max-w-md leading-relaxed text-areia/85 text-pretty">
-              Expedições imersivas a cavalo pelo Brasil e pelo mundo. Pequenos grupos, guias locais, hospedagens cuidadas — uma forma antiga de prestar atenção ao mundo.
+              Expedições imersivas a cavalo pelo Brasil e pelo mundo. Pequenos grupos, guias locais, hospedagens cuidadas · uma forma antiga de prestar atenção ao mundo.
             </p>
             <div className="mt-8 flex items-center gap-3">
               <Link to="/marcas/canastra-a-cavalo"><img src={logoCanastra} alt="Canastra a Cavalo" loading="lazy" className="h-12 w-12 rounded-full object-cover ring-1 ring-areia/20 transition-all hover:ring-cobre" /></Link>

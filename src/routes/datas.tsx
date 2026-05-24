@@ -9,7 +9,7 @@ const qo = queryOptions({ queryKey: ["proximas-datas-all"], queryFn: () => listP
 export const Route = createFileRoute("/datas")({
   head: () => ({
     meta: [
-      { title: "Próximas datas — Cavalgadas Energias da Terra" },
+      { title: "Próximas datas, Cavalgadas Energias da Terra" },
       { name: "description", content: "Calendário completo de expedições a cavalo. Reserve sua vaga." },
     ],
   }),

@@ -96,13 +96,14 @@ export const SLUG_IMAGE: Record<string, string> = {
   "serra-da-canastra": can26,        // drone cachoeira massiva
   "mantiqueira-refugio": man13,      // panorama drone vale verde
   "berco-do-marchador": man01,       // cavaleira no pôr-do-sol
-  "jericoacoara": pat01,             // (fallback — sem fotos reais de Jeri ainda)
+  "jericoacoara": can21,             // (fallback temporário até receber fotos de Jeri)
   "peru-vale-do-colca": peru09,      // grupo no canyon do Colca
   "patagonia-gaucha": pat01,         // cavalo nas montanhas nevadas
+  "caminho-de-santiago": man13,      // (fallback temporário até receber fotos da Galícia)
 };
 
 // ============================================================
-// GALERIA EDITORIAL POR EXPEDIÇÃO — selecionadas e ordenadas
+// GALERIA EDITORIAL POR EXPEDIÇÃO, selecionadas e ordenadas
 // ============================================================
 export const SLUG_GALERIA: Record<string, string[]> = {
   "serra-da-canastra": [
@@ -123,8 +124,10 @@ export const SLUG_GALERIA: Record<string, string[]> = {
     peru08, peru07, peru06, peru10, peru11,
   ],
   "patagonia-gaucha": [pat01, pat02, pat03],
-  "jericoacoara": [pat01, pat02, pat03],
+  "jericoacoara": [can21, can22, can18, can25, can10],
+  "caminho-de-santiago": [man13, man27, man19, man03, man21],
 };
+
 
 // ============================================================
 // COLEÇÕES TEMÁTICAS — para marcas e seções institucionais

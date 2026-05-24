@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import type { DataExpedicao } from "@/lib/expedicoes.functions";
 import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
-import { formatDateRange, formatDayShort } from "@/lib/format";
+import { formatDateRange, formatDayShort, formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -38,7 +38,15 @@ export function DataCard({ data }: { data: DataExpedicao }) {
         <div className="font-eyebrow text-[0.72rem] uppercase tracking-[0.22em] text-cobre">{data.expedicao_nome}</div>
         <div className="mt-1.5 font-display text-xl text-foreground">{formatDateRange(data.data_inicio, data.data_fim)}</div>
         <div className="mt-1 text-sm text-foreground/65">{data.vagas_disponiveis} de {data.vagas_total} vagas restantes</div>
+        {(data.preco_pix || data.preco_cartao) && (
+          <div className="mt-2 text-xs text-foreground/70">
+            {data.preco_pix && <span><strong className="text-cobre">{formatPrice(data.preco_pix)}</strong> à vista (PIX)</span>}
+            {data.preco_pix && data.preco_cartao && <span className="mx-2 text-muted-foreground">·</span>}
+            {data.preco_cartao && <span>{formatPrice(data.preco_cartao)} no cartão</span>}
+          </div>
+        )}
       </div>
+
 
       <div className="flex items-center justify-between gap-3 md:flex-col md:items-end md:gap-3">
         <span className={cn("inline-flex items-center rounded-full border px-3 py-1 text-[0.7rem] uppercase tracking-widest", STATUS_CLASS[data.status])}>
