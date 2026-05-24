@@ -7,6 +7,7 @@ import { ExpedicaoCard } from "@/components/expedicao-card";
 import { DataCard } from "@/components/data-card";
 import { HistoriasEditorial } from "@/components/historias-editorial";
 import { VideoCinematic } from "@/components/video-cinematic";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import hero from "@/assets/fotos/canastra/21.jpg";
 import manifestoImg from "@/assets/fotos/mantiqueira/13.jpg";
 import ctaFinal from "@/assets/fotos/canastra/26.jpg";
@@ -152,6 +153,12 @@ function HomePage() {
               <Link to="/datas" className="inline-flex items-center gap-2 rounded-full border border-areia/60 bg-carvao/30 backdrop-blur-sm px-7 py-4 text-sm uppercase tracking-widest text-areia hover:bg-areia/15">
                 {t("hero.ctaSecondary")}
               </Link>
+            </div>
+
+            {/* Seletor de idioma visível no mobile/tablet — discreto, premium */}
+            <div className="mt-8 flex items-center gap-3 xl:hidden">
+              <span className="h-px w-8 bg-areia/30" />
+              <LanguageSwitcher />
             </div>
           </div>
         </div>

@@ -8,6 +8,8 @@ import {
 } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { PageLoader } from "@/components/page-loader";
+import { ScrollToTop } from "@/components/scroll-to-top";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -94,12 +96,14 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
+      <PageLoader />
+      <ScrollToTop />
       <SiteHeader />
       <main className="min-h-screen">
         <Outlet />
       </main>
       <SiteFooter />
-      
+
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );

@@ -95,7 +95,7 @@ function ReservaPage() {
 
   const { fields, append, remove, replace } = useFieldArray({ control: form.control, name: "participantes" });
   const [responsavelParticipa, setResponsavelParticipa] = useState(true);
-  const [qtdTotal, setQtdTotal] = useState(1);
+  const [qtdTotal, setQtdTotal] = useState(2); // default: casal
 
   // Sincroniza quantidade de participantes com o total escolhido
   useEffect(() => {
@@ -109,6 +109,15 @@ function ReservaPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qtdTotal]);
+
+  // Sugere quantidade conforme tipo de grupo (sem travar o usuário)
+  const tipoGrupo = form.watch("adicionais.tipo_grupo");
+  useEffect(() => {
+    if (tipoGrupo === "individual" && qtdTotal !== 1) setQtdTotal(1);
+    else if (tipoGrupo === "casal" && qtdTotal < 2) setQtdTotal(2);
+    else if (tipoGrupo === "familia" && qtdTotal < 3) setQtdTotal(4);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tipoGrupo]);
 
   // "Você também participa?" · copia dados do responsável para participante 1
   const resp = form.watch("responsavel");
