@@ -150,7 +150,7 @@ function HomePage() {
               {[
                 ["Manada própria", "Mangalarga Marchador de alta performance"],
                 ["Grupos íntimos", "no máximo 14 cavaleiros por travessia"],
-                ["Brasil & mundo", "Canastra · Mantiqueira · Jeri · Peru · Patagônia"],
+                ["Brasil & mundo", "Canastra · Mantiqueira · Jeri · Peru · Patagônia · Santiago"],
                 ["Seguro aventura", "guias, carro de apoio e cobertura completa"],
               ].map(([big, sub]) => (
                 <div key={big} className="border-l-2 border-cobre pl-4">
