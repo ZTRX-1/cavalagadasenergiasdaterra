@@ -160,8 +160,8 @@ function QuemSomosPage() {
         </div>
       </section>
 
-      {/* FUNDADORAS */}
-      <section className="bg-background py-28 md:py-36">
+      {/* FUNDADORAS — intro */}
+      <section className="bg-background pt-28 md:pt-36">
         <div className="container-tight">
           <div className="mx-auto max-w-2xl text-center">
             <div className="eyebrow">As fundadoras</div>
@@ -169,87 +169,203 @@ function QuemSomosPage() {
               Duas mulheres. Uma travessia compartilhada.
             </h2>
             <p className="mt-5 text-foreground/75 text-pretty">
-              Lígia e Alinne lideram a Cavalgadas Energias da Terra com sensibilidade, técnica e
-              propósito. Cada uma traz uma força distinta — juntas, formam o rosto e a estrutura
-              de uma marca boutique brasileira que ganhou o mundo.
+              Lígia e Alinne lideram a Cavalgadas Energias da Terra, a Elas na Sela, a Canastra a
+              Cavalo e o Refúgio &amp; Haras Energias da Terra. Cada uma traz uma força distinta —
+              juntas, são o rosto e a estrutura de uma marca boutique brasileira que ganhou o
+              mundo.
             </p>
           </div>
+        </div>
+      </section>
 
-          {/* LÍGIA */}
-          <div className="mt-20 grid gap-12 md:grid-cols-12 md:gap-16">
+      {/* LÍGIA — perfil editorial completo */}
+      <section className="bg-background py-20 md:py-28">
+        <div className="container-tight">
+          <div className="grid gap-12 md:grid-cols-12 md:gap-16">
             <div className="md:col-span-5">
               <EditorialFrame
                 src={ligia}
-                alt="Lígia, fundadora"
+                alt="Lígia de Jesus Martins de Oliveira"
                 variant="portrait"
                 accent="cobre"
                 side="left"
               />
+              <div className="mt-6 hidden md:block">
+                <div className="font-eyebrow text-[0.65rem] uppercase tracking-[0.32em] text-foreground/55">
+                  Lígia · 38 anos · Cirurgiã-dentista &amp; idealizadora
+                </div>
+              </div>
             </div>
+
             <div className="md:col-span-7 flex flex-col justify-center">
               <div className="font-eyebrow text-[0.7rem] uppercase tracking-[0.32em] text-cobre">
-                Lígia · Fundadora & diretora criativa
+                Lígia de Jesus Martins de Oliveira · Fundadora &amp; idealizadora
               </div>
-              <h3 className="mt-4 font-display text-3xl leading-tight text-balance md:text-5xl">
+              <h3 className="mt-4 font-display text-3xl leading-[1.05] text-balance md:text-5xl">
                 A travessia começou nela.
               </h3>
-              <div className="mt-7 space-y-5 text-[1rem] leading-relaxed text-foreground/85">
-                <p className="text-pretty">
-                  Lígia descobriu nos cavalos um caminho de cura. Foram eles que a reorganizaram
-                  em momentos de dor, e foram eles que a apresentaram à sua vocação: criar
-                  travessias capazes de transformar quem as vive.
-                </p>
-                <p className="text-pretty">
-                  Sua sensibilidade dita o ritmo das expedições — o silêncio antes do amanhecer,
-                  a parada na cachoeira, a fogueira que dura mais um pouco. É dela a direção
-                  emocional da marca; a mão que traduz natureza, cavalo e tempo em experiência.
-                </p>
-                <p className="text-pretty italic text-foreground/70">
-                  "Eu não conduzo cavalgadas. Eu cuido do que acontece dentro das pessoas
-                  enquanto cavalgam."
-                </p>
-              </div>
-            </div>
-          </div>
 
-          {/* ALINNE — invertido */}
-          <div className="mt-24 grid gap-12 md:grid-cols-12 md:gap-16">
-            <div className="md:order-2 md:col-span-5">
-              <EditorialFrame
-                src={alinne}
-                alt="Alinne, fundadora"
-                variant="portrait"
-                accent="floresta"
-                side="right"
-              />
-            </div>
-            <div className="md:order-1 md:col-span-7 flex flex-col justify-center">
-              <div className="font-eyebrow text-[0.7rem] uppercase tracking-[0.32em] text-cobre">
-                Alinne · Fundadora & diretora executiva
-              </div>
-              <h3 className="mt-4 font-display text-3xl leading-tight text-balance md:text-5xl">
-                A estrutura que sustenta o sonho.
-              </h3>
-              <div className="mt-7 space-y-5 text-[1rem] leading-relaxed text-foreground/85">
+              <div className="mt-8 space-y-7 text-[1rem] leading-relaxed text-foreground/85">
                 <p className="text-pretty">
-                  Alinne é a arquitetura por trás da marca. Estratégia, gestão, expansão
-                  internacional — é dela a leitura de mercado que permitiu à Cavalgadas Energias
-                  da Terra se posicionar como uma marca boutique reconhecida fora do Brasil.
+                  Cirurgiã-dentista formada há 17 anos, empresária e idealizadora do projeto
+                  Cavalgadas Energias da Terra. Sócia-proprietária da Cavalgadas Energias da Terra,
+                  Elas na Sela, Canastra a Cavalo e do Refúgio &amp; Haras Energias da Terra —
+                  empreendimento voltado ao turismo rural, hospitalidade, peregrinação e
+                  experiências equestres.
                 </p>
-                <p className="text-pretty">
-                  Cuida das operações como cuida de um cavalo: com método, escuta e respeito.
-                  Garante que cada expedição rode com a precisão que a experiência premium exige
-                  — do transfer ao último brinde na fogueira.
-                </p>
-                <p className="text-pretty italic text-foreground/70">
-                  "A emoção é da Lígia. A entrega é minha. As duas precisam existir para a marca
-                  ser real."
-                </p>
+
+                <div>
+                  <div className="font-eyebrow text-[0.62rem] uppercase tracking-[0.3em] text-cobre">
+                    Origem · superação
+                  </div>
+                  <p className="mt-3 text-pretty">
+                    Sua trajetória com os cavalos começou após superar a síndrome do pânico e a
+                    depressão. A convivência com os animais tornou-se um instrumento real de
+                    transformação — e, mais tarde, a vocação que dá nome a tudo o que cria. É dessa
+                    travessia interna que nasce o propósito da marca: bem-estar, desenvolvimento
+                    humano e contato profundo com a natureza.
+                  </p>
+                </div>
+
+                <div>
+                  <div className="font-eyebrow text-[0.62rem] uppercase tracking-[0.3em] text-cobre">
+                    Formação equestre
+                  </div>
+                  <p className="mt-3 text-pretty">
+                    Criadora de cavalos Mangalarga Marchador, associada à ABCCMM. Formação em Doma
+                    Racional Índia, rédeas, equitação clássica e adestramento — métodos baseados no
+                    respeito, na comunicação e na conexão com o animal.
+                  </p>
+                </div>
+
+                <div>
+                  <div className="font-eyebrow text-[0.62rem] uppercase tracking-[0.3em] text-cobre">
+                    Direção das expedições
+                  </div>
+                  <p className="mt-3 text-pretty">
+                    Atua como guia e responsável pela criação e condução dos roteiros equestres no
+                    Brasil e no exterior. Integra cultura, gastronomia, patrimônio imaterial e
+                    contato profundo com a natureza — sempre pautada pela seleção criteriosa dos
+                    cavalos, segurança dos participantes e valorização das tradições locais.
+                  </p>
+                </div>
+
+                <blockquote className="border-l-2 border-cobre pl-5 font-display text-2xl italic leading-snug text-foreground/90">
+                  "Os cavalos não me salvaram só da dor. Me mostraram o tempo certo das coisas."
+                </blockquote>
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* ALINNE — perfil editorial completo */}
+      <section className="bg-background py-20 md:py-28">
+        <div className="container-tight">
+          <div className="grid gap-12 md:grid-cols-12 md:gap-16">
+            <div className="md:order-2 md:col-span-5">
+              <EditorialFrame
+                src={alinne}
+                alt="Alinne Telloli Trassi Martins Bento"
+                variant="portrait"
+                accent="floresta"
+                side="right"
+              />
+              <div className="mt-6 hidden md:block text-right">
+                <div className="font-eyebrow text-[0.65rem] uppercase tracking-[0.32em] text-foreground/55">
+                  Alinne · Engenheira civil · Gestão &amp; expansão
+                </div>
+              </div>
+            </div>
+
+            <div className="md:order-1 md:col-span-7 flex flex-col justify-center">
+              <div className="font-eyebrow text-[0.7rem] uppercase tracking-[0.32em] text-cobre">
+                Alinne Telloli Trassi Martins Bento · Fundadora &amp; sócia
+              </div>
+              <h3 className="mt-4 font-display text-3xl leading-[1.05] text-balance md:text-5xl">
+                A estrutura que sustenta o sonho.
+              </h3>
+
+              <div className="mt-8 space-y-7 text-[1rem] leading-relaxed text-foreground/85">
+                <p className="text-pretty">
+                  Empresária e engenheira civil, sócia-proprietária da Cavalgadas Energias da
+                  Terra, Elas na Sela, Canastra a Cavalo e do Refúgio &amp; Haras Energias da
+                  Terra. Atua na gestão de negócios voltados ao turismo rural, hospitalidade,
+                  criação de cavalos e experiências equestres exclusivas no Brasil e no exterior.
+                </p>
+
+                <div>
+                  <div className="font-eyebrow text-[0.62rem] uppercase tracking-[0.3em] text-cobre">
+                    Formação
+                  </div>
+                  <p className="mt-3 text-pretty">
+                    Graduada em Engenharia Civil pelo Instituto Mauá de Tecnologia, com
+                    pós-graduação em Administração para Engenheiros pela Universidade Presbiteriana
+                    Mackenzie e especializações pela FGV e pela Fundação Instituto de Administração
+                    (FIA).
+                  </p>
+                </div>
+
+                <div>
+                  <div className="font-eyebrow text-[0.62rem] uppercase tracking-[0.3em] text-cobre">
+                    Trajetória corporativa
+                  </div>
+                  <p className="mt-3 text-pretty">
+                    Construiu uma carreira sólida na área de Suprimentos em grandes construtoras —
+                    gestão, negociações, planejamento e liderança. Essa bagagem foi a base para
+                    estruturar e expandir os empreendimentos no setor de turismo equestre e
+                    hospedagem.
+                  </p>
+                </div>
+
+                <div>
+                  <div className="font-eyebrow text-[0.62rem] uppercase tracking-[0.3em] text-cobre">
+                    Encontro com os cavalos
+                  </div>
+                  <p className="mt-3 text-pretty">
+                    A conexão veio por meio de sua sócia, Lígia, e da força transformadora que os
+                    animais exercem na vida das pessoas. A partir daí, dedicou-se intensamente ao
+                    universo equestre, unindo gestão e propósito para entregar experiências
+                    autênticas, seguras e memoráveis na natureza.
+                  </p>
+                </div>
+
+                <blockquote className="border-l-2 border-cobre pl-5 font-display text-2xl italic leading-snug text-foreground/90">
+                  "A emoção é da Lígia. A entrega é minha. As duas precisam existir para a marca
+                  ser real."
+                </blockquote>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FILOSOFIA / PROPÓSITO */}
+      <section className="bg-floresta-deep py-24 text-areia md:py-32">
+        <div className="container-tight grid gap-12 md:grid-cols-12 md:gap-16">
+          <div className="md:col-span-5">
+            <div className="eyebrow text-cobre-soft">Filosofia</div>
+            <h2 className="mt-5 font-display text-4xl leading-[1.05] text-balance md:text-5xl">
+              Conectar pessoas, natureza e bem-estar.
+            </h2>
+          </div>
+          <div className="md:col-span-7 space-y-6 text-[1.02rem] leading-relaxed text-areia/85">
+            <p className="text-pretty">
+              Acreditamos no turismo equestre como ferramenta de transformação — um caminho de
+              reencontro com a natureza, com o silêncio e com o próprio ritmo. Criamos nossos
+              cavalos Mangalarga Marchador, treinamos com método e respeito, e desenhamos cada
+              expedição em torno do bem-estar do animal e da segurança do cavaleiro.
+            </p>
+            <p className="text-pretty">
+              Boutique, para nós, não é estética: é cuidado. Grupos pequenos, hospedagens curadas,
+              gastronomia que dialoga com o território, guias que conhecem o terreno como
+              conhecem o cavalo. É na escolha do que <em>não</em> entra na expedição que o luxo
+              acontece.
+            </p>
+          </div>
+        </div>
+      </section>
+
 
       {/* NA MÍDIA */}
       <NaMidia
