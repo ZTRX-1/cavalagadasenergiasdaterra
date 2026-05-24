@@ -5,8 +5,10 @@ import { NaMidia } from "@/components/na-midia";
 import { buildContactWhatsappUrl } from "@/lib/whatsapp";
 import ligia from "@/assets/founders/ligia-rio.jpg";
 import alinne from "@/assets/founders/alinne-pantanal.jpg";
+import heroPaisagem from "@/assets/fotos/mantiqueira/05.jpg";
 import natureza from "@/assets/fotos/mantiqueira/13.jpg";
 import travessia from "@/assets/fotos/canastra/37.jpg";
+
 
 export const Route = createFileRoute("/quem-somos")({
   head: () => ({
