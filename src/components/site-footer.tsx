@@ -42,6 +42,7 @@ export function SiteFooter() {
               <li><Link to="/" className="text-areia/85 hover:text-cobre">{t("nav.home")}</Link></li>
               <li><Link to="/expedicoes" className="text-areia/85 hover:text-cobre">{t("nav.expedicoes")}</Link></li>
               <li><Link to="/datas" className="text-areia/85 hover:text-cobre">{t("nav.datas")}</Link></li>
+              <li><Link to="/quem-somos" className="text-areia/85 hover:text-cobre">{t("nav.quemSomos")}</Link></li>
               <li><Link to="/contato" className="text-areia/85 hover:text-cobre">{t("nav.contato")}</Link></li>
               <li><Link to="/minha-reserva" className="text-areia/85 hover:text-cobre">{t("nav.minhaReserva")}</Link></li>
             </ul>

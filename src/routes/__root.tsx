@@ -10,6 +10,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { PageLoader } from "@/components/page-loader";
 import { ScrollToTop } from "@/components/scroll-to-top";
+import { CookieConsent } from "@/components/cookie-consent";
 
 import { Toaster } from "@/components/ui/sonner";
 
