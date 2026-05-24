@@ -1,54 +1,115 @@
-## Auditoria dos PDFs vs banco de dados
+## Refinamento cirúrgico final — curadoria visual + i18n PT/EN/ES
 
-| PDF | No banco? | Ação |
-|---|---|---|
-| Canastra 04–07 jun (R$ 4.900) | sim (data já existe) | preço específico desta data |
-| Canastra 11–14 jun (R$ 3.900) | sim (data já existe) | preço específico desta data (mais barato!) |
-| Mantiqueira 15–19 jul (R$ 4.200 PIX / R$ 4.600 cartão) | sim | atualizar copy + roteiro completo |
-| Peru Vale do Colca 04–07 ago (USD 1.600) | sim | atualizar roteiro + mostrar valor em BRL |
-| Berço do Mangalarga 19–23 ago (R$ 5.200) | sim | atualizar copy/roteiro |
-| Jericoacoara 15–18 out (R$ 5.800 PIX / R$ 6.400 cartão) | sim | atualizar copy/roteiro |
-| Patagônia 15–19 jan/2027 (USD 2.350) | sim | atualizar copy + BRL |
-| **Caminho de Santiago 01–07 set (€ 3.335)** | **NÃO** | **criar expedição + data nova** |
+Foco: **reduzir**, não adicionar. Recuperar o respiro premium da Home e instalar arquitetura multilíngue elegante.
 
-## Mudanças a fazer
+---
 
-### 1. Banco de dados (1 migração + 1 inserts)
-- **Migração**: adicionar `preco_pix numeric` e `preco_cartao numeric` (nulláveis) na tabela `datas` — para Canastra ter preços diferentes entre as duas edições, e para Mantiqueira/Jeri mostrarem PIX vs cartão.
-- **Inserts/updates**:
-  - `UPDATE expedicoes` para cada expedição: `descricao_curta`, `descricao_longa`, `roteiro` (jsonb dia-a-dia conforme PDF), `inclui` (jsonb), `requisitos` (jsonb), `duracao`, `regiao`.
-  - `UPDATE datas` Canastra 04–07 → `preco_pix=4900, preco_cartao=5200`; Canastra 11–14 → `preco_pix=3900, preco_cartao=4400`.
-  - `INSERT` nova expedição **Caminho de Santiago** (slug `caminho-de-santiago`, marca `cavalgadas`, pais `espanha`, moeda `EUR`, preço 3335) + `INSERT` data 01–07 set/2026.
+### 1. Curadoria visual (reduzir imagens)
 
-### 2. Conversão de moeda (USD/EUR → BRL)
-- Adicionar helper `formatPriceWithBRL(valor, moeda)` em `src/lib/format.ts` com taxas estáticas (`USD_BRL = 5.50`, `EUR_BRL = 6.00`, constantes editáveis) e label "≈ R$ X (cotação turismo)".
-- Aplicar em `ExpedicaoCard`, `DataCard`, página de detalhe e reserva.
+**Princípio:** apenas 1 imagem-âncora por seção. Blocos de texto vivem em fundo `carvao`/`areia` com tipografia respirada.
 
-### 3. Hero e header
-- Trocar texto eyebrow `"Energias da Terra · Expedições imersivas"` por `"Cavalgadas Energias da Terra"` (nome correto da marca).
-- Trocar imagem hero da home: usar foto real de cavaleiro/cavalo (ex.: `canastra/02.jpg` ou `mantiqueira/05.jpg`) — escolho a com melhor enquadramento cinematográfico após preview.
+- **Home** — manter apenas: hero, 1 imagem cinematográfica em "Quem somos", cards de expedição (já têm foto), 1 still atmosférico antes do CTA final. Remover: imagem em "Inclui", "Passos", "FAQ", "Depoimentos".
+- **Páginas de marca** (`canastra-a-cavalo`, `elas-na-sela`, `cavalgadas`) — reduzir galerias de 20+ para **6-8 imagens curadas**, escolhidas por força cinematográfica (drone, silhueta, atmosfera, cavalo/natureza).
+- **Página de expedição** (`expedicoes.$slug`) — hero + galeria editorial enxuta (máx 8 imagens).
+- Curar `SLUG_GALERIA` em `expedicao-images.ts` priorizando frames com composição forte (drones de cachoeira, silhuetas, pôr-do-sol, retratos de cavalo). Excluir fotos de almoço, mesa, bandeiras, grupos posados.
 
-### 4. Página da expedição Caminho de Santiago
-- Sem fotos reais ainda → usar fotos genéricas de Mantiqueira/Canastra como placeholder + aviso interno (você pode mandar fotos da Espanha depois).
-- Card e detalhe seguem mesmo padrão das demais.
+### 2. Galeria editorial v2
 
-### 5. Limpeza de hifens/em-dashes
-- Substituir `" — "` e `" – "` por vírgulas/pontos onde aparecem como separadores estilísticos em todas as rotas (`src/routes/*.tsx`) e componentes.
-- Manter hifens legítimos (Mangalarga-Marchador, etc.).
+Reescrever `galeria-editorial.tsx`:
+- Ritmo editorial: **1 full-bleed → 2 lado a lado → 1 retrato grande + 1 paisagem → 1 full-bleed final**.
+- Máx 6-8 fotos. Espaçamento generoso (gap-8 → gap-12). Aspect ratios variados (16/9, 4/5, 3/2).
+- Sem hover-zoom barulhento, apenas fade sutil. Legendas opcionais em `font-eyebrow` discretas.
 
-### 6. "Quem somos" / Manifesto
-- Atualizar bloco manifesto da home + texto da página `marcas/cavalgadas.tsx` para refletir o tom dos PDFs (manada própria Mangalarga, curadoria cinematográfica, grupos reduzidos, Brasil + Espanha + Peru + Patagônia).
+### 3. Contraste e legibilidade
 
-### 7. Refino editorial das páginas de detalhe
-- Onde o PDF traz roteiro dia-a-dia (Canastra, Mantiqueira, Peru, Patagônia, Berço, Santiago), garantir que o componente `ExpedicaoDetalhe` renderize todos os dias corretamente a partir do `roteiro` jsonb.
+- Overlay padrão em hero: `bg-carvao/65` + gradient inferior. Padronizar via classe utilitária `.hero-scrim` em `styles.css`.
+- Textos sobre imagem **sempre** dentro de container com gradient ou scrim. Auditar `marcas.*.tsx` e `expedicoes.$slug.tsx`.
+- Mobile: aumentar overlay para `/75` (texto pequeno sofre mais).
 
-## Ordem de execução
-1. Migração `datas.preco_pix/preco_cartao` (aguarda aprovação).
-2. Inserts/updates dos 6 UPDATEs + 1 INSERT expedição + 1 INSERT data.
-3. Código: helper de moeda, hero, header, copy, limpeza de hifens.
-4. QA visual nas páginas /, /expedicoes, /expedicoes/$slug e /datas.
+### 4. Home — recuperar minimalismo
 
-## Pendências / suposições
-- **Taxas de câmbio estáticas** (USD 5,50 / EUR 6,00). Se preferir cotação ao vivo, posso adicionar fetch via API depois.
-- **Fotos do Caminho de Santiago**: usarei placeholders da galeria existente até você enviar fotos reais.
-- **Canastra com 2 preços**: o site exibirá o preço de cada data individualmente (correto) e o card geral mostrará "a partir de R$ 3.900".
+Estrutura final enxuta:
+```
+HERO (full-screen, headline + 1 CTA)
+QUEM SOMOS (texto + 1 imagem lateral)
+EXPEDIÇÕES EM DESTAQUE (3 cards)
+INCLUI (6 ícones, sem imagem)
+PRÓXIMAS DATAS (lista enxuta)
+HISTÓRIAS (bloco emocional — ver §5)
+COMO FUNCIONA (4 passos, sem imagem)
+FAQ (acordeão, sem imagem)
+CTA FINAL (1 imagem cinematográfica + headline)
+```
+
+### 5. Histórias de quem atravessou conosco
+
+Transformar de cards genéricos em **bloco editorial emocional**:
+- Layout tipo "diário de expedição": citação grande em `font-display` itálico, nome/local discreto, **1 imagem em retrato** ao lado do relato em destaque (rotativo / carrossel suave).
+- Fundo `carvao` profundo, tipografia respirada, scroll horizontal sutil em desktop.
+- Sem estrelas, sem cards uniformes — sensação de página de revista.
+
+### 6. Multilíngue (PT/EN/ES)
+
+**Stack:** `react-i18next` + `i18next` + `i18next-browser-languagedetector` (SSR-safe, leve, padrão).
+
+Estrutura:
+```
+src/i18n/
+  index.ts              -> init i18next
+  locales/
+    pt/common.json
+    en/common.json
+    es/common.json
+```
+
+Implementação:
+- Init em `src/start.ts` (client) — fallback PT, detecção via localStorage + navigator.
+- Provider montado em `__root.tsx`.
+- Hook `useTranslation()` em todos os componentes de texto.
+- **Seletor no header** — versão minimalista: `PT · EN · ES` em `font-eyebrow text-[0.7rem]`, separador `·`, ativo em `text-cobre-soft`, inativo em `text-areia/50`. No mobile, dentro do drawer abaixo dos links.
+- Persistência em `localStorage` (`i18nextLng`).
+
+**Escopo da tradução inicial** (chaves organizadas por namespace):
+- `header` (nav, CTA "Reservar")
+- `home.hero`, `home.quemsomos`, `home.inclui`, `home.passos`, `home.faq`, `home.historias`, `home.cta`
+- `expedicoes.*` (labels: "A partir de", "Próximas datas", "Inclui", "Roteiro", "Requisitos", "Pré-reservar")
+- `reserva.*` (formulário)
+- `footer.*`
+
+Conteúdo dinâmico do banco (nome de expedição, descrição, roteiro) permanece em PT na v1 — adicionar colunas `_en`/`_es` é fora de escopo deste refinamento (sinalizar como próxima fase).
+
+### 7. Direção final
+
+- Tipografia: aumentar `tracking` e `leading` em headlines display.
+- Espaçamento vertical entre seções: padronizar `py-24 md:py-32` (mais respiro).
+- Animações: fade-in suave on-scroll (já existe via framer-motion onde aplicável), nada agressivo.
+- Remover quaisquer hovers "saltitantes" remanescentes.
+
+---
+
+### Arquivos afetados
+
+**Modificar:**
+- `src/routes/index.tsx` (reduzir imagens, reescrever Histórias)
+- `src/routes/marcas.*.tsx` (curar galerias)
+- `src/routes/expedicoes.$slug.tsx` (galeria enxuta)
+- `src/components/galeria-editorial.tsx` (reescrita v2)
+- `src/components/site-header.tsx` (seletor de idioma)
+- `src/components/site-footer.tsx` (i18n)
+- `src/lib/expedicao-images.ts` (curar arrays)
+- `src/styles.css` (utilitário `.hero-scrim`, espaçamentos)
+- `src/start.ts` + `src/routes/__root.tsx` (init i18n)
+
+**Criar:**
+- `src/i18n/index.ts`
+- `src/i18n/locales/{pt,en,es}/common.json`
+- `src/components/language-switcher.tsx`
+- `src/components/historias-editorial.tsx` (nova seção emocional)
+
+**Instalar:**
+- `i18next`, `react-i18next`, `i18next-browser-languagedetector`
+
+### Fora de escopo (sinalizar)
+
+- Tradução do conteúdo dinâmico do banco (nomes/descrições de expedição) — requer migração com colunas `_en`/`_es`. Posso fazer em seguida se quiser.
+- Geração de novas imagens — vamos apenas selecionar entre as existentes.
