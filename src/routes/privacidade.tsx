@@ -23,8 +23,13 @@ function PrivacidadePage() {
         </div>
       </section>
 
-      <article className="container-tight prose prose-neutral mt-16 max-w-3xl text-[0.98rem] leading-relaxed text-foreground/85">
-        <Section title="1. Quem somos">
+      <article className="container-tight mt-16 max-w-3xl text-[0.98rem] leading-relaxed text-foreground/85">
+        <div className="mb-10 rounded-sm border-l-2 border-cobre bg-cobre/5 px-5 py-4 text-sm text-foreground/75">
+          Documento em revisão jurídica final. O texto reflete a prática atual de tratamento de
+          dados e será substituído pela versão definitiva em breve.
+        </div>
+
+        <Section n="01" title="Quem somos">
           <p>Cavalgadas Energias da Terra · CNPJ 60.252.479/0001-85 · sediada em Minas Gerais, Brasil. Operadora de expedições equestres boutique no Brasil e no exterior, sob as marcas Cavalgadas Energias da Terra, Canastra a Cavalo e Elas na Sela.</p>
           <p><strong>Encarregado de Dados (DPO):</strong> contato@cavalgadasenergiasdaterra.com.br</p>
         </Section>
