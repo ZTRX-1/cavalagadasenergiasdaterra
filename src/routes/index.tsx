@@ -5,7 +5,7 @@ import { ArrowRight, Mountain, ShieldCheck, Sparkles, Utensils, Tent, Compass } 
 import { listExpedicoes, listProximasDatas } from "@/lib/expedicoes.functions";
 import { ExpedicaoCard } from "@/components/expedicao-card";
 import { DataCard } from "@/components/data-card";
-import { HistoriasEditorial } from "@/components/historias-editorial";
+import { DepoimentosShorts } from "@/components/depoimentos-shorts";
 import { VideoCinematic } from "@/components/video-cinematic";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { NaMidia } from "@/components/na-midia";
