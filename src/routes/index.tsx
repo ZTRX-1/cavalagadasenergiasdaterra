@@ -166,8 +166,11 @@ function HomePage() {
             <h1 className="mt-5 font-display text-5xl leading-[0.98] text-balance text-shadow-strong text-areia md:text-6xl lg:text-7xl">
               {t("hero.titlePart1")} <em className="not-italic text-cobre-soft">{t("hero.titleAccent")}</em> {t("hero.titlePart2")}
             </h1>
-            <p className="mt-5 max-w-lg text-lg leading-relaxed text-areia text-shadow-soft text-pretty">
+            <p className="mt-5 max-w-xl font-display text-2xl leading-[1.2] text-areia text-shadow-strong text-balance md:text-[1.7rem]">
               {t("hero.subtitle")}
+            </p>
+            <p className="mt-4 max-w-lg text-[0.98rem] leading-relaxed text-areia/85 text-shadow-soft text-pretty">
+              {t("hero.support")}
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Link to="/expedicoes" className="inline-flex items-center gap-2 rounded-full bg-cobre px-7 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">
