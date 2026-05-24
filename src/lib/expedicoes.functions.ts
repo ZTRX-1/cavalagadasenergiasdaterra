@@ -33,7 +33,10 @@ export interface DataExpedicao {
   vagas_total: number;
   vagas_disponiveis: number;
   status: string;
+  preco_pix?: number | null;
+  preco_cartao?: number | null;
 }
+
 
 export const listExpedicoes = createServerFn({ method: "GET" }).handler(async () => {
   const { data, error } = await supabaseAdmin
@@ -73,7 +76,7 @@ export const listProximasDatas = createServerFn({ method: "GET" }).handler(async
   const today = new Date().toISOString().slice(0, 10);
   const { data, error } = await supabaseAdmin
     .from("datas")
-    .select("id, expedicao_id, data_inicio, data_fim, vagas_total, vagas_disponiveis, status, expedicoes!inner(nome, slug, ativo)")
+    .select("id, expedicao_id, data_inicio, data_fim, vagas_total, vagas_disponiveis, status, preco_pix, preco_cartao, expedicoes!inner(nome, slug, ativo)")
     .gte("data_inicio", today)
     .eq("expedicoes.ativo", true)
     .order("data_inicio", { ascending: true });
@@ -88,5 +91,8 @@ export const listProximasDatas = createServerFn({ method: "GET" }).handler(async
     vagas_total: d.vagas_total,
     vagas_disponiveis: d.vagas_disponiveis,
     status: d.status,
+    preco_pix: d.preco_pix,
+    preco_cartao: d.preco_cartao,
   })) as DataExpedicao[];
 });
+
