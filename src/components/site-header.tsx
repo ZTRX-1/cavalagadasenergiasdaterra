@@ -17,6 +17,7 @@ export function SiteHeader() {
     { to: "/", label: t("nav.home") },
     { to: "/expedicoes", label: t("nav.expedicoes") },
     { to: "/datas", label: t("nav.datas") },
+    { to: "/quem-somos", label: t("nav.quemSomos") },
     { to: "/contato", label: t("nav.contato") },
     { to: "/minha-reserva", label: t("nav.minhaReserva") },
   ] as const;

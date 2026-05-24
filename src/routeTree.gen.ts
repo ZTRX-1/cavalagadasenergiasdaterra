@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as RegrasRouteImport } from './routes/regras'
+import { Route as QuemSomosRouteImport } from './routes/quem-somos'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as MinhaReservaRouteImport } from './routes/minha-reserva'
 import { Route as ExpedicoesRouteImport } from './routes/expedicoes'
@@ -31,6 +32,11 @@ const TermosRoute = TermosRouteImport.update({
 const RegrasRoute = RegrasRouteImport.update({
   id: '/regras',
   path: '/regras',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuemSomosRoute = QuemSomosRouteImport.update({
+  id: '/quem-somos',
+  path: '/quem-somos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacidadeRoute = PrivacidadeRouteImport.update({
@@ -96,6 +102,7 @@ export interface FileRoutesByFullPath {
   '/expedicoes': typeof ExpedicoesRouteWithChildren
   '/minha-reserva': typeof MinhaReservaRoute
   '/privacidade': typeof PrivacidadeRoute
+  '/quem-somos': typeof QuemSomosRoute
   '/regras': typeof RegrasRoute
   '/termos': typeof TermosRoute
   '/expedicoes/$slug': typeof ExpedicoesSlugRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByTo {
   '/expedicoes': typeof ExpedicoesRouteWithChildren
   '/minha-reserva': typeof MinhaReservaRoute
   '/privacidade': typeof PrivacidadeRoute
+  '/quem-somos': typeof QuemSomosRoute
   '/regras': typeof RegrasRoute
   '/termos': typeof TermosRoute
   '/expedicoes/$slug': typeof ExpedicoesSlugRoute
@@ -127,6 +135,7 @@ export interface FileRoutesById {
   '/expedicoes': typeof ExpedicoesRouteWithChildren
   '/minha-reserva': typeof MinhaReservaRoute
   '/privacidade': typeof PrivacidadeRoute
+  '/quem-somos': typeof QuemSomosRoute
   '/regras': typeof RegrasRoute
   '/termos': typeof TermosRoute
   '/expedicoes/$slug': typeof ExpedicoesSlugRoute
@@ -144,6 +153,7 @@ export interface FileRouteTypes {
     | '/expedicoes'
     | '/minha-reserva'
     | '/privacidade'
+    | '/quem-somos'
     | '/regras'
     | '/termos'
     | '/expedicoes/$slug'
@@ -159,6 +169,7 @@ export interface FileRouteTypes {
     | '/expedicoes'
     | '/minha-reserva'
     | '/privacidade'
+    | '/quem-somos'
     | '/regras'
     | '/termos'
     | '/expedicoes/$slug'
@@ -174,6 +185,7 @@ export interface FileRouteTypes {
     | '/expedicoes'
     | '/minha-reserva'
     | '/privacidade'
+    | '/quem-somos'
     | '/regras'
     | '/termos'
     | '/expedicoes/$slug'
@@ -190,6 +202,7 @@ export interface RootRouteChildren {
   ExpedicoesRoute: typeof ExpedicoesRouteWithChildren
   MinhaReservaRoute: typeof MinhaReservaRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
+  QuemSomosRoute: typeof QuemSomosRoute
   RegrasRoute: typeof RegrasRoute
   TermosRoute: typeof TermosRoute
   MarcasCanastraACavaloRoute: typeof MarcasCanastraACavaloRoute
@@ -212,6 +225,13 @@ declare module '@tanstack/react-router' {
       path: '/regras'
       fullPath: '/regras'
       preLoaderRoute: typeof RegrasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quem-somos': {
+      id: '/quem-somos'
+      path: '/quem-somos'
+      fullPath: '/quem-somos'
+      preLoaderRoute: typeof QuemSomosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacidade': {
@@ -313,6 +333,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExpedicoesRoute: ExpedicoesRouteWithChildren,
   MinhaReservaRoute: MinhaReservaRoute,
   PrivacidadeRoute: PrivacidadeRoute,
+  QuemSomosRoute: QuemSomosRoute,
   RegrasRoute: RegrasRoute,
   TermosRoute: TermosRoute,
   MarcasCanastraACavaloRoute: MarcasCanastraACavaloRoute,
@@ -323,13 +344,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
