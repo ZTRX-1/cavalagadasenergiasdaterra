@@ -3,6 +3,8 @@ import { ArrowRight, ArrowLeft } from "lucide-react";
 import hero from "@/assets/hero-cavalgada.jpg";
 import logo from "@/assets/logo-cavalgadas.jpg";
 import { MarcaCrossNav } from "@/components/marca-cross-nav";
+import { GaleriaEditorial } from "@/components/galeria-editorial";
+import { GALERIA_CAVALGADAS } from "@/lib/expedicao-images";
 
 
 export const Route = createFileRoute("/marcas/cavalgadas")({
@@ -47,8 +49,20 @@ function Page() {
           </div>
           <div className="md:col-span-7 text-lg leading-relaxed text-foreground/85 space-y-5">
             <p>Cavalgar é mais lento que dirigir, mais íntimo que caminhar. É o ritmo certo para atravessar uma paisagem sem violá-la.</p>
-            <p>Nossas expedições nascem de uma manada própria de Mangalarga Marchador, criada com tempo e afeto — não alugada, não improvisada.</p>
+            <p>Nossas expedições nascem de uma manada própria de Mangalarga Marchador, criada com tempo e afeto. Não alugada, não improvisada.</p>
             <p>Cada roteiro é desenhado como um filme: fotografia, ritmo, hospedagem, gastronomia. Tudo cuidado para que você apenas chegue, monte, e se entregue à travessia.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-background pb-24 md:pb-32">
+        <div className="container-tight">
+          <div className="max-w-2xl">
+            <div className="eyebrow">Nossos territórios</div>
+            <h2 className="mt-4 font-display text-3xl md:text-4xl">Brasil e mundo, atravessados a cavalo.</h2>
+          </div>
+          <div className="mt-12">
+            <GaleriaEditorial fotos={GALERIA_CAVALGADAS} alt="Cavalgadas Energias da Terra" />
           </div>
         </div>
       </section>

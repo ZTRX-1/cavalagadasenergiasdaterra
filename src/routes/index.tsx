@@ -144,7 +144,7 @@ function HomePage() {
           <div className="md:col-span-7">
             <p className="text-lg leading-relaxed text-foreground/80 text-pretty">
               Desenhamos cada expedição como um filme: roteiro, ritmo, fotografia. Trilhas selecionadas a dedo, hospedagens com alma, gastronomia que conversa com o território.
-              Cada vaga é limitada para preservar o silêncio — e a profundidade — do que estamos oferecendo.
+              Cada vaga é limitada para preservar o silêncio, e a profundidade, do que estamos oferecendo.
             </p>
             <div className="mt-10 grid gap-3 sm:grid-cols-2">
               {[
@@ -172,7 +172,7 @@ function HomePage() {
               Um filme curto sobre o que vivemos.
             </h2>
             <p className="mt-4 text-areia/75 text-pretty">
-              Três minutos da nossa rotina nas trilhas — para você sentir, antes de embarcar.
+              Três minutos da nossa rotina nas trilhas, para você sentir antes de embarcar.
             </p>
           </div>
           <VideoCinematic

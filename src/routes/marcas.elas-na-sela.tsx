@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, ArrowLeft } from "lucide-react";
-import hero from "@/assets/expedicao-cipo.jpg";
+import hero from "@/assets/fotos/mantiqueira/01.jpg";
 import logo from "@/assets/logo-elas-na-sela.jpg";
 import { MarcaCrossNav } from "@/components/marca-cross-nav";
+import { GaleriaEditorial } from "@/components/galeria-editorial";
+import { GALERIA_ELAS_NA_SELA } from "@/lib/expedicao-images";
 
 
 export const Route = createFileRoute("/marcas/elas-na-sela")({
@@ -32,7 +34,7 @@ function Page() {
             Elas na <em className="not-italic text-cobre-soft">Sela</em>
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-areia text-shadow-soft text-pretty">
-            Expedições desenhadas por mulheres, para mulheres. Liberdade, irmandade e natureza — no ritmo de quem quer atravessar a si mesma.
+            Expedições desenhadas por mulheres, para mulheres. Liberdade, irmandade e natureza no ritmo de quem quer atravessar a si mesma.
           </p>
         </div>
 
@@ -46,8 +48,20 @@ function Page() {
           </div>
           <div className="md:col-span-7 text-lg leading-relaxed text-foreground/85 space-y-5">
             <p>Elas na Sela nasceu da vontade de criar um espaço seguro, sofisticado e potente para mulheres viverem a cavalgada com profundidade.</p>
-            <p>Grupos pequenos, guias experientes, hospedagens acolhedoras — e uma rede de irmandade que muitas vezes começa na trilha e segue para a vida.</p>
+            <p>Grupos pequenos, guias experientes, hospedagens acolhedoras, e uma rede de irmandade que muitas vezes começa na trilha e segue para a vida.</p>
             <p>Para iniciantes ou cavaleiras experientes. O que importa é a vontade de atravessar.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-background pb-24 md:pb-32">
+        <div className="container-tight">
+          <div className="max-w-2xl">
+            <div className="eyebrow">Galeria</div>
+            <h2 className="mt-4 font-display text-3xl md:text-4xl">Cenas de quem atravessou.</h2>
+          </div>
+          <div className="mt-12">
+            <GaleriaEditorial fotos={GALERIA_ELAS_NA_SELA} alt="Elas na Sela" />
           </div>
         </div>
       </section>
