@@ -7,6 +7,7 @@ import { ExpedicaoCard } from "@/components/expedicao-card";
 import { DataCard } from "@/components/data-card";
 import { HistoriasEditorial } from "@/components/historias-editorial";
 import { VideoCinematic } from "@/components/video-cinematic";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import hero from "@/assets/fotos/canastra/21.jpg";
 import manifestoImg from "@/assets/fotos/mantiqueira/13.jpg";
 import ctaFinal from "@/assets/fotos/canastra/26.jpg";
