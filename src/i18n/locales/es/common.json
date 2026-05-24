@@ -1,0 +1,81 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "expedicoes": "Expediciones",
+    "datas": "Próximas Fechas",
+    "contato": "Contacto",
+    "minhaReserva": "Mi Reserva",
+    "reservar": "Reservar",
+    "preReserva": "Solicitar reserva",
+    "whatsapp": "WhatsApp"
+  },
+  "hero": {
+    "eyebrow": "Cavalgadas Energias da Terra",
+    "titlePart1": "Expediciones inmersivas",
+    "titleAccent": "a caballo",
+    "titlePart2": "por Brasil y el mundo.",
+    "subtitle": "Experiencias exclusivas para quienes buscan libertad, naturaleza y verdadera aventura. Grupos pequeños, caballos Mangalarga Marchador, alojamientos seleccionados.",
+    "ctaPrimary": "Ver Expediciones",
+    "ctaSecondary": "Próximas Fechas"
+  },
+  "marcas": {
+    "eyebrow": "Elige tu experiencia",
+    "title": "Tres caminos. Una misma esencia.",
+    "subtitle": "Cada marca de Energias da Terra existe para una forma específica de vivir la cabalgata. Encuentra la tuya.",
+    "cta": "Conocer la marca"
+  },
+  "manifesto": {
+    "eyebrow": "La experiencia",
+    "title": "No es un paseo. Es una travesía interior.",
+    "body": "Diseñamos cada expedición como una película: guion, ritmo, fotografía. Senderos seleccionados a mano, alojamientos con alma, gastronomía que dialoga con el territorio. Cada plaza es limitada para preservar el silencio, y la profundidad, de lo que ofrecemos."
+  },
+  "inclui": {
+    "eyebrow": "Qué incluye",
+    "title": "Todo cuidado. Tú solo llegas y cabalgas."
+  },
+  "expedicoes": {
+    "eyebrow": "Expediciones",
+    "title": "Destinos seleccionados, itinerarios firmados.",
+    "verTodas": "Ver todas",
+    "aPartirDe": "Desde",
+    "duracao": "Duración",
+    "regiao": "Región",
+    "proximasDatas": "Próximas fechas",
+    "inclui": "Qué incluye",
+    "roteiro": "Itinerario",
+    "requisitos": "Requisitos",
+    "preReservar": "Solicitar reserva"
+  },
+  "datas": {
+    "eyebrow": "Calendario",
+    "title": "Próximas fechas",
+    "verTodas": "Ver todas las fechas"
+  },
+  "passos": {
+    "eyebrow": "Cómo funciona",
+    "title": "Reservar tu lugar es simple y directo."
+  },
+  "historias": {
+    "eyebrow": "Quienes lo vivieron",
+    "title": "Historias de quienes cruzaron con nosotros.",
+    "intro": "Relatos reales de jinetes que cruzaron sierras, ríos y silencios con nosotros."
+  },
+  "faq": {
+    "eyebrow": "Preguntas",
+    "title": "Para que vayas tranquilo.",
+    "verTodas": "Ver todas las preguntas"
+  },
+  "ctaFinal": {
+    "eyebrow": "Tu próxima travesía",
+    "title": "La sierra te está esperando.",
+    "cta": "Elegir mi expedición"
+  },
+  "footer": {
+    "tagline": "Expediciones inmersivas a caballo por Brasil y el mundo. Grupos pequeños, guías locales, alojamientos cuidados, una forma antigua de prestar atención al mundo.",
+    "navegue": "Navega",
+    "contato": "Contacto",
+    "marcas": "Nuestras marcas",
+    "rights": "Todos los derechos reservados.",
+    "feitoPor": "Hecho con 💙 por"
+  }
+}

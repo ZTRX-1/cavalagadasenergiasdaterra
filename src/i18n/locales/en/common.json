@@ -1,0 +1,81 @@
+{
+  "nav": {
+    "home": "Home",
+    "expedicoes": "Expeditions",
+    "datas": "Upcoming Dates",
+    "contato": "Contact",
+    "minhaReserva": "My Booking",
+    "reservar": "Book",
+    "preReserva": "Request booking",
+    "whatsapp": "WhatsApp"
+  },
+  "hero": {
+    "eyebrow": "Cavalgadas Energias da Terra",
+    "titlePart1": "Immersive",
+    "titleAccent": "horseback",
+    "titlePart2": "expeditions across Brazil and the world.",
+    "subtitle": "Exclusive experiences for those who seek freedom, nature and real adventure. Small groups, Mangalarga Marchador horses, hand-picked lodging.",
+    "ctaPrimary": "View Expeditions",
+    "ctaSecondary": "Upcoming Dates"
+  },
+  "marcas": {
+    "eyebrow": "Choose your experience",
+    "title": "Three paths. One essence.",
+    "subtitle": "Each brand within Energias da Terra exists for a specific way of living the ride. Find yours.",
+    "cta": "Discover the brand"
+  },
+  "manifesto": {
+    "eyebrow": "The experience",
+    "title": "It's not a tour. It's an inner crossing.",
+    "body": "We design every expedition as a film: script, rhythm, cinematography. Hand-picked trails, soulful lodging, gastronomy that speaks to the land. Each spot is limited to preserve the silence, and the depth, of what we offer."
+  },
+  "inclui": {
+    "eyebrow": "What's included",
+    "title": "Everything taken care of. You just arrive and ride."
+  },
+  "expedicoes": {
+    "eyebrow": "Expeditions",
+    "title": "Curated destinations, signature itineraries.",
+    "verTodas": "View all",
+    "aPartirDe": "From",
+    "duracao": "Duration",
+    "regiao": "Region",
+    "proximasDatas": "Upcoming dates",
+    "inclui": "What's included",
+    "roteiro": "Itinerary",
+    "requisitos": "Requirements",
+    "preReservar": "Request booking"
+  },
+  "datas": {
+    "eyebrow": "Calendar",
+    "title": "Upcoming dates",
+    "verTodas": "View all dates"
+  },
+  "passos": {
+    "eyebrow": "How it works",
+    "title": "Booking your spot is simple and direct."
+  },
+  "historias": {
+    "eyebrow": "Those who lived it",
+    "title": "Stories from those who crossed with us.",
+    "intro": "Real accounts from riders who crossed mountains, rivers and silences with us."
+  },
+  "faq": {
+    "eyebrow": "Questions",
+    "title": "So you ride with peace of mind.",
+    "verTodas": "View all questions"
+  },
+  "ctaFinal": {
+    "eyebrow": "Your next crossing",
+    "title": "The mountains are waiting for you.",
+    "cta": "Choose my expedition"
+  },
+  "footer": {
+    "tagline": "Immersive horseback expeditions across Brazil and the world. Small groups, local guides, careful lodging, an ancient way of paying attention to the world.",
+    "navegue": "Navigate",
+    "contato": "Contact",
+    "marcas": "Our brands",
+    "rights": "All rights reserved.",
+    "feitoPor": "Crafted with 💙 by"
+  }
+}

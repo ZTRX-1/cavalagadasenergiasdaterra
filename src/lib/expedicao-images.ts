@@ -106,42 +106,29 @@ export const SLUG_IMAGE: Record<string, string> = {
 // GALERIA EDITORIAL POR EXPEDIÇÃO, selecionadas e ordenadas
 // ============================================================
 export const SLUG_GALERIA: Record<string, string[]> = {
-  "serra-da-canastra": [
-    can26, can37, can15, can18, can21, can25, can13,
-    can22, can04, can10, can19, can14, can20, can09,
-    can03, can27, can28, can29, can30, can05,
-  ],
-  "mantiqueira-refugio": [
-    man13, man01, man27, man19, man03, man07, man02,
-    man21, man28, man16, man06, man09, man34, man04,
-  ],
-  "berco-do-marchador": [
-    man01, man27, man03, man13, man21, man19,
-    man02, man06, man07, man16, man28, man09,
-  ],
-  "peru-vale-do-colca": [
-    peru09, peru12, peru03, peru01, peru05, peru04,
-    peru08, peru07, peru06, peru10, peru11,
-  ],
+  "serra-da-canastra": [can26, can37, can21, can15, can18, can22, can25, can13],
+  "mantiqueira-refugio": [man13, man01, man27, man19, man03, man21, man28, man07],
+  "berco-do-marchador": [man01, man27, man03, man13, man21, man19, man02, man28],
+  "peru-vale-do-colca": [peru09, peru12, peru03, peru01, peru05, peru08, peru07, peru11],
   "patagonia-gaucha": [pat01, pat02, pat03],
-  "jericoacoara": [can21, can22, can18, can25, can10],
-  "caminho-de-santiago": [man13, man27, man19, man03, man21],
+  "jericoacoara": [can21, can22, can18, can25],
+  "caminho-de-santiago": [man13, man27, man19, man03],
 };
 
 
 // ============================================================
-// COLEÇÕES TEMÁTICAS — para marcas e seções institucionais
+// COLEÇÕES TEMÁTICAS — máx 8 imagens, curadas por força cinematográfica
 // ============================================================
 export const GALERIA_CAVALGADAS = [
   can26, man13, peru09, pat01, can37, man27, peru12, can18,
 ];
 
 export const GALERIA_ELAS_NA_SELA = [
-  man01, can22, can24, can10, peru12, man19, can29, man27,
+  man01, can22, can24, man27, peru12, can10, man19, can29,
 ];
 
 export const GALERIA_CANASTRA_MARCA = [
-  can26, can37, can15, can18, can25, can20, can13, can22,
+  can26, can37, can21, can15, can18, can25, can22, can13,
 ];
 
 export const FOTO_EQUIPE = equipeMangalarga;

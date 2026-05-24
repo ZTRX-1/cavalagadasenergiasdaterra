@@ -1,0 +1,81 @@
+{
+  "nav": {
+    "home": "Home",
+    "expedicoes": "Expedições",
+    "datas": "Próximas Datas",
+    "contato": "Contato",
+    "minhaReserva": "Minha Reserva",
+    "reservar": "Reservar",
+    "preReserva": "Fazer pré-reserva",
+    "whatsapp": "WhatsApp"
+  },
+  "hero": {
+    "eyebrow": "Cavalgadas Energias da Terra",
+    "titlePart1": "Expedições imersivas",
+    "titleAccent": "a cavalo",
+    "titlePart2": "pelo Brasil e pelo mundo.",
+    "subtitle": "Experiências exclusivas para quem busca liberdade, natureza e aventura de verdade. Pequenos grupos, cavalos Mangalarga Marchador, hospedagens curadas.",
+    "ctaPrimary": "Ver Expedições",
+    "ctaSecondary": "Próximas Datas"
+  },
+  "marcas": {
+    "eyebrow": "Escolha sua experiência",
+    "title": "Três caminhos. Uma mesma essência.",
+    "subtitle": "Cada marca da Energias da Terra existe para uma forma específica de viver a cavalgada. Encontre a sua.",
+    "cta": "Conhecer a marca"
+  },
+  "manifesto": {
+    "eyebrow": "A experiência",
+    "title": "Não é um passeio. É uma travessia interna.",
+    "body": "Desenhamos cada expedição como um filme: roteiro, ritmo, fotografia. Trilhas selecionadas a dedo, hospedagens com alma, gastronomia que conversa com o território. Cada vaga é limitada para preservar o silêncio, e a profundidade, do que estamos oferecendo."
+  },
+  "inclui": {
+    "eyebrow": "O que está incluso",
+    "title": "Tudo cuidado. Você apenas chega e cavalga."
+  },
+  "expedicoes": {
+    "eyebrow": "Expedições",
+    "title": "Destinos selecionados, roteiros assinados.",
+    "verTodas": "Ver todas",
+    "aPartirDe": "A partir de",
+    "duracao": "Duração",
+    "regiao": "Região",
+    "proximasDatas": "Próximas datas",
+    "inclui": "O que está incluso",
+    "roteiro": "Roteiro",
+    "requisitos": "Requisitos",
+    "preReservar": "Pré-reservar"
+  },
+  "datas": {
+    "eyebrow": "Calendário",
+    "title": "Próximas datas",
+    "verTodas": "Ver todas as datas"
+  },
+  "passos": {
+    "eyebrow": "Como funciona",
+    "title": "Reservar sua vaga é simples e direto."
+  },
+  "historias": {
+    "eyebrow": "Quem viveu",
+    "title": "Histórias de quem atravessou conosco.",
+    "intro": "Relatos reais de cavaleiros que cruzaram serras, rios e silêncios com a gente."
+  },
+  "faq": {
+    "eyebrow": "Perguntas",
+    "title": "Para você ir tranquilo.",
+    "verTodas": "Ver todas as perguntas"
+  },
+  "ctaFinal": {
+    "eyebrow": "Sua próxima travessia",
+    "title": "A serra está te esperando.",
+    "cta": "Escolher minha expedição"
+  },
+  "footer": {
+    "tagline": "Expedições imersivas a cavalo pelo Brasil e pelo mundo. Pequenos grupos, guias locais, hospedagens cuidadas, uma forma antiga de prestar atenção ao mundo.",
+    "navegue": "Navegue",
+    "contato": "Contato",
+    "marcas": "Nossas marcas",
+    "rights": "Todos os direitos reservados.",
+    "feitoPor": "Desenvolvido com 💙 pela"
+  }
+}
