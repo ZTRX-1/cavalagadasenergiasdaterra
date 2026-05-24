@@ -82,7 +82,7 @@ function HomePage() {
 
         <div className="container-tight relative flex min-h-[100svh] flex-col justify-end pb-20 pt-32 md:pb-28 md:pt-40">
           <div className="max-w-3xl">
-            <div className="eyebrow text-areia text-shadow-strong">Energias da Terra · Expedições imersivas</div>
+            <div className="eyebrow text-areia text-shadow-strong">Cavalgadas Energias da Terra</div>
             <h1 className="mt-5 font-display text-5xl leading-[0.98] text-balance text-shadow-strong md:text-7xl lg:text-8xl text-areia">
               Expedições imersivas <em className="not-italic text-cobre-soft">a cavalo</em> pelo Brasil e pelo mundo.
             </h1>
