@@ -77,10 +77,15 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col items-start justify-between gap-3 border-t border-areia/10 pt-8 text-xs text-areia/65 md:flex-row md:items-center">
+        <div className="mt-16 flex flex-col items-start justify-between gap-4 border-t border-areia/10 pt-8 text-xs text-areia/65 md:flex-row md:items-center">
           <div className="space-y-1">
             <div>© {new Date().getFullYear()} Cavalgadas Energias da Terra · {t("footer.rights")}</div>
             <div className="text-areia/55">CNPJ 60.252.479/0001-85</div>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <Link to="/privacidade" className="text-areia/70 hover:text-cobre">Privacidade</Link>
+            <Link to="/termos" className="text-areia/70 hover:text-cobre">Termos de Uso</Link>
+            <Link to="/regras" className="text-areia/70 hover:text-cobre">Regras</Link>
           </div>
           <div className="text-areia/55">
             {t("footer.feitoPor")}{" "}
