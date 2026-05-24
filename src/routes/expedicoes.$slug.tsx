@@ -5,7 +5,7 @@ import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
 import { getExpedicaoImage, getExpedicaoGaleria } from "@/lib/expedicao-images";
 import { GaleriaEditorial } from "@/components/galeria-editorial";
 import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
-import { formatDateRange, formatPrice } from "@/lib/format";
+import { formatDateRange, formatPrice, formatPriceWithBRL } from "@/lib/format";
 import { DataCard } from "@/components/data-card";
 
 const qo = (slug: string) =>
@@ -50,7 +50,7 @@ function DetalhesExpedicao() {
             <span className="h-1 w-1 rounded-full bg-cobre" />
             <span>{expedicao.nivel}</span>
             <span className="h-1 w-1 rounded-full bg-cobre" />
-            <span>A partir de {formatPrice(expedicao.preco)}</span>
+            <span>A partir de {formatPriceWithBRL(expedicao.preco, expedicao.moeda)}</span>
           </div>
           <h1 className="mt-5 max-w-3xl font-display text-5xl text-balance md:text-7xl">{expedicao.nome}</h1>
           <p className="mt-5 max-w-2xl text-lg text-areia/85 text-pretty">{expedicao.descricao_curta}</p>
