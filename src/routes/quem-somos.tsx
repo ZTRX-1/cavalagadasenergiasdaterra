@@ -128,8 +128,8 @@ function QuemSomosPage() {
 
           <div className="md:col-span-5">
             <EditorialFrame
-              src={natureza}
-              alt="Natureza"
+              src={travessia}
+              alt="Cavalos na travessia"
               variant="organic"
               accent="floresta"
               side="right"
