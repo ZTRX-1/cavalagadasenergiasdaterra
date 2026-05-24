@@ -1,0 +1,1 @@
+ALTER TABLE public.datas ADD COLUMN IF NOT EXISTS preco_pix numeric, ADD COLUMN IF NOT EXISTS preco_cartao numeric;

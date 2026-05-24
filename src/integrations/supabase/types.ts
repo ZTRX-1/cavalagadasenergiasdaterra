@@ -21,6 +21,8 @@ export type Database = {
           data_inicio: string
           expedicao_id: string
           id: string
+          preco_cartao: number | null
+          preco_pix: number | null
           status: string
           vagas_disponiveis: number
           vagas_total: number
@@ -31,6 +33,8 @@ export type Database = {
           data_inicio: string
           expedicao_id: string
           id?: string
+          preco_cartao?: number | null
+          preco_pix?: number | null
           status?: string
           vagas_disponiveis?: number
           vagas_total?: number
@@ -41,6 +45,8 @@ export type Database = {
           data_inicio?: string
           expedicao_id?: string
           id?: string
+          preco_cartao?: number | null
+          preco_pix?: number | null
           status?: string
           vagas_disponiveis?: number
           vagas_total?: number

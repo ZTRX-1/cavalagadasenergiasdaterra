@@ -1,83 +1,54 @@
-## Plano de refinamento final
+## Auditoria dos PDFs vs banco de dados
 
-### Material recebido agora
-- `Patagonia.rar` — 3 fotos
-- `Peru.rar` — 12 fotos
-- `Serra da Canastra.rar` — 38 fotos + 1 da Equipe + 1 IMG_0165
-- `Serra da Mantiqueira.rar` — 34 fotos
+| PDF | No banco? | Ação |
+|---|---|---|
+| Canastra 04–07 jun (R$ 4.900) | sim (data já existe) | preço específico desta data |
+| Canastra 11–14 jun (R$ 3.900) | sim (data já existe) | preço específico desta data (mais barato!) |
+| Mantiqueira 15–19 jul (R$ 4.200 PIX / R$ 4.600 cartão) | sim | atualizar copy + roteiro completo |
+| Peru Vale do Colca 04–07 ago (USD 1.600) | sim | atualizar roteiro + mostrar valor em BRL |
+| Berço do Mangalarga 19–23 ago (R$ 5.200) | sim | atualizar copy/roteiro |
+| Jericoacoara 15–18 out (R$ 5.800 PIX / R$ 6.400 cartão) | sim | atualizar copy/roteiro |
+| Patagônia 15–19 jan/2027 (USD 2.350) | sim | atualizar copy + BRL |
+| **Caminho de Santiago 01–07 set (€ 3.335)** | **NÃO** | **criar expedição + data nova** |
 
-Total: ~88 fotos reais oficiais, uma pasta por destino.
+## Mudanças a fazer
 
-### Dependência aberta — PDFs
-Os PDFs **não foram reanexados** neste envio. Preciso deles para fazer a revisão pedida (datas, valores, parcelamento, regras, inclusos). **Por favor reanexe os PDFs oficiais de cada expedição** no próximo envio — sem eles, eu só consigo manter os dados que já estão no banco (que vieram dos PDFs anteriores).
+### 1. Banco de dados (1 migração + 1 inserts)
+- **Migração**: adicionar `preco_pix numeric` e `preco_cartao numeric` (nulláveis) na tabela `datas` — para Canastra ter preços diferentes entre as duas edições, e para Mantiqueira/Jeri mostrarem PIX vs cartão.
+- **Inserts/updates**:
+  - `UPDATE expedicoes` para cada expedição: `descricao_curta`, `descricao_longa`, `roteiro` (jsonb dia-a-dia conforme PDF), `inclui` (jsonb), `requisitos` (jsonb), `duracao`, `regiao`.
+  - `UPDATE datas` Canastra 04–07 → `preco_pix=4900, preco_cartao=5200`; Canastra 11–14 → `preco_pix=3900, preco_cartao=4400`.
+  - `INSERT` nova expedição **Caminho de Santiago** (slug `caminho-de-santiago`, marca `cavalgadas`, pais `espanha`, moeda `EUR`, preço 3335) + `INSERT` data 01–07 set/2026.
 
-Posso seguir já com fotos e copy enquanto você reanexa os PDFs.
+### 2. Conversão de moeda (USD/EUR → BRL)
+- Adicionar helper `formatPriceWithBRL(valor, moeda)` em `src/lib/format.ts` com taxas estáticas (`USD_BRL = 5.50`, `EUR_BRL = 6.00`, constantes editáveis) e label "≈ R$ X (cotação turismo)".
+- Aplicar em `ExpedicaoCard`, `DataCard`, página de detalhe e reserva.
 
----
+### 3. Hero e header
+- Trocar texto eyebrow `"Energias da Terra · Expedições imersivas"` por `"Cavalgadas Energias da Terra"` (nome correto da marca).
+- Trocar imagem hero da home: usar foto real de cavaleiro/cavalo (ex.: `canastra/02.jpg` ou `mantiqueira/05.jpg`) — escolho a com melhor enquadramento cinematográfico após preview.
 
-### Etapa 1 — Curadoria e import das fotos (sem PDFs)
+### 4. Página da expedição Caminho de Santiago
+- Sem fotos reais ainda → usar fotos genéricas de Mantiqueira/Canastra como placeholder + aviso interno (você pode mandar fotos da Espanha depois).
+- Card e detalhe seguem mesmo padrão das demais.
 
-1. **Conversão e otimização**
-   - Converter todas as `.jfif` para `.jpg` otimizadas (qualidade 82, redimensionadas para máx 2000px lado maior).
-   - Salvar em `src/assets/fotos/{destino}/NN-descritor.jpg` para nomes semânticos.
+### 5. Limpeza de hifens/em-dashes
+- Substituir `" — "` e `" – "` por vírgulas/pontos onde aparecem como separadores estilísticos em todas as rotas (`src/routes/*.tsx`) e componentes.
+- Manter hifens legítimos (Mangalarga-Marchador, etc.).
 
-2. **Curadoria visual por destino** (eu mesmo seleciono as melhores, descarto duplicatas/fracas):
-   - **Canastra**: hero panorâmico (drone cachoeira), card capa, 8–10 fotos de galeria (travessia, cavalo, gastronomia, pôr-do-sol, hospedagem, pessoas reais).
-   - **Mantiqueira (Berço do Marchador / Cruzilia)**: mesmo padrão.
-   - **Peru (Vale do Colca)**: hero, card, galeria (12 fotos disponíveis — uso todas as boas).
-   - **Patagônia**: 3 fotos — 1 hero, 1 card, 1 galeria/atmosfera.
+### 6. "Quem somos" / Manifesto
+- Atualizar bloco manifesto da home + texto da página `marcas/cavalgadas.tsx` para refletir o tom dos PDFs (manada própria Mangalarga, curadoria cinematográfica, grupos reduzidos, Brasil + Espanha + Peru + Patagônia).
 
-3. **Mapeamento de slots no site** (sem repetir excessivamente):
-   - Hero home (`/`): rotaciona 2–3 das melhores cinematográficas (Canastra drone, Mantiqueira pôr-do-sol).
-   - Card da expedição em listagem: 1 foto-capa única por expedição.
-   - Página de detalhe (`/expedicoes/$slug`): hero próprio + galeria editorial.
-   - Páginas de marca (Cavalgadas, Elas na Sela, Canastra a Cavalo): fotos coerentes com identidade.
-   - Quem somos / equipe: `Eqp.jfif` no bloco de equipe.
+### 7. Refino editorial das páginas de detalhe
+- Onde o PDF traz roteiro dia-a-dia (Canastra, Mantiqueira, Peru, Patagônia, Berço, Santiago), garantir que o componente `ExpedicaoDetalhe` renderize todos os dias corretamente a partir do `roteiro` jsonb.
 
-4. **Limpeza**: remover/marcar como obsoletas as imagens IA antigas (`expedicao-canastra.jpg`, `expedicao-cipo.jpg`, etc).
+## Ordem de execução
+1. Migração `datas.preco_pix/preco_cartao` (aguarda aprovação).
+2. Inserts/updates dos 6 UPDATEs + 1 INSERT expedição + 1 INSERT data.
+3. Código: helper de moeda, hero, header, copy, limpeza de hifens.
+4. QA visual nas páginas /, /expedicoes, /expedicoes/$slug e /datas.
 
-### Etapa 2 — Galerias premium (editorial, não grid)
-
-Criar componente `<GaleriaEditorial />` com:
-- Layout asymmetric/bento (alterna 1 foto grande + 2 pequenas, foto full-bleed entre blocos).
-- Lazy-loading nativo (`loading="lazy"`, `decoding="async"`).
-- Aspect-ratio fixo (sem CLS), blur placeholder via gradiente do token `--carvao`.
-- Lightbox sutil ao clique (Dialog do shadcn já disponível).
-- Ritmo: espaçamento generoso (`gap-6 md:gap-10`), sem encher tela de imagem.
-
-Aplicado em: detalhe de expedição, página da marca, seção "Atmosfera" no home.
-
-### Etapa 3 — Refino de copy (anti-hífen)
-
-Auditar com `rg " — | - "` em `src/routes/` e `src/components/` e em strings de banco (descrições de expedição). Substituir traços excessivos por vírgulas, pontos ou ritmo natural. Lista de candidatos típicos:
-- Subtítulos do hero
-- Cards de expedição
-- Páginas de marca (manifestos)
-- Footer / chamadas
-
-Critério: máximo 1 travessão por parágrafo, preferindo prosa fluida.
-
-### Etapa 4 — Performance
-
-- Conversão `.jpg` com qualidade 82 e largura máx 2000px no script de import.
-- `loading="lazy"` e `decoding="async"` em toda foto que não seja hero LCP.
-- Hero LCP com `fetchpriority="high"` e `<link rel="preload">` via `head()` da rota.
-- Aspect-ratio reservado em todo `<img>` para zero CLS.
-
-### Etapa 5 — Revisão dos PDFs (após você reanexar)
-
-Quando os PDFs voltarem, vou:
-1. Parse de cada PDF (`document--parse_document`).
-2. Comparar campo a campo com a tabela `expedicoes` e `datas` no banco: nome, preço, moeda, duração, datas, vagas, inclusos, requisitos, roteiro.
-3. Gerar migrations `UPDATE` para cada divergência (PDF vence).
-4. Conferir copy do site (páginas de marca, manifestos) contra os PDFs institucionais.
-
----
-
-### Ordem de execução
-1. Etapa 1 + 2 + 3 + 4 — já posso fazer agora.
-2. Etapa 5 — quando você reanexar os PDFs.
-
-### Confirmação que preciso
-- **OK em seguir com fotos/galerias/copy/perf agora e tratar PDFs num segundo turno?**
-- Caso já queira reanexar os PDFs neste momento, só mandar.
+## Pendências / suposições
+- **Taxas de câmbio estáticas** (USD 5,50 / EUR 6,00). Se preferir cotação ao vivo, posso adicionar fetch via API depois.
+- **Fotos do Caminho de Santiago**: usarei placeholders da galeria existente até você enviar fotos reais.
+- **Canastra com 2 preços**: o site exibirá o preço de cada data individualmente (correto) e o card geral mostrará "a partir de R$ 3.900".
