@@ -13,6 +13,7 @@ import { Route as TermosRouteImport } from './routes/termos'
 import { Route as RegrasRouteImport } from './routes/regras'
 import { Route as QuemSomosRouteImport } from './routes/quem-somos'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
+import { Route as NaMidiaRouteImport } from './routes/na-midia'
 import { Route as MinhaReservaRouteImport } from './routes/minha-reserva'
 import { Route as ExpedicoesRouteImport } from './routes/expedicoes'
 import { Route as DatasRouteImport } from './routes/datas'
@@ -42,6 +43,11 @@ const QuemSomosRoute = QuemSomosRouteImport.update({
 const PrivacidadeRoute = PrivacidadeRouteImport.update({
   id: '/privacidade',
   path: '/privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NaMidiaRoute = NaMidiaRouteImport.update({
+  id: '/na-midia',
+  path: '/na-midia',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MinhaReservaRoute = MinhaReservaRouteImport.update({
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/datas': typeof DatasRoute
   '/expedicoes': typeof ExpedicoesRouteWithChildren
   '/minha-reserva': typeof MinhaReservaRoute
+  '/na-midia': typeof NaMidiaRoute
   '/privacidade': typeof PrivacidadeRoute
   '/quem-somos': typeof QuemSomosRoute
   '/regras': typeof RegrasRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/datas': typeof DatasRoute
   '/expedicoes': typeof ExpedicoesRouteWithChildren
   '/minha-reserva': typeof MinhaReservaRoute
+  '/na-midia': typeof NaMidiaRoute
   '/privacidade': typeof PrivacidadeRoute
   '/quem-somos': typeof QuemSomosRoute
   '/regras': typeof RegrasRoute
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/datas': typeof DatasRoute
   '/expedicoes': typeof ExpedicoesRouteWithChildren
   '/minha-reserva': typeof MinhaReservaRoute
+  '/na-midia': typeof NaMidiaRoute
   '/privacidade': typeof PrivacidadeRoute
   '/quem-somos': typeof QuemSomosRoute
   '/regras': typeof RegrasRoute
@@ -152,6 +161,7 @@ export interface FileRouteTypes {
     | '/datas'
     | '/expedicoes'
     | '/minha-reserva'
+    | '/na-midia'
     | '/privacidade'
     | '/quem-somos'
     | '/regras'
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/datas'
     | '/expedicoes'
     | '/minha-reserva'
+    | '/na-midia'
     | '/privacidade'
     | '/quem-somos'
     | '/regras'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/datas'
     | '/expedicoes'
     | '/minha-reserva'
+    | '/na-midia'
     | '/privacidade'
     | '/quem-somos'
     | '/regras'
@@ -201,6 +213,7 @@ export interface RootRouteChildren {
   DatasRoute: typeof DatasRoute
   ExpedicoesRoute: typeof ExpedicoesRouteWithChildren
   MinhaReservaRoute: typeof MinhaReservaRoute
+  NaMidiaRoute: typeof NaMidiaRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   QuemSomosRoute: typeof QuemSomosRoute
   RegrasRoute: typeof RegrasRoute
@@ -239,6 +252,13 @@ declare module '@tanstack/react-router' {
       path: '/privacidade'
       fullPath: '/privacidade'
       preLoaderRoute: typeof PrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/na-midia': {
+      id: '/na-midia'
+      path: '/na-midia'
+      fullPath: '/na-midia'
+      preLoaderRoute: typeof NaMidiaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/minha-reserva': {
@@ -332,6 +352,7 @@ const rootRouteChildren: RootRouteChildren = {
   DatasRoute: DatasRoute,
   ExpedicoesRoute: ExpedicoesRouteWithChildren,
   MinhaReservaRoute: MinhaReservaRoute,
+  NaMidiaRoute: NaMidiaRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   QuemSomosRoute: QuemSomosRoute,
   RegrasRoute: RegrasRoute,
