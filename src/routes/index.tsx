@@ -306,8 +306,8 @@ function HomePage() {
         </div>
       </section>
 
-      {/* HISTÓRIAS — bloco editorial emocional */}
-      <HistoriasEditorial />
+      {/* DEPOIMENTOS — 3 shorts cinematográficos */}
+      <DepoimentosShorts />
 
       {/* NA MÍDIA — autoridade discreta */}
       <NaMidia variant="compact" />
