@@ -6,14 +6,16 @@ type Short = {
   nome: string;
   legenda: string;
   capitulo: string;
+  src?: string;
 };
 
 const SHORTS: Short[] = [
   {
-    id: "uzejZ5z_p1w",
+    id: "depoimento-local-1",
     nome: "Energias da Terra",
     legenda: "Quando o cavalo nos devolve ao essencial.",
     capitulo: "Capítulo I",
+    src: "/depoimentos/depoimento-1.mp4",
   },
   {
     id: "zTldVJWyVR8",
@@ -97,21 +99,33 @@ export function DepoimentosShorts() {
               <div className="relative">
                 <div className="pointer-events-none absolute -inset-[6px] border border-cobre/25 transition-colors duration-700 group-hover:border-cobre/55" />
                 <div className="relative aspect-[9/16] overflow-hidden bg-carvao/80 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] ring-1 ring-areia/8">
-                  {/* high-res thumb with graceful fallback */}
-                  <img
-                    src={`https://i.ytimg.com/vi/${s.id}/maxresdefault.jpg`}
-                    onError={(e) => {
-                      const img = e.currentTarget as HTMLImageElement;
-                      if (!img.dataset.fallback) {
-                        img.dataset.fallback = "1";
-                        img.src = `https://i.ytimg.com/vi/${s.id}/sddefault.jpg`;
-                      }
-                    }}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                    className="absolute inset-0 h-full w-full scale-[1.35] object-cover transition-transform duration-[1600ms] ease-out group-hover:scale-[1.42]"
-                  />
+                  {/* high-res thumb (image for YT, looping preview for local) */}
+                  {s.src ? (
+                    <video
+                      src={s.src}
+                      muted
+                      loop
+                      playsInline
+                      autoPlay
+                      preload="metadata"
+                      className="absolute inset-0 h-full w-full scale-[1.05] object-cover transition-transform duration-[1600ms] ease-out group-hover:scale-[1.1]"
+                    />
+                  ) : (
+                    <img
+                      src={`https://i.ytimg.com/vi/${s.id}/maxresdefault.jpg`}
+                      onError={(e) => {
+                        const img = e.currentTarget as HTMLImageElement;
+                        if (!img.dataset.fallback) {
+                          img.dataset.fallback = "1";
+                          img.src = `https://i.ytimg.com/vi/${s.id}/sddefault.jpg`;
+                        }
+                      }}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 h-full w-full scale-[1.35] object-cover transition-transform duration-[1600ms] ease-out group-hover:scale-[1.42]"
+                    />
+                  )}
 
                   {/* cinematic gradients */}
                   <div className="absolute inset-0 bg-gradient-to-t from-carvao via-carvao/35 to-transparent" />
@@ -189,13 +203,29 @@ export function DepoimentosShorts() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="pointer-events-none absolute -inset-[6px] z-10 border border-cobre/30" />
-            <iframe
-              src={`https://www.youtube-nocookie.com/embed/${open}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
-              title="Depoimento"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="absolute inset-0 h-full w-full"
-            />
+            {(() => {
+              const current = SHORTS.find((x) => x.id === open);
+              if (current?.src) {
+                return (
+                  <video
+                    src={current.src}
+                    controls
+                    autoPlay
+                    playsInline
+                    className="absolute inset-0 h-full w-full bg-black"
+                  />
+                );
+              }
+              return (
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${open}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
+                  title="Depoimento"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0 h-full w-full"
+                />
+              );
+            })()}
           </div>
         </div>
       )}
