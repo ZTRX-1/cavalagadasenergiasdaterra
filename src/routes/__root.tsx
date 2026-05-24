@@ -96,12 +96,14 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
+      <PageLoader />
+      <ScrollToTop />
       <SiteHeader />
       <main className="min-h-screen">
         <Outlet />
       </main>
       <SiteFooter />
-      
+
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );
