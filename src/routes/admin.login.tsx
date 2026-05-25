@@ -83,9 +83,11 @@ function AdminLoginPage() {
         <div className="w-full max-w-[420px]">
           {/* Logo */}
           <div className="mb-10 flex flex-col items-center text-center">
-            <div className="grid h-14 w-14 place-items-center rounded-xl bg-gradient-to-br from-[color:var(--admin-dourado)] to-[color:var(--admin-dourado-glow)] text-[color:var(--admin-carvao-deep)] font-display text-2xl font-semibold shadow-[var(--admin-glow-dourado)]">
-              C
-            </div>
+            <img
+              src={logoCavalgadas}
+              alt="Cavalgadas Energias da Terra"
+              className="h-16 w-16 rounded-xl object-cover ring-1 ring-[color:var(--admin-borda-strong)] shadow-[var(--admin-glow-dourado)]"
+            />
             <h1 className="mt-5 font-display text-[28px] text-[color:var(--admin-cinza-1)]">
               Acesso ao painel
             </h1>
