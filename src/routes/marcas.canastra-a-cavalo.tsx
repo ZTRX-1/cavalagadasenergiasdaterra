@@ -73,7 +73,7 @@ function Page() {
             <div className="eyebrow">Quem conduz</div>
             <h2 className="mt-4 font-display text-3xl md:text-4xl">A equipe que vive a Canastra.</h2>
             <p className="mt-5 text-lg leading-relaxed text-foreground/80 text-pretty">
-              Cavaleiros, guias e amigos. Gente que nasceu aqui, monta há décadas e conhece o terreno como ninguém.
+              Amazonas, guias e amigos. Gente que nasceu aqui, monta há décadas e conhece o terreno como ninguém.
             </p>
           </div>
         </div>
