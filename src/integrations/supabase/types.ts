@@ -686,6 +686,7 @@ export type Database = {
         Returns: boolean
       }
       is_internal_user: { Args: { _user_id: string }; Returns: boolean }
+      slugify_unique_expedicao: { Args: { base: string }; Returns: string }
     }
     Enums: {
       app_role: "admin" | "operador" | "financeiro" | "midia"
