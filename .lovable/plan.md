@@ -1,118 +1,1263 @@
-# Área Restrita Premium — Etapa 1/3
+Área Restrita Premium — Etapa 2/3
 
-Construção da fundação do painel operacional interno da Cavalgadas Energias da Terra. Foco exclusivo em estrutura, autenticação, layout e dashboard visual. Nenhuma automação, IA, WhatsApp ou pagamento nesta etapa.
+Construção dos módulos operacionais reais do painel. Foco em CRUD completo, publicação dinâmica no site público e experiência premium inspirada em Stripe, Linear, Notion e Framer.
 
----
+IMPORTANTE:
 
-## 1. Autenticação (Lovable Cloud)
+Nesta etapa NÃO criar:
 
-- Habilitar autenticação por **e-mail + senha** (sem auto-confirm — operadores criados internamente).
-- **Sem signup público.** Acesso apenas para usuários cadastrados pela administração.
-- Tabela `profiles` (id, user_id, nome, avatar_url, cargo) + trigger de criação automática.
-- Tabela `user_roles` com enum `app_role` (`admin`, `operador`, `financeiro`, `midia`) + função `has_role()` SECURITY DEFINER (padrão seguro, sem recursão de RLS).
-- RLS em todas as tabelas internas exigindo `auth.uid()` + role apropriada.
+- automações;
 
-## 2. Estrutura de Rotas
+- IA;
 
-```
-/admin/login                  → tela de login pública
-/admin/_authenticated         → layout protegido (beforeLoad guard)
-  /admin                      → Dashboard
-  /admin/expedicoes
-  /admin/leads
-  /admin/participantes
-  /admin/financeiro
-  /admin/midia
-  /admin/documentos
-  /admin/configuracoes
-```
+- WhatsApp;
 
-Cada rota interna é apenas a estrutura visual + placeholder elegante ("Em breve") quando ainda sem dados — exceto Dashboard, que é completo.
+- e-mails automáticos;
 
-## 3. Tela de Login Premium
+- gateway de pagamento;
 
-- Background cinematográfico (imagem existente da Canastra com overlay carvão denso).
-- Card central com **glassmorphism**: blur, borda 1px dourada translúcida, sombra profunda.
-- Logo centralizado, tipografia editorial (display serif + sans).
-- Campos: e-mail, senha, "lembrar acesso", link "esqueci minha senha".
-- Botão CTA dourado suave com glow discreto e micro-animação no hover.
-- Loading elegante (spinner minimalista) e feedback de erro refinado.
-- Totalmente responsivo.
+- triggers complexas.
 
-## 4. Layout do Painel
+O foco agora é:
 
-- **Sidebar fixa esquerda** (240px), colapsável para 64px (modo ícone):
-  - Logo no topo
-  - Menu vertical com ícones lucide + label
-  - Item ativo: indicador dourado lateral + fundo glass
-  - Rodapé: avatar + nome do usuário + menu (perfil / sair)
-- **Topbar superior** (56px): breadcrumb à esquerda, busca global (visual), notificações (visual), toggle de tema.
-- **Área principal**: padding generoso, scroll suave, fundo carvão profundo com gradiente sutil.
-- Design system: tokens em `src/styles.css` (carvão, petróleo, dourado, cinzas premium, vidros).
+- estrutura operacional real;
 
-## 5. Dashboard Principal
+- CRUD completo;
 
-Grid responsivo de cards premium:
+- estabilidade;
 
-- **KPIs (topo)** — 4 cards compactos com número grande, label, ícone e tendência:
-  - Leads do mês
-  - Pré-reservas ativas
-  - Expedições ativas
-  - Vagas restantes
-- **Faturamento estimado** — card maior com gráfico de linha/área (recharts), valores mockados.
-- **Próximas expedições** — lista elegante (data, nome, vagas, status badge).
-- **Últimas atividades** — timeline minimalista (placeholder com dados estáticos).
+- escalabilidade;
 
-Microinterações: hover lift sutil, skeleton loading, fade-in escalonado nos cards.
+- experiência premium.
 
-## 6. Banco de Dados — Estrutura Inicial
+==================================================
 
-Novas tabelas (limpas, escaláveis, com RLS):
+1. BANCO DE DADOS (MIGRATION ÚNICA)
 
-- `profiles` — perfil do operador
-- `user_roles` — vínculo usuário ↔ papel
-- `leads` — id, nome, email, telefone, expedicao_interesse, origem, status, observacoes
-- `participantes` — id, reserva_id, nome, documento, contato, observacoes_medicas
-- `midia` — id, tipo, url, expedicao_id, titulo, ordem
-- `documentos` — id, titulo, tipo, url, expedicao_id, participante_id
+==================================================
 
-Tabelas existentes (`expedicoes`, `datas`, `reservas`) são reutilizadas — apenas leitura no painel nesta etapa.
+==================================================
 
-## 7. Paleta & Tokens (adicionar em `src/styles.css`)
+ALTERAÇÕES EM TABELAS EXISTENTES
 
-- `--carvao-profundo` — fundo principal
-- `--petroleo` — superfícies elevadas
-- `--dourado-suave` — accent
-- `--cinza-premium-1/2/3` — texto e bordas
-- `--vidro-fosco` — glassmorphism base
-- `--glow-dourado` — sombras de destaque
-- Gradientes: `--gradient-glass`, `--gradient-petroleo`
+==================================================
 
-## 8. Responsividade
+expedicoes — adicionar campos faltantes:
 
-- Desktop ≥1280px: layout completo (prioridade máxima)
-- Notebook 1024–1279px: sidebar colapsa automaticamente
-- Tablet: sidebar vira drawer
-- Mobile: drawer + cards empilhados, topbar simplificado
+- subtitulo (text)
 
-## 9. Fora de Escopo (Etapas 2 e 3)
+- estado (text)
 
-Não implementar nesta etapa: automações, IA, WhatsApp, pagamentos, fluxos automáticos, edição de leads/participantes, upload real de mídia/documentos, relatórios financeiros avançados.
+- cidade (text)
 
----
+- vagas_total_padrao (int, default 10)
 
-## Detalhes Técnicos
+- parcelamento_max (int, default 1)
 
-- **Stack:** TanStack Router (file-based) + TanStack Query + Supabase (Lovable Cloud).
-- **Auth guard:** rota pathless `_authenticated` com `beforeLoad` validando sessão via `supabase.auth.getUser()`; redirect para `/admin/login` se ausente.
-- **Sidebar:** componente `shadcn/ui sidebar` com `collapsible="icon"`.
-- **Gráficos:** `recharts` (já disponível via shadcn chart).
-- **Ícones:** `lucide-react`.
-- **Dados do dashboard:** server functions (`createServerFn` + `requireSupabaseAuth`) com queries agregadas nas tabelas existentes; valores ainda não cobertos vêm como mock estático claramente isolado para fácil substituição na Etapa 2.
-- **Migrations:** uma migration única criando enum, `profiles`, `user_roles`, `has_role()`, `leads`, `participantes`, `midia`, `documentos`, com RLS.
-- **Site público:** intocado. Toda área restrita vive sob `/admin/*`.
+- video_url (text)
 
-## Perguntas antes de implementar
+- politicas (jsonb default [])
 
-1. Quer que eu crie um **primeiro usuário admin** via SQL (você me passa o e-mail) ou prefere criar manualmente pelo painel Cloud depois?
-2. Confirma os 4 papéis (`admin`, `operador`, `financeiro`, `midia`) ou prefere começar só com `admin` e `operador`?
+- observacoes (text)
+
+- tags (text[])
+
+- status (text default 'rascunho')
+
+  Valores:
+
+  - rascunho
+
+  - publicado
+
+  - pausado
+
+  - arquivado
+
+- capa_url (text)
+
+- updated_at (timestamptz + trigger)
+
+==================================================
+
+RLS
+
+==================================================
+
+- manter SELECT público apenas para:
+
+  ativo = true
+
+  AND status = 'publicado'
+
+- adicionar policy ALL para:
+
+  is_internal_user(auth.uid())
+
+==================================================
+
+datas — adicionar
+
+==================================================
+
+- updated_at + trigger
+
+- policy ALL para is_internal_user
+
+==================================================
+
+leads — adicionar
+
+==================================================
+
+- cidade
+
+- estado
+
+- acompanhantes (int default 0)
+
+- quantidade_pessoas (int default 1)
+
+- valor_estimado (numeric)
+
+- protocolo (text único)
+
+- status (text default 'novo')
+
+Valores:
+
+- novo
+
+- contato_realizado
+
+- negociacao
+
+- pagamento_pendente
+
+- confirmado
+
+- cancelado
+
+- pos_venda
+
+==================================================
+
+participantes — adicionar
+
+==================================================
+
+- data_nascimento (date)
+
+- idade (calculada via função)
+
+- experiencia_equestre:
+
+  - iniciante
+
+  - intermediario
+
+  - avancado
+
+- restricoes (text)
+
+- acompanhante (text)
+
+- expedicao_id (uuid)
+
+- data_id (uuid)
+
+- status (text default 'pendente')
+
+  - pendente
+
+  - confirmado
+
+  - cancelado
+
+- updated_at + trigger
+
+==================================================
+
+reservas — adicionar
+
+==================================================
+
+- valor_total (numeric)
+
+- valor_pago (numeric default 0)
+
+- forma_pagamento:
+
+  - pix
+
+  - cartao
+
+  - transferencia
+
+  - outro
+
+- parcelas (int default 1)
+
+- status_pagamento:
+
+  - pendente
+
+  - parcial
+
+  - confirmado
+
+- updated_at + trigger
+
+Policy:
+
+- ALL para is_internal_user
+
+==================================================
+
+NOVAS TABELAS
+
+==================================================
+
+==================================================
+
+lead_atividades
+
+==================================================
+
+Timeline operacional do lead:
+
+Campos:
+
+- lead_id
+
+- tipo:
+
+  - criacao
+
+  - mudanca_status
+
+  - observacao
+
+  - contato
+
+- descricao
+
+- autor_id
+
+- created_at
+
+RLS:
+
+- ALL para is_internal_user
+
+==================================================
+
+activity_logs
+
+==================================================
+
+Logs operacionais globais.
+
+Campos:
+
+- id
+
+- usuario
+
+- acao
+
+- modulo
+
+- descricao
+
+- created_at
+
+Objetivo:
+
+Registrar ações importantes do sistema.
+
+Exemplos:
+
+- expedição criada
+
+- expedição alterada
+
+- lead convertido
+
+- status alterado
+
+- pagamento atualizado
+
+IMPORTANTE:
+
+Preparar desde agora estrutura de auditoria e rastreabilidade operacional.
+
+==================================================
+
+protocolo_lead_counter
+
+==================================================
+
+Estrutura de contador para protocolos automáticos.
+
+==================================================
+
+expedicao_assets
+
+==================================================
+
+Organização de mídia.
+
+Campos:
+
+- id
+
+- expedicao_id
+
+- tipo:
+
+  - imagem
+
+  - video
+
+  - pdf
+
+- url
+
+- titulo
+
+- ordem
+
+- is_capa
+
+==================================================
+
+IMPORTANTE
+
+==================================================
+
+Migrar automaticamente:
+
+- expedicoes.galeria
+
+- expedicao-images.ts
+
+para esta tabela.
+
+==================================================
+
+RLS
+
+==================================================
+
+SELECT público:
+
+- apenas quando expedição estiver publicada.
+
+ALL:
+
+- apenas para is_internal_user
+
+==================================================
+
+USUÁRIOS / ROLES
+
+==================================================
+
+Adicionar campo:
+
+role (text)
+
+Valores futuros:
+
+- admin
+
+- financeiro
+
+- operador
+
+- midia
+
+IMPORTANTE:
+
+Mesmo sem implementar permissões avançadas agora, deixar estrutura preparada para expansão futura.
+
+==================================================
+
+STORAGE BUCKETS
+
+==================================================
+
+==================================================
+
+expedicao-midia
+
+==================================================
+
+Bucket público para:
+
+- imagens
+
+- assets
+
+- capas
+
+==================================================
+
+IMPORTANTE SOBRE VÍDEOS
+
+==================================================
+
+NÃO realizar upload direto de vídeos nesta etapa.
+
+Utilizar apenas:
+
+- YouTube embed
+
+- Vimeo embed
+
+- URLs externas
+
+Objetivo:
+
+- evitar peso excessivo
+
+- evitar custos de storage
+
+- evitar problemas de performance
+
+==================================================
+
+expedicao-docs
+
+==================================================
+
+Bucket privado:
+
+- PDFs
+
+- políticas
+
+- roteiros
+
+==================================================
+
+participante-docs
+
+==================================================
+
+Bucket privado:
+
+- documentos
+
+- uploads internos
+
+==================================================
+
+POLICIES
+
+==================================================
+
+Públicos:
+
+- SELECT livre
+
+- INSERT/UPDATE/DELETE apenas:
+
+  is_internal_user
+
+Privados:
+
+- tudo apenas:
+
+  is_internal_user
+
+==================================================
+
+2. SERVER FUNCTIONS
+
+==================================================
+
+Toda escrita do painel deve passar por:
+
+- createServerFn
+
+- requireSupabaseAuth
+
+==================================================
+
+ARQUIVOS
+
+==================================================
+
+src/lib/admin/expedicoes.functions.ts
+
+- list
+
+- get
+
+- create
+
+- update
+
+- duplicate
+
+- archive
+
+- publish
+
+- delete
+
+- reorder-assets
+
+- set-capa
+
+- upload-asset
+
+- delete-asset
+
+==================================================
+
+IMPORTANTE
+
+==================================================
+
+Utilizar sistema simples e estável de organização de mídia:
+
+- mover para cima
+
+- mover para baixo
+
+- definir capa principal
+
+- remover mídia
+
+NÃO implementar drag-and-drop avançado nesta etapa.
+
+Priorizar:
+
+- estabilidade
+
+- responsividade
+
+- simplicidade operacional
+
+==================================================
+
+src/lib/admin/datas.functions.ts
+
+==================================================
+
+- list
+
+- create
+
+- update
+
+- delete
+
+==================================================
+
+src/lib/admin/leads.functions.ts
+
+==================================================
+
+- list
+
+- get
+
+- create
+
+- update
+
+- change-status
+
+- add-note
+
+- delete
+
+==================================================
+
+src/lib/admin/participantes.functions.ts
+
+==================================================
+
+- CRUD completo
+
+- vínculo reserva/expedição
+
+==================================================
+
+src/lib/admin/financeiro.functions.ts
+
+==================================================
+
+- list reservas
+
+- filtros
+
+- update-pagamento
+
+- agregações dashboard
+
+==================================================
+
+VALIDAÇÃO
+
+==================================================
+
+Usar Zod em tudo.
+
+==================================================
+
+IMPORTANTE
+
+==================================================
+
+Toda alteração relevante deve gerar:
+
+- lead_atividades
+
+- activity_logs
+
+==================================================
+
+3. MÓDULO EXPEDIÇÕES
+
+==================================================
+
+Rota:
+
+- /admin/expedicoes
+
+==================================================
+
+LISTA
+
+==================================================
+
+Tabela premium contendo:
+
+- capa
+
+- nome
+
+- marca
+
+- status
+
+- vagas
+
+- próxima data
+
+- valor
+
+- ações
+
+==================================================
+
+FILTROS
+
+==================================================
+
+- status
+
+- marca
+
+- busca
+
+==================================================
+
+AÇÕES
+
+==================================================
+
+- editar
+
+- duplicar
+
+- publicar
+
+- pausar
+
+- arquivar
+
+- excluir
+
+==================================================
+
+FORMULÁRIO
+
+==================================================
+
+Layout:
+
+- duas colunas
+
+- formulário principal
+
+- preview lateral compacto
+
+==================================================
+
+ABAS
+
+==================================================
+
+==================================================
+
+GERAL
+
+==================================================
+
+- nome
+
+- subtitulo
+
+- slug automático
+
+- marca
+
+- descrição
+
+- país
+
+- estado
+
+- cidade
+
+- região
+
+- dificuldade
+
+- duração
+
+- tags
+
+- observações
+
+==================================================
+
+MÍDIA
+
+==================================================
+
+- upload de imagens
+
+- preview
+
+- capa principal
+
+- reorganização simples
+
+- remover mídia
+
+- video_url externa
+
+==================================================
+
+DATAS & VAGAS
+
+==================================================
+
+- datas editáveis
+
+- vagas
+
+- preço pix
+
+- preço cartão
+
+- status
+
+- add/remove inline
+
+==================================================
+
+COMERCIAL
+
+==================================================
+
+- preço
+
+- parcelamento
+
+- requisitos
+
+- inclui
+
+- roteiro
+
+==================================================
+
+DOCUMENTOS
+
+==================================================
+
+Upload:
+
+- PDFs
+
+- políticas
+
+- roteiros
+
+==================================================
+
+PUBLICAÇÃO
+
+==================================================
+
+- status
+
+- ativo toggle
+
+- ordem
+
+==================================================
+
+SALVAMENTO
+
+==================================================
+
+- botão “Salvar rascunho”
+
+- botão “Salvar e publicar”
+
+IMPORTANTE:
+
+NÃO utilizar auto-save nesta etapa.
+
+==================================================
+
+PUBLICAÇÃO DINÂMICA
+
+==================================================
+
+Refatorar:
+
+- expedicoes-static.ts
+
+para:
+
+- expedicoes-public.functions.ts
+
+==================================================
+
+IMPORTANTE
+
+==================================================
+
+O site público deve:
+
+- ler prioritariamente do banco
+
+- mas manter fallback seguro local/estático
+
+Objetivo:
+
+Garantir estabilidade caso:
+
+- banco falhe
+
+- painel falhe
+
+- deploy falhe
+
+==================================================
+
+SEED INICIAL
+
+==================================================
+
+Migrar automaticamente:
+
+- expedicoes-static.ts
+
+- expedicao-images.ts
+
+para o banco.
+
+==================================================
+
+4. MÓDULO LEADS
+
+==================================================
+
+Rota:
+
+- /admin/leads
+
+==================================================
+
+PIPELINE KANBAN
+
+==================================================
+
+7 colunas:
+
+- novo
+
+- contato realizado
+
+- negociação
+
+- pagamento pendente
+
+- confirmado
+
+- cancelado
+
+- pós-venda
+
+==================================================
+
+CARD
+
+==================================================
+
+- nome
+
+- expedição
+
+- valor estimado
+
+- dias desde criação
+
+- badge origem
+
+==================================================
+
+TOOLBAR
+
+==================================================
+
+- busca
+
+- filtros
+
+- kanban/tabela
+
+==================================================
+
+DETALHE
+
+==================================================
+
+Layout split:
+
+- dados esquerda
+
+- timeline direita
+
+==================================================
+
+FUNÇÕES
+
+==================================================
+
+- editar inline
+
+- mudar status
+
+- adicionar nota
+
+- converter reserva
+
+==================================================
+
+5. MÓDULO PARTICIPANTES
+
+==================================================
+
+Rota:
+
+- /admin/participantes
+
+==================================================
+
+LISTA
+
+==================================================
+
+- filtros
+
+- expedição
+
+- data
+
+- status
+
+- idade calculada
+
+==================================================
+
+DETALHE
+
+==================================================
+
+- formulário completo
+
+- upload docs
+
+- vínculo reserva
+
+==================================================
+
+6. MÓDULO FINANCEIRO
+
+==================================================
+
+Rota:
+
+- /admin/financeiro
+
+==================================================
+
+KPIs
+
+==================================================
+
+- faturamento confirmado
+
+- faturamento estimado
+
+- pendente
+
+- expedições top
+
+==================================================
+
+GRÁFICO
+
+==================================================
+
+- faturamento confirmado
+
+- estimado
+
+- últimos 6 meses
+
+==================================================
+
+TABELAS
+
+==================================================
+
+- pagamentos pendentes
+
+- expedições mais lucrativas
+
+==================================================
+
+DETALHE RESERVA
+
+==================================================
+
+- protocolo
+
+- expedição
+
+- responsável
+
+- pagamento
+
+- histórico
+
+==================================================
+
+7. DESIGN SYSTEM PREMIUM
+
+==================================================
+
+Adicionar:
+
+- status badges
+
+- tabelas premium
+
+- cards
+
+- glow discreto
+
+- glassmorphism
+
+- loading skeleton
+
+- microinterações suaves
+
+==================================================
+
+COMPONENTES
+
+==================================================
+
+- admin-data-table
+
+- admin-status-badge
+
+- admin-confirm-dialog
+
+- admin-asset-uploader
+
+- admin-form-section
+
+- admin-empty-state
+
+- admin-kanban-board
+
+- admin-timeline
+
+==================================================
+
+UX
+
+==================================================
+
+- toast sonner
+
+- optimistic updates
+
+- fade-in suave
+
+- loading elegante
+
+==================================================
+
+8. DEPENDÊNCIAS
+
+==================================================
+
+- react-dropzone
+
+- date-fns
+
+- recharts
+
+IMPORTANTE:
+
+NÃO adicionar:
+
+- @dnd-kit
+
+nesta etapa.
+
+==================================================
+
+9. RESPONSIVIDADE
+
+==================================================
+
+==================================================
+
+DESKTOP
+
+==================================================
+
+- sidebar 240px
+
+==================================================
+
+NOTEBOOK
+
+==================================================
+
+- sidebar compacta
+
+==================================================
+
+TABLET
+
+==================================================
+
+- drawer
+
+- cards responsivos
+
+==================================================
+
+MOBILE
+
+==================================================
+
+- stacked cards
+
+- abas full-width
+
+- drawer responsivo
+
+==================================================
+
+10. FORA DE ESCOPO (ETAPA 3)
+
+==================================================
+
+- automações
+
+- IA
+
+- WhatsApp
+
+- e-mails automáticos
+
+- gateway pagamento
+
+- triggers
+
+- relatórios avançados
+
+==================================================
+
+ORDEM DE EXECUÇÃO
+
+==================================================
+
+1. migration única
+
+2. buckets
+
+3. server functions
+
+4. leitura pública
+
+5. componentes admin
+
+6. módulo expedições
+
+7. módulo leads
+
+8. módulo participantes
+
+9. módulo financeiro
+
+10. responsividade
+
+11. polimento final
+
+==================================================
+
+IMPORTANTE FINAL
+
+==================================================
+
+Todo o sistema precisa parecer:
+
+- premium
+
+- sofisticado
+
+- tecnológico
+
+- moderno
+
+- extremamente organizado
+
+SEM aparência:
+
+- ERP antigo
+
+- painel genérico
+
+- sistema ultrapassado
+
+- builder improvisado
