@@ -93,13 +93,13 @@ export const IMAGES: Record<string, string> = {
 // HERO POR EXPEDIÇÃO — foto cinematográfica de capa
 // ============================================================
 export const SLUG_IMAGE: Record<string, string> = {
-  "serra-da-canastra": can26,        // drone cachoeira massiva
-  "mantiqueira-refugio": man13,      // panorama drone vale verde
-  "berco-do-marchador": man01,       // cavaleira no pôr-do-sol
-  "jericoacoara": can21,             // (fallback temporário até receber fotos de Jeri)
-  "peru-vale-do-colca": peru09,      // grupo no canyon do Colca
+  "serra-da-canastra": can37,        // cavaleiros em formação cinematográfica
+  "mantiqueira-refugio": man27,      // tropa em movimento na serra
+  "berco-do-marchador": man01,       // cavaleira no pôr-do-sol (Marchador)
+  "jericoacoara": can18,             // cavaleiro silhueta dourada
+  "peru-vale-do-colca": peru09,      // grupo a cavalo no canyon do Colca
   "patagonia-gaucha": pat01,         // cavalo nas montanhas nevadas
-  "caminho-de-santiago": man13,      // (fallback temporário até receber fotos da Galícia)
+  "caminho-de-santiago": man19,      // cavaleiros em trilha aberta
 };
 
 // ============================================================
