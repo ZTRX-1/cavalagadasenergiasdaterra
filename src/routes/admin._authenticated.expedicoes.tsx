@@ -135,7 +135,7 @@ function ExpedicoesPage() {
               </tr>
             </thead>
             <tbody>
-              {list.map((e) => (
+              {listaFiltrada.map((e) => (
                 <tr key={e.id} className="border-t border-[color:var(--admin-borda)] hover:bg-[color:var(--admin-petroleo)]/20">
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
