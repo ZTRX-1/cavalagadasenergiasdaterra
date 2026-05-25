@@ -126,7 +126,12 @@ function HomePage() {
   const { t, i18n } = useTranslation();
   const { data: expedicoes } = useSuspenseQuery(expedicoesQO);
   const { data: datas } = useSuspenseQuery(datasQO);
-  const proximasDatas = datas.slice(0, 4);
+  const proximasDatas = (() => {
+    const destaques = datas.filter((d) => d.tag);
+    const restantes = datas.filter((d) => !d.tag);
+    const merged = [...destaques, ...restantes];
+    return merged.slice(0, 6);
+  })();
   const lng = (["pt", "en", "es"].includes(i18n.language) ? i18n.language : "pt") as "pt" | "en" | "es";
   const incluiCopy = INCLUI_TXT[lng];
   const passos = PASSOS_TXT[lng];
