@@ -49,7 +49,7 @@ function ParticipantesPage() {
       <AdminPageHeader
         eyebrow="Operação"
         title="Participantes"
-        description="Ficha completa de cavaleiros e cavaleiras, vinculados às expedições."
+        description="Ficha completa de cavaleiros e amazonas, vinculados às expedições."
         actions={<button className="admin-btn-primary" onClick={() => setNovo(true)}><Plus className="h-4 w-4" /> Novo participante</button>}
       />
 
