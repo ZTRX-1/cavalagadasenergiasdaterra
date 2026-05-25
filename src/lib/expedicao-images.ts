@@ -76,6 +76,14 @@ import pat03 from "@/assets/fotos/patagonia/03.jpg";
 // EQUIPE
 import equipeMangalarga from "@/assets/fotos/equipe/equipe-mangalarga.jpg";
 
+// ELAS NA SELA — fotos curadas exclusivamente femininas
+import elas01 from "@/assets/fotos/elas-na-sela/01.jpg";
+import elas02 from "@/assets/fotos/elas-na-sela/02.jpg";
+import elas03 from "@/assets/fotos/elas-na-sela/03.jpg";
+import elas04 from "@/assets/fotos/elas-na-sela/04.jpg";
+import elas05 from "@/assets/fotos/elas-na-sela/05.jpg";
+import elas06 from "@/assets/fotos/elas-na-sela/06.jpg";
+
 // ============================================================
 // MAPA DE CHAVES (compat com strings vindas do banco)
 // ============================================================
@@ -124,7 +132,7 @@ export const GALERIA_CAVALGADAS = [
 ];
 
 export const GALERIA_ELAS_NA_SELA = [
-  man01, can24, peru12, can10, man19, can29, can30, man03, peru08,
+  elas01, elas02, elas03, elas04, elas05, elas06,
 ];
 
 export const GALERIA_CANASTRA_MARCA = [
