@@ -1,64 +1,110 @@
-# Etapa 2.5 — Painel admin realmente funcional
 
-Escopo grande (21 frentes). Vou dividir em **4 frentes sequenciais** com aprovação entre cada uma, para reduzir risco e permitir QA pontual.
+# Refatoração Operacional do Admin — Etapa 2.5 Final
 
----
+Objetivo: deixar de tratar o admin como mockup e transformá-lo em sistema operacional real, conectado ao banco e ao site público, com CRUD estável e relacionamentos corretos.
 
-## Frente A — Dados, protocolos e expedições (itens 1, 5, 6, 7, 8, 11)
-
-**Migration única:**
-- Limpar dados transacionais de teste: `DELETE FROM reservas`, `participantes`, `leads`, `lead_atividades`, `documentos`, `protocolo_counter`, `protocolo_lead_counter`. Preserva `expedicoes`, `datas`, `expedicao_assets`, `profiles`, `user_roles`.
-- Trocar geração de protocolo para token alfanumérico (`CET-2026-A7K9Q2`): nova função `gerar_protocolo_seguro()` usando `gen_random_bytes` + base36, 6 chars, validando unicidade.
-- Garantir `slug` único em `expedicoes` com auto-sufixo numérico via função `slugify_unique(text)`.
-
-**Backfill expedições do site:**
-- Ler `src/lib/expedicoes-static.ts` e fazer seed idempotente (`ON CONFLICT (slug) DO NOTHING`) das expedições estáticas do site público para a tabela `expedicoes`, com imagem, datas, preço, vagas, marca, roteiro, inclui, requisitos, política.
-- Resultado: admin lista as ~7 expedições reais imediatamente.
-
-**API (`src/lib/admin/api.ts`):**
-- `createExpedicao`: gerar slug único via RPC ou retry com sufixo.
-- `duplicateExpedicao`: copiar com novo slug `original-copia-{rand}`.
-- CRUD completo testado: criar, editar, rascunho/publicar, pausar, arquivar, duplicar, excluir, capa.
-- Contadores reais já implementados — só validar pós-seed.
+Dividido em 5 frentes sequenciais. Vou executar tudo numa rodada (você já validou frentes anteriores e isso destrava o restante do projeto), mas cada frente é independente — se algo falhar, corrijo antes de seguir.
 
 ---
 
-## Frente B — Dashboard, financeiro e busca (itens 2, 3, 4, 12, 16, 17)
+## Frente 1 — Sincronização real Site ↔ Banco ↔ Admin
 
-- **Date picker "Personalizado":** Popover com Calendar shadcn em modo `range`, botões Aplicar/Limpar.
-- **Tooltip faturamento:** texto explicando "50% Pix + 50% cartão sobre vagas disponíveis".
-- **Pré-reservas:** após Frente A todos contadores zerados; revisar filtros por `created_at`.
-- **Financeiro:** reescrever página puxando `reservas` reais (protocolo novo, responsável (jsonb), expedição, datas, valores, saldo_restante, forma_pagamento, status_pagamento).
-- **Busca topbar:** já tem `pl-10`, mas validar e ajustar para responsividade — esconder no `<md` e mostrar drawer/sheet.
-- **Sino:** já tem tooltip; adicionar mini-popover com "Sem notificações no momento".
+**Problema:** admin mostra "Nenhuma expedição" porque o site público lê de `src/lib/expedicoes-static.ts` (arquivo TS), enquanto o admin lê da tabela `expedicoes`. Os dois universos nunca se cruzaram.
 
----
+**Solução (migração + seed):**
+- Migration que faz seed das expedições estáticas para a tabela `expedicoes` (com `ON CONFLICT (slug) DO NOTHING` — não sobrescreve nada que o admin já tenha criado).
+- Para cada expedição seedada: criar registros em `expedicao_assets` (capa + galeria) e em `datas` (datas existentes no estático).
+- Trocar `src/lib/expedicoes.functions.ts` (já existe como server fn) para buscar do banco em vez do arquivo estático. O site público passa a ler do banco também.
+- O arquivo `expedicoes-static.ts` vira fallback/seed-source, não fonte de verdade.
 
-## Frente C — Leads, Participantes, Mídia, Documentos, Configurações (itens 9, 10, 13, 14, 15)
-
-- **Leads:** formulário com todos os 16 campos listados (já tem a maioria — completar origem como select padronizado e expedição_interesse como select de expedições reais).
-- **Participantes:** remover qualquer mock/seed "Empresa Josefina"; ficha individual com idade calculada a partir de `data_nascimento`; agrupamento por reserva.
-- **Mídia:** página funcional — seletor de expedição, grid de `expedicao_assets`, botões: definir capa, mover ↑/↓, remover, adicionar URL externa de vídeo, upload novo.
-- **Documentos:** página funcional — upload PDF para buckets `expedicao-docs`/`participante-docs`, vínculo com expedição/reserva/participante, select de tipo (contrato/termo/política/aceite/ficha médica/roteiro/outro), listagem filtrável.
-- **Configurações:** nova tabela `configuracoes` (singleton jsonb) com aba Empresa (nome, CNPJ, WhatsApp, e-mails, Instagram, logo) e aba Usuários internos (listagem de `profiles` + `user_roles`, sem criação).
+**Resultado:** o que o admin cria aparece no site; o que existe no site aparece no admin.
 
 ---
 
-## Frente D — Responsividade total e polimento (itens 18, 19, 20)
+## Frente 2 — CRUD de Expedições estável
 
-- Sidebar vira Drawer (`Sheet`) abaixo de `md`.
-- Tabelas (expedições, leads, participantes, financeiro) viram cards empilhados abaixo de `md` via componente `AdminResponsiveTable`.
-- Formulários: forçar `grid-cols-1` no mobile, `md:grid-cols-2`.
-- Topbar: título + ações colapsam em coluna no mobile.
-- Auditoria final: remover qualquer string mock ("Empresa Josefina", "Lorem ipsum", "Exemplo"). Padronizar empty states profissionais.
-- Garantir que campos estruturais (protocolo, status, datas) estejam consistentes para futura leitura por automação.
+**Problema:** "Nova Expedição" → toast de sucesso → tela branca → reload quebrado.
+
+**Causas prováveis:**
+1. Navegação para `/admin/expedicoes/:id` quando o id ainda não está no cache do React Query.
+2. Falta de `invalidateQueries` da lista após o insert.
+3. Slug retry funciona, mas a mutation não retorna a row final.
+
+**Correções em `src/lib/admin/api.ts` + rota:**
+- `createExpedicao` retorna a row inserida (`.select().single()`) garantida.
+- Após sucesso: `queryClient.invalidateQueries(['admin','expedicoes'])` + `navigate({ to: '/admin/expedicoes/$id', params: { id: nova.id } })`.
+- Rota de detalhe: `notFoundComponent` + `errorComponent` + loader que aguarda dados antes de renderizar.
+- Garantir defaults seguros em todas as colunas NOT NULL na criação (descricao_curta/longa, duracao, nivel, preco, marca, pais, slug).
 
 ---
 
-## Como prefere prosseguir?
+## Frente 3 — Mídia real ligada à expedição
 
-1. **Tudo (A→D) numa rodada** — diff enorme (~30 arquivos + 2 migrations), mas finaliza a Etapa 2.5.
-2. **Uma frente por vez** — começo por A, você valida, sigo para B, etc. (recomendado).
-3. **A+B juntos, depois C+D** — meio termo.
+A página de detalhe da expedição (`admin._authenticated.expedicoes.$id.tsx`) ganha aba **Mídia** funcional:
+- Lista `expedicao_assets` da expedição (já existe API).
+- Upload real para bucket `expedicao-midia` (público) com path `{expedicao_id}/{uuid}.{ext}`.
+- Setar capa, mover ↑/↓, excluir, adicionar URL externa de vídeo.
+- A página `/admin/midia` (global) vira um índice navegável agrupado por expedição, em vez de gerenciar mídia "solta".
 
-Diga qual opção e eu executo.
+---
+
+## Frente 4 — Documentos com separação institucional vs participante
+
+**Estrutura:**
+- Tabela `documentos` já tem `expedicao_id`, `reserva_id`, `participante_id`, `tipo`, `categoria`.
+- Adicionar coluna `escopo` (`institucional` | `expedicao` | `participante`) via migration para classificação clara.
+- Adicionar RLS específico: documento de participante só é visível para internos com vínculo (a RLS atual já restringe a `is_internal_user` — manter, mas documentar que filtro adicional acontece na UI).
+- UI `/admin/documentos`: 2 abas — **Institucionais/Expedição** e **Participantes**, com filtros por expedição/reserva/participante.
+- Upload para buckets já existentes (`expedicao-docs`, `participante-docs`), signed URLs.
+
+---
+
+## Frente 5 — Configurações + Usuários internos reais
+
+**Empresa:** já persiste via tabela `configuracoes` (singleton). Adicionar campos `endereco`, `email` na migration.
+
+**Usuários internos (novo):**
+- Já existe `profiles` + `user_roles` com enum `app_role`. Faltam: criar/editar/desativar/reset.
+- Adicionar coluna `ativo boolean` em `profiles`.
+- Server fns protegidas (`requireSupabaseAuth` + checagem `has_role(admin)`):
+  - `criarUsuarioInterno({ email, nome, cargo, role, senha_temporaria })` — usa `supabaseAdmin.auth.admin.createUser`.
+  - `atualizarUsuarioInterno({ user_id, nome, cargo, role, ativo })`.
+  - `resetarSenhaInterna({ user_id })` — gera link de recovery.
+  - `removerUsuarioInterno({ user_id })` — `supabaseAdmin.auth.admin.deleteUser`.
+- Roles preparados: `admin`, `financeiro`, `operador`, `midia`, `atendimento` (adicionar valores ao enum `app_role`).
+- UI nova na aba **Usuários internos** das Configurações: tabela + dialog de criação/edição.
+
+---
+
+## Detalhes Técnicos
+
+**Migrations (2):**
+1. Seed expedições + assets + datas a partir do estático; adiciona `escopo` em `documentos`; adiciona `endereco`/`email` em `configuracoes`; adiciona `ativo` em `profiles`; estende enum `app_role` com novos papéis.
+2. Trigger `update_updated_at_column` em `expedicoes`, `datas`, `reservas`, `leads`, `participantes`, `configuracoes`, `profiles` (auditoria consistente).
+
+**Arquivos novos:**
+- `src/lib/admin/users.functions.ts` (server fns para gestão de usuários, usa `supabaseAdmin`).
+- `src/lib/admin/seed-helper.server.ts` (helpers de seed reutilizáveis).
+- `src/components/admin/admin-tab-midia.tsx`, `admin-tab-documentos.tsx` (componentes de aba reutilizáveis na expedição).
+
+**Arquivos editados (~12):**
+- `src/lib/admin/api.ts` (createExpedicao com select+invalidate, mídia helpers, documentos por escopo).
+- `src/lib/expedicoes.functions.ts` (ler do banco em vez do estático).
+- `src/routes/admin._authenticated.expedicoes.tsx` (mutation com invalidate + navigate).
+- `src/routes/admin._authenticated.expedicoes.$id.tsx` (abas: Dados / Datas / Mídia / Documentos).
+- `src/routes/admin._authenticated.midia.tsx` (índice por expedição).
+- `src/routes/admin._authenticated.documentos.tsx` (2 abas + filtros).
+- `src/routes/admin._authenticated.configuracoes.tsx` (form expandido + CRUD usuários).
+- `src/integrations/supabase/types.ts` (regenerado automaticamente após migration).
+
+**Não muda:**
+- Site público continua funcionando (passa a ler do banco, mas com mesmas expedições).
+- Hero, rotas públicas, design da landing — intactos.
+- Não toca em auth, RLS existente (apenas adiciona policies novas para configuracoes).
+
+---
+
+## Fora do escopo (continua proibido nesta etapa)
+- IA, WhatsApp, e-mail automático, Mercado Pago, automações, remarketing.
+
+Aprovar para eu executar tudo de uma vez?
