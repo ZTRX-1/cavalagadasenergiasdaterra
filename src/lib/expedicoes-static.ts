@@ -490,7 +490,7 @@ const DATAS: DataExpedicao[] = [
     },
     {
         "id": "696d31b1-ed97-4e5f-bf7f-3453f058dda4",
-        "status": "disponivel",
+        "status": "poucas_vagas",
         "data_fim": "2026-08-07",
         "preco_pix": null,
         "data_inicio": "2026-08-04",
@@ -499,7 +499,7 @@ const DATAS: DataExpedicao[] = [
         "preco_cartao": null,
         "expedicao_nome": "Peru, Vale do Colca",
         "expedicao_slug": "peru-vale-do-colca",
-        "vagas_disponiveis": 10
+        "vagas_disponiveis": 3
     },
     {
         "id": "49b808dc-aac6-401e-81c7-f4eb66853940",
