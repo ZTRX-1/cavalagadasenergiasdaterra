@@ -555,9 +555,15 @@ function ReservaPage() {
 
             {/* Nav */}
             <div className="mt-10 flex flex-col-reverse items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <button type="button" onClick={back} disabled={step === 0} className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3 text-sm uppercase tracking-widest text-foreground disabled:opacity-40">
-                <ArrowLeft className="h-4 w-4" /> Voltar
-              </button>
+              {step === 0 ? (
+                <Link to={backHref} className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3 text-sm uppercase tracking-widest text-foreground hover:border-cobre hover:text-cobre">
+                  <ArrowLeft className="h-4 w-4" /> Voltar
+                </Link>
+              ) : (
+                <button type="button" onClick={back} className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3 text-sm uppercase tracking-widest text-foreground">
+                  <ArrowLeft className="h-4 w-4" /> Voltar
+                </button>
+              )}
               {step < STEPS.length - 1 ? (
                 <button type="button" onClick={next} className="inline-flex items-center justify-center gap-2 rounded-full bg-floresta-deep px-7 py-3 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre">
                   Continuar <ArrowRight className="h-4 w-4" />
