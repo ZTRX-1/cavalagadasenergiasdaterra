@@ -215,7 +215,7 @@ function HomePage() {
                 className="group flex flex-col items-center bg-carvao p-10 text-center text-areia transition-transform hover:-translate-y-1"
               >
                 <img src={m.logo} alt={m.nome} loading="lazy" decoding="async" className="h-28 w-28 rounded-full object-cover ring-1 ring-cobre/40" />
-                <div className="mt-6 font-display text-2xl text-balance leading-tight">{m.nome}</div>
+                <div className="mt-6 font-display text-[1.15rem] leading-tight text-balance whitespace-nowrap sm:whitespace-normal md:text-2xl">{m.nome}</div>
                 <p className="mt-3 text-sm leading-relaxed text-areia/80 text-pretty">{m.tagline[lng]}</p>
                 <span className="mt-6 inline-flex items-center gap-2 font-eyebrow text-[0.65rem] uppercase tracking-[0.32em] text-cobre-soft group-hover:text-areia">
                   {t("marcas.cta")} <ArrowRight className="h-3.5 w-3.5" />
