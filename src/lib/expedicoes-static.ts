@@ -94,7 +94,7 @@ const EXPEDICOES: Expedicao[] = [
     },
     {
         "id": "9dd91b11-3ce3-4368-ab3c-4d441da8d34d",
-        "nome": "Expedição na Mantiqueira",
+        "nome": "Serra da Mantiqueira",
         "pais": "brasil",
         "slug": "mantiqueira-refugio",
         "marca": "cavalgadas",
