@@ -83,17 +83,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isAdmin = pathname.startsWith("/admin");
+
   return (
     <QueryClientProvider client={queryClient}>
-      <PageLoader />
+      {!isAdmin && <PageLoader />}
       <ScrollToTop />
-      <SiteHeader />
-      <main className="min-h-screen">
+      {!isAdmin && <SiteHeader />}
+      <main className={isAdmin ? "min-h-screen" : "min-h-screen"}>
         <Outlet />
       </main>
-      <SiteFooter />
-
-      <CookieConsent />
+      {!isAdmin && <SiteFooter />}
+      {!isAdmin && <CookieConsent />}
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );
