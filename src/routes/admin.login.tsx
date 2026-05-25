@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, Lock, Mail } from "lucide-react";
+import logoCavalgadas from "@/assets/logo-cavalgadas.jpg";
 
 export const Route = createFileRoute("/admin/login")({
   head: () => ({
