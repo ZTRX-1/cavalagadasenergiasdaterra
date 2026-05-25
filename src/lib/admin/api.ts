@@ -792,21 +792,37 @@ export async function saveConfiguracoes(patch: Partial<ConfiguracoesRow>): Promi
 
 // ---------- USUÁRIOS INTERNOS ----------
 
+export const CARGOS_EQUIPE = [
+  "Administrador(a)",
+  "Gerente Operacional",
+  "Coordenador(a) de Expedições",
+  "Guia de Campo",
+  "Financeiro",
+  "Marketing / Comunicação",
+  "Atendimento / Reservas",
+  "Suporte",
+] as const;
+
+export type AppRole = "admin" | "operador";
+
 export interface UsuarioInternoRow {
   user_id: string;
   nome: string | null;
   cargo: string | null;
   avatar_url: string | null;
-  role: string | null;
+  bio: string | null;
+  telefone: string | null;
+  ativo: boolean;
+  role: AppRole | null;
 }
 
 export async function listUsuariosInternos(): Promise<UsuarioInternoRow[]> {
   const { data: profiles, error } = await supabase
     .from("profiles")
-    .select("user_id, nome, cargo, avatar_url");
+    .select("user_id, nome, cargo, avatar_url, bio, telefone, ativo");
   if (error) throw new Error(error.message);
   const { data: roles } = await supabase.from("user_roles").select("user_id, role");
-  const map = new Map((roles ?? []).map((r) => [r.user_id, r.role]));
+  const map = new Map((roles ?? []).map((r) => [r.user_id, r.role as AppRole]));
   return (profiles ?? [])
     .filter((p) => map.has(p.user_id))
     .map((p) => ({
@@ -814,8 +830,115 @@ export async function listUsuariosInternos(): Promise<UsuarioInternoRow[]> {
       nome: p.nome,
       cargo: p.cargo,
       avatar_url: p.avatar_url,
-      role: (map.get(p.user_id) as string | undefined) ?? null,
+      bio: (p as { bio?: string | null }).bio ?? null,
+      telefone: (p as { telefone?: string | null }).telefone ?? null,
+      ativo: (p as { ativo?: boolean }).ativo ?? true,
+      role: map.get(p.user_id) ?? null,
     }));
+}
+
+async function callAdminUsers(body: Record<string, unknown>): Promise<unknown> {
+  const { data, error } = await supabase.functions.invoke("admin-users", { body });
+  if (error) {
+    const msg = (data as { error?: string } | null)?.error || error.message;
+    throw new Error(msg);
+  }
+  const result = data as { ok?: boolean; error?: string } | null;
+  if (result?.error) throw new Error(result.error);
+  return data;
+}
+
+export async function criarUsuarioInterno(input: {
+  email: string; password: string; nome: string; cargo: string | null; role: AppRole;
+}): Promise<void> {
+  await callAdminUsers({ action: "create", ...input });
+  await logActivity({ modulo: "usuarios", acao: "criar", descricao: input.email });
+}
+
+export async function atualizarRoleUsuario(user_id: string, role: AppRole, cargo?: string | null): Promise<void> {
+  await callAdminUsers({ action: "update_role", user_id, role, cargo });
+  await logActivity({ modulo: "usuarios", acao: "atualizar_role", metadata: { user_id, role } });
+}
+
+export async function redefinirSenhaUsuario(user_id: string, password: string): Promise<void> {
+  await callAdminUsers({ action: "reset_password", user_id, password });
+  await logActivity({ modulo: "usuarios", acao: "reset_senha", metadata: { user_id } });
+}
+
+export async function alternarAtivoUsuario(user_id: string, ativo: boolean): Promise<void> {
+  await callAdminUsers({ action: "set_active", user_id, ativo });
+}
+
+export async function excluirUsuarioInterno(user_id: string): Promise<void> {
+  await callAdminUsers({ action: "delete", user_id });
+  await logActivity({ modulo: "usuarios", acao: "excluir", metadata: { user_id } });
+}
+
+// ---------- PERFIL PESSOAL ----------
+
+export interface MeuPerfil {
+  user_id: string;
+  email: string | null;
+  nome: string | null;
+  cargo: string | null;
+  bio: string | null;
+  telefone: string | null;
+  avatar_url: string | null;
+  role: AppRole | null;
+}
+
+export async function getMeuPerfil(): Promise<MeuPerfil | null> {
+  const { data: u } = await supabase.auth.getUser();
+  if (!u.user) return null;
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("user_id, nome, cargo, avatar_url, bio, telefone")
+    .eq("user_id", u.user.id)
+    .maybeSingle();
+  const { data: role } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", u.user.id)
+    .maybeSingle();
+  return {
+    user_id: u.user.id,
+    email: u.user.email ?? null,
+    nome: profile?.nome ?? null,
+    cargo: profile?.cargo ?? null,
+    bio: (profile as { bio?: string | null } | null)?.bio ?? null,
+    telefone: (profile as { telefone?: string | null } | null)?.telefone ?? null,
+    avatar_url: profile?.avatar_url ?? null,
+    role: (role?.role as AppRole | undefined) ?? null,
+  };
+}
+
+export async function atualizarMeuPerfil(patch: {
+  nome?: string | null; cargo?: string | null; bio?: string | null; telefone?: string | null; avatar_url?: string | null;
+}): Promise<void> {
+  const { data: u } = await supabase.auth.getUser();
+  if (!u.user) throw new Error("Não autenticado");
+  const { error } = await supabase
+    .from("profiles")
+    .update(patch as never)
+    .eq("user_id", u.user.id);
+  if (error) throw new Error(error.message);
+}
+
+export async function uploadAvatar(file: File): Promise<string> {
+  const { data: u } = await supabase.auth.getUser();
+  if (!u.user) throw new Error("Não autenticado");
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+    throw new Error("Formato inválido. Use JPG, PNG ou WebP.");
+  }
+  if (file.size > 2 * 1024 * 1024) throw new Error("Arquivo acima de 2 MB.");
+  const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+  const path = `${u.user.id}/avatar-${Date.now()}.${ext}`;
+  const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, {
+    cacheControl: "3600", upsert: true, contentType: file.type,
+  });
+  if (upErr) throw new Error(upErr.message);
+  const { data } = supabase.storage.from("avatars").getPublicUrl(path);
+  return data.publicUrl;
 }
 
 // ---------- MÍDIA EXTERNA ----------

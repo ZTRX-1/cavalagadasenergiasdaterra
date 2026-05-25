@@ -12,6 +12,9 @@ import {
   X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+import { getMeuPerfil } from "@/lib/admin/api";
+import logoCavalgadas from "@/assets/logo-cavalgadas.jpg";
 
 type NavItem = {
   to: string;
