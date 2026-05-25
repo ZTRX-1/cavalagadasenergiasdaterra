@@ -30,6 +30,7 @@ const STATUS_FILTROS: { id: ExpedicaoRow["status"] | "todos"; label: string }[] 
 
 function ExpedicoesPage() {
   const qc = useQueryClient();
+  const nav = useNavigate();
   const { data: list = [], isLoading } = useQuery({ queryKey: ["admin", "expedicoes"], queryFn: listExpedicoes });
   const [confirmDel, setConfirmDel] = useState<ExpedicaoRow | null>(null);
   const [filtro, setFiltro] = useState<ExpedicaoRow["status"] | "todos">("todos");
@@ -38,10 +39,12 @@ function ExpedicoesPage() {
 
   const novaMut = useMutation({
     mutationFn: () => createExpedicao({ nome: "Nova expedição", status: "rascunho" }),
-    onSuccess: (row) => {
+    onSuccess: async (row) => {
       toast.success("Expedição criada");
-      refresh();
-      window.location.href = `/admin/expedicoes/${row.id}`;
+      await qc.invalidateQueries({ queryKey: ["admin", "expedicoes"] });
+      // Pré-popula cache da rota de detalhe para evitar flash branco
+      qc.setQueryData(["admin", "expedicao", row.id], row);
+      nav({ to: "/admin/expedicoes/$id", params: { id: row.id } });
     },
     onError: (e) => toast.error((e as Error).message),
   });
