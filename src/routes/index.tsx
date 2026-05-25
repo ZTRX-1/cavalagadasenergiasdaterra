@@ -202,9 +202,9 @@ function HomePage() {
           </div>
           <div className="mt-16 grid gap-6 md:grid-cols-3">
             {[
-              { logo: logoCavalgadas, nome: "Cavalgadas Energias da Terra", tagline: { pt: "Expedições imersivas pelo Brasil e pelo mundo.", en: "Immersive expeditions across Brazil and the world.", es: "Expediciones inmersivas por Brasil y el mundo." }, to: "/marcas/cavalgadas" as const },
+              { logo: logoCavalgadas, nome: "Cavalgadas Energias da Terra", tagline: { pt: "Expedições a cavalo pelo Brasil e pelo mundo.", en: "Horseback expeditions across Brazil and the world.", es: "Expediciones a caballo por Brasil y el mundo." }, to: "/marcas/cavalgadas" as const },
               { logo: logoElas, nome: "Elas na Sela", tagline: { pt: "Experiências exclusivas para mulheres que exploram o mundo a cavalo.", en: "Exclusive experiences for women who explore the world on horseback.", es: "Experiencias exclusivas para mujeres que exploran el mundo a caballo." }, to: "/marcas/elas-na-sela" as const },
-              { logo: logoCanastra, nome: "Canastra a Cavalo", tagline: { pt: "Travessias premium na Serra da Canastra.", en: "Premium crossings in Serra da Canastra.", es: "Travesías premium en la Serra da Canastra." }, to: "/marcas/canastra-a-cavalo" as const },
+              { logo: logoCanastra, nome: "Canastra a Cavalo", tagline: { pt: "Expedições a cavalo pela Serra da Canastra.", en: "Horseback expeditions through Serra da Canastra.", es: "Expediciones a caballo por la Sierra da Canastra." }, to: "/marcas/canastra-a-cavalo" as const },
             ].map((m) => (
               <Link
                 key={m.nome}
