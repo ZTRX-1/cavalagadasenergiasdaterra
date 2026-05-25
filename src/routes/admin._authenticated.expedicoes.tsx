@@ -128,9 +128,10 @@ function ExpedicoesPage() {
           }
         />
       ) : (
-        <div className="admin-card overflow-hidden p-0">
-          <table className="w-full text-left text-sm">
+        <div className="admin-card overflow-x-auto p-0">
+          <table className="w-full text-left text-sm min-w-[680px]">
             <thead className="bg-[color:var(--admin-carvao-deep)]/60 text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
+
               <tr>
                 <th className="px-5 py-3.5 font-medium">Expedição</th>
                 <th className="px-3 py-3.5 font-medium">Marca</th>
