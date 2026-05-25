@@ -19,6 +19,8 @@ function ConfiguracoesPage() {
   const [form, setForm] = useState({
     empresa_nome: "",
     empresa_cnpj: "",
+    endereco: "",
+    email: "",
     whatsapp: "",
     instagram: "",
     logo_url: "",
@@ -31,6 +33,8 @@ function ConfiguracoesPage() {
       setForm({
         empresa_nome: config.empresa_nome ?? "",
         empresa_cnpj: config.empresa_cnpj ?? "",
+        endereco: config.endereco ?? "",
+        email: config.email ?? "",
         whatsapp: config.whatsapp ?? "",
         instagram: config.instagram ?? "",
         logo_url: config.logo_url ?? "",
@@ -44,6 +48,8 @@ function ConfiguracoesPage() {
     mutationFn: () => saveConfiguracoes({
       empresa_nome: form.empresa_nome || null,
       empresa_cnpj: form.empresa_cnpj || null,
+      endereco: form.endereco || null,
+      email: form.email || null,
       whatsapp: form.whatsapp || null,
       instagram: form.instagram || null,
       logo_url: form.logo_url || null,
@@ -92,12 +98,20 @@ function ConfiguracoesPage() {
             <Field label="Instagram">
               <input className="admin-input w-full" placeholder="@cavalgadas" value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} />
             </Field>
+            <Field label="E-mail oficial">
+              <input className="admin-input w-full" placeholder="contato@empresa.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+            </Field>
             <Field label="Logo (URL)">
               <input className="admin-input w-full" value={form.logo_url} onChange={(e) => setForm({ ...form, logo_url: e.target.value })} />
             </Field>
             <Field label="Cor de destaque (hex)">
               <input className="admin-input w-full" placeholder="#C9A84C" value={form.cor_destaque} onChange={(e) => setForm({ ...form, cor_destaque: e.target.value })} />
             </Field>
+            <div className="md:col-span-2">
+              <Field label="Endereço">
+                <input className="admin-input w-full" placeholder="Rua, número, cidade — UF" value={form.endereco} onChange={(e) => setForm({ ...form, endereco: e.target.value })} />
+              </Field>
+            </div>
             <div className="md:col-span-2">
               <Field label="E-mails de notificação (separados por vírgula)">
                 <input className="admin-input w-full" placeholder="operacao@empresa.com, financeiro@empresa.com" value={form.emails_str} onChange={(e) => setForm({ ...form, emails_str: e.target.value })} />
