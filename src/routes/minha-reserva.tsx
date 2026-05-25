@@ -1,14 +1,10 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { z } from "zod";
 import { Loader2, Search, MessageCircle } from "lucide-react";
 import { buildReservaWhatsappUrl } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 
-const searchSchema = z.object({ p: z.string().optional() });
-
 export const Route = createFileRoute("/minha-reserva")({
-  validateSearch: searchSchema,
   head: () => ({
     meta: [
       { title: "Minha Reserva, Cavalgadas Energias da Terra" },
@@ -25,23 +21,43 @@ const STATUS_STEPS = [
   { key: "confirmada", label: "Confirmada" },
 ] as const;
 
+type Reserva = {
+  protocolo: string;
+  expedicao_nome: string;
+  data_label: string;
+  quantidade_participantes: number;
+  nome_responsavel: string;
+  status: string;
+};
+
 function MinhaReserva() {
-  const search = Route.useSearch();
-  const [protocolo, setProtocolo] = useState(search.p ?? "");
+  const inputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<Reserva | null>(null);
   const [searched, setSearched] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Lê ?p= da URL apenas uma vez, sem usar Route.useSearch (evita re-render).
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const p = params.get("p");
+      if (p && inputRef.current) {
+        inputRef.current.value = p;
+      }
+    } catch {
+      /* noop */
+    }
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!protocolo.trim()) return;
+    const value = (inputRef.current?.value ?? "").trim().toUpperCase();
+    if (!value) return;
     setLoading(true);
     setSearched(true);
     try {
-      const key = `cet.reserva.${protocolo.trim().toUpperCase()}`;
-      const stored = localStorage.getItem(key);
-      const r = stored ? JSON.parse(stored) : null;
-      setResult(r);
+      const stored = localStorage.getItem(`cet.reserva.${value}`);
+      setResult(stored ? (JSON.parse(stored) as Reserva) : null);
     } catch {
       setResult(null);
     } finally {
@@ -55,18 +71,31 @@ function MinhaReserva() {
         <div className="eyebrow">Consulta</div>
         <h1 className="mt-4 font-display text-5xl text-balance md:text-6xl">Minha Reserva</h1>
         <p className="mt-4 text-muted-foreground text-pretty">
-          Informe o protocolo recebido após sua pré-reserva. Ex: <code className="font-mono text-foreground">CET-2026-001</code>
+          Informe o protocolo recebido após sua pré-reserva. Ex:{" "}
+          <code className="font-mono text-foreground">CET-2026-001</code>
         </p>
 
         <form onSubmit={handleSubmit} className="mt-10 flex flex-col gap-3 sm:flex-row">
           <input
-            value={protocolo}
-            onChange={(e) => setProtocolo(e.target.value)}
+            ref={inputRef}
+            type="text"
+            name="protocolo"
+            defaultValue=""
             placeholder="CET-2026-001"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="characters"
+            spellCheck={false}
+            inputMode="text"
             className="flex-1 rounded-sm border border-border bg-card px-5 py-4 font-mono text-lg uppercase tracking-wider outline-none focus:border-cobre"
           />
-          <button disabled={loading} className="inline-flex items-center justify-center gap-2 rounded-full bg-floresta-deep px-7 py-4 text-sm uppercase tracking-widest text-areia hover:bg-cobre disabled:opacity-60">
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />} Consultar
+          <button
+            type="submit"
+            disabled={loading}
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-floresta-deep px-7 py-4 text-sm uppercase tracking-widest text-areia hover:bg-cobre disabled:opacity-60"
+          >
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}{" "}
+            Consultar
           </button>
         </form>
 
@@ -76,13 +105,19 @@ function MinhaReserva() {
               <div className="border-b border-border p-6">
                 <div className="eyebrow">{result.protocolo}</div>
                 <h2 className="mt-2 font-display text-2xl">{result.expedicao_nome}</h2>
-                <div className="mt-1 text-sm text-muted-foreground">{result.data_label} · {result.quantidade_participantes} participante(s)</div>
-                <div className="mt-1 text-sm text-muted-foreground">Responsável: {result.nome_responsavel}</div>
+                <div className="mt-1 text-sm text-muted-foreground">
+                  {result.data_label} · {result.quantidade_participantes} participante(s)
+                </div>
+                <div className="mt-1 text-sm text-muted-foreground">
+                  Responsável: {result.nome_responsavel}
+                </div>
               </div>
               <div className="p-6">
                 <div className="eyebrow">Status atual</div>
                 {result.status === "cancelada" ? (
-                  <div className="mt-4 inline-flex items-center rounded-full border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive">Cancelada</div>
+                  <div className="mt-4 inline-flex items-center rounded-full border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive">
+                    Cancelada
+                  </div>
                 ) : (
                   <ol className="mt-6 space-y-4">
                     {STATUS_STEPS.map((s, i) => {
@@ -91,8 +126,28 @@ function MinhaReserva() {
                       const current = i === currentIdx;
                       return (
                         <li key={s.key} className="flex items-center gap-4">
-                          <span className={cn("flex h-8 w-8 items-center justify-center rounded-full border text-xs font-display", done ? "border-cobre bg-cobre text-areia" : "border-border text-muted-foreground")}>{i + 1}</span>
-                          <span className={cn("text-sm", current ? "font-medium text-foreground" : done ? "text-foreground" : "text-muted-foreground")}>{s.label}</span>
+                          <span
+                            className={cn(
+                              "flex h-8 w-8 items-center justify-center rounded-full border text-xs font-display",
+                              done
+                                ? "border-cobre bg-cobre text-areia"
+                                : "border-border text-muted-foreground",
+                            )}
+                          >
+                            {i + 1}
+                          </span>
+                          <span
+                            className={cn(
+                              "text-sm",
+                              current
+                                ? "font-medium text-foreground"
+                                : done
+                                  ? "text-foreground"
+                                  : "text-muted-foreground",
+                            )}
+                          >
+                            {s.label}
+                          </span>
                         </li>
                       );
                     })}
