@@ -48,9 +48,11 @@ export type Database = {
         Row: {
           cor_destaque: string | null
           created_at: string
+          email: string | null
           emails_notificacao: string[]
           empresa_cnpj: string | null
           empresa_nome: string | null
+          endereco: string | null
           id: string
           instagram: string | null
           logo_url: string | null
@@ -62,9 +64,11 @@ export type Database = {
         Insert: {
           cor_destaque?: string | null
           created_at?: string
+          email?: string | null
           emails_notificacao?: string[]
           empresa_cnpj?: string | null
           empresa_nome?: string | null
+          endereco?: string | null
           id?: string
           instagram?: string | null
           logo_url?: string | null
@@ -76,9 +80,11 @@ export type Database = {
         Update: {
           cor_destaque?: string | null
           created_at?: string
+          email?: string | null
           emails_notificacao?: string[]
           empresa_cnpj?: string | null
           empresa_nome?: string | null
+          endereco?: string | null
           id?: string
           instagram?: string | null
           logo_url?: string | null
@@ -143,6 +149,7 @@ export type Database = {
         Row: {
           categoria: string | null
           created_at: string
+          escopo: string
           expedicao_id: string | null
           id: string
           participante_id: string | null
@@ -154,6 +161,7 @@ export type Database = {
         Insert: {
           categoria?: string | null
           created_at?: string
+          escopo?: string
           expedicao_id?: string | null
           id?: string
           participante_id?: string | null
@@ -165,6 +173,7 @@ export type Database = {
         Update: {
           categoria?: string | null
           created_at?: string
+          escopo?: string
           expedicao_id?: string | null
           id?: string
           participante_id?: string | null
@@ -547,6 +556,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          ativo: boolean
           avatar_url: string | null
           cargo: string | null
           created_at: string
@@ -557,6 +567,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          ativo?: boolean
           avatar_url?: string | null
           cargo?: string | null
           created_at?: string
@@ -567,6 +578,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          ativo?: boolean
           avatar_url?: string | null
           cargo?: string | null
           created_at?: string
@@ -734,7 +746,13 @@ export type Database = {
       slugify_unique_expedicao: { Args: { base: string }; Returns: string }
     }
     Enums: {
-      app_role: "admin" | "operador" | "financeiro" | "midia"
+      app_role:
+        | "admin"
+        | "operador"
+        | "financeiro"
+        | "midia"
+        | "operacional"
+        | "atendimento"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -862,7 +880,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "operador", "financeiro", "midia"],
+      app_role: [
+        "admin",
+        "operador",
+        "financeiro",
+        "midia",
+        "operacional",
+        "atendimento",
+      ],
     },
   },
 } as const
