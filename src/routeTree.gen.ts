@@ -26,6 +26,7 @@ import { Route as MarcasCanastraACavaloRouteImport } from './routes/marcas.canas
 import { Route as ExpedicoesSlugRouteImport } from './routes/expedicoes.$slug'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminAuthenticatedRouteImport } from './routes/admin._authenticated'
+import { Route as AdminAuthenticatedIndexRouteImport } from './routes/admin._authenticated.index'
 
 const TermosRoute = TermosRouteImport.update({
   id: '/termos',
@@ -112,6 +113,11 @@ const AdminAuthenticatedRoute = AdminAuthenticatedRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAuthenticatedIndexRoute = AdminAuthenticatedIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminAuthenticatedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -124,13 +130,14 @@ export interface FileRoutesByFullPath {
   '/quem-somos': typeof QuemSomosRoute
   '/regras': typeof RegrasRoute
   '/termos': typeof TermosRoute
-  '/admin': typeof AdminAuthenticatedRoute
+  '/admin': typeof AdminAuthenticatedRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/expedicoes/$slug': typeof ExpedicoesSlugRoute
   '/marcas/canastra-a-cavalo': typeof MarcasCanastraACavaloRoute
   '/marcas/cavalgadas': typeof MarcasCavalgadasRoute
   '/marcas/elas-na-sela': typeof MarcasElasNaSelaRoute
   '/reserva/$slug': typeof ReservaSlugRoute
+  '/admin/': typeof AdminAuthenticatedIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -143,13 +150,13 @@ export interface FileRoutesByTo {
   '/quem-somos': typeof QuemSomosRoute
   '/regras': typeof RegrasRoute
   '/termos': typeof TermosRoute
-  '/admin': typeof AdminAuthenticatedRoute
   '/admin/login': typeof AdminLoginRoute
   '/expedicoes/$slug': typeof ExpedicoesSlugRoute
   '/marcas/canastra-a-cavalo': typeof MarcasCanastraACavaloRoute
   '/marcas/cavalgadas': typeof MarcasCavalgadasRoute
   '/marcas/elas-na-sela': typeof MarcasElasNaSelaRoute
   '/reserva/$slug': typeof ReservaSlugRoute
+  '/admin': typeof AdminAuthenticatedIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -163,13 +170,14 @@ export interface FileRoutesById {
   '/quem-somos': typeof QuemSomosRoute
   '/regras': typeof RegrasRoute
   '/termos': typeof TermosRoute
-  '/admin/_authenticated': typeof AdminAuthenticatedRoute
+  '/admin/_authenticated': typeof AdminAuthenticatedRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/expedicoes/$slug': typeof ExpedicoesSlugRoute
   '/marcas/canastra-a-cavalo': typeof MarcasCanastraACavaloRoute
   '/marcas/cavalgadas': typeof MarcasCavalgadasRoute
   '/marcas/elas-na-sela': typeof MarcasElasNaSelaRoute
   '/reserva/$slug': typeof ReservaSlugRoute
+  '/admin/_authenticated/': typeof AdminAuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -191,6 +199,7 @@ export interface FileRouteTypes {
     | '/marcas/cavalgadas'
     | '/marcas/elas-na-sela'
     | '/reserva/$slug'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -203,13 +212,13 @@ export interface FileRouteTypes {
     | '/quem-somos'
     | '/regras'
     | '/termos'
-    | '/admin'
     | '/admin/login'
     | '/expedicoes/$slug'
     | '/marcas/canastra-a-cavalo'
     | '/marcas/cavalgadas'
     | '/marcas/elas-na-sela'
     | '/reserva/$slug'
+    | '/admin'
   id:
     | '__root__'
     | '/'
@@ -229,6 +238,7 @@ export interface FileRouteTypes {
     | '/marcas/cavalgadas'
     | '/marcas/elas-na-sela'
     | '/reserva/$slug'
+    | '/admin/_authenticated/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -242,7 +252,7 @@ export interface RootRouteChildren {
   QuemSomosRoute: typeof QuemSomosRoute
   RegrasRoute: typeof RegrasRoute
   TermosRoute: typeof TermosRoute
-  AdminAuthenticatedRoute: typeof AdminAuthenticatedRoute
+  AdminAuthenticatedRoute: typeof AdminAuthenticatedRouteWithChildren
   AdminLoginRoute: typeof AdminLoginRoute
   MarcasCanastraACavaloRoute: typeof MarcasCanastraACavaloRoute
   MarcasCavalgadasRoute: typeof MarcasCavalgadasRoute
@@ -371,6 +381,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/_authenticated/': {
+      id: '/admin/_authenticated/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminAuthenticatedIndexRouteImport
+      parentRoute: typeof AdminAuthenticatedRoute
+    }
   }
 }
 
@@ -386,6 +403,17 @@ const ExpedicoesRouteWithChildren = ExpedicoesRoute._addFileChildren(
   ExpedicoesRouteChildren,
 )
 
+interface AdminAuthenticatedRouteChildren {
+  AdminAuthenticatedIndexRoute: typeof AdminAuthenticatedIndexRoute
+}
+
+const AdminAuthenticatedRouteChildren: AdminAuthenticatedRouteChildren = {
+  AdminAuthenticatedIndexRoute: AdminAuthenticatedIndexRoute,
+}
+
+const AdminAuthenticatedRouteWithChildren =
+  AdminAuthenticatedRoute._addFileChildren(AdminAuthenticatedRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContatoRoute: ContatoRoute,
@@ -397,7 +425,7 @@ const rootRouteChildren: RootRouteChildren = {
   QuemSomosRoute: QuemSomosRoute,
   RegrasRoute: RegrasRoute,
   TermosRoute: TermosRoute,
-  AdminAuthenticatedRoute: AdminAuthenticatedRoute,
+  AdminAuthenticatedRoute: AdminAuthenticatedRouteWithChildren,
   AdminLoginRoute: AdminLoginRoute,
   MarcasCanastraACavaloRoute: MarcasCanastraACavaloRoute,
   MarcasCavalgadasRoute: MarcasCavalgadasRoute,
