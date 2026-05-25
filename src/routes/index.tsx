@@ -163,8 +163,8 @@ function HomePage() {
         <div className="container-tight relative flex min-h-[100svh] flex-col justify-end pb-14 pt-24 md:min-h-0 md:h-full md:pb-20 md:pt-28 lg:pb-24">
           <div className="max-w-3xl">
             <div className="eyebrow text-areia text-shadow-strong text-[0.62rem] md:text-xs">{t("hero.eyebrow")}</div>
-            <h1 className="mt-4 font-display text-[2.25rem] leading-[1.04] text-balance text-shadow-strong text-areia sm:text-5xl md:mt-5 md:text-6xl md:leading-[0.98] lg:text-7xl">
-              {t("hero.titlePart1")} <em className="not-italic text-cobre-soft">{t("hero.titleAccent")}</em> {t("hero.titlePart2")}
+            <h1 className="mt-4 font-display text-[1.85rem] leading-[1.06] text-balance text-shadow-strong text-areia xs:text-[2.1rem] sm:text-5xl md:mt-5 md:text-6xl md:leading-[0.98] lg:text-7xl">
+              {t("hero.titlePart1")} <em className="not-italic text-cobre-soft whitespace-nowrap">{t("hero.titleAccent")}</em> {t("hero.titlePart2")}
             </h1>
             <p className="mt-4 max-w-xl font-display text-[1.1rem] leading-[1.28] text-areia text-shadow-strong text-balance sm:text-2xl md:mt-5 md:text-[1.7rem] md:leading-[1.2]">
               {t("hero.subtitle")}
