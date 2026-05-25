@@ -162,6 +162,7 @@ function ReservaPage() {
   };
 
   const back = () => setStep((s) => Math.max(s - 1, 0));
+  const backHref = "/expedicoes" as const;
 
   const onSubmit = form.handleSubmit(async (values) => {
     setSubmitting(true);
