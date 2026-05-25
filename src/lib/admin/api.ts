@@ -115,10 +115,26 @@ export async function getExpedicao(id: string): Promise<ExpedicaoRow | null> {
   return (data as unknown as ExpedicaoRow) ?? null;
 }
 
+async function gerarSlugUnico(base: string): Promise<string> {
+  const baseSlug = slugify(base) || `expedicao-${Date.now().toString(36)}`;
+  let candidato = baseSlug;
+  let i = 1;
+  // até 20 tentativas
+  while (i < 20) {
+    const { data } = await supabase.from("expedicoes").select("id").eq("slug", candidato).maybeSingle();
+    if (!data) return candidato;
+    i += 1;
+    candidato = `${baseSlug}-${i}`;
+  }
+  return `${baseSlug}-${Date.now().toString(36)}`;
+}
+
 export async function createExpedicao(input: Partial<ExpedicaoRow>): Promise<ExpedicaoRow> {
+  const nomeBase = input.nome ?? "Nova expedição";
+  const slug = input.slug ?? (await gerarSlugUnico(nomeBase));
   const payload = {
-    nome: input.nome ?? "Nova expedição",
-    slug: input.slug ?? slugify(input.nome ?? `expedicao-${Date.now()}`),
+    nome: nomeBase,
+    slug,
     subtitulo: input.subtitulo ?? null,
     descricao_curta: input.descricao_curta ?? "",
     descricao_longa: input.descricao_longa ?? "",
@@ -146,11 +162,24 @@ export async function createExpedicao(input: Partial<ExpedicaoRow>): Promise<Exp
     parcelamento_max: input.parcelamento_max ?? 1,
   };
   const { data, error } = await supabase.from("expedicoes").insert(payload).select().maybeSingle();
-  if (error) throw new Error(error.message);
+  if (error) {
+    // Conflito de slug raríssimo (corrida) — tenta de novo com sufixo timestamp
+    if (error.message.includes("duplicate key") || error.code === "23505") {
+      const retrySlug = `${slug}-${Date.now().toString(36)}`;
+      const { data: retryData, error: retryErr } = await supabase
+        .from("expedicoes").insert({ ...payload, slug: retrySlug }).select().maybeSingle();
+      if (retryErr) throw new Error(retryErr.message);
+      if (!retryData) throw new Error("Expedição criada mas não retornada.");
+      await logActivity({ modulo: "expedicoes", acao: "criar", descricao: retryData.nome });
+      return retryData as unknown as ExpedicaoRow;
+    }
+    throw new Error(error.message);
+  }
   if (!data) throw new Error("Expedição criada mas não retornada (verifique permissões internas).");
   await logActivity({ modulo: "expedicoes", acao: "criar", descricao: data.nome });
   return data as unknown as ExpedicaoRow;
 }
+
 
 export async function updateExpedicao(id: string, patch: Partial<ExpedicaoRow>): Promise<ExpedicaoRow> {
   const { data, error } = await supabase
@@ -174,9 +203,9 @@ export async function deleteExpedicao(id: string): Promise<void> {
 export async function duplicateExpedicao(id: string): Promise<ExpedicaoRow> {
   const original = await getExpedicao(id);
   if (!original) throw new Error("Expedição não encontrada");
-  const { id: _omit, created_at: _c, updated_at: _u, ...rest } = original;
-  void _omit; void _c; void _u;
-  const novoSlug = `${original.slug}-copia-${Date.now().toString(36)}`;
+  const { id: _omit, created_at: _c, updated_at: _u, slug: _s, ...rest } = original;
+  void _omit; void _c; void _u; void _s;
+  const novoSlug = await gerarSlugUnico(`${original.slug}-copia`);
   return createExpedicao({ ...rest, nome: `${original.nome} (cópia)`, slug: novoSlug, status: "rascunho" });
 }
 

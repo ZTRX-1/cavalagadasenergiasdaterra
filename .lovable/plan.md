@@ -1,70 +1,64 @@
-# Etapa 2.5 — Painel Interno Funcional
+# Etapa 2.5 — Painel admin realmente funcional
 
-Vou dividir o trabalho em **4 frentes** para entregar de forma estável, sem quebrar o que já está em pé. Cada frente é um bloco independente que posso entregar e validar antes de seguir.
-
-> Importante: o escopo é grande (17 itens). Vou pedir confirmação para executar **as 4 frentes em sequência** nesta mesma rodada (sem parar para perguntar entre elas), ou então só a Frente 1 + 2 agora — você decide no final.
+Escopo grande (21 frentes). Vou dividir em **4 frentes sequenciais** com aprovação entre cada uma, para reduzir risco e permitir QA pontual.
 
 ---
 
-## Frente A — Correções críticas (bloqueiam uso hoje)
+## Frente A — Dados, protocolos e expedições (itens 1, 5, 6, 7, 8, 11)
 
-Itens 1, 2, 3, 15 do briefing.
+**Migration única:**
+- Limpar dados transacionais de teste: `DELETE FROM reservas`, `participantes`, `leads`, `lead_atividades`, `documentos`, `protocolo_counter`, `protocolo_lead_counter`. Preserva `expedicoes`, `datas`, `expedicao_assets`, `profiles`, `user_roles`.
+- Trocar geração de protocolo para token alfanumérico (`CET-2026-A7K9Q2`): nova função `gerar_protocolo_seguro()` usando `gen_random_bytes` + base36, 6 chars, validando unicidade.
+- Garantir `slug` único em `expedicoes` com auto-sufixo numérico via função `slugify_unique(text)`.
 
-1. **RLS expedições** — auditar policies de `expedicoes`, `datas`, `expedicao_assets`. Garantir que `is_internal_user(auth.uid())` cobre INSERT/UPDATE/DELETE para `authenticated`. Migration corrigindo eventuais gaps.
-2. **`.single()` quebrando ações** — trocar por `.maybeSingle()` em `src/lib/admin/api.ts` (get/update/duplicate). Tratamento de erro consistente nos botões pausar/arquivar/duplicar/excluir.
-3. **Capas das expedições** — corrigir resolução de capa na listagem e no editor:
-   - prioridade: `capa_url` → primeiro `expedicao_assets` com `is_capa=true` → primeiro asset ordenado → `imagem_url` legado → placeholder.
-   - garantir que upload em `expedicao-midia` grava `expedicao_assets` corretamente e atualiza `capa_url`.
-4. **Barra superior** — corrigir input de busca (padding-left para a lupa não sobrepor texto), tooltip "Sem notificações" no sino.
+**Backfill expedições do site:**
+- Ler `src/lib/expedicoes-static.ts` e fazer seed idempotente (`ON CONFLICT (slug) DO NOTHING`) das expedições estáticas do site público para a tabela `expedicoes`, com imagem, datas, preço, vagas, marca, roteiro, inclui, requisitos, política.
+- Resultado: admin lista as ~7 expedições reais imediatamente.
 
-## Frente B — Dashboard, contadores e financeiro
-
-Itens 4, 5, 6, 7, 11.
-
-5. **Filtros de período no dashboard** (Hoje / Semana / Mês / Ano / Personalizado) afetando KPIs de leads, pré-reservas, faturamento, próximas expedições.
-6. **Datas com ano completo** — formatador `04 a 07 de junho de 2026` em todas as listagens admin.
-7. **Faturamento estimado misto** — 50% Pix + 50% Cartão por vaga; fallback para `preco` quando não houver `preco_cartao`.
-8. **Progresso das expedições** — label explícita: `8 / 14 vagas preenchidas (6 restantes)` + barra de progresso.
-9. **Contadores na listagem de expedições** — Total / Publicadas / Rascunho / Pausadas / Arquivadas como chips clicáveis (filtram a tabela).
-10. **Financeiro real** — corrigir agregações para usar `reservas` confirmadas/pendentes/parciais com saldo restante, forma e parcelas.
-
-## Frente C — Leads, Participantes, Grupos, Documentos
-
-Itens 8, 9, 10, 12.
-
-11. **Leads — campos adicionais**: CPF, peso, data nascimento, experiência equestre, observações médicas, restrições alimentares, origem (select), expedição de interesse (FK para `expedicoes`). Migration + form.
-12. **Participantes — campos completos**: CPF, peso, data nascimento + idade calculada, telefone, email, experiência, restrições médicas/alimentares, observações, expedição vinculada, grupo, status. Migration + form.
-13. **Grupos / reservas em grupo** — modelar grupo como `reservas` com `participantes[]`; cada participante vira linha em `participantes` com `reserva_id`. Tela do grupo com responsável, lista de fichas individuais, valor, pagamento, documentos, observações.
-14. **Documentos** — vincular corretamente a `expedicao_id`, `participante_id` ou `reserva_id` (já existe coluna parcial). Tipos: contrato, termo, política, ficha médica, jurídico. Tela com filtros por vínculo e tipo + upload em `expedicao-docs` / `participante-docs`.
-
-## Frente D — Mídia, Configurações, Analytics placeholder
-
-Itens 13, 14, 16.
-
-15. **Mídia** — galeria por expedição: grid de assets, definir capa, reordenar, remover, adicionar vídeo externo via URL.
-16. **Configurações** — tabela `configuracoes` (singleton jsonb) com: dados da empresa, WhatsApp oficial, e-mails de notificação, Instagram, identidade visual. Aba "Usuários internos" lista `profiles + user_roles` (criar usuário fica para Etapa 3, agora só visualização e papel).
-17. **Analytics placeholder** — card "Acessos ao site — em breve" no dashboard, sem integração.
+**API (`src/lib/admin/api.ts`):**
+- `createExpedicao`: gerar slug único via RPC ou retry com sufixo.
+- `duplicateExpedicao`: copiar com novo slug `original-copia-{rand}`.
+- CRUD completo testado: criar, editar, rascunho/publicar, pausar, arquivar, duplicar, excluir, capa.
+- Contadores reais já implementados — só validar pós-seed.
 
 ---
 
-## Detalhes técnicos relevantes
+## Frente B — Dashboard, financeiro e busca (itens 2, 3, 4, 12, 16, 17)
 
-- **Migrations**: 1 migration única consolidando todos os ALTERs (`leads`, `participantes`, `reservas` para `grupo_nome/responsavel_id`, `documentos` campos extras, `configuracoes` nova tabela). RLS `is_internal_user` para tudo.
-- **API**: refactor `src/lib/admin/api.ts` — tudo via Supabase SDK (browser client) com session do usuário interno autenticado. `.maybeSingle()` em todos os fetch-by-id.
-- **Cover resolver**: helper `resolveCapa(expedicao, assets)` reutilizado em listagem, editor e site público.
-- **Filtros de período**: hook `useDateRange()` com presets; queries do dashboard recebem `{from, to}`.
-- **Formato de data**: helper `formatarPeriodo(inicio, fim)` em `src/lib/format.ts`.
-
-## Fora de escopo (Etapa 3)
-
-IA, WhatsApp, e-mail automático, Mercado Pago, automações, triggers de mensagens, scraping de analytics real.
+- **Date picker "Personalizado":** Popover com Calendar shadcn em modo `range`, botões Aplicar/Limpar.
+- **Tooltip faturamento:** texto explicando "50% Pix + 50% cartão sobre vagas disponíveis".
+- **Pré-reservas:** após Frente A todos contadores zerados; revisar filtros por `created_at`.
+- **Financeiro:** reescrever página puxando `reservas` reais (protocolo novo, responsável (jsonb), expedição, datas, valores, saldo_restante, forma_pagamento, status_pagamento).
+- **Busca topbar:** já tem `pl-10`, mas validar e ajustar para responsividade — esconder no `<md` e mostrar drawer/sheet.
+- **Sino:** já tem tooltip; adicionar mini-popover com "Sem notificações no momento".
 
 ---
 
-## Pergunta antes de executar
+## Frente C — Leads, Participantes, Mídia, Documentos, Configurações (itens 9, 10, 13, 14, 15)
 
-O escopo é grande (esperado: ~25 arquivos novos/editados + 1 migration densa). Como prefere?
+- **Leads:** formulário com todos os 16 campos listados (já tem a maioria — completar origem como select padronizado e expedição_interesse como select de expedições reais).
+- **Participantes:** remover qualquer mock/seed "Empresa Josefina"; ficha individual com idade calculada a partir de `data_nascimento`; agrupamento por reserva.
+- **Mídia:** página funcional — seletor de expedição, grid de `expedicao_assets`, botões: definir capa, mover ↑/↓, remover, adicionar URL externa de vídeo, upload novo.
+- **Documentos:** página funcional — upload PDF para buckets `expedicao-docs`/`participante-docs`, vínculo com expedição/reserva/participante, select de tipo (contrato/termo/política/aceite/ficha médica/roteiro/outro), listagem filtrável.
+- **Configurações:** nova tabela `configuracoes` (singleton jsonb) com aba Empresa (nome, CNPJ, WhatsApp, e-mails, Instagram, logo) e aba Usuários internos (listagem de `profiles` + `user_roles`, sem criação).
 
-1. **Executar tudo (A → D) nesta rodada** — entrego um diff grande, mas o painel fica completo.
-2. **Só Frente A + B agora** (correções críticas + dashboard/financeiro). C e D ficam para a próxima mensagem.
-3. **Uma frente por vez**, com sua aprovação entre cada.
+---
+
+## Frente D — Responsividade total e polimento (itens 18, 19, 20)
+
+- Sidebar vira Drawer (`Sheet`) abaixo de `md`.
+- Tabelas (expedições, leads, participantes, financeiro) viram cards empilhados abaixo de `md` via componente `AdminResponsiveTable`.
+- Formulários: forçar `grid-cols-1` no mobile, `md:grid-cols-2`.
+- Topbar: título + ações colapsam em coluna no mobile.
+- Auditoria final: remover qualquer string mock ("Empresa Josefina", "Lorem ipsum", "Exemplo"). Padronizar empty states profissionais.
+- Garantir que campos estruturais (protocolo, status, datas) estejam consistentes para futura leitura por automação.
+
+---
+
+## Como prefere prosseguir?
+
+1. **Tudo (A→D) numa rodada** — diff enorme (~30 arquivos + 2 migrations), mas finaliza a Etapa 2.5.
+2. **Uma frente por vez** — começo por A, você valida, sigo para B, etc. (recomendado).
+3. **A+B juntos, depois C+D** — meio termo.
+
+Diga qual opção e eu executo.
