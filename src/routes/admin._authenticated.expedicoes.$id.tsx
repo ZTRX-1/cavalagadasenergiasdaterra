@@ -26,6 +26,18 @@ import {
 
 export const Route = createFileRoute("/admin/_authenticated/expedicoes/$id")({
   component: ExpedicaoEdit,
+  errorComponent: ({ error, reset }) => (
+    <div className="admin-card space-y-3">
+      <h2 className="font-display text-lg text-[color:var(--admin-cinza-1)]">Não foi possível carregar a expedição</h2>
+      <p className="text-sm text-[color:var(--admin-cinza-3)]">{(error as Error).message}</p>
+      <button className="admin-btn-ghost" onClick={() => reset()}>Tentar de novo</button>
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="admin-card">
+      <p className="text-sm text-[color:var(--admin-cinza-2)]">Expedição não encontrada.</p>
+    </div>
+  ),
 });
 
 function ExpedicaoEdit() {
@@ -33,17 +45,19 @@ function ExpedicaoEdit() {
   const nav = useNavigate();
   const qc = useQueryClient();
 
-  const { data: exp, isLoading } = useQuery({
+  const { data: exp, isLoading, isFetching } = useQuery({
     queryKey: ["admin", "expedicao", id],
     queryFn: () => getExpedicao(id),
   });
   const { data: assets = [] } = useQuery({
     queryKey: ["admin", "assets", id],
     queryFn: () => listAssets(id),
+    enabled: !!exp,
   });
   const { data: datas = [] } = useQuery({
     queryKey: ["admin", "datas", id],
     queryFn: () => listDatas(id),
+    enabled: !!exp,
   });
 
   const [form, setForm] = useState<Partial<ExpedicaoRow> | null>(null);
@@ -55,7 +69,16 @@ function ExpedicaoEdit() {
     onError: (e) => toast.error((e as Error).message),
   });
 
-  if (isLoading || !form) return <div className="admin-card h-40 animate-pulse" />;
+  if (isLoading || isFetching && !exp) return <div className="admin-card h-40 animate-pulse" />;
+  if (!exp) {
+    return (
+      <div className="admin-card space-y-3">
+        <p className="text-sm text-[color:var(--admin-cinza-2)]">Expedição não encontrada ou ainda não disponível.</p>
+        <button className="admin-btn-ghost" onClick={() => nav({ to: "/admin/expedicoes" })}>Voltar à lista</button>
+      </div>
+    );
+  }
+  if (!form) return <div className="admin-card h-40 animate-pulse" />;
 
   const setF = (patch: Partial<ExpedicaoRow>) => setForm((f) => ({ ...(f ?? {}), ...patch }));
 
