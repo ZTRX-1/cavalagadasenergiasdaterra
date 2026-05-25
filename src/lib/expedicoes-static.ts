@@ -32,6 +32,7 @@ export interface DataExpedicao {
   status: string;
   preco_pix?: number | null;
   preco_cartao?: number | null;
+  tag?: string | null;
 }
 
 const EXPEDICOES: Expedicao[] = [
