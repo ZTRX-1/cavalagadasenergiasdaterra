@@ -44,12 +44,11 @@ function Page() {
         <div className="container-tight grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
             <div className="eyebrow">O território</div>
-            <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">Onde tudo começa: nossa casa.</h2>
+            <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">Nosso ponto de origem.</h2>
           </div>
           <div className="md:col-span-7 text-lg leading-relaxed text-foreground/85 space-y-5">
-            <p>A Canastra é nosso ponto de origem. Aqui mantemos o haras, criamos os cavalos e conhecemos cada trilha, porque essas trilhas fazem parte da nossa vida há gerações.</p>
-            <p>Travessias pela Serra, visitas a produtores de queijo canastra premiados, hospedagens com história, gastronomia regional refinada.</p>
-            <p>Quem cavalga conosco na Canastra entra dentro de um modo de vida, não apenas de um roteiro.</p>
+            <p>A Canastra é o nosso ponto de origem. Conhecemos cada trilha, cada paisagem, cada história que fazem desta região um dos destinos equestres mais especiais do Brasil.</p>
+            <p>Trabalhamos ao lado de parceiros locais selecionados, que compartilham dos mesmos valores de cuidado, autenticidade e respeito à cultura da Serra da Canastra.</p>
           </div>
         </div>
       </section>
