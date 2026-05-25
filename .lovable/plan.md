@@ -1,126 +1,70 @@
-# Refatoração Final — Estabilização Operacional do CRM
+## Ajustes pontuais — site público
 
-Esta é uma etapa grande. Vou estabilizar tudo antes de qualquer feature nova (IA, WhatsApp, automações). Abaixo o que será feito, em ordem.
+### 1. Header / Logo (`src/components/site-header.tsx`)
+- Aumentar tamanho do logo (de `h-11/h-12` para ~`h-14 md:h-16`) e do container circular.
+- Aumentar gap entre logo e textos (`gap-3.5` → `gap-5`) e aumentar `leading`/espaçamento vertical entre "Cavalgadas" e "Energias da Terra" para evitar sobreposição visual.
+- Ajustar altura do header se necessário para acomodar logo maior.
 
----
+### 2. Card de marcas no mobile ("Três caminhos, uma mesma essência")
+- Em `src/components/marca-cross-nav.tsx` (e/ou onde os cards das marcas são renderizados no mobile, possivelmente `index.tsx` seção marcas), forçar "Cavalgadas Energias da Terra" em uma única linha (`whitespace-nowrap`, ajustar font-size responsivo).
 
-## 1. Sincronização das 7 expedições do site → admin
+### 3. Cards de "Próximas Datas" (Peru e Mantiqueira)
+- Em `src/routes/index.tsx` (seção próximas datas) e/ou `src/lib/expedicoes-static.ts`:
+  - Padronizar visual do card do Peru igual ao da Mantiqueira.
+  - Trocar "Expedição na Mantiqueira" → "Serra da Mantiqueira" em todas as ocorrências do site.
+  - Peru / Vale do Colca: badge "poucas vagas" (já está `poucas_vagas` no static, garantir que o componente renderiza esse rótulo).
 
-**Problema:** o site mostra 7 expedições (dados estáticos em `src/lib/expedicoes-static.ts`), mas o admin mostra "nenhuma expedição" porque a tabela `expedicoes` está vazia.
+### 4. Reserva — botão Voltar (`src/routes/reserva.$slug.tsx`)
+- Etapa 1: botão "Voltar" → navega para `/expedicoes` (ou menu/home).
+- Etapa 2+: botão "Voltar" → volta para etapa anterior (`step - 1`).
 
-**Ação:**
-- Seed (migration de dados) inserindo as 7 expedições reais no banco com slug, nome, descrição, preço, marca, região, capa_url e galeria.
-- Trocar a fonte do site público (`expedicoes.tsx` e `expedicoes.$slug.tsx`) para ler do banco via `createServerFn` — assim admin e site sempre batem.
-- Manter o arquivo estático apenas como fallback / referência de imagens via `expedicao-images.ts`.
+### 5. Footer (`src/components/site-footer.tsx` + i18n PT/EN/ES)
+- Substituir tagline pelo novo texto:
+  > "Expedições a cavalo pelo Brasil e pelo mundo. As melhores histórias da sua vida ainda estão esperando por você. Pequenos grupos, cavalos selecionados e roteiros autorais criados por quem vive a paixão pelos cavalos e acredita que algumas jornadas têm o poder de nos transformar para sempre."
+- "Base de Operações": endereço → "Serra da Mantiqueira, Maria da Fé, MG".
 
----
+### 6. FAQ (`src/routes/index.tsx`)
+- "Como funciona a hospedagem?" → novo texto:
+  > "Trabalhamos com pousadas selecionadas de três a quatro estrelas, conforme o roteiro e a região, todas escolhidas por nossa curadoria, garantindo conforto, autenticidade e qualidade em cada experiência."
+- Remover pergunta "E em caso de chuva?".
 
-## 2. Criação de expedição (corrigir "tela branca")
+### 7. Marca Canastra
+- Em `src/routes/marcas.canastra-a-cavalo.tsx`:
+  - Trocar "Expedições a cavalo pela Serra da Canastra" → "Explore a Serra da Canastra a cavalo por rotas cuidadosamente selecionadas".
+  - Substituir bloco "Onde tudo começa, nossa casa..." pelo novo texto fornecido sobre Canastra ser ponto de origem e parceiros locais.
 
-**Problema:** clica em "Nova expedição", toast aparece, mas navegação quebra / lista não atualiza / slug conflita.
+### 8. Terminologia global
+- Substituir "cavaleiras" → "amazonas" em todo `src/**` e `src/i18n/locales/**`.
+- Substituir "Travessias Premium" / "travessias premium" → "Expedição a cavalo" em todas as ocorrências restantes.
+- Reforçar "Expedição na Mantiqueira" → "Serra da Mantiqueira" em qualquer arquivo remanescente.
 
-**Ação:**
-- Garantir uso da função `slugify_unique_expedicao()` no insert (evita `expedicoes_slug_key` conflict).
-- Inserir defaults válidos para todas as colunas NOT NULL (`descricao_curta`, `descricao_longa`, `duracao`, `nivel`, `preco`).
-- Validar que a rota `/admin/expedicoes/$id` existe e carrega — corrigir loader/hydration.
-- Após criar: pré-popular cache, navegar, depois invalidar lista (já feito parcialmente, vou auditar).
+### 9. Elas na Sela (`src/routes/marcas.elas-na-sela.tsx` + `src/lib/expedicao-images.ts`)
+- Auditar imagens usadas; remover qualquer foto que contenha homens montando cavalo, mantendo apenas mulheres. Substituir slots por imagens femininas já existentes no acervo.
 
----
+### 10. Reserva — quantidade padrão (`src/routes/reserva.$slug.tsx`)
+- Confirmar default = 1 participante (já foi feito anteriormente; revalidar). Manter opções casal/grupo intactas.
 
-## 3. CRUD real em Expedições
+### 11. Nova expedição Patagônia
+- Em `src/lib/expedicoes-static.ts`: adicionar expedição "Patagônia" com tag `novo-percurso`.
+- Datas:
+  - 15–19 de janeiro de 2027 (tag "Novo percurso").
+  - 24–28 de janeiro de 2027 (tag "Novo percurso").
+- Adicionar entrada em `src/lib/expedicao-images.ts` (galeria placeholder vazia ou reaproveitar) e em `src/lib/expedicao-slugs.ts` se necessário.
+- Garantir que aparece em `/expedicoes`, `/datas` e seções da home.
 
-Auditar a tela de detalhe `/admin/expedicoes/$id` e garantir que TODOS os botões salvam de verdade:
-- Editar campos básicos (nome, slug, descrições, preço, duração, nível, marca, região, vagas, parcelamento).
-- Definir capa (upload para bucket `expedicao-midia` → grava `capa_url`).
-- Gerenciar galeria (upload múltiplo, ordenar, remover, marcar capa) via tabela `expedicao_assets`.
-- Datas e vagas (CRUD na tabela `datas`).
-- Publicar / Pausar / Arquivar / Duplicar / Excluir.
+### Arquivos previstos
+- `src/components/site-header.tsx`
+- `src/components/site-footer.tsx`
+- `src/components/marca-cross-nav.tsx`
+- `src/routes/index.tsx`
+- `src/routes/reserva.$slug.tsx`
+- `src/routes/marcas.canastra-a-cavalo.tsx`
+- `src/routes/marcas.elas-na-sela.tsx`
+- `src/lib/expedicoes-static.ts`
+- `src/lib/expedicao-images.ts`
+- `src/lib/expedicao-slugs.ts` (se necessário p/ Patagônia)
+- `src/i18n/locales/pt|en|es/common.json`
 
----
-
-## 4. Mídia funcional
-
-**Hoje:** tela placeholder.
-
-**Vou entregar:**
-- Upload real para bucket `expedicao-midia` (público).
-- Lista visual com preview (img/vídeo).
-- Seleção da capa principal por expedição.
-- Reordenação (campo `ordem`).
-- Suporte a URL externa para vídeos (YouTube/Vimeo).
-- Filtro obrigatório por expedição — toda mídia pertence a uma expedição.
-
----
-
-## 5. Documentos — três escopos separados
-
-A tabela já tem coluna `escopo`. Vou implementar as 3 abas e enforce de isolamento:
-
-- **Institucional/Jurídico** (`escopo='institucional'`): contratos, termos, políticas.
-- **Operacional/Expedição** (`escopo='expedicao'` + `expedicao_id`): roteiros, checklists, PDFs da viagem.
-- **Participante** (`escopo='participante'` + `participante_id`): RG, exames, comprovantes. **Visível apenas no perfil daquele participante** — nunca exposto em lista geral aberta a outros.
-
----
-
-## 6. Participantes e grupos (reservas)
-
-- Reserva = grupo. Tela de reserva mostra: responsável, participantes vinculados, documentos do grupo, financeiro, status.
-- Cada participante tem ficha individual com: dados pessoais, restrições médicas/alimentares, documentos próprios (escopo participante), histórico financeiro.
-
----
-
-## 7. Configurações — módulo real
-
-- **Empresa:** nome, CNPJ, endereço, WhatsApp, Instagram, e-mail, logo, cor de destaque (salvando em `configuracoes`).
-- **Equipe interna:** criar/editar/remover/ativar/desativar usuário, redefinir senha, definir cargo e role (admin/financeiro/operacional/midia/atendimento). Edge function `admin-users` já existe — vou expandir e amarrar na UI.
-
----
-
-## 8. Responsividade total
-
-Auditar todas as telas admin no breakpoint <768px:
-- Sidebar → drawer (já existe `AdminSidebarDrawer`, validar).
-- Tabelas → cards empilhados.
-- Toolbars/filtros → stack vertical com scroll horizontal de chips.
-- Formulários → coluna única.
-- Botões com alvo de toque ≥40px.
-
----
-
-## 9. Rastreabilidade e relacionamentos
-
-Garantir que os FKs lógicos funcionam end-to-end:
-`lead → reserva → participantes → documentos/financeiro`, todos vinculados à `expedicao_id`.
-Adicionar `updated_at` triggers onde faltar e logar ações críticas em `activity_logs`.
-
----
-
-## 10. Remover placeholders
-
-Varredura final em todas as rotas `admin._authenticated.*` removendo textos "em construção", dados fake e exemplos genéricos.
-
----
-
-## Ordem de execução
-
-1. Migration: seed das 7 expedições + ajustes de defaults.
-2. Trocar site público para ler do banco.
-3. Corrigir create + detalhe de expedição.
-4. Mídia funcional.
-5. Documentos com 3 escopos.
-6. Reservas/participantes (ficha individual).
-7. Configurações empresa + equipe.
-8. Auditoria responsiva mobile.
-9. Limpeza de placeholders.
-
----
-
-## Detalhes técnicos
-
-- Stack: TanStack Start + Lovable Cloud (Supabase).
-- Tudo server-side via `createServerFn` ou queries diretas autenticadas.
-- Storage: buckets `expedicao-midia` (público), `expedicao-docs`, `participante-docs` (privados) — já existem.
-- RLS: políticas `is_internal_user()` já protegem o admin; público lê só `status='publicado' AND ativo=true`.
-- Sem novas dependências.
-
-Posso começar pela migration de seed das 7 expedições?
+### Fora de escopo
+- Sem mudanças de backend, schema ou painel admin.
+- Sem nova arquitetura visual — apenas refinamento.
