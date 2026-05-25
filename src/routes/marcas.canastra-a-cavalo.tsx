@@ -34,7 +34,7 @@ function Page() {
             Canastra <em className="not-italic text-cobre-soft">a Cavalo</em>
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-areia text-shadow-soft text-pretty">
-            Expedições a cavalo pela Serra da Canastra · terra do queijo, do Mangalarga Marchador e das cabeceiras do São Francisco.
+            Explore a Serra da Canastra a cavalo, por rotas cuidadosamente selecionadas.
           </p>
         </div>
 
