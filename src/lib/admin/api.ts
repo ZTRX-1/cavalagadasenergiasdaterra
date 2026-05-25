@@ -349,11 +349,17 @@ export interface LeadRow {
   nome: string;
   email: string | null;
   telefone: string | null;
+  cpf: string | null;
+  peso: number | null;
+  data_nascimento: string | null;
   cidade: string | null;
   estado: string | null;
   expedicao_interesse: string | null;
   origem: string | null;
   status: LeadStatusId;
+  experiencia_equestre: string | null;
+  observacoes_medicas: string | null;
+  restricoes_alimentares: string | null;
   observacoes: string | null;
   acompanhantes: number;
   quantidade_pessoas: number;
@@ -385,19 +391,26 @@ export async function createLead(input: Partial<LeadRow>): Promise<LeadRow> {
     nome: input.nome ?? "Sem nome",
     email: input.email ?? null,
     telefone: input.telefone ?? null,
+    cpf: input.cpf ?? null,
+    peso: input.peso ?? null,
+    data_nascimento: input.data_nascimento ?? null,
     cidade: input.cidade ?? null,
     estado: input.estado ?? null,
     expedicao_interesse: input.expedicao_interesse ?? null,
     origem: input.origem ?? "manual",
     status: input.status ?? "novo",
+    experiencia_equestre: input.experiencia_equestre ?? null,
+    observacoes_medicas: input.observacoes_medicas ?? null,
+    restricoes_alimentares: input.restricoes_alimentares ?? null,
     observacoes: input.observacoes ?? null,
     acompanhantes: input.acompanhantes ?? 0,
     quantidade_pessoas: input.quantidade_pessoas ?? 1,
     valor_estimado: input.valor_estimado ?? null,
     protocolo,
   };
-  const { data, error } = await supabase.from("leads").insert(payload).select().single();
-  if (error) throw error;
+  const { data, error } = await supabase.from("leads").insert(payload as never).select().maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Lead criado mas não retornado (verifique permissões).");
   await addLeadActivity(data.id, "criacao", `Lead criado · ${data.nome}`);
   await logActivity({ modulo: "leads", acao: "criar", descricao: data.nome });
   return data as unknown as LeadRow;
@@ -410,8 +423,9 @@ export async function updateLead(id: string, patch: Partial<LeadRow>): Promise<L
     .update(patch as never)
     .eq("id", id)
     .select()
-    .single();
-  if (error) throw error;
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Lead não encontrado.");
   if (before && patch.status && before.status !== patch.status) {
     const labelDe = LEAD_STATUS.find((s) => s.id === before.status)?.label ?? before.status;
     const labelPara = LEAD_STATUS.find((s) => s.id === patch.status)?.label ?? patch.status;
