@@ -101,18 +101,21 @@ const PASSOS_TXT: Record<string, Array<{ n: string; t: string; d: string }>> = {
 const FAQ_TXT: Record<string, Array<{ q: string; a: string }>> = {
   pt: [
     { q: "Preciso ter experiência prévia?", a: "Não. Temos expedições para todos os níveis, desde iniciantes até cavaleiros avançados. Indicamos a melhor opção conforme seu perfil." },
+    { q: "Como é a hospedagem?", a: "Trabalhamos com pousadas selecionadas de 3 e 4 estrelas, conforme o roteiro e a região. Todas escolhidas por nossa curadoria, garantindo conforto, autenticidade e qualidade em cada experiência." },
     { q: "Como funciona o pagamento?", a: "Após a pré-reserva, nossa equipe entra em contato via WhatsApp para alinhar o pagamento. Aceitamos Pix, transferência e cartão parcelado." },
     { q: "E se eu precisar cancelar?", a: "Aplicamos nossa política de cancelamento, transparente e proporcional ao tempo de antecedência. Detalhamos tudo antes da confirmação." },
     { q: "Vocês oferecem transfer?", a: "Sim. Todas as expedições incluem transfer do aeroporto ou ponto combinado até a base da experiência." },
   ],
   en: [
     { q: "Do I need previous experience?", a: "No. We have expeditions for every level, from first-time riders to advanced. We recommend the best fit based on your profile." },
+    { q: "What is the lodging like?", a: "We work with hand-picked 3 and 4-star inns, chosen according to the itinerary and region. All curated by our team to ensure comfort, authenticity and quality." },
     { q: "How does payment work?", a: "After requesting your booking, our team contacts you on WhatsApp to align payment. We accept Pix, bank transfer and credit card installments." },
     { q: "What if I need to cancel?", a: "We apply our cancellation policy, transparent and proportional to how far in advance you cancel. We detail everything before confirmation." },
     { q: "Do you provide transfers?", a: "Yes. All expeditions include transfer from the airport or agreed pickup point to the base of the experience." },
   ],
   es: [
     { q: "¿Necesito experiencia previa?", a: "No. Tenemos expediciones para todos los niveles, desde principiantes hasta jinetes avanzados. Recomendamos la mejor opción según tu perfil." },
+    { q: "¿Cómo es el alojamiento?", a: "Trabajamos con posadas seleccionadas de 3 y 4 estrellas, según el itinerario y la región. Todas elegidas por nuestra curaduría para garantizar comodidad, autenticidad y calidad." },
     { q: "¿Cómo funciona el pago?", a: "Tras la solicitud, nuestro equipo te contacta por WhatsApp para alinear el pago. Aceptamos Pix, transferencia y tarjeta en cuotas." },
     { q: "¿Y si necesito cancelar?", a: "Aplicamos nuestra política de cancelación, transparente y proporcional a la antelación. Lo detallamos todo antes de la confirmación." },
     { q: "¿Ofrecen traslados?", a: "Sí. Todas las expediciones incluyen traslado desde el aeropuerto o punto acordado hasta la base de la experiencia." },
