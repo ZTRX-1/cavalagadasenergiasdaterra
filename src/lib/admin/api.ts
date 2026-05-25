@@ -203,9 +203,9 @@ export async function deleteExpedicao(id: string): Promise<void> {
 export async function duplicateExpedicao(id: string): Promise<ExpedicaoRow> {
   const original = await getExpedicao(id);
   if (!original) throw new Error("Expedição não encontrada");
-  const { id: _omit, created_at: _c, updated_at: _u, ...rest } = original;
-  void _omit; void _c; void _u;
-  const novoSlug = `${original.slug}-copia-${Date.now().toString(36)}`;
+  const { id: _omit, created_at: _c, updated_at: _u, slug: _s, ...rest } = original;
+  void _omit; void _c; void _u; void _s;
+  const novoSlug = await gerarSlugUnico(`${original.slug}-copia`);
   return createExpedicao({ ...rest, nome: `${original.nome} (cópia)`, slug: novoSlug, status: "rascunho" });
 }
 
