@@ -49,7 +49,7 @@ function Page() {
           <div className="md:col-span-7 text-lg leading-relaxed text-foreground/85 space-y-5">
             <p>Elas na Sela nasceu da vontade de criar um espaço seguro, sofisticado e potente para mulheres viverem a cavalgada com profundidade.</p>
             <p>Grupos pequenos, guias experientes, hospedagens acolhedoras, e uma rede de irmandade que muitas vezes começa na trilha e segue para a vida.</p>
-            <p>Para iniciantes ou cavaleiras experientes. O que importa é a vontade de atravessar.</p>
+            <p>Para iniciantes ou amazonas experientes. O que importa é a vontade de atravessar.</p>
           </div>
         </div>
       </section>
