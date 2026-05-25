@@ -129,7 +129,7 @@ function LeadsPage() {
         title="Excluir lead"
         description={`Remover ${del?.nome ?? ""} e seu histórico.`}
         destructive
-        onConfirm={() => del && delMut.mutate(del.id)}
+        onConfirm={() => { if (del) delMut.mutate(del.id); }}
       />
     </div>
   );
