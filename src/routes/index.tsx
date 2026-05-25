@@ -101,7 +101,7 @@ const PASSOS_TXT: Record<string, Array<{ n: string; t: string; d: string }>> = {
 const FAQ_TXT: Record<string, Array<{ q: string; a: string }>> = {
   pt: [
     { q: "Preciso ter experiência prévia?", a: "Não. Temos expedições para todos os níveis, desde iniciantes até cavaleiros avançados. Indicamos a melhor opção conforme seu perfil." },
-    { q: "Como é a hospedagem?", a: "Trabalhamos com pousadas selecionadas de 3 e 4 estrelas, conforme o roteiro e a região. Todas escolhidas por nossa curadoria, garantindo conforto, autenticidade e qualidade em cada experiência." },
+    { q: "Como funciona a hospedagem?", a: "Trabalhamos com pousadas selecionadas de três a quatro estrelas, conforme o roteiro e a região, todas escolhidas por nossa curadoria, garantindo conforto, autenticidade e qualidade em cada experiência." },
     { q: "Como funciona o pagamento?", a: "Após a pré-reserva, nossa equipe entra em contato via WhatsApp para alinhar o pagamento. Aceitamos Pix, transferência e cartão parcelado." },
     { q: "E se eu precisar cancelar?", a: "Aplicamos nossa política de cancelamento, transparente e proporcional ao tempo de antecedência. Detalhamos tudo antes da confirmação." },
     { q: "Vocês oferecem transfer?", a: "Sim. Todas as expedições incluem transfer do aeroporto ou ponto combinado até a base da experiência." },
@@ -207,7 +207,7 @@ function HomePage() {
             {[
               { logo: logoCavalgadas, nome: "Cavalgadas Energias da Terra", tagline: { pt: "Expedições a cavalo pelo Brasil e pelo mundo.", en: "Horseback expeditions across Brazil and the world.", es: "Expediciones a caballo por Brasil y el mundo." }, to: "/marcas/cavalgadas" as const },
               { logo: logoElas, nome: "Elas na Sela", tagline: { pt: "Experiências exclusivas para mulheres que exploram o mundo a cavalo.", en: "Exclusive experiences for women who explore the world on horseback.", es: "Experiencias exclusivas para mujeres que exploran el mundo a caballo." }, to: "/marcas/elas-na-sela" as const },
-              { logo: logoCanastra, nome: "Canastra a Cavalo", tagline: { pt: "Expedições a cavalo pela Serra da Canastra.", en: "Horseback expeditions through Serra da Canastra.", es: "Expediciones a caballo por la Sierra da Canastra." }, to: "/marcas/canastra-a-cavalo" as const },
+              { logo: logoCanastra, nome: "Canastra a Cavalo", tagline: { pt: "Explore a Serra da Canastra a cavalo por rotas cuidadosamente selecionadas.", en: "Explore Serra da Canastra on horseback through carefully curated routes.", es: "Explora la Sierra da Canastra a caballo por rutas cuidadosamente seleccionadas." }, to: "/marcas/canastra-a-cavalo" as const },
             ].map((m) => (
               <Link
                 key={m.nome}
@@ -215,7 +215,7 @@ function HomePage() {
                 className="group flex flex-col items-center bg-carvao p-10 text-center text-areia transition-transform hover:-translate-y-1"
               >
                 <img src={m.logo} alt={m.nome} loading="lazy" decoding="async" className="h-28 w-28 rounded-full object-cover ring-1 ring-cobre/40" />
-                <div className="mt-6 font-display text-2xl text-balance leading-tight">{m.nome}</div>
+                <div className="mt-6 font-display text-[1.15rem] leading-tight text-balance whitespace-nowrap sm:whitespace-normal md:text-2xl">{m.nome}</div>
                 <p className="mt-3 text-sm leading-relaxed text-areia/80 text-pretty">{m.tagline[lng]}</p>
                 <span className="mt-6 inline-flex items-center gap-2 font-eyebrow text-[0.65rem] uppercase tracking-[0.32em] text-cobre-soft group-hover:text-areia">
                   {t("marcas.cta")} <ArrowRight className="h-3.5 w-3.5" />

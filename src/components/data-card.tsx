@@ -49,9 +49,16 @@ export function DataCard({ data }: { data: DataExpedicao }) {
 
 
       <div className="flex items-center justify-between gap-3 md:flex-col md:items-end md:gap-3">
-        <span className={cn("inline-flex items-center rounded-full border px-3 py-1 text-[0.7rem] uppercase tracking-widest", STATUS_CLASS[data.status])}>
-          {STATUS_LABEL[data.status] ?? data.status}
-        </span>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          {data.tag && (
+            <span className="inline-flex items-center rounded-full border border-cobre/50 bg-cobre/10 px-3 py-1 text-[0.7rem] uppercase tracking-widest text-cobre">
+              {data.tag}
+            </span>
+          )}
+          <span className={cn("inline-flex items-center rounded-full border px-3 py-1 text-[0.7rem] uppercase tracking-widest", STATUS_CLASS[data.status])}>
+            {STATUS_LABEL[data.status] ?? data.status}
+          </span>
+        </div>
         {isEsgotado ? (
           <span className="text-xs text-muted-foreground md:order-first">{data.vagas_disponiveis} vagas</span>
         ) : (
