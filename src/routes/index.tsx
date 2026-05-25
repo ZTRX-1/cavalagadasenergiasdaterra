@@ -101,7 +101,7 @@ const PASSOS_TXT: Record<string, Array<{ n: string; t: string; d: string }>> = {
 const FAQ_TXT: Record<string, Array<{ q: string; a: string }>> = {
   pt: [
     { q: "Preciso ter experiência prévia?", a: "Não. Temos expedições para todos os níveis, desde iniciantes até cavaleiros avançados. Indicamos a melhor opção conforme seu perfil." },
-    { q: "Como é a hospedagem?", a: "Trabalhamos com pousadas selecionadas de 3 e 4 estrelas, conforme o roteiro e a região. Todas escolhidas por nossa curadoria, garantindo conforto, autenticidade e qualidade em cada experiência." },
+    { q: "Como funciona a hospedagem?", a: "Trabalhamos com pousadas selecionadas de três a quatro estrelas, conforme o roteiro e a região, todas escolhidas por nossa curadoria, garantindo conforto, autenticidade e qualidade em cada experiência." },
     { q: "Como funciona o pagamento?", a: "Após a pré-reserva, nossa equipe entra em contato via WhatsApp para alinhar o pagamento. Aceitamos Pix, transferência e cartão parcelado." },
     { q: "E se eu precisar cancelar?", a: "Aplicamos nossa política de cancelamento, transparente e proporcional ao tempo de antecedência. Detalhamos tudo antes da confirmação." },
     { q: "Vocês oferecem transfer?", a: "Sim. Todas as expedições incluem transfer do aeroporto ou ponto combinado até a base da experiência." },
