@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { FileText, Download, Trash2 } from "lucide-react";
+import { FileText, Download, Trash2, Building2, Users } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminEmpty } from "@/components/admin/admin-empty";
 import { AdminUploader } from "@/components/admin/admin-uploader";
@@ -29,6 +29,7 @@ function DocumentosPage() {
   const { data: participantes = [] } = useQuery({ queryKey: ["admin", "participantes"], queryFn: listParticipantes });
   const { data: reservas = [] } = useQuery({ queryKey: ["admin", "reservas"], queryFn: listReservas });
 
+  const [aba, setAba] = useState<"institucional" | "participante">("institucional");
   const [titulo, setTitulo] = useState("");
   const [tipo, setTipo] = useState<string>("contrato");
   const [expedicaoId, setExpedicaoId] = useState<string>("");
