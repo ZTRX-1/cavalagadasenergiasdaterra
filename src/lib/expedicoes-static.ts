@@ -148,8 +148,8 @@ const EXPEDICOES: Expedicao[] = [
             "Deslocamento até a pousada não incluído",
             "Crianças até 10 anos têm 20% de desconto; acima de 10 anos pagam valor integral"
         ],
-        "descricao_curta": "Imersão a cavalo entre montanhas, natureza e conexão. Para quem busca desacelerar, viver o presente e se reconectar.",
-        "descricao_longa": "Cinco dias no Refúgio Energias da Terra, no coração da Serra da Mantiqueira. Cavalgadas leves de adaptação, travessias mais longas, vivência na fazenda de azeite Monasto e piquenique ao pôr do sol.\n\nCavalos do nosso próprio criatório Mangalarga Marchador, hospedagem premium no refúgio e gastronomia regional cuidada."
+        "descricao_curta": "Expedição a cavalo entre montanhas, natureza e conexão. Para quem busca desacelerar, viver o presente e se reconectar.",
+        "descricao_longa": "Cinco dias no Refúgio Energias da Terra, em Maria da Fé (MG), no coração da Serra da Mantiqueira. Cavalgadas leves de adaptação, travessias mais longas, vivência na fazenda de azeite Monasto e piquenique ao pôr do sol.\n\nCavalos do nosso próprio criatório Mangalarga Marchador, hospedagem premium no refúgio e gastronomia regional cuidada."
     },
     {
         "id": "aa0ddccc-6b9a-4c84-99c7-69b722b8cd6f",
