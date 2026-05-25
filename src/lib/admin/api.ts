@@ -482,8 +482,13 @@ export interface ParticipanteRow {
   reserva_id: string | null;
   nome: string;
   documento: string | null;
+  cpf: string | null;
+  peso: number | null;
   contato: string | null;
+  telefone: string | null;
+  email: string | null;
   observacoes_medicas: string | null;
+  restricoes_alimentares: string | null;
   data_nascimento: string | null;
   experiencia_equestre: string | null;
   restricoes: string | null;
@@ -516,8 +521,13 @@ export async function createParticipante(input: Partial<ParticipanteRow>): Promi
     .insert({
       nome: input.nome ?? "Sem nome",
       documento: input.documento ?? null,
+      cpf: input.cpf ?? null,
+      peso: input.peso ?? null,
       contato: input.contato ?? null,
+      telefone: input.telefone ?? null,
+      email: input.email ?? null,
       observacoes_medicas: input.observacoes_medicas ?? null,
+      restricoes_alimentares: input.restricoes_alimentares ?? null,
       data_nascimento: input.data_nascimento ?? null,
       experiencia_equestre: input.experiencia_equestre ?? null,
       restricoes: input.restricoes ?? null,
@@ -526,10 +536,11 @@ export async function createParticipante(input: Partial<ParticipanteRow>): Promi
       data_id: input.data_id ?? null,
       reserva_id: input.reserva_id ?? null,
       status: input.status ?? "pendente",
-    })
+    } as never)
     .select()
-    .single();
-  if (error) throw error;
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Participante criado mas não retornado.");
   await logActivity({ modulo: "participantes", acao: "criar", descricao: data.nome });
   return data as unknown as ParticipanteRow;
 }
@@ -540,8 +551,9 @@ export async function updateParticipante(id: string, patch: Partial<Participante
     .update(patch as never)
     .eq("id", id)
     .select()
-    .single();
-  if (error) throw error;
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Participante não encontrado.");
   await logActivity({ modulo: "participantes", acao: "atualizar", descricao: data.nome });
   return data as unknown as ParticipanteRow;
 }
@@ -552,7 +564,7 @@ export async function deleteParticipante(id: string): Promise<void> {
   await logActivity({ modulo: "participantes", acao: "excluir", metadata: { id } });
 }
 
-// ---------- FINANCEIRO ----------
+// ---------- FINANCEIRO / RESERVAS / GRUPOS ----------
 
 export interface ReservaRow {
   id: string;
@@ -564,8 +576,10 @@ export interface ReservaRow {
   status: string;
   quantidade_participantes: number;
   responsavel: Record<string, unknown>;
+  grupo_nome: string | null;
   valor_total: number | null;
   valor_pago: number;
+  saldo_restante: number | null;
   forma_pagamento: string | null;
   parcelas: number;
   status_pagamento: string;
@@ -590,15 +604,16 @@ export async function getReserva(id: string): Promise<ReservaRow | null> {
 
 export async function updatePagamento(
   id: string,
-  patch: Partial<Pick<ReservaRow, "valor_total" | "valor_pago" | "forma_pagamento" | "parcelas" | "status_pagamento">>,
+  patch: Partial<Pick<ReservaRow, "valor_total" | "valor_pago" | "forma_pagamento" | "parcelas" | "status_pagamento" | "grupo_nome">>,
 ): Promise<ReservaRow> {
   const { data, error } = await supabase
     .from("reservas")
     .update(patch as never)
     .eq("id", id)
     .select()
-    .single();
-  if (error) throw error;
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Reserva não encontrada.");
   await logActivity({
     modulo: "financeiro",
     acao: "atualizar_pagamento",
@@ -607,3 +622,95 @@ export async function updatePagamento(
   });
   return data as unknown as ReservaRow;
 }
+
+export async function listParticipantesDaReserva(reservaId: string): Promise<ParticipanteRow[]> {
+  const { data, error } = await supabase
+    .from("participantes")
+    .select("*")
+    .eq("reserva_id", reservaId)
+    .order("created_at", { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as unknown as ParticipanteRow[];
+}
+
+// ---------- DOCUMENTOS ----------
+
+export interface DocumentoRow {
+  id: string;
+  titulo: string;
+  tipo: string;
+  categoria: string | null;
+  url: string;
+  expedicao_id: string | null;
+  participante_id: string | null;
+  reserva_id: string | null;
+  created_at: string;
+}
+
+export const TIPOS_DOCUMENTO = [
+  { id: "contrato", label: "Contrato" },
+  { id: "termo_responsabilidade", label: "Termo de responsabilidade" },
+  { id: "politica_cancelamento", label: "Política de cancelamento" },
+  { id: "ficha_medica", label: "Ficha médica" },
+  { id: "juridico", label: "Documento jurídico" },
+  { id: "outro", label: "Outro" },
+] as const;
+
+export async function listDocumentos(): Promise<DocumentoRow[]> {
+  const { data, error } = await supabase
+    .from("documentos")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as unknown as DocumentoRow[];
+}
+
+export async function uploadDocumento(args: {
+  file: File;
+  titulo: string;
+  tipo: string;
+  expedicao_id?: string | null;
+  participante_id?: string | null;
+  reserva_id?: string | null;
+}): Promise<DocumentoRow> {
+  const ext = args.file.name.split(".").pop() ?? "pdf";
+  const folder = args.participante_id ?? args.reserva_id ?? args.expedicao_id ?? "geral";
+  const bucket = args.participante_id ? "participante-docs" : "expedicao-docs";
+  const path = `${folder}/${crypto.randomUUID()}.${ext}`;
+  const { error: upErr } = await supabase.storage.from(bucket).upload(path, args.file, {
+    cacheControl: "3600",
+    upsert: false,
+  });
+  if (upErr) throw new Error(upErr.message);
+  const { data, error } = await supabase
+    .from("documentos")
+    .insert({
+      titulo: args.titulo || args.file.name,
+      tipo: args.tipo,
+      categoria: bucket,
+      url: path,
+      expedicao_id: args.expedicao_id ?? null,
+      participante_id: args.participante_id ?? null,
+      reserva_id: args.reserva_id ?? null,
+    } as never)
+    .select()
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Documento criado mas não retornado.");
+  return data as unknown as DocumentoRow;
+}
+
+export async function deleteDocumento(doc: DocumentoRow): Promise<void> {
+  const bucket = doc.categoria || (doc.participante_id ? "participante-docs" : "expedicao-docs");
+  try { await supabase.storage.from(bucket).remove([doc.url]); } catch { /* ignora */ }
+  const { error } = await supabase.from("documentos").delete().eq("id", doc.id);
+  if (error) throw error;
+}
+
+export async function getDocumentoSignedUrl(doc: DocumentoRow): Promise<string> {
+  const bucket = doc.categoria || (doc.participante_id ? "participante-docs" : "expedicao-docs");
+  const { data, error } = await supabase.storage.from(bucket).createSignedUrl(doc.url, 60 * 10);
+  if (error) throw new Error(error.message);
+  return data.signedUrl;
+}
+
