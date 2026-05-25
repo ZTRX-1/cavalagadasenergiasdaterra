@@ -99,10 +99,16 @@ function ExpedicoesPage() {
                 <tr key={e.id} className="border-t border-[color:var(--admin-borda)] hover:bg-[color:var(--admin-petroleo)]/20">
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
-                      {e.capa_url || e.imagem_url ? (
-                        <img src={e.capa_url ?? e.imagem_url ?? ""} alt="" className="h-11 w-16 rounded-md object-cover ring-1 ring-[color:var(--admin-borda)]" />
+                      {(e as ExpedicaoRow & { _capa?: string | null })._capa ? (
+                        <img
+                          src={(e as ExpedicaoRow & { _capa?: string | null })._capa ?? ""}
+                          alt=""
+                          className="h-11 w-16 rounded-md object-cover ring-1 ring-[color:var(--admin-borda)]"
+                        />
                       ) : (
-                        <div className="h-11 w-16 rounded-md bg-[color:var(--admin-petroleo)]" />
+                        <div className="h-11 w-16 rounded-md bg-[color:var(--admin-petroleo)] grid place-items-center text-[9px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">
+                          sem capa
+                        </div>
                       )}
                       <div className="min-w-0">
                         <div className="font-medium text-[color:var(--admin-cinza-1)] truncate">{e.nome}</div>
