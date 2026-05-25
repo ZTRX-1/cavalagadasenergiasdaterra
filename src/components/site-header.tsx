@@ -46,20 +46,20 @@ export function SiteHeader() {
           scrolled && "shadow-header",
         )}
       >
-        <div className="mx-auto flex h-14 max-w-[105rem] items-center justify-between gap-8 px-5 md:h-[4.75rem] md:px-9 xl:gap-12 xl:px-14 2xl:px-16">
+        <div className="mx-auto flex h-16 max-w-[105rem] items-center justify-between gap-8 px-5 md:h-[5.25rem] md:px-9 xl:gap-12 xl:px-14 2xl:px-16">
           <Link
             to="/"
-            className="group flex shrink-0 items-center gap-3"
+            className="group flex shrink-0 items-center gap-3.5 md:gap-4"
             aria-label="Cavalgadas Energias da Terra"
           >
-            <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-carvao ring-1 ring-cobre/40 md:h-10 md:w-10">
+            <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-carvao ring-1 ring-cobre/40 md:h-12 md:w-12">
               <img src={logoCavalgadas} alt="" className="h-full w-full object-cover" />
             </span>
-            <span className="flex flex-col leading-none">
-              <span className="font-display text-[0.98rem] tracking-tight text-areia md:text-[1.05rem]">
+            <span className="flex flex-col leading-tight">
+              <span className="font-display text-[1.05rem] leading-[1.1] tracking-tight text-areia md:text-[1.18rem]">
                 Cavalgadas
               </span>
-              <span className="mt-0.5 font-eyebrow text-[0.5rem] uppercase tracking-[0.34em] text-cobre-soft">
+              <span className="mt-1 font-eyebrow text-[0.55rem] leading-none uppercase tracking-[0.32em] text-cobre-soft md:text-[0.6rem]">
                 Energias da Terra
               </span>
             </span>
@@ -123,7 +123,7 @@ export function SiteHeader() {
             open ? "translate-y-0" : "-translate-y-full",
           )}
         >
-          <div className="h-14 md:h-[4.75rem]" />
+          <div className="h-16 md:h-[5.25rem]" />
           <nav className="container-tight flex flex-col gap-1 pb-8 pt-2">
             {NAV.map((item) => (
               <Link

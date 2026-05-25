@@ -7,9 +7,9 @@ import logoElas from "@/assets/logo-elas-na-sela.jpg";
 type MarcaKey = "cavalgadas" | "elas-na-sela" | "canastra-a-cavalo";
 
 const MARCAS = {
-  cavalgadas: { logo: logoCavalgadas, nome: "Cavalgadas Energias da Terra", tagline: "Expedições imersivas pelo Brasil e pelo mundo.", to: "/marcas/cavalgadas" as const },
+  cavalgadas: { logo: logoCavalgadas, nome: "Cavalgadas Energias da Terra", tagline: "Expedições a cavalo pelo Brasil e pelo mundo.", to: "/marcas/cavalgadas" as const },
   "elas-na-sela": { logo: logoElas, nome: "Elas na Sela", tagline: "Expedições femininas autorais.", to: "/marcas/elas-na-sela" as const },
-  "canastra-a-cavalo": { logo: logoCanastra, nome: "Canastra a Cavalo", tagline: "Travessias premium na Serra da Canastra.", to: "/marcas/canastra-a-cavalo" as const },
+  "canastra-a-cavalo": { logo: logoCanastra, nome: "Canastra a Cavalo", tagline: "Expedições a cavalo pela Serra da Canastra.", to: "/marcas/canastra-a-cavalo" as const },
 };
 
 export function MarcaTopBar() {

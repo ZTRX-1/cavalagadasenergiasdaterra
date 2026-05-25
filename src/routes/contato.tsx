@@ -98,7 +98,7 @@ function ContatoPage() {
               Além de operar expedições no Brasil e no exterior, também somos criadores de cavalos da raça Mangalarga Marchador.
             </p>
             <p>
-              Cada roteiro é desenvolvido para proporcionar muito mais do que uma viagem: uma imersão na cultura local, paisagens extraordinárias, conexão com os cavalos e encontros entre pessoas que compartilham a mesma paixão.
+              Cada roteiro é desenvolvido para proporcionar muito mais do que uma viagem: uma expedição na cultura local, paisagens extraordinárias, conexão com os cavalos e encontros entre pessoas que compartilham a mesma paixão.
             </p>
             <p className="font-display text-2xl text-cobre">
               Mais do que clientes, formamos uma verdadeira manada.

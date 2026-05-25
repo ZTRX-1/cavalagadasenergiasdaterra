@@ -93,10 +93,10 @@ export const IMAGES: Record<string, string> = {
 // HERO POR EXPEDIÇÃO — foto cinematográfica de capa
 // ============================================================
 export const SLUG_IMAGE: Record<string, string> = {
-  "serra-da-canastra": can37,        // cavaleiros em formação cinematográfica
+  "serra-da-canastra": can23,        // travessia no rio — foto do rio
   "mantiqueira-refugio": man27,      // tropa em movimento na serra
-  "berco-do-marchador": man01,       // cavaleira no pôr-do-sol (Marchador)
-  "jericoacoara": can18,             // cavaleiro silhueta dourada
+  "berco-do-marchador": chapada,     // placeholder — imagens reais de Cruzília virão
+  "jericoacoara": can18,             // placeholder — imagens reais de Jeri virão
   "peru-vale-do-colca": peru09,      // grupo a cavalo no canyon do Colca
   "patagonia-gaucha": pat01,         // cavalo nas montanhas nevadas
   "caminho-de-santiago": man19,      // cavaleiros em trilha aberta
@@ -106,12 +106,12 @@ export const SLUG_IMAGE: Record<string, string> = {
 // GALERIA EDITORIAL POR EXPEDIÇÃO, selecionadas e ordenadas
 // ============================================================
 export const SLUG_GALERIA: Record<string, string[]> = {
-  "serra-da-canastra": [can26, can37, can21, can15, can18, can22, can25, can13, can27, can28, can16, can05, can10, can23],
+  "serra-da-canastra": [can23, can26, can37, can21, can15, can18, can22, can25, can13, can27, can28, can16, can05, can10],
   "mantiqueira-refugio": [man13, man01, man27, man19, man03, man21, man28, man07, man02, man04, man09, man16, man34, man06],
-  "berco-do-marchador": [man01, man27, man03, man13, man21, man19, man02, man28, man07, man04, man09, man16, man34, man06],
+  "berco-do-marchador": [],
   "peru-vale-do-colca": [peru09, peru12, peru03, peru01, peru05, peru08, peru07, peru11, peru04, peru06, peru10],
   "patagonia-gaucha": [pat01, pat02, pat03],
-  "jericoacoara": [can21, can22, can18, can25, can27, can37],
+  "jericoacoara": [],
   "caminho-de-santiago": [man13, man27, man19, man03, man21, man01],
 };
 

@@ -10,7 +10,7 @@ import { GALERIA_CAVALGADAS } from "@/lib/expedicao-images";
 export const Route = createFileRoute("/marcas/cavalgadas")({
   head: () => ({
     meta: [
-      { title: "Cavalgadas Energias da Terra — Expedições imersivas" },
+      { title: "Cavalgadas Energias da Terra — Expedições a cavalo" },
       { name: "description", content: "A marca-mãe: expedições autorais a cavalo pelo Brasil e pelo mundo." },
     ],
   }),
@@ -34,7 +34,7 @@ function Page() {
             Cavalgadas <em className="not-italic text-cobre-soft">Energias da Terra</em>
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-areia text-shadow-soft text-pretty">
-            Expedições imersivas a cavalo, conduzidas com curadoria, cuidado e profundo conhecimento do território.
+            Expedições a cavalo, conduzidas com curadoria, cuidado e profundo conhecimento do território.
             Brasil e mundo, em pequenos grupos, com a alma de quem cria seus próprios cavalos.
           </p>
         </div>

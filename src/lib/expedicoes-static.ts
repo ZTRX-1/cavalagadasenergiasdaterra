@@ -89,12 +89,12 @@ const EXPEDICOES: Expedicao[] = [
             "Acomodação single com tarifa adicional de 40%",
             "Quem vem sozinho pode dividir o quarto com outro participante"
         ],
-        "descricao_curta": "Uma verdadeira travessia a cavalo pela Serra da Canastra, cruzando rios, montanhas e trilhas que poucos cavaleiros têm a oportunidade de conhecer.",
-        "descricao_longa": "Uma verdadeira travessia a cavalo pela Serra da Canastra, percorrendo trilhas entre montanhas, rios e cachoeiras, com nossa manada de Mangalarga Marchador de alta performance e equipe experiente acompanhando todo o percurso.\n\nVivemos momentos marcantes como a travessia do Rio São Francisco a cavalo, almoços especiais em meio à natureza e noites acolhedoras na pousada.\n\nMais do que uma cavalgada, esta é uma verdadeira travessia pela essência da Serra da Canastra."
+        "descricao_curta": "Explore a Serra da Canastra a cavalo, por rotas cuidadosamente selecionadas.",
+        "descricao_longa": "A Canastra é nosso ponto de origem. Conhecemos cada trilha, cada paisagem e cada história que fazem desta região um dos destinos equestres mais especiais do Brasil. Trabalhamos ao lado de parceiros locais selecionados, que compartilham dos mesmos valores de cuidado, autenticidade e respeito à cultura da Serra da Canastra."
     },
     {
         "id": "9dd91b11-3ce3-4368-ab3c-4d441da8d34d",
-        "nome": "Expedição na Mantiqueira",
+        "nome": "Serra da Mantiqueira",
         "pais": "brasil",
         "slug": "mantiqueira-refugio",
         "marca": "cavalgadas",
@@ -148,8 +148,8 @@ const EXPEDICOES: Expedicao[] = [
             "Deslocamento até a pousada não incluído",
             "Crianças até 10 anos têm 20% de desconto; acima de 10 anos pagam valor integral"
         ],
-        "descricao_curta": "Imersão a cavalo entre montanhas, natureza e conexão. Para quem busca desacelerar, viver o presente e se reconectar.",
-        "descricao_longa": "Cinco dias no Refúgio Energias da Terra, no coração da Serra da Mantiqueira. Cavalgadas leves de adaptação, travessias mais longas, vivência na fazenda de azeite Monasto e piquenique ao pôr do sol.\n\nCavalos do nosso próprio criatório Mangalarga Marchador, hospedagem premium no refúgio e gastronomia regional cuidada."
+        "descricao_curta": "Expedição a cavalo entre montanhas, natureza e conexão. Para quem busca desacelerar, viver o presente e se reconectar.",
+        "descricao_longa": "Cinco dias no Refúgio Energias da Terra, em Maria da Fé (MG), no coração da Serra da Mantiqueira. Cavalgadas leves de adaptação, travessias mais longas, vivência na fazenda de azeite Monasto e piquenique ao pôr do sol.\n\nCavalos do nosso próprio criatório Mangalarga Marchador, hospedagem premium no refúgio e gastronomia regional cuidada."
     },
     {
         "id": "aa0ddccc-6b9a-4c84-99c7-69b722b8cd6f",
@@ -213,7 +213,7 @@ const EXPEDICOES: Expedicao[] = [
             "Vagas limitadas a 12 participantes"
         ],
         "descricao_curta": "Travessia a cavalo por Cruzília (MG), o berço da raça Mangalarga Marchador, visitando fazendas históricas que moldaram a genética do cavalo.",
-        "descricao_longa": "Cruzília, no sul de Minas Gerais, é reconhecida como o berço do cavalo Mangalarga Marchador. Entre chapadões, antigas fazendas e paisagens rurais que guardam séculos de tradição, nasceu uma das raças de sela mais admiradas do Brasil.\n\nEsta travessia é uma jornada pelas origens do Marchador, com cinco dias de imersão na cultura equestre mineira e três dias de cavalgadas guiadas por paisagens marcantes da região."
+        "descricao_longa": "Cruzília, no sul de Minas Gerais, é reconhecida como o berço do cavalo Mangalarga Marchador. Entre chapadões, antigas fazendas e paisagens rurais que guardam séculos de tradição, nasceu uma das raças de sela mais admiradas do Brasil.\n\nEsta travessia é uma jornada pelas origens do Marchador, com cinco dias na cultura equestre mineira e três dias de cavalgadas guiadas por paisagens marcantes da região."
     },
     {
         "id": "4f698388-a443-406c-a76d-a409fb794fa1",
@@ -270,7 +270,7 @@ const EXPEDICOES: Expedicao[] = [
             "Transfer aeroporto até a pousada não incluído",
             "Vagas extremamente limitadas, sem turmas extras"
         ],
-        "descricao_curta": "Imersão equestre rara em Jericoacoara, com cavalgadas entre lagoas cristalinas, dunas douradas e o mar do Nordeste.",
+        "descricao_curta": "Expedição equestre rara em Jericoacoara, com cavalgadas entre lagoas cristalinas, dunas douradas e o mar do Nordeste.",
         "descricao_longa": "Uma experiência equestre desenhada para grupo extremamente reduzido. Durante quatro dias, você vive Jericoacoara de uma forma reservada a poucos: a cavalo, em paisagens intocadas, com ritmo desacelerado e atenção individual.\n\nCavalos criteriosamente selecionados entre mestiços nordestinos e Mangalarga Marchador, guias bilíngues especializados e hospedagem de alto padrão."
     },
     {
@@ -484,13 +484,13 @@ const DATAS: DataExpedicao[] = [
         "vagas_total": 12,
         "expedicao_id": "9dd91b11-3ce3-4368-ab3c-4d441da8d34d",
         "preco_cartao": 4600,
-        "expedicao_nome": "Expedição na Mantiqueira",
+        "expedicao_nome": "Serra da Mantiqueira",
         "expedicao_slug": "mantiqueira-refugio",
         "vagas_disponiveis": 5
     },
     {
         "id": "696d31b1-ed97-4e5f-bf7f-3453f058dda4",
-        "status": "disponivel",
+        "status": "poucas_vagas",
         "data_fim": "2026-08-07",
         "preco_pix": null,
         "data_inicio": "2026-08-04",
@@ -499,7 +499,7 @@ const DATAS: DataExpedicao[] = [
         "preco_cartao": null,
         "expedicao_nome": "Peru, Vale do Colca",
         "expedicao_slug": "peru-vale-do-colca",
-        "vagas_disponiveis": 10
+        "vagas_disponiveis": 3
     },
     {
         "id": "49b808dc-aac6-401e-81c7-f4eb66853940",

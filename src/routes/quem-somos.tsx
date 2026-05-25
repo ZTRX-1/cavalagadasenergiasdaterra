@@ -59,7 +59,7 @@ function QuemSomosPage() {
         <div className="relative h-[64svh] min-h-[520px] overflow-hidden md:h-[78svh] md:min-h-[640px]">
           <img
             src={heroPaisagem}
-            alt="Cavaleira cruzando a paisagem da Mantiqueira"
+            alt="Amazona cruzando a paisagem da Mantiqueira"
             className="absolute inset-0 h-full w-full object-cover object-[58%_40%] md:object-[58%_36%] xl:object-[56%_34%]"
             fetchPriority="high"
           />
@@ -291,7 +291,7 @@ function QuemSomosPage() {
           <div className="md:col-span-5">
             <EditorialFrame
               src={expedicaoMulheres}
-              alt="Cavaleiras em expedição por estrada cercada de árvores"
+              alt="Amazonas em expedição por estrada cercada de árvores"
               variant="organic"
               accent="cobre"
               side="left"

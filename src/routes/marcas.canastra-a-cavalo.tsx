@@ -10,7 +10,7 @@ import { GALERIA_CANASTRA_MARCA, FOTO_EQUIPE } from "@/lib/expedicao-images";
 export const Route = createFileRoute("/marcas/canastra-a-cavalo")({
   head: () => ({
     meta: [
-      { title: "Canastra a Cavalo · Travessias premium na Serra da Canastra" },
+      { title: "Canastra a Cavalo · Expedições a cavalo pela Serra da Canastra" },
       { name: "description", content: "Expedições autorais pela Serra da Canastra, terra do queijo, do Mangalarga e das cabeceiras do São Francisco." },
     ],
   }),
@@ -34,7 +34,7 @@ function Page() {
             Canastra <em className="not-italic text-cobre-soft">a Cavalo</em>
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-areia text-shadow-soft text-pretty">
-            Travessias premium pela Serra da Canastra · terra do queijo, do Mangalarga Marchador e das cabeceiras do São Francisco.
+            Expedições a cavalo pela Serra da Canastra · terra do queijo, do Mangalarga Marchador e das cabeceiras do São Francisco.
           </p>
         </div>
 
@@ -73,7 +73,7 @@ function Page() {
             <div className="eyebrow">Quem conduz</div>
             <h2 className="mt-4 font-display text-3xl md:text-4xl">A equipe que vive a Canastra.</h2>
             <p className="mt-5 text-lg leading-relaxed text-foreground/80 text-pretty">
-              Cavaleiros, guias e amigos. Gente que nasceu aqui, monta há décadas e conhece o terreno como ninguém.
+              Amazonas, guias e amigos. Gente que nasceu aqui, monta há décadas e conhece o terreno como ninguém.
             </p>
           </div>
         </div>
@@ -83,7 +83,7 @@ function Page() {
         <div className="container-tight text-center">
           <h2 className="font-display text-4xl text-balance md:text-5xl">Atravesse a Canastra com quem mora nela.</h2>
           <Link to="/expedicoes/$slug" params={{ slug: "serra-da-canastra" }} className="mt-8 inline-flex items-center gap-2 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia hover:bg-cobre-soft">
-            Ver travessia <ArrowRight className="h-4 w-4" />
+            Ver expedição <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </section>
