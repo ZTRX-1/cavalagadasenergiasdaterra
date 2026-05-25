@@ -44,6 +44,51 @@ export type Database = {
         }
         Relationships: []
       }
+      configuracoes: {
+        Row: {
+          cor_destaque: string | null
+          created_at: string
+          emails_notificacao: string[]
+          empresa_cnpj: string | null
+          empresa_nome: string | null
+          id: string
+          instagram: string | null
+          logo_url: string | null
+          preferencias: Json
+          singleton: boolean
+          updated_at: string
+          whatsapp: string | null
+        }
+        Insert: {
+          cor_destaque?: string | null
+          created_at?: string
+          emails_notificacao?: string[]
+          empresa_cnpj?: string | null
+          empresa_nome?: string | null
+          id?: string
+          instagram?: string | null
+          logo_url?: string | null
+          preferencias?: Json
+          singleton?: boolean
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          cor_destaque?: string | null
+          created_at?: string
+          emails_notificacao?: string[]
+          empresa_cnpj?: string | null
+          empresa_nome?: string | null
+          id?: string
+          instagram?: string | null
+          logo_url?: string | null
+          preferencias?: Json
+          singleton?: boolean
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
       datas: {
         Row: {
           created_at: string
