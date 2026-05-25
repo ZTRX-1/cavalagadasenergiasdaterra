@@ -14,10 +14,14 @@ export function formatDateRange(inicio: string, fim: string): string {
   const a = parseDate(inicio);
   const b = parseDate(fim);
   const sameMonth = a.getMonth() === b.getMonth() && a.getFullYear() === b.getFullYear();
+  const sameYear = a.getFullYear() === b.getFullYear();
   if (sameMonth) {
-    return `${a.getDate()} – ${b.getDate()} de ${MONTHS[a.getMonth()]} ${a.getFullYear()}`;
+    return `${a.getDate()} a ${b.getDate()} de ${MONTHS[a.getMonth()]} de ${a.getFullYear()}`;
   }
-  return `${a.getDate()} de ${MONTHS[a.getMonth()]} – ${b.getDate()} de ${MONTHS[b.getMonth()]} ${b.getFullYear()}`;
+  if (sameYear) {
+    return `${a.getDate()} de ${MONTHS[a.getMonth()]} a ${b.getDate()} de ${MONTHS[b.getMonth()]} de ${a.getFullYear()}`;
+  }
+  return `${a.getDate()} de ${MONTHS[a.getMonth()]} de ${a.getFullYear()} a ${b.getDate()} de ${MONTHS[b.getMonth()]} de ${b.getFullYear()}`;
 }
 
 export function formatMonthYear(iso: string): string {
