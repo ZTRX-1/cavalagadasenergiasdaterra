@@ -292,6 +292,143 @@
   }
 }
 
+/* ============================================================
+ * ADMIN — Painel Operacional Premium
+ * Carvão profundo / petróleo / dourado suave / vidro fosco
+ * ============================================================ */
+:root {
+  --admin-carvao: oklch(0.13 0.012 240);            /* fundo principal — carvão azulado */
+  --admin-carvao-deep: oklch(0.09 0.012 240);       /* mais profundo ainda */
+  --admin-petroleo: oklch(0.22 0.028 220);          /* superfícies elevadas */
+  --admin-petroleo-soft: oklch(0.28 0.026 220);     /* hover */
+  --admin-dourado: oklch(0.78 0.095 78);            /* dourado suave */
+  --admin-dourado-glow: oklch(0.85 0.11 80);        /* destaque */
+  --admin-cinza-1: oklch(0.95 0.005 240);           /* texto primário */
+  --admin-cinza-2: oklch(0.72 0.012 240);           /* texto secundário */
+  --admin-cinza-3: oklch(0.5 0.012 240);            /* texto sutil */
+  --admin-borda: oklch(0.28 0.018 220 / 0.6);       /* bordas vidro */
+  --admin-borda-strong: oklch(0.38 0.022 220 / 0.7);
+  --admin-vidro: oklch(0.18 0.018 230 / 0.6);       /* glassmorphism */
+  --admin-glow-dourado: 0 0 32px color-mix(in oklab, var(--admin-dourado) 35%, transparent);
+  --admin-shadow-card: 0 8px 24px -12px oklch(0 0 0 / 0.6), 0 2px 6px -2px oklch(0 0 0 / 0.4);
+  --admin-shadow-deep: 0 24px 60px -24px oklch(0 0 0 / 0.7);
+}
+
+@theme inline {
+  --color-admin-carvao: var(--admin-carvao);
+  --color-admin-carvao-deep: var(--admin-carvao-deep);
+  --color-admin-petroleo: var(--admin-petroleo);
+  --color-admin-petroleo-soft: var(--admin-petroleo-soft);
+  --color-admin-dourado: var(--admin-dourado);
+  --color-admin-dourado-glow: var(--admin-dourado-glow);
+  --color-admin-cinza-1: var(--admin-cinza-1);
+  --color-admin-cinza-2: var(--admin-cinza-2);
+  --color-admin-cinza-3: var(--admin-cinza-3);
+  --color-admin-borda: var(--admin-borda);
+}
+
+@layer utilities {
+  .admin-surface {
+    background: var(--admin-carvao);
+    color: var(--admin-cinza-1);
+  }
+  .admin-glass {
+    background: var(--admin-vidro);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid var(--admin-borda);
+  }
+  .admin-card {
+    background: linear-gradient(180deg,
+      color-mix(in oklab, var(--admin-petroleo) 65%, transparent) 0%,
+      color-mix(in oklab, var(--admin-petroleo) 40%, transparent) 100%);
+    border: 1px solid var(--admin-borda);
+    border-radius: 12px;
+    box-shadow: var(--admin-shadow-card);
+    backdrop-filter: blur(16px) saturate(130%);
+    -webkit-backdrop-filter: blur(16px) saturate(130%);
+    transition: border-color .25s ease, transform .25s ease, box-shadow .25s ease;
+  }
+  .admin-card:hover {
+    border-color: color-mix(in oklab, var(--admin-dourado) 35%, var(--admin-borda));
+    transform: translateY(-1px);
+    box-shadow: var(--admin-shadow-deep);
+  }
+  .admin-input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    background: color-mix(in oklab, var(--admin-carvao-deep) 70%, transparent);
+    border: 1px solid var(--admin-borda);
+    border-radius: 8px;
+    color: var(--admin-cinza-1);
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+  }
+  .admin-input::placeholder { color: var(--admin-cinza-3); }
+  .admin-input:hover { border-color: var(--admin-borda-strong); }
+  .admin-input:focus {
+    border-color: var(--admin-dourado);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--admin-dourado) 18%, transparent);
+    background: color-mix(in oklab, var(--admin-carvao-deep) 85%, transparent);
+  }
+  .admin-btn-primary {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    padding: 0.85rem 1.5rem;
+    background: linear-gradient(180deg, var(--admin-dourado) 0%, color-mix(in oklab, var(--admin-dourado) 85%, var(--admin-carvao)) 100%);
+    color: var(--admin-carvao-deep);
+    font-weight: 600;
+    font-size: 0.86rem;
+    letter-spacing: 0.04em;
+    border-radius: 8px;
+    border: 1px solid color-mix(in oklab, var(--admin-dourado) 60%, transparent);
+    box-shadow: 0 4px 12px -4px color-mix(in oklab, var(--admin-dourado) 40%, transparent);
+    transition: all .2s ease;
+    cursor: pointer;
+  }
+  .admin-btn-primary:hover:not(:disabled) {
+    box-shadow: 0 6px 20px -4px color-mix(in oklab, var(--admin-dourado) 55%, transparent), var(--admin-glow-dourado);
+    transform: translateY(-1px);
+  }
+  .admin-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .admin-btn-ghost {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    padding: 0.7rem 1.1rem;
+    background: transparent;
+    color: var(--admin-cinza-1);
+    font-size: 0.86rem;
+    border-radius: 8px;
+    border: 1px solid var(--admin-borda);
+    transition: all .2s ease;
+    cursor: pointer;
+  }
+  .admin-btn-ghost:hover { background: var(--admin-petroleo-soft); border-color: var(--admin-borda-strong); }
+
+  /* sidebar nav item */
+  .admin-nav-item {
+    position: relative;
+    display: flex; align-items: center; gap: 0.85rem;
+    padding: 0.7rem 0.95rem;
+    border-radius: 8px;
+    color: var(--admin-cinza-2);
+    font-size: 0.92rem;
+    font-weight: 500;
+    transition: all .2s ease;
+  }
+  .admin-nav-item:hover { background: color-mix(in oklab, var(--admin-petroleo) 50%, transparent); color: var(--admin-cinza-1); }
+  .admin-nav-item[data-active="true"] {
+    background: linear-gradient(90deg, color-mix(in oklab, var(--admin-dourado) 14%, transparent) 0%, transparent 100%);
+    color: var(--admin-dourado-glow);
+  }
+  .admin-nav-item[data-active="true"]::before {
+    content: ""; position: absolute; left: -1px; top: 25%; bottom: 25%;
+    width: 2px; background: var(--admin-dourado);
+    border-radius: 0 2px 2px 0;
+    box-shadow: 0 0 8px var(--admin-dourado-glow);
+  }
+}
+
 /* Conforto de leitura no mobile */
 @media (max-width: 640px) {
   body { line-height: 1.65; font-size: 16px; }
