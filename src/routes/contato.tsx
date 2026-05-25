@@ -16,8 +16,7 @@ export const Route = createFileRoute("/contato")({
 const FAQ = [
   { q: "Quem pode participar das expedições?", a: "Qualquer pessoa em boas condições de saúde, dentro dos requisitos de cada expedição (idade e peso). Temos roteiros para todos os níveis." },
   { q: "Preciso de experiência prévia com cavalos?", a: "Não. Nossas expedições iniciantes são desenhadas para quem nunca montou. Para os roteiros avançados pedimos experiência prévia." },
-  { q: "Como funciona a hospedagem?", a: "Trabalhamos com pousadas selecionadas e, em alguns roteiros, acampamentos de luxo. Todos com curadoria nossa e padrão premium." },
-  { q: "E em caso de chuva?", a: "Operamos com chuva leve. Em caso de tempestades, ajustamos o roteiro para garantir segurança. Em situações extremas, remarcamos sem custo." },
+  { q: "Como funciona a hospedagem?", a: "Trabalhamos com pousadas selecionadas de três a quatro estrelas, conforme o roteiro e a região, todas escolhidas por nossa curadoria, garantindo conforto, autenticidade e qualidade em cada experiência." },
   { q: "Os cavalos são treinados?", a: "Sim. Todos os cavalos são treinados, descansados entre expedições e acompanhados por equipe profissional." },
   { q: "Posso fazer uma expedição privada?", a: "Sim. Organizamos expedições privadas para grupos, casais e empresas. Fale conosco para um orçamento personalizado." },
   { q: "Qual a melhor época para ir?", a: "Cada região tem sua melhor janela. Em geral, abril a outubro são meses ideais · clima seco e paisagens em equilíbrio." },
