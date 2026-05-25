@@ -12,7 +12,14 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
-const nav = [
+type NavItem = {
+  to: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  exact?: boolean;
+};
+
+const nav: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/expedicoes", label: "Expedições", icon: Compass },
   { to: "/admin/leads", label: "Leads", icon: Sparkles },
@@ -21,7 +28,7 @@ const nav = [
   { to: "/admin/midia", label: "Mídia", icon: ImageIcon },
   { to: "/admin/documentos", label: "Documentos", icon: FileText },
   { to: "/admin/configuracoes", label: "Configurações", icon: Settings },
-] as const;
+];
 
 export function AdminSidebar({ user }: { user: { email?: string; nome?: string | null } | null }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -57,7 +64,7 @@ export function AdminSidebar({ user }: { user: { email?: string; nome?: string |
         {nav.map(({ to, label, icon: Icon, exact }) => (
           <Link
             key={to}
-            to={to}
+            to={to as never}
             className="admin-nav-item"
             data-active={isActive(to, exact)}
           >

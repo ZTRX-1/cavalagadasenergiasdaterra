@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import type { LucideIcon } from "lucide-react";
 import { Construction } from "lucide-react";
 
@@ -29,8 +28,3 @@ export function AdminPlaceholder({
     </div>
   );
 }
-
-// Re-export para uso direto como rota
-export const Route = createFileRoute("/admin/_authenticated/_placeholder")({
-  component: () => null,
-});
