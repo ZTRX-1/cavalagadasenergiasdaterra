@@ -32,19 +32,20 @@ export function AdminTopbar() {
 
       <div className="ml-auto flex items-center gap-3">
         <div className="relative hidden lg:block">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[color:var(--admin-cinza-3)]" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[color:var(--admin-cinza-3)]" />
           <input
             type="search"
             placeholder="Buscar reservas, leads, expedições…"
-            className="admin-input h-9 w-[320px] pl-9 text-[13px]"
+            className="admin-input h-9 w-[320px] pl-10 pr-3 text-[13px]"
           />
         </div>
         <button
-          title="Notificações"
+          type="button"
+          title="Sem notificações no momento"
+          aria-label="Notificações (sem itens)"
           className="relative grid h-9 w-9 place-items-center rounded-lg border border-[color:var(--admin-borda)] text-[color:var(--admin-cinza-2)] hover:bg-[color:var(--admin-petroleo-soft)]/40 hover:text-[color:var(--admin-cinza-1)] transition-colors"
         >
           <Bell className="h-4 w-4" strokeWidth={1.6} />
-          <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-[color:var(--admin-dourado)] shadow-[var(--admin-glow-dourado)]" />
         </button>
       </div>
     </header>
