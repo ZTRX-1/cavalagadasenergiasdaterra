@@ -19,6 +19,8 @@ function ConfiguracoesPage() {
   const [form, setForm] = useState({
     empresa_nome: "",
     empresa_cnpj: "",
+    endereco: "",
+    email: "",
     whatsapp: "",
     instagram: "",
     logo_url: "",
@@ -31,6 +33,8 @@ function ConfiguracoesPage() {
       setForm({
         empresa_nome: config.empresa_nome ?? "",
         empresa_cnpj: config.empresa_cnpj ?? "",
+        endereco: config.endereco ?? "",
+        email: config.email ?? "",
         whatsapp: config.whatsapp ?? "",
         instagram: config.instagram ?? "",
         logo_url: config.logo_url ?? "",
@@ -44,6 +48,8 @@ function ConfiguracoesPage() {
     mutationFn: () => saveConfiguracoes({
       empresa_nome: form.empresa_nome || null,
       empresa_cnpj: form.empresa_cnpj || null,
+      endereco: form.endereco || null,
+      email: form.email || null,
       whatsapp: form.whatsapp || null,
       instagram: form.instagram || null,
       logo_url: form.logo_url || null,
@@ -92,12 +98,20 @@ function ConfiguracoesPage() {
             <Field label="Instagram">
               <input className="admin-input w-full" placeholder="@cavalgadas" value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} />
             </Field>
+            <Field label="E-mail oficial">
+              <input className="admin-input w-full" placeholder="contato@empresa.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+            </Field>
             <Field label="Logo (URL)">
               <input className="admin-input w-full" value={form.logo_url} onChange={(e) => setForm({ ...form, logo_url: e.target.value })} />
             </Field>
             <Field label="Cor de destaque (hex)">
               <input className="admin-input w-full" placeholder="#C9A84C" value={form.cor_destaque} onChange={(e) => setForm({ ...form, cor_destaque: e.target.value })} />
             </Field>
+            <div className="md:col-span-2">
+              <Field label="Endereço">
+                <input className="admin-input w-full" placeholder="Rua, número, cidade — UF" value={form.endereco} onChange={(e) => setForm({ ...form, endereco: e.target.value })} />
+              </Field>
+            </div>
             <div className="md:col-span-2">
               <Field label="E-mails de notificação (separados por vírgula)">
                 <input className="admin-input w-full" placeholder="operacao@empresa.com, financeiro@empresa.com" value={form.emails_str} onChange={(e) => setForm({ ...form, emails_str: e.target.value })} />
@@ -111,31 +125,36 @@ function ConfiguracoesPage() {
           </div>
         </div>
       ) : (
-        <div className="admin-card overflow-x-auto p-0">
-          <table className="w-full text-left text-sm min-w-[520px]">
-            <thead className="bg-[color:var(--admin-carvao-deep)]/60 text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
-              <tr>
-                <th className="px-5 py-3.5 font-medium">Usuário</th>
-                <th className="px-3 py-3.5 font-medium">Cargo</th>
-                <th className="px-3 py-3.5 font-medium">Papel</th>
-              </tr>
-            </thead>
-            <tbody>
-              {usuarios.length === 0 ? (
-                <tr><td colSpan={3} className="px-5 py-8 text-center text-[color:var(--admin-cinza-3)]">Nenhum usuário interno cadastrado.</td></tr>
-              ) : usuarios.map((u) => (
-                <tr key={u.user_id} className="border-t border-[color:var(--admin-borda)]">
-                  <td className="px-5 py-4 text-[color:var(--admin-cinza-1)]">{u.nome ?? "Sem nome"}</td>
-                  <td className="px-3 py-4 text-[color:var(--admin-cinza-2)]">{u.cargo ?? "—"}</td>
-                  <td className="px-3 py-4">
-                    <span className="inline-flex items-center gap-1.5 rounded-md bg-[color:var(--admin-petroleo)] px-2 py-1 text-[11px] text-[color:var(--admin-dourado-glow)]">
-                      <Shield className="h-3 w-3" /> {u.role ?? "—"}
-                    </span>
-                  </td>
+        <div className="space-y-4">
+          <div className="admin-card text-[12px] text-[color:var(--admin-cinza-3)] leading-relaxed">
+            Novos usuários internos são cadastrados via convite por e-mail no painel de autenticação. Assim que o usuário acessar pela primeira vez, ele será listado abaixo e poderá ter o cargo/papel ajustado pelo administrador.
+          </div>
+          <div className="admin-card overflow-x-auto p-0">
+            <table className="w-full text-left text-sm min-w-[520px]">
+              <thead className="bg-[color:var(--admin-carvao-deep)]/60 text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
+                <tr>
+                  <th className="px-5 py-3.5 font-medium">Usuário</th>
+                  <th className="px-3 py-3.5 font-medium">Cargo</th>
+                  <th className="px-3 py-3.5 font-medium">Papel</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {usuarios.length === 0 ? (
+                  <tr><td colSpan={3} className="px-5 py-8 text-center text-[color:var(--admin-cinza-3)]">Nenhum usuário interno cadastrado.</td></tr>
+                ) : usuarios.map((u) => (
+                  <tr key={u.user_id} className="border-t border-[color:var(--admin-borda)]">
+                    <td className="px-5 py-4 text-[color:var(--admin-cinza-1)]">{u.nome ?? "Sem nome"}</td>
+                    <td className="px-3 py-4 text-[color:var(--admin-cinza-2)]">{u.cargo ?? "—"}</td>
+                    <td className="px-3 py-4">
+                      <span className="inline-flex items-center gap-1.5 rounded-md bg-[color:var(--admin-petroleo)] px-2 py-1 text-[11px] text-[color:var(--admin-dourado-glow)]">
+                        <Shield className="h-3 w-3" /> {u.role ?? "—"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

@@ -670,6 +670,7 @@ export interface DocumentoRow {
   tipo: string;
   categoria: string | null;
   url: string;
+  escopo: "institucional" | "expedicao" | "participante";
   expedicao_id: string | null;
   participante_id: string | null;
   reserva_id: string | null;
@@ -698,6 +699,7 @@ export async function uploadDocumento(args: {
   file: File;
   titulo: string;
   tipo: string;
+  escopo?: "institucional" | "expedicao" | "participante";
   expedicao_id?: string | null;
   participante_id?: string | null;
   reserva_id?: string | null;
@@ -711,6 +713,9 @@ export async function uploadDocumento(args: {
     upsert: false,
   });
   if (upErr) throw new Error(upErr.message);
+  const escopo: "institucional" | "expedicao" | "participante" =
+    args.escopo ??
+    (args.participante_id ? "participante" : args.expedicao_id || args.reserva_id ? "expedicao" : "institucional");
   const { data, error } = await supabase
     .from("documentos")
     .insert({
@@ -718,6 +723,7 @@ export async function uploadDocumento(args: {
       tipo: args.tipo,
       categoria: bucket,
       url: path,
+      escopo,
       expedicao_id: args.expedicao_id ?? null,
       participante_id: args.participante_id ?? null,
       reserva_id: args.reserva_id ?? null,
@@ -750,6 +756,8 @@ export interface ConfiguracoesRow {
   id: string;
   empresa_nome: string | null;
   empresa_cnpj: string | null;
+  endereco: string | null;
+  email: string | null;
   whatsapp: string | null;
   emails_notificacao: string[];
   instagram: string | null;
