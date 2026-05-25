@@ -20,10 +20,19 @@ export const Route = createFileRoute("/admin/_authenticated/expedicoes")({
   component: ExpedicoesPage,
 });
 
+const STATUS_FILTROS: { id: ExpedicaoRow["status"] | "todos"; label: string }[] = [
+  { id: "todos", label: "Todas" },
+  { id: "publicado", label: "Publicadas" },
+  { id: "rascunho", label: "Rascunho" },
+  { id: "pausado", label: "Pausadas" },
+  { id: "arquivado", label: "Arquivadas" },
+];
+
 function ExpedicoesPage() {
   const qc = useQueryClient();
   const { data: list = [], isLoading } = useQuery({ queryKey: ["admin", "expedicoes"], queryFn: listExpedicoes });
   const [confirmDel, setConfirmDel] = useState<ExpedicaoRow | null>(null);
+  const [filtro, setFiltro] = useState<ExpedicaoRow["status"] | "todos">("todos");
 
   const refresh = () => qc.invalidateQueries({ queryKey: ["admin", "expedicoes"] });
 
@@ -56,6 +65,16 @@ function ExpedicoesPage() {
     onError: (e) => toast.error((e as Error).message),
   });
 
+  const contadores = {
+    todos: list.length,
+    publicado: list.filter((e) => e.status === "publicado").length,
+    rascunho: list.filter((e) => e.status === "rascunho").length,
+    pausado: list.filter((e) => e.status === "pausado").length,
+    arquivado: list.filter((e) => e.status === "arquivado").length,
+  };
+
+  const listaFiltrada = filtro === "todos" ? list : list.filter((e) => e.status === filtro);
+
   return (
     <div>
       <AdminPageHeader
@@ -69,12 +88,33 @@ function ExpedicoesPage() {
         }
       />
 
+      <div className="mb-4 flex flex-wrap gap-2">
+        {STATUS_FILTROS.map((f) => {
+          const count = contadores[f.id as keyof typeof contadores];
+          const active = filtro === f.id;
+          return (
+            <button
+              key={f.id}
+              onClick={() => setFiltro(f.id)}
+              className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-[12px] transition ${
+                active
+                  ? "bg-[color:var(--admin-dourado)] text-[color:var(--admin-carvao-deep)]"
+                  : "border border-[color:var(--admin-borda)] text-[color:var(--admin-cinza-2)] hover:border-[color:var(--admin-dourado)]/40"
+              }`}
+            >
+              <span>{f.label}</span>
+              <span className={`tabular-nums text-[11px] ${active ? "" : "text-[color:var(--admin-cinza-3)]"}`}>{count}</span>
+            </button>
+          );
+        })}
+      </div>
+
       {isLoading ? (
         <div className="admin-card h-40 animate-pulse" />
-      ) : list.length === 0 ? (
+      ) : listaFiltrada.length === 0 ? (
         <AdminEmpty
           icon={Compass}
-          titulo="Nenhuma expedição ainda"
+          titulo={filtro === "todos" ? "Nenhuma expedição ainda" : "Nenhuma expedição neste status"}
           descricao="Crie sua primeira expedição para começar a publicar no site."
           acao={
             <button className="admin-btn-primary" onClick={() => novaMut.mutate()}>
