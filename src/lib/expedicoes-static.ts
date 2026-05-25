@@ -89,8 +89,8 @@ const EXPEDICOES: Expedicao[] = [
             "Acomodação single com tarifa adicional de 40%",
             "Quem vem sozinho pode dividir o quarto com outro participante"
         ],
-        "descricao_curta": "Uma verdadeira travessia a cavalo pela Serra da Canastra, cruzando rios, montanhas e trilhas que poucos cavaleiros têm a oportunidade de conhecer.",
-        "descricao_longa": "Uma verdadeira travessia a cavalo pela Serra da Canastra, percorrendo trilhas entre montanhas, rios e cachoeiras, com nossa manada de Mangalarga Marchador de alta performance e equipe experiente acompanhando todo o percurso.\n\nVivemos momentos marcantes como a travessia do Rio São Francisco a cavalo, almoços especiais em meio à natureza e noites acolhedoras na pousada.\n\nMais do que uma cavalgada, esta é uma verdadeira travessia pela essência da Serra da Canastra."
+        "descricao_curta": "Explore a Serra da Canastra a cavalo, por rotas cuidadosamente selecionadas.",
+        "descricao_longa": "A Canastra é nosso ponto de origem. Conhecemos cada trilha, cada paisagem e cada história que fazem desta região um dos destinos equestres mais especiais do Brasil. Trabalhamos ao lado de parceiros locais selecionados, que compartilham dos mesmos valores de cuidado, autenticidade e respeito à cultura da Serra da Canastra."
     },
     {
         "id": "9dd91b11-3ce3-4368-ab3c-4d441da8d34d",
