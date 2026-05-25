@@ -743,3 +743,95 @@ export async function getDocumentoSignedUrl(doc: DocumentoRow): Promise<string> 
   return data.signedUrl;
 }
 
+
+// ---------- CONFIGURAÇÕES ----------
+
+export interface ConfiguracoesRow {
+  id: string;
+  empresa_nome: string | null;
+  empresa_cnpj: string | null;
+  whatsapp: string | null;
+  emails_notificacao: string[];
+  instagram: string | null;
+  logo_url: string | null;
+  cor_destaque: string | null;
+  preferencias: Record<string, unknown>;
+  updated_at: string;
+}
+
+export async function getConfiguracoes(): Promise<ConfiguracoesRow | null> {
+  const { data, error } = await supabase
+    .from("configuracoes" as never)
+    .select("*")
+    .eq("singleton", true)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return (data as unknown as ConfiguracoesRow) ?? null;
+}
+
+export async function saveConfiguracoes(patch: Partial<ConfiguracoesRow>): Promise<ConfiguracoesRow> {
+  const { data, error } = await supabase
+    .from("configuracoes" as never)
+    .update(patch as never)
+    .eq("singleton", true)
+    .select()
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Configurações não encontradas.");
+  await logActivity({ modulo: "configuracoes", acao: "atualizar" });
+  return data as unknown as ConfiguracoesRow;
+}
+
+// ---------- USUÁRIOS INTERNOS ----------
+
+export interface UsuarioInternoRow {
+  user_id: string;
+  nome: string | null;
+  cargo: string | null;
+  avatar_url: string | null;
+  role: string | null;
+}
+
+export async function listUsuariosInternos(): Promise<UsuarioInternoRow[]> {
+  const { data: profiles, error } = await supabase
+    .from("profiles")
+    .select("user_id, nome, cargo, avatar_url");
+  if (error) throw new Error(error.message);
+  const { data: roles } = await supabase.from("user_roles").select("user_id, role");
+  const map = new Map((roles ?? []).map((r) => [r.user_id, r.role]));
+  return (profiles ?? [])
+    .filter((p) => map.has(p.user_id))
+    .map((p) => ({
+      user_id: p.user_id,
+      nome: p.nome,
+      cargo: p.cargo,
+      avatar_url: p.avatar_url,
+      role: (map.get(p.user_id) as string | undefined) ?? null,
+    }));
+}
+
+// ---------- MÍDIA EXTERNA ----------
+
+export async function addVideoUrl(expedicaoId: string, url: string, titulo?: string): Promise<AssetRow> {
+  const { data: assets } = await supabase
+    .from("expedicao_assets")
+    .select("ordem")
+    .eq("expedicao_id", expedicaoId)
+    .order("ordem", { ascending: false })
+    .limit(1);
+  const nextOrdem = (assets?.[0]?.ordem ?? -1) + 1;
+  const { data, error } = await supabase
+    .from("expedicao_assets")
+    .insert({
+      expedicao_id: expedicaoId,
+      tipo: "video",
+      url,
+      titulo: titulo ?? "Vídeo externo",
+      ordem: nextOrdem,
+      is_capa: false,
+    })
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return data as unknown as AssetRow;
+}
