@@ -108,10 +108,10 @@ export const SLUG_IMAGE: Record<string, string> = {
 export const SLUG_GALERIA: Record<string, string[]> = {
   "serra-da-canastra": [can23, can26, can37, can21, can15, can18, can22, can25, can13, can27, can28, can16, can05, can10],
   "mantiqueira-refugio": [man13, man01, man27, man19, man03, man21, man28, man07, man02, man04, man09, man16, man34, man06],
-  "berco-do-marchador": [chapada, chapada, chapada],
+  "berco-do-marchador": [],
   "peru-vale-do-colca": [peru09, peru12, peru03, peru01, peru05, peru08, peru07, peru11, peru04, peru06, peru10],
   "patagonia-gaucha": [pat01, pat02, pat03],
-  "jericoacoara": [aerea, aerea, aerea],
+  "jericoacoara": [],
   "caminho-de-santiago": [man13, man27, man19, man03, man21, man01],
 };
 
