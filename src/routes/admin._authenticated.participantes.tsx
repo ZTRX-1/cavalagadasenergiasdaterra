@@ -136,9 +136,14 @@ function ParticipanteDialog({
         <DialogHeader><DialogTitle className="font-display text-2xl">{initial ? "Editar participante" : "Novo participante"}</DialogTitle></DialogHeader>
         <div className="space-y-3">
           <AdminField label="Nome completo"><input className="admin-input" value={form.nome ?? ""} onChange={(e) => setForm({ ...form, nome: e.target.value })} /></AdminField>
+          <div className="grid grid-cols-3 gap-3">
+            <AdminField label="CPF"><input className="admin-input" value={form.cpf ?? ""} onChange={(e) => setForm({ ...form, cpf: e.target.value })} /></AdminField>
+            <AdminField label="Documento (RG)"><input className="admin-input" value={form.documento ?? ""} onChange={(e) => setForm({ ...form, documento: e.target.value })} /></AdminField>
+            <AdminField label="Peso (kg)"><input type="number" step="0.1" className="admin-input" value={form.peso ?? ""} onChange={(e) => setForm({ ...form, peso: e.target.value ? Number(e.target.value) : null })} /></AdminField>
+          </div>
           <div className="grid grid-cols-2 gap-3">
-            <AdminField label="Documento"><input className="admin-input" value={form.documento ?? ""} onChange={(e) => setForm({ ...form, documento: e.target.value })} /></AdminField>
-            <AdminField label="Contato"><input className="admin-input" value={form.contato ?? ""} onChange={(e) => setForm({ ...form, contato: e.target.value })} /></AdminField>
+            <AdminField label="Telefone"><input className="admin-input" value={form.telefone ?? ""} onChange={(e) => setForm({ ...form, telefone: e.target.value })} /></AdminField>
+            <AdminField label="E-mail"><input type="email" className="admin-input" value={form.email ?? ""} onChange={(e) => setForm({ ...form, email: e.target.value })} /></AdminField>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <AdminField label="Data de nascimento"><input type="date" className="admin-input" value={form.data_nascimento ?? ""} onChange={(e) => setForm({ ...form, data_nascimento: e.target.value })} /></AdminField>
@@ -157,9 +162,13 @@ function ParticipanteDialog({
               {expedicoes.map((e) => <option key={e.id} value={e.id}>{e.nome}</option>)}
             </select>
           </AdminField>
+          <AdminField label="Grupo / reserva (opcional)" hint="UUID da reserva quando o participante faz parte de um grupo">
+            <input className="admin-input font-mono text-xs" value={form.reserva_id ?? ""} onChange={(e) => setForm({ ...form, reserva_id: e.target.value || null })} placeholder="Ex.: id da reserva 'Empresa Josefina'" />
+          </AdminField>
           <AdminField label="Acompanhante"><input className="admin-input" value={form.acompanhante ?? ""} onChange={(e) => setForm({ ...form, acompanhante: e.target.value })} /></AdminField>
-          <AdminField label="Observações médicas / alergias"><textarea className="admin-input min-h-[80px]" value={form.observacoes_medicas ?? ""} onChange={(e) => setForm({ ...form, observacoes_medicas: e.target.value })} /></AdminField>
-          <AdminField label="Restrições"><textarea className="admin-input min-h-[60px]" value={form.restricoes ?? ""} onChange={(e) => setForm({ ...form, restricoes: e.target.value })} /></AdminField>
+          <AdminField label="Observações médicas / alergias"><textarea className="admin-input min-h-[60px]" value={form.observacoes_medicas ?? ""} onChange={(e) => setForm({ ...form, observacoes_medicas: e.target.value })} /></AdminField>
+          <AdminField label="Restrições alimentares"><textarea className="admin-input min-h-[60px]" value={form.restricoes_alimentares ?? ""} onChange={(e) => setForm({ ...form, restricoes_alimentares: e.target.value })} /></AdminField>
+          <AdminField label="Outras restrições / observações"><textarea className="admin-input min-h-[60px]" value={form.restricoes ?? ""} onChange={(e) => setForm({ ...form, restricoes: e.target.value })} /></AdminField>
           <AdminField label="Status">
             <select className="admin-input" value={form.status ?? "pendente"} onChange={(e) => setForm({ ...form, status: e.target.value })}>
               <option value="pendente">Pendente</option>
