@@ -11,6 +11,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { PageLoader } from "@/components/page-loader";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { CookieConsent } from "@/components/cookie-consent";
+import heroOg from "@/assets/founders/ligia-rio.jpg";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -70,8 +71,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Cavalgadas Energias da Terra — Expedições a cavalo premium" },
       { name: "twitter:description", content: "Expedições a cavalo cuidadosamente desenhadas para quem busca natureza com profundidade e aventura com requinte." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9aecb81e-f486-4ac5-81f3-f8f16c51b5e2/id-preview-9a1a1bfa--cfdf4776-f068-4bc1-970c-d1ecf16144d5.lovable.app-1779655419685.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9aecb81e-f486-4ac5-81f3-f8f16c51b5e2/id-preview-9a1a1bfa--cfdf4776-f068-4bc1-970c-d1ecf16144d5.lovable.app-1779655419685.png" },
+      { property: "og:image", content: heroOg },
+      { name: "twitter:image", content: heroOg },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

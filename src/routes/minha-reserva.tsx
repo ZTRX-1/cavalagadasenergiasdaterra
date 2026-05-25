@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { Loader2, Search, MessageCircle } from "lucide-react";
-import { consultarReserva } from "@/lib/reservas.functions";
 import { buildReservaWhatsappUrl } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 
@@ -29,7 +27,6 @@ const STATUS_STEPS = [
 
 function MinhaReserva() {
   const search = Route.useSearch();
-  const consultar = useServerFn(consultarReserva);
   const [protocolo, setProtocolo] = useState(search.p ?? "");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
@@ -41,7 +38,9 @@ function MinhaReserva() {
     setLoading(true);
     setSearched(true);
     try {
-      const r = await consultar({ data: { protocolo: protocolo.trim() } });
+      const key = `cet.reserva.${protocolo.trim().toUpperCase()}`;
+      const stored = localStorage.getItem(key);
+      const r = stored ? JSON.parse(stored) : null;
       setResult(r);
     } catch {
       setResult(null);

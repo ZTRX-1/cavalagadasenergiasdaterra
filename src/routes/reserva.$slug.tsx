@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,7 +7,6 @@ import { z } from "zod";
 import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
-import { createReserva } from "@/lib/reservas.functions";
 import { buildReservaWhatsappUrl } from "@/lib/whatsapp";
 import { formatDateRange, formatPrice } from "@/lib/format";
 import { getExpedicaoImage } from "@/lib/expedicao-images";
@@ -77,11 +75,11 @@ function ReservaPage() {
   const { slug } = Route.useParams();
   const search = Route.useSearch();
   const { data } = useSuspenseQuery(qo(slug));
-  const createReservaFn = useServerFn(createReserva);
 
   const [step, setStep] = useState(0);
-  const [submitted, setSubmitted] = useState<null | Awaited<ReturnType<typeof createReserva>>>(null);
+  const [submitted, setSubmitted] = useState<null | { protocolo: string; expedicao_nome: string; quantidade_participantes: number; nome_responsavel: string }>(null);
   const [submitting, setSubmitting] = useState(false);
+  const protocolo = useMemo(() => `CET-${new Date().getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`, []);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -168,16 +166,13 @@ function ReservaPage() {
   const onSubmit = form.handleSubmit(async (values) => {
     setSubmitting(true);
     try {
-      const res = await createReservaFn({
-        data: {
-          expedicao_id: expedicao.id,
-          data_id: values.data_id,
-          responsavel: values.responsavel,
-          participantes: values.participantes,
-          adicionais: values.adicionais,
-          aceites: values.aceites,
-        },
-      });
+      const res = {
+        protocolo,
+        expedicao_nome: expedicao.nome,
+        quantidade_participantes: values.participantes.length,
+        nome_responsavel: values.responsavel.nome,
+      };
+      localStorage.setItem(`cet.reserva.${protocolo}`, JSON.stringify({ ...res, data_label: datas.find((d) => d.id === values.data_id) ? formatDateRange(datas.find((d) => d.id === values.data_id)!.data_inicio, datas.find((d) => d.id === values.data_id)!.data_fim) : "", status: "pre_reserva_enviada", created_at: new Date().toISOString() }));
       setSubmitted(res);
       const dt = datas.find((d) => d.id === values.data_id);
       const dataLabel = dt ? formatDateRange(dt.data_inicio, dt.data_fim) : "";
