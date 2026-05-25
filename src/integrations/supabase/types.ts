@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_logs: {
+        Row: {
+          acao: string
+          created_at: string
+          descricao: string | null
+          id: string
+          metadata: Json | null
+          modulo: string
+          usuario: string | null
+        }
+        Insert: {
+          acao: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          metadata?: Json | null
+          modulo: string
+          usuario?: string | null
+        }
+        Update: {
+          acao?: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          metadata?: Json | null
+          modulo?: string
+          usuario?: string | null
+        }
+        Relationships: []
+      }
       datas: {
         Row: {
           created_at: string
@@ -24,6 +54,7 @@ export type Database = {
           preco_cartao: number | null
           preco_pix: number | null
           status: string
+          updated_at: string
           vagas_disponiveis: number
           vagas_total: number
         }
@@ -36,6 +67,7 @@ export type Database = {
           preco_cartao?: number | null
           preco_pix?: number | null
           status?: string
+          updated_at?: string
           vagas_disponiveis?: number
           vagas_total?: number
         }
@@ -48,6 +80,7 @@ export type Database = {
           preco_cartao?: number | null
           preco_pix?: number | null
           status?: string
+          updated_at?: string
           vagas_disponiveis?: number
           vagas_total?: number
         }
@@ -106,13 +139,49 @@ export type Database = {
           },
         ]
       }
+      expedicao_assets: {
+        Row: {
+          created_at: string
+          expedicao_id: string
+          id: string
+          is_capa: boolean
+          ordem: number
+          tipo: string
+          titulo: string | null
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          expedicao_id: string
+          id?: string
+          is_capa?: boolean
+          ordem?: number
+          tipo?: string
+          titulo?: string | null
+          url: string
+        }
+        Update: {
+          created_at?: string
+          expedicao_id?: string
+          id?: string
+          is_capa?: boolean
+          ordem?: number
+          tipo?: string
+          titulo?: string | null
+          url?: string
+        }
+        Relationships: []
+      }
       expedicoes: {
         Row: {
           ativo: boolean
+          capa_url: string | null
+          cidade: string | null
           created_at: string
           descricao_curta: string
           descricao_longa: string
           duracao: string
+          estado: string | null
           galeria: Json
           id: string
           imagem_url: string | null
@@ -121,20 +190,32 @@ export type Database = {
           moeda: string
           nivel: string
           nome: string
+          observacoes: string | null
           ordem: number
           pais: string
+          parcelamento_max: number
+          politicas: Json
           preco: number
           regiao: string | null
           requisitos: Json
           roteiro: Json
           slug: string
+          status: string
+          subtitulo: string | null
+          tags: string[]
+          updated_at: string
+          vagas_total_padrao: number
+          video_url: string | null
         }
         Insert: {
           ativo?: boolean
+          capa_url?: string | null
+          cidade?: string | null
           created_at?: string
           descricao_curta: string
           descricao_longa: string
           duracao: string
+          estado?: string | null
           galeria?: Json
           id?: string
           imagem_url?: string | null
@@ -143,20 +224,32 @@ export type Database = {
           moeda?: string
           nivel: string
           nome: string
+          observacoes?: string | null
           ordem?: number
           pais?: string
+          parcelamento_max?: number
+          politicas?: Json
           preco: number
           regiao?: string | null
           requisitos?: Json
           roteiro?: Json
           slug: string
+          status?: string
+          subtitulo?: string | null
+          tags?: string[]
+          updated_at?: string
+          vagas_total_padrao?: number
+          video_url?: string | null
         }
         Update: {
           ativo?: boolean
+          capa_url?: string | null
+          cidade?: string | null
           created_at?: string
           descricao_curta?: string
           descricao_longa?: string
           duracao?: string
+          estado?: string | null
           galeria?: Json
           id?: string
           imagem_url?: string | null
@@ -165,52 +258,106 @@ export type Database = {
           moeda?: string
           nivel?: string
           nome?: string
+          observacoes?: string | null
           ordem?: number
           pais?: string
+          parcelamento_max?: number
+          politicas?: Json
           preco?: number
           regiao?: string | null
           requisitos?: Json
           roteiro?: Json
           slug?: string
+          status?: string
+          subtitulo?: string | null
+          tags?: string[]
+          updated_at?: string
+          vagas_total_padrao?: number
+          video_url?: string | null
+        }
+        Relationships: []
+      }
+      lead_atividades: {
+        Row: {
+          autor_id: string | null
+          created_at: string
+          descricao: string | null
+          id: string
+          lead_id: string
+          tipo: string
+        }
+        Insert: {
+          autor_id?: string | null
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          lead_id: string
+          tipo: string
+        }
+        Update: {
+          autor_id?: string | null
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          lead_id?: string
+          tipo?: string
         }
         Relationships: []
       }
       leads: {
         Row: {
+          acompanhantes: number
+          cidade: string | null
           created_at: string
           email: string | null
+          estado: string | null
           expedicao_interesse: string | null
           id: string
           nome: string
           observacoes: string | null
           origem: string | null
+          protocolo: string | null
+          quantidade_pessoas: number
           status: string
           telefone: string | null
           updated_at: string
+          valor_estimado: number | null
         }
         Insert: {
+          acompanhantes?: number
+          cidade?: string | null
           created_at?: string
           email?: string | null
+          estado?: string | null
           expedicao_interesse?: string | null
           id?: string
           nome: string
           observacoes?: string | null
           origem?: string | null
+          protocolo?: string | null
+          quantidade_pessoas?: number
           status?: string
           telefone?: string | null
           updated_at?: string
+          valor_estimado?: number | null
         }
         Update: {
+          acompanhantes?: number
+          cidade?: string | null
           created_at?: string
           email?: string | null
+          estado?: string | null
           expedicao_interesse?: string | null
           id?: string
           nome?: string
           observacoes?: string | null
           origem?: string | null
+          protocolo?: string | null
+          quantidade_pessoas?: number
           status?: string
           telefone?: string | null
           updated_at?: string
+          valor_estimado?: number | null
         }
         Relationships: []
       }
@@ -254,33 +401,54 @@ export type Database = {
       }
       participantes: {
         Row: {
+          acompanhante: string | null
           contato: string | null
           created_at: string
+          data_id: string | null
+          data_nascimento: string | null
           documento: string | null
+          expedicao_id: string | null
+          experiencia_equestre: string | null
           id: string
           nome: string
           observacoes_medicas: string | null
           reserva_id: string | null
+          restricoes: string | null
+          status: string
           updated_at: string
         }
         Insert: {
+          acompanhante?: string | null
           contato?: string | null
           created_at?: string
+          data_id?: string | null
+          data_nascimento?: string | null
           documento?: string | null
+          expedicao_id?: string | null
+          experiencia_equestre?: string | null
           id?: string
           nome: string
           observacoes_medicas?: string | null
           reserva_id?: string | null
+          restricoes?: string | null
+          status?: string
           updated_at?: string
         }
         Update: {
+          acompanhante?: string | null
           contato?: string | null
           created_at?: string
+          data_id?: string | null
+          data_nascimento?: string | null
           documento?: string | null
+          expedicao_id?: string | null
+          experiencia_equestre?: string | null
           id?: string
           nome?: string
           observacoes_medicas?: string | null
           reserva_id?: string | null
+          restricoes?: string | null
+          status?: string
           updated_at?: string
         }
         Relationships: [
@@ -300,6 +468,7 @@ export type Database = {
           created_at: string
           id: string
           nome: string | null
+          role: string
           updated_at: string
           user_id: string
         }
@@ -309,6 +478,7 @@ export type Database = {
           created_at?: string
           id?: string
           nome?: string | null
+          role?: string
           updated_at?: string
           user_id: string
         }
@@ -318,12 +488,28 @@ export type Database = {
           created_at?: string
           id?: string
           nome?: string | null
+          role?: string
           updated_at?: string
           user_id?: string
         }
         Relationships: []
       }
       protocolo_counter: {
+        Row: {
+          ano: number
+          valor: number
+        }
+        Insert: {
+          ano: number
+          valor?: number
+        }
+        Update: {
+          ano?: number
+          valor?: number
+        }
+        Relationships: []
+      }
+      protocolo_lead_counter: {
         Row: {
           ano: number
           valor: number
@@ -347,12 +533,18 @@ export type Database = {
           data_label: string
           expedicao_id: string | null
           expedicao_nome: string
+          forma_pagamento: string | null
           id: string
+          parcelas: number
           participantes: Json
           protocolo: string
           quantidade_participantes: number
           responsavel: Json
           status: string
+          status_pagamento: string
+          updated_at: string
+          valor_pago: number
+          valor_total: number | null
         }
         Insert: {
           aceites?: Json
@@ -362,12 +554,18 @@ export type Database = {
           data_label: string
           expedicao_id?: string | null
           expedicao_nome: string
+          forma_pagamento?: string | null
           id?: string
+          parcelas?: number
           participantes?: Json
           protocolo: string
           quantidade_participantes?: number
           responsavel: Json
           status?: string
+          status_pagamento?: string
+          updated_at?: string
+          valor_pago?: number
+          valor_total?: number | null
         }
         Update: {
           aceites?: Json
@@ -377,12 +575,18 @@ export type Database = {
           data_label?: string
           expedicao_id?: string | null
           expedicao_nome?: string
+          forma_pagamento?: string | null
           id?: string
+          parcelas?: number
           participantes?: Json
           protocolo?: string
           quantidade_participantes?: number
           responsavel?: Json
           status?: string
+          status_pagamento?: string
+          updated_at?: string
+          valor_pago?: number
+          valor_total?: number | null
         }
         Relationships: [
           {
@@ -428,6 +632,7 @@ export type Database = {
     }
     Functions: {
       gerar_protocolo: { Args: never; Returns: string }
+      gerar_protocolo_lead: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
