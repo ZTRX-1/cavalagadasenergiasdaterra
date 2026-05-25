@@ -84,10 +84,10 @@ function MinhaReserva() {
             placeholder="CET-2026-001"
             autoComplete="off"
             autoCorrect="off"
-            autoCapitalize="characters"
+            autoCapitalize="none"
             spellCheck={false}
             inputMode="text"
-            className="flex-1 rounded-sm border border-border bg-card px-5 py-4 font-mono text-lg uppercase tracking-wider outline-none focus:border-cobre"
+            className="flex-1 rounded-sm border border-border bg-card px-5 py-4 font-mono text-lg tracking-wider outline-none focus:border-cobre"
           />
           <button
             type="submit"
