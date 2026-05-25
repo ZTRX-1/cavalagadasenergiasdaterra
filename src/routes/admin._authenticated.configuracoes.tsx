@@ -125,31 +125,36 @@ function ConfiguracoesPage() {
           </div>
         </div>
       ) : (
-        <div className="admin-card overflow-x-auto p-0">
-          <table className="w-full text-left text-sm min-w-[520px]">
-            <thead className="bg-[color:var(--admin-carvao-deep)]/60 text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
-              <tr>
-                <th className="px-5 py-3.5 font-medium">Usuário</th>
-                <th className="px-3 py-3.5 font-medium">Cargo</th>
-                <th className="px-3 py-3.5 font-medium">Papel</th>
-              </tr>
-            </thead>
-            <tbody>
-              {usuarios.length === 0 ? (
-                <tr><td colSpan={3} className="px-5 py-8 text-center text-[color:var(--admin-cinza-3)]">Nenhum usuário interno cadastrado.</td></tr>
-              ) : usuarios.map((u) => (
-                <tr key={u.user_id} className="border-t border-[color:var(--admin-borda)]">
-                  <td className="px-5 py-4 text-[color:var(--admin-cinza-1)]">{u.nome ?? "Sem nome"}</td>
-                  <td className="px-3 py-4 text-[color:var(--admin-cinza-2)]">{u.cargo ?? "—"}</td>
-                  <td className="px-3 py-4">
-                    <span className="inline-flex items-center gap-1.5 rounded-md bg-[color:var(--admin-petroleo)] px-2 py-1 text-[11px] text-[color:var(--admin-dourado-glow)]">
-                      <Shield className="h-3 w-3" /> {u.role ?? "—"}
-                    </span>
-                  </td>
+        <div className="space-y-4">
+          <div className="admin-card text-[12px] text-[color:var(--admin-cinza-3)] leading-relaxed">
+            Novos usuários internos são cadastrados via convite por e-mail no painel de autenticação. Assim que o usuário acessar pela primeira vez, ele será listado abaixo e poderá ter o cargo/papel ajustado pelo administrador.
+          </div>
+          <div className="admin-card overflow-x-auto p-0">
+            <table className="w-full text-left text-sm min-w-[520px]">
+              <thead className="bg-[color:var(--admin-carvao-deep)]/60 text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
+                <tr>
+                  <th className="px-5 py-3.5 font-medium">Usuário</th>
+                  <th className="px-3 py-3.5 font-medium">Cargo</th>
+                  <th className="px-3 py-3.5 font-medium">Papel</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {usuarios.length === 0 ? (
+                  <tr><td colSpan={3} className="px-5 py-8 text-center text-[color:var(--admin-cinza-3)]">Nenhum usuário interno cadastrado.</td></tr>
+                ) : usuarios.map((u) => (
+                  <tr key={u.user_id} className="border-t border-[color:var(--admin-borda)]">
+                    <td className="px-5 py-4 text-[color:var(--admin-cinza-1)]">{u.nome ?? "Sem nome"}</td>
+                    <td className="px-3 py-4 text-[color:var(--admin-cinza-2)]">{u.cargo ?? "—"}</td>
+                    <td className="px-3 py-4">
+                      <span className="inline-flex items-center gap-1.5 rounded-md bg-[color:var(--admin-petroleo)] px-2 py-1 text-[11px] text-[color:var(--admin-dourado-glow)]">
+                        <Shield className="h-3 w-3" /> {u.role ?? "—"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
