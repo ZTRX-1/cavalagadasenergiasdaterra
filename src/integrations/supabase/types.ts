@@ -96,28 +96,34 @@ export type Database = {
       }
       documentos: {
         Row: {
+          categoria: string | null
           created_at: string
           expedicao_id: string | null
           id: string
           participante_id: string | null
+          reserva_id: string | null
           tipo: string
           titulo: string
           url: string
         }
         Insert: {
+          categoria?: string | null
           created_at?: string
           expedicao_id?: string | null
           id?: string
           participante_id?: string | null
+          reserva_id?: string | null
           tipo?: string
           titulo: string
           url: string
         }
         Update: {
+          categoria?: string | null
           created_at?: string
           expedicao_id?: string | null
           id?: string
           participante_id?: string | null
+          reserva_id?: string | null
           tipo?: string
           titulo?: string
           url?: string
@@ -308,16 +314,22 @@ export type Database = {
         Row: {
           acompanhantes: number
           cidade: string | null
+          cpf: string | null
           created_at: string
+          data_nascimento: string | null
           email: string | null
           estado: string | null
           expedicao_interesse: string | null
+          experiencia_equestre: string | null
           id: string
           nome: string
           observacoes: string | null
+          observacoes_medicas: string | null
           origem: string | null
+          peso: number | null
           protocolo: string | null
           quantidade_pessoas: number
+          restricoes_alimentares: string | null
           status: string
           telefone: string | null
           updated_at: string
@@ -326,16 +338,22 @@ export type Database = {
         Insert: {
           acompanhantes?: number
           cidade?: string | null
+          cpf?: string | null
           created_at?: string
+          data_nascimento?: string | null
           email?: string | null
           estado?: string | null
           expedicao_interesse?: string | null
+          experiencia_equestre?: string | null
           id?: string
           nome: string
           observacoes?: string | null
+          observacoes_medicas?: string | null
           origem?: string | null
+          peso?: number | null
           protocolo?: string | null
           quantidade_pessoas?: number
+          restricoes_alimentares?: string | null
           status?: string
           telefone?: string | null
           updated_at?: string
@@ -344,16 +362,22 @@ export type Database = {
         Update: {
           acompanhantes?: number
           cidade?: string | null
+          cpf?: string | null
           created_at?: string
+          data_nascimento?: string | null
           email?: string | null
           estado?: string | null
           expedicao_interesse?: string | null
+          experiencia_equestre?: string | null
           id?: string
           nome?: string
           observacoes?: string | null
+          observacoes_medicas?: string | null
           origem?: string | null
+          peso?: number | null
           protocolo?: string | null
           quantidade_pessoas?: number
+          restricoes_alimentares?: string | null
           status?: string
           telefone?: string | null
           updated_at?: string
@@ -403,52 +427,67 @@ export type Database = {
         Row: {
           acompanhante: string | null
           contato: string | null
+          cpf: string | null
           created_at: string
           data_id: string | null
           data_nascimento: string | null
           documento: string | null
+          email: string | null
           expedicao_id: string | null
           experiencia_equestre: string | null
           id: string
           nome: string
           observacoes_medicas: string | null
+          peso: number | null
           reserva_id: string | null
           restricoes: string | null
+          restricoes_alimentares: string | null
           status: string
+          telefone: string | null
           updated_at: string
         }
         Insert: {
           acompanhante?: string | null
           contato?: string | null
+          cpf?: string | null
           created_at?: string
           data_id?: string | null
           data_nascimento?: string | null
           documento?: string | null
+          email?: string | null
           expedicao_id?: string | null
           experiencia_equestre?: string | null
           id?: string
           nome: string
           observacoes_medicas?: string | null
+          peso?: number | null
           reserva_id?: string | null
           restricoes?: string | null
+          restricoes_alimentares?: string | null
           status?: string
+          telefone?: string | null
           updated_at?: string
         }
         Update: {
           acompanhante?: string | null
           contato?: string | null
+          cpf?: string | null
           created_at?: string
           data_id?: string | null
           data_nascimento?: string | null
           documento?: string | null
+          email?: string | null
           expedicao_id?: string | null
           experiencia_equestre?: string | null
           id?: string
           nome?: string
           observacoes_medicas?: string | null
+          peso?: number | null
           reserva_id?: string | null
           restricoes?: string | null
+          restricoes_alimentares?: string | null
           status?: string
+          telefone?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -534,12 +573,14 @@ export type Database = {
           expedicao_id: string | null
           expedicao_nome: string
           forma_pagamento: string | null
+          grupo_nome: string | null
           id: string
           parcelas: number
           participantes: Json
           protocolo: string
           quantidade_participantes: number
           responsavel: Json
+          saldo_restante: number | null
           status: string
           status_pagamento: string
           updated_at: string
@@ -555,12 +596,14 @@ export type Database = {
           expedicao_id?: string | null
           expedicao_nome: string
           forma_pagamento?: string | null
+          grupo_nome?: string | null
           id?: string
           parcelas?: number
           participantes?: Json
           protocolo: string
           quantidade_participantes?: number
           responsavel: Json
+          saldo_restante?: number | null
           status?: string
           status_pagamento?: string
           updated_at?: string
@@ -576,12 +619,14 @@ export type Database = {
           expedicao_id?: string | null
           expedicao_nome?: string
           forma_pagamento?: string | null
+          grupo_nome?: string | null
           id?: string
           parcelas?: number
           participantes?: Json
           protocolo?: string
           quantidade_participantes?: number
           responsavel?: Json
+          saldo_restante?: number | null
           status?: string
           status_pagamento?: string
           updated_at?: string
