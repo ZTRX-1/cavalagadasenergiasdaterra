@@ -105,6 +105,7 @@ export type Database = {
           preco_cartao: number | null
           preco_pix: number | null
           status: string
+          tag: string | null
           updated_at: string
           vagas_disponiveis: number
           vagas_total: number
@@ -118,6 +119,7 @@ export type Database = {
           preco_cartao?: number | null
           preco_pix?: number | null
           status?: string
+          tag?: string | null
           updated_at?: string
           vagas_disponiveis?: number
           vagas_total?: number
@@ -131,6 +133,7 @@ export type Database = {
           preco_cartao?: number | null
           preco_pix?: number | null
           status?: string
+          tag?: string | null
           updated_at?: string
           vagas_disponiveis?: number
           vagas_total?: number

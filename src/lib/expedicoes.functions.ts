@@ -52,6 +52,7 @@ function normalizeData(row: Record<string, unknown>, exp?: { nome: string; slug:
     status: (row.status as string) ?? "disponivel",
     preco_pix: row.preco_pix == null ? null : Number(row.preco_pix),
     preco_cartao: row.preco_cartao == null ? null : Number(row.preco_cartao),
+    tag: (row.tag as string) ?? undefined,
   };
 }
 

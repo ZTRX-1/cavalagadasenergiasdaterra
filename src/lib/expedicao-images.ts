@@ -124,7 +124,7 @@ export const GALERIA_CAVALGADAS = [
 ];
 
 export const GALERIA_ELAS_NA_SELA = [
-  man01, can22, can24, man27, peru12, can10, man19, can29, can30, man03, peru08, can12,
+  man01, can24, peru12, can10, man19, can29, can30, man03, peru08,
 ];
 
 export const GALERIA_CANASTRA_MARCA = [
