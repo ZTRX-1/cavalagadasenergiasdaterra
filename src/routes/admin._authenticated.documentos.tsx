@@ -40,13 +40,15 @@ function DocumentosPage() {
 
   const upMut = useMutation({
     mutationFn: async (files: File[]) => {
+      const escopo = aba === "participante" ? "participante" : (expedicaoId || reservaId ? "expedicao" : "institucional");
       for (const file of files) {
         await uploadDocumento({
           file,
           titulo: titulo || file.name,
           tipo,
+          escopo,
           expedicao_id: expedicaoId || null,
-          participante_id: participanteId || null,
+          participante_id: aba === "participante" ? (participanteId || null) : null,
           reserva_id: reservaId || null,
         });
       }
