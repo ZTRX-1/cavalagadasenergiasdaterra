@@ -61,6 +61,51 @@ export type Database = {
           },
         ]
       }
+      documentos: {
+        Row: {
+          created_at: string
+          expedicao_id: string | null
+          id: string
+          participante_id: string | null
+          tipo: string
+          titulo: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          expedicao_id?: string | null
+          id?: string
+          participante_id?: string | null
+          tipo?: string
+          titulo: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          expedicao_id?: string | null
+          id?: string
+          participante_id?: string | null
+          tipo?: string
+          titulo?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentos_expedicao_id_fkey"
+            columns: ["expedicao_id"]
+            isOneToOne: false
+            referencedRelation: "expedicoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentos_participante_id_fkey"
+            columns: ["participante_id"]
+            isOneToOne: false
+            referencedRelation: "participantes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       expedicoes: {
         Row: {
           ativo: boolean
@@ -127,6 +172,154 @@ export type Database = {
           requisitos?: Json
           roteiro?: Json
           slug?: string
+        }
+        Relationships: []
+      }
+      leads: {
+        Row: {
+          created_at: string
+          email: string | null
+          expedicao_interesse: string | null
+          id: string
+          nome: string
+          observacoes: string | null
+          origem: string | null
+          status: string
+          telefone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          expedicao_interesse?: string | null
+          id?: string
+          nome: string
+          observacoes?: string | null
+          origem?: string | null
+          status?: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          expedicao_interesse?: string | null
+          id?: string
+          nome?: string
+          observacoes?: string | null
+          origem?: string | null
+          status?: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      midia: {
+        Row: {
+          created_at: string
+          expedicao_id: string | null
+          id: string
+          ordem: number
+          tipo: string
+          titulo: string | null
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          expedicao_id?: string | null
+          id?: string
+          ordem?: number
+          tipo?: string
+          titulo?: string | null
+          url: string
+        }
+        Update: {
+          created_at?: string
+          expedicao_id?: string | null
+          id?: string
+          ordem?: number
+          tipo?: string
+          titulo?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "midia_expedicao_id_fkey"
+            columns: ["expedicao_id"]
+            isOneToOne: false
+            referencedRelation: "expedicoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      participantes: {
+        Row: {
+          contato: string | null
+          created_at: string
+          documento: string | null
+          id: string
+          nome: string
+          observacoes_medicas: string | null
+          reserva_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          contato?: string | null
+          created_at?: string
+          documento?: string | null
+          id?: string
+          nome: string
+          observacoes_medicas?: string | null
+          reserva_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          contato?: string | null
+          created_at?: string
+          documento?: string | null
+          id?: string
+          nome?: string
+          observacoes_medicas?: string | null
+          reserva_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participantes_reserva_id_fkey"
+            columns: ["reserva_id"]
+            isOneToOne: false
+            referencedRelation: "reservas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          cargo: string | null
+          created_at: string
+          id: string
+          nome: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          cargo?: string | null
+          created_at?: string
+          id?: string
+          nome?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          cargo?: string | null
+          created_at?: string
+          id?: string
+          nome?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -208,15 +401,44 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
       gerar_protocolo: { Args: never; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_internal_user: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "operador" | "financeiro" | "midia"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -343,6 +565,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "operador", "financeiro", "midia"],
+    },
   },
 } as const

@@ -1,45 +1,118 @@
-## Diagnóstico
+# Área Restrita Premium — Etapa 1/3
 
-**Home (imagem 1):**
-- O hero hoje usa `h-[88svh] max-h-[920px]` → em monitores grandes (1920×1137 do usuário) ele encurta visivelmente e a seção bege aparece atrás.
-- A cabeça da Lígia está sendo coberta pelo header escuro (não é crop da imagem — é o header sobrepondo). Precisa empurrar o foco da foto para baixo do header.
-- Texto com `mt-6 / mt-7 / mt-10` está com respiros grandes demais para o tamanho do bloco.
-
-**Quem Somos (imagem 2):**
-- O hero usa a mesma foto da Lígia da Home (retrato vertical) numa faixa larga → topo da cabeça sai do quadro e a imagem domina meia tela sem necessidade.
-- Solução: trocar por uma paisagem cinematográfica (sem rosto humano cortável). A `mantiqueira/05.jpg` é perfeita — cavaleira + cavalo em silhueta B&W contra vale com luz suave, muito espaço negativo, editorial puro.
+Construção da fundação do painel operacional interno da Cavalgadas Energias da Terra. Foco exclusivo em estrutura, autenticação, layout e dashboard visual. Nenhuma automação, IA, WhatsApp ou pagamento nesta etapa.
 
 ---
 
-## Plano de correção
+## 1. Autenticação (Lovable Cloud)
 
-### 1. Home hero — `src/routes/index.tsx`
+- Habilitar autenticação por **e-mail + senha** (sem auto-confirm — operadores criados internamente).
+- **Sem signup público.** Acesso apenas para usuários cadastrados pela administração.
+- Tabela `profiles` (id, user_id, nome, avatar_url, cargo) + trigger de criação automática.
+- Tabela `user_roles` com enum `app_role` (`admin`, `operador`, `financeiro`, `midia`) + função `has_role()` SECURITY DEFINER (padrão seguro, sem recursão de RLS).
+- RLS em todas as tabelas internas exigindo `auth.uid()` + role apropriada.
 
-- Trocar `h-[88svh] min-h-[560px] max-h-[920px] md:h-[92svh]` → **`h-screen min-h-[640px]`** (100% viewport real, sem teto).
-- `object-position`: trocar `[object-position:47%_24%]` → **`[object-position:48%_38%]`** — abaixa o foco para que cabeça da Lígia fique claramente abaixo da faixa do header em qualquer altura de tela.
-- Tightening do texto:
-  - `h1`: `text-5xl md:text-7xl lg:text-[5.5rem]` → `text-5xl md:text-6xl lg:text-7xl` (menos gigante em desktop wide).
-  - `mt-6` (h1) → `mt-5`; `mt-7` (p) → `mt-6`; `mt-10` (CTAs) → `mt-8`; `mt-8` (lang) → `mt-6`.
-  - Subtítulo `max-w-xl` → `max-w-lg` para evitar linhas longas/feias.
-- Manter overlays atuais (`bg-carvao/45` + gradientes) — funcionam bem.
+## 2. Estrutura de Rotas
 
-### 2. Quem Somos hero — `src/routes/quem-somos.tsx`
+```
+/admin/login                  → tela de login pública
+/admin/_authenticated         → layout protegido (beforeLoad guard)
+  /admin                      → Dashboard
+  /admin/expedicoes
+  /admin/leads
+  /admin/participantes
+  /admin/financeiro
+  /admin/midia
+  /admin/documentos
+  /admin/configuracoes
+```
 
-- Remover a foto da Lígia da hero.
-- Importar `mantiqueira/05.jpg` como nova imagem do hero (paisagem cinematográfica, sem rosto, sem risco de crop).
-- Manter o layout atual (faixa cinematográfica de 52–58svh + bloco de título flutuando sobre `bg-carvao` logo abaixo) — só troca o asset e ajusta `object-position` para `center` (a foto é larga e não exige tuning).
-- A foto da Lígia continua aparecendo na página, mas dentro do bloco editorial dela mais abaixo (onde já está, com `EditorialFrame portrait`) — que é o lugar correto para um retrato.
-- Atualizar `alt` e o `og:image` do `head()` para a nova imagem.
+Cada rota interna é apenas a estrutura visual + placeholder elegante ("Em breve") quando ainda sem dados — exceto Dashboard, que é completo.
 
-### 3. Não mexer
+## 3. Tela de Login Premium
 
-- Estrutura geral do site, identidade visual, tokens, blocos abaixo do hero, rotas, i18n, bloco de fundadoras (já reescrito com textos reais), Na Mídia, footer, etc.
+- Background cinematográfico (imagem existente da Canastra com overlay carvão denso).
+- Card central com **glassmorphism**: blur, borda 1px dourada translúcida, sombra profunda.
+- Logo centralizado, tipografia editorial (display serif + sans).
+- Campos: e-mail, senha, "lembrar acesso", link "esqueci minha senha".
+- Botão CTA dourado suave com glow discreto e micro-animação no hover.
+- Loading elegante (spinner minimalista) e feedback de erro refinado.
+- Totalmente responsivo.
+
+## 4. Layout do Painel
+
+- **Sidebar fixa esquerda** (240px), colapsável para 64px (modo ícone):
+  - Logo no topo
+  - Menu vertical com ícones lucide + label
+  - Item ativo: indicador dourado lateral + fundo glass
+  - Rodapé: avatar + nome do usuário + menu (perfil / sair)
+- **Topbar superior** (56px): breadcrumb à esquerda, busca global (visual), notificações (visual), toggle de tema.
+- **Área principal**: padding generoso, scroll suave, fundo carvão profundo com gradiente sutil.
+- Design system: tokens em `src/styles.css` (carvão, petróleo, dourado, cinzas premium, vidros).
+
+## 5. Dashboard Principal
+
+Grid responsivo de cards premium:
+
+- **KPIs (topo)** — 4 cards compactos com número grande, label, ícone e tendência:
+  - Leads do mês
+  - Pré-reservas ativas
+  - Expedições ativas
+  - Vagas restantes
+- **Faturamento estimado** — card maior com gráfico de linha/área (recharts), valores mockados.
+- **Próximas expedições** — lista elegante (data, nome, vagas, status badge).
+- **Últimas atividades** — timeline minimalista (placeholder com dados estáticos).
+
+Microinterações: hover lift sutil, skeleton loading, fade-in escalonado nos cards.
+
+## 6. Banco de Dados — Estrutura Inicial
+
+Novas tabelas (limpas, escaláveis, com RLS):
+
+- `profiles` — perfil do operador
+- `user_roles` — vínculo usuário ↔ papel
+- `leads` — id, nome, email, telefone, expedicao_interesse, origem, status, observacoes
+- `participantes` — id, reserva_id, nome, documento, contato, observacoes_medicas
+- `midia` — id, tipo, url, expedicao_id, titulo, ordem
+- `documentos` — id, titulo, tipo, url, expedicao_id, participante_id
+
+Tabelas existentes (`expedicoes`, `datas`, `reservas`) são reutilizadas — apenas leitura no painel nesta etapa.
+
+## 7. Paleta & Tokens (adicionar em `src/styles.css`)
+
+- `--carvao-profundo` — fundo principal
+- `--petroleo` — superfícies elevadas
+- `--dourado-suave` — accent
+- `--cinza-premium-1/2/3` — texto e bordas
+- `--vidro-fosco` — glassmorphism base
+- `--glow-dourado` — sombras de destaque
+- Gradientes: `--gradient-glass`, `--gradient-petroleo`
+
+## 8. Responsividade
+
+- Desktop ≥1280px: layout completo (prioridade máxima)
+- Notebook 1024–1279px: sidebar colapsa automaticamente
+- Tablet: sidebar vira drawer
+- Mobile: drawer + cards empilhados, topbar simplificado
+
+## 9. Fora de Escopo (Etapas 2 e 3)
+
+Não implementar nesta etapa: automações, IA, WhatsApp, pagamentos, fluxos automáticos, edição de leads/participantes, upload real de mídia/documentos, relatórios financeiros avançados.
 
 ---
 
-## Arquivos tocados
+## Detalhes Técnicos
 
-- `src/routes/index.tsx` — hero (altura + object-position + spacing do texto).
-- `src/routes/quem-somos.tsx` — troca de imagem do hero + meta `og:image`.
+- **Stack:** TanStack Router (file-based) + TanStack Query + Supabase (Lovable Cloud).
+- **Auth guard:** rota pathless `_authenticated` com `beforeLoad` validando sessão via `supabase.auth.getUser()`; redirect para `/admin/login` se ausente.
+- **Sidebar:** componente `shadcn/ui sidebar` com `collapsible="icon"`.
+- **Gráficos:** `recharts` (já disponível via shadcn chart).
+- **Ícones:** `lucide-react`.
+- **Dados do dashboard:** server functions (`createServerFn` + `requireSupabaseAuth`) com queries agregadas nas tabelas existentes; valores ainda não cobertos vêm como mock estático claramente isolado para fácil substituição na Etapa 2.
+- **Migrations:** uma migration única criando enum, `profiles`, `user_roles`, `has_role()`, `leads`, `participantes`, `midia`, `documentos`, com RLS.
+- **Site público:** intocado. Toda área restrita vive sob `/admin/*`.
 
-Nenhum arquivo novo, nenhum componente novo, nenhuma quebra estrutural.
+## Perguntas antes de implementar
+
+1. Quer que eu crie um **primeiro usuário admin** via SQL (você me passa o e-mail) ou prefere criar manualmente pelo painel Cloud depois?
+2. Confirma os 4 papéis (`admin`, `operador`, `financeiro`, `midia`) ou prefere começar só com `admin` e `operador`?
