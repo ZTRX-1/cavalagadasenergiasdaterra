@@ -207,7 +207,7 @@ function HomePage() {
             {[
               { logo: logoCavalgadas, nome: "Cavalgadas Energias da Terra", tagline: { pt: "Expedições a cavalo pelo Brasil e pelo mundo.", en: "Horseback expeditions across Brazil and the world.", es: "Expediciones a caballo por Brasil y el mundo." }, to: "/marcas/cavalgadas" as const },
               { logo: logoElas, nome: "Elas na Sela", tagline: { pt: "Experiências exclusivas para mulheres que exploram o mundo a cavalo.", en: "Exclusive experiences for women who explore the world on horseback.", es: "Experiencias exclusivas para mujeres que exploran el mundo a caballo." }, to: "/marcas/elas-na-sela" as const },
-              { logo: logoCanastra, nome: "Canastra a Cavalo", tagline: { pt: "Expedições a cavalo pela Serra da Canastra.", en: "Horseback expeditions through Serra da Canastra.", es: "Expediciones a caballo por la Sierra da Canastra." }, to: "/marcas/canastra-a-cavalo" as const },
+              { logo: logoCanastra, nome: "Canastra a Cavalo", tagline: { pt: "Explore a Serra da Canastra a cavalo por rotas cuidadosamente selecionadas.", en: "Explore Serra da Canastra on horseback through carefully curated routes.", es: "Explora la Sierra da Canastra a caballo por rutas cuidadosamente seleccionadas." }, to: "/marcas/canastra-a-cavalo" as const },
             ].map((m) => (
               <Link
                 key={m.nome}
