@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Compass, Plus, Pencil, Copy, Trash2, Archive, PlayCircle, PauseCircle } from "lucide-react";
 import { useState } from "react";
