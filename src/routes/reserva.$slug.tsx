@@ -87,7 +87,7 @@ function ReservaPage() {
       data_id: search.data ?? "",
       responsavel: { nome: "", cpf: "", telefone: "", email: "", cidade: "", estado: "" },
       participantes: [{ nome: "", idade: 18, peso: 70, experiencia: "nenhuma" }],
-      adicionais: { tipo_grupo: "casal", forma_pagamento: "pix", como_conheceu: "instagram", restricoes: "", observacoes: "" },
+      adicionais: { tipo_grupo: "individual", forma_pagamento: "pix", como_conheceu: "instagram", restricoes: "", observacoes: "" },
       aceites: { responsabilidade: false as unknown as true, cancelamento: false as unknown as true, riscos: false as unknown as true },
     },
     mode: "onTouched",
@@ -95,7 +95,7 @@ function ReservaPage() {
 
   const { fields, append, remove, replace } = useFieldArray({ control: form.control, name: "participantes" });
   const [responsavelParticipa, setResponsavelParticipa] = useState(true);
-  const [qtdTotal, setQtdTotal] = useState(2); // default: casal
+  const [qtdTotal, setQtdTotal] = useState(1); // default: individual
 
   // Sincroniza quantidade de participantes com o total escolhido
   useEffect(() => {
