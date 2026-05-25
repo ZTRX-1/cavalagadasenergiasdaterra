@@ -132,11 +132,11 @@ function HomePage() {
   return (
     <>
       {/* HERO — focal points por breakpoint, preservando rosto + cavalo */}
-      <section className="relative h-screen min-h-[680px] overflow-hidden text-areia md:min-h-[720px]">
+      <section className="relative min-h-[100svh] overflow-hidden text-areia md:min-h-[720px] md:h-screen">
         <img
           src={hero}
           alt="Lígia montando a cavalo em travessia pelo rio"
-          className="absolute inset-0 h-full w-full object-cover object-[56%_16%] md:hidden"
+          className="absolute inset-0 h-full w-full object-cover object-[62%_18%] md:hidden"
           fetchPriority="high"
           decoding="async"
         />
@@ -156,32 +156,32 @@ function HomePage() {
           fetchPriority="high"
           decoding="async"
         />
-        <div className="absolute inset-0 bg-carvao/40" />
-        <div className="absolute inset-x-0 bottom-0 h-[72%] bg-gradient-to-t from-carvao via-carvao/70 to-transparent" />
-        <div className="absolute inset-y-0 left-0 w-full md:w-[68%] bg-gradient-to-r from-carvao/80 via-carvao/38 to-transparent" />
+        <div className="absolute inset-0 bg-carvao/45 md:bg-carvao/40" />
+        <div className="absolute inset-x-0 bottom-0 h-[85%] bg-gradient-to-t from-carvao via-carvao/82 to-transparent md:h-[72%] md:via-carvao/70" />
+        <div className="absolute inset-y-0 left-0 w-full md:w-[68%] bg-gradient-to-r from-carvao/85 via-carvao/45 to-transparent md:from-carvao/80 md:via-carvao/38" />
 
-        <div className="container-tight relative flex h-full flex-col justify-end pb-16 pt-28 md:pb-20 md:pt-28 lg:pb-24">
+        <div className="container-tight relative flex min-h-[100svh] flex-col justify-end pb-14 pt-24 md:min-h-0 md:h-full md:pb-20 md:pt-28 lg:pb-24">
           <div className="max-w-3xl">
-            <div className="eyebrow text-areia text-shadow-strong">{t("hero.eyebrow")}</div>
-            <h1 className="mt-5 font-display text-5xl leading-[0.98] text-balance text-shadow-strong text-areia md:text-6xl lg:text-7xl">
+            <div className="eyebrow text-areia text-shadow-strong text-[0.62rem] md:text-xs">{t("hero.eyebrow")}</div>
+            <h1 className="mt-4 font-display text-[2.25rem] leading-[1.04] text-balance text-shadow-strong text-areia sm:text-5xl md:mt-5 md:text-6xl md:leading-[0.98] lg:text-7xl">
               {t("hero.titlePart1")} <em className="not-italic text-cobre-soft">{t("hero.titleAccent")}</em> {t("hero.titlePart2")}
             </h1>
-            <p className="mt-5 max-w-xl font-display text-2xl leading-[1.2] text-areia text-shadow-strong text-balance md:text-[1.7rem]">
+            <p className="mt-4 max-w-xl font-display text-[1.1rem] leading-[1.28] text-areia text-shadow-strong text-balance sm:text-2xl md:mt-5 md:text-[1.7rem] md:leading-[1.2]">
               {t("hero.subtitle")}
             </p>
-            <p className="mt-4 max-w-lg text-[0.98rem] leading-relaxed text-areia/85 text-shadow-soft text-pretty">
+            <p className="mt-3 max-w-lg text-[0.86rem] leading-relaxed text-areia/85 text-shadow-soft text-pretty md:mt-4 md:text-[0.98rem]">
               {t("hero.support")}
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link to="/expedicoes" className="inline-flex items-center gap-2 rounded-full bg-cobre px-7 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">
+            <div className="mt-6 flex flex-wrap gap-3 md:mt-7">
+              <Link to="/expedicoes" className="inline-flex items-center gap-2 rounded-full bg-cobre px-6 py-3.5 text-[0.74rem] uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft md:px-7 md:py-4 md:text-sm">
                 {t("hero.ctaPrimary")} <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link to="/datas" className="inline-flex items-center gap-2 rounded-full border border-areia/60 bg-carvao/30 px-7 py-4 text-sm uppercase tracking-widest text-areia backdrop-blur-sm hover:bg-areia/15">
+              <Link to="/datas" className="inline-flex items-center gap-2 rounded-full border border-areia/60 bg-carvao/30 px-6 py-3.5 text-[0.74rem] uppercase tracking-widest text-areia backdrop-blur-sm hover:bg-areia/15 md:px-7 md:py-4 md:text-sm">
                 {t("hero.ctaSecondary")}
               </Link>
             </div>
 
-            <div className="mt-6 flex items-center gap-3 xl:hidden">
+            <div className="mt-5 flex items-center gap-3 md:mt-6 xl:hidden">
               <span className="h-px w-8 bg-areia/30" />
               <LanguageSwitcher />
             </div>
