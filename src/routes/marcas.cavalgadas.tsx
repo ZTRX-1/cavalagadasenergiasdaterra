@@ -10,7 +10,7 @@ import { GALERIA_CAVALGADAS } from "@/lib/expedicao-images";
 export const Route = createFileRoute("/marcas/cavalgadas")({
   head: () => ({
     meta: [
-      { title: "Cavalgadas Energias da Terra — Expedições imersivas" },
+      { title: "Cavalgadas Energias da Terra — Expedições a cavalo" },
       { name: "description", content: "A marca-mãe: expedições autorais a cavalo pelo Brasil e pelo mundo." },
     ],
   }),
