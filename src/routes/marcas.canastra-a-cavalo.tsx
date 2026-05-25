@@ -83,7 +83,7 @@ function Page() {
         <div className="container-tight text-center">
           <h2 className="font-display text-4xl text-balance md:text-5xl">Atravesse a Canastra com quem mora nela.</h2>
           <Link to="/expedicoes/$slug" params={{ slug: "serra-da-canastra" }} className="mt-8 inline-flex items-center gap-2 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia hover:bg-cobre-soft">
-            Ver travessia <ArrowRight className="h-4 w-4" />
+            Ver expedição <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </section>
