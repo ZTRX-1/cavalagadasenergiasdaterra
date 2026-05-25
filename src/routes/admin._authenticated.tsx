@@ -25,6 +25,7 @@ export const Route = createFileRoute("/admin/_authenticated")({
 
 function AdminLayout() {
   const [user, setUser] = useState<{ email?: string; nome?: string | null } | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -49,9 +50,10 @@ function AdminLayout() {
   return (
     <div className="admin-surface flex min-h-screen">
       <AdminSidebar user={user} />
+      <AdminSidebarDrawer user={user} open={menuOpen} onClose={() => setMenuOpen(false)} />
       <div className="flex flex-1 flex-col min-w-0">
-        <AdminTopbar />
-        <main className="flex-1 overflow-y-auto px-6 py-8 md:px-10">
+        <AdminTopbar onOpenMenu={() => setMenuOpen(true)} />
+        <main className="flex-1 overflow-y-auto px-4 py-6 md:px-10 md:py-8">
           <Outlet />
         </main>
       </div>
