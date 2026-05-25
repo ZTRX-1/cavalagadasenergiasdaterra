@@ -79,14 +79,34 @@ export interface ExpedicaoRow {
   updated_at: string;
 }
 
-export async function listExpedicoes(): Promise<ExpedicaoRow[]> {
+/** Devolve a URL de capa mais adequada (prioridade: capa_url → imagem_url → 1º asset). */
+export function resolveCapa(
+  exp: { capa_url?: string | null; imagem_url?: string | null },
+  assets?: { url: string; tipo: string; is_capa?: boolean; ordem?: number }[],
+): string | null {
+  if (exp.capa_url) return exp.capa_url;
+  if (exp.imagem_url) return exp.imagem_url;
+  if (!assets || assets.length === 0) return null;
+  const imagens = assets.filter((a) => a.tipo === "imagem");
+  const marcada = imagens.find((a) => a.is_capa);
+  if (marcada) return marcada.url;
+  const ordenadas = [...imagens].sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0));
+  return ordenadas[0]?.url ?? null;
+}
+
+export async function listExpedicoes(): Promise<(ExpedicaoRow & { _capa: string | null })[]> {
   const { data, error } = await supabase
     .from("expedicoes")
-    .select("*")
+    .select("*, expedicao_assets(url, tipo, is_capa, ordem)")
     .order("ordem", { ascending: true })
     .order("created_at", { ascending: false });
   if (error) throw error;
-  return (data ?? []) as unknown as ExpedicaoRow[];
+  return (data ?? []).map((row) => {
+    const { expedicao_assets, ...rest } = row as unknown as ExpedicaoRow & {
+      expedicao_assets: { url: string; tipo: string; is_capa: boolean; ordem: number }[];
+    };
+    return { ...(rest as ExpedicaoRow), _capa: resolveCapa(rest, expedicao_assets) };
+  });
 }
 
 export async function getExpedicao(id: string): Promise<ExpedicaoRow | null> {
