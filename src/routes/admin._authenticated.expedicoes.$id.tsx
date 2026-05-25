@@ -157,11 +157,16 @@ function ExpedicaoEdit() {
           <div className="space-y-6">
             <AdminSection titulo="Preview">
               <div className="space-y-3">
-                {form.capa_url || form.imagem_url ? (
-                  <img src={form.capa_url ?? form.imagem_url ?? ""} className="aspect-[4/3] w-full rounded-md object-cover ring-1 ring-[color:var(--admin-borda)]" />
-                ) : (
-                  <div className="aspect-[4/3] w-full rounded-md bg-[color:var(--admin-petroleo)]" />
-                )}
+                {(() => {
+                  const capa = form.capa_url || form.imagem_url || assets.find((a) => a.tipo === "imagem" && a.is_capa)?.url || assets.find((a) => a.tipo === "imagem")?.url;
+                  return capa ? (
+                    <img src={capa} className="aspect-[4/3] w-full rounded-md object-cover ring-1 ring-[color:var(--admin-borda)]" />
+                  ) : (
+                    <div className="aspect-[4/3] w-full rounded-md bg-[color:var(--admin-petroleo)] grid place-items-center text-[11px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">
+                      Envie uma imagem na aba Mídia
+                    </div>
+                  );
+                })()}
                 <div>
                   <StatusBadge status={form.status ?? "rascunho"} />
                 </div>
