@@ -552,7 +552,22 @@ const DATAS: DataExpedicao[] = [
         "preco_cartao": null,
         "expedicao_nome": "Patagônia Gaúcha Experience",
         "expedicao_slug": "patagonia-gaucha",
-        "vagas_disponiveis": 10
+        "vagas_disponiveis": 10,
+        "tag": "Novo percurso"
+    },
+    {
+        "id": "f1b3c2d4-7a8b-4c5d-9e0f-2a1b3c4d5e6f",
+        "status": "disponivel",
+        "data_fim": "2027-01-28",
+        "preco_pix": null,
+        "data_inicio": "2027-01-24",
+        "vagas_total": 10,
+        "expedicao_id": "b72305d1-223e-4835-b87b-ff97d3229429",
+        "preco_cartao": null,
+        "expedicao_nome": "Patagônia Gaúcha Experience",
+        "expedicao_slug": "patagonia-gaucha",
+        "vagas_disponiveis": 10,
+        "tag": "Novo percurso"
     }
 ];
 
