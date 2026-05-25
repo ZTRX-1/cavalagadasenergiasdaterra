@@ -97,7 +97,7 @@ function MidiaPage() {
               <div className="admin-card">
                 <h3 className="font-display text-[16px] text-[color:var(--admin-cinza-1)] mb-3">Enviar imagens</h3>
                 <AdminUploader
-                  onFiles={(f) => upMut.mutateAsync(f)}
+                  onFiles={async (f) => { await upMut.mutateAsync(f); }}
                   accept={{ "image/*": [] }}
                   hint="JPG, PNG ou WebP. Múltiplos arquivos suportados."
                 />
