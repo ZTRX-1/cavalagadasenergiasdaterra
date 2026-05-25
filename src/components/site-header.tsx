@@ -123,7 +123,7 @@ export function SiteHeader() {
             open ? "translate-y-0" : "-translate-y-full",
           )}
         >
-          <div className="h-14 md:h-[4.75rem]" />
+          <div className="h-16 md:h-[5.25rem]" />
           <nav className="container-tight flex flex-col gap-1 pb-8 pt-2">
             {NAV.map((item) => (
               <Link
