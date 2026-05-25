@@ -161,13 +161,13 @@ export async function createExpedicao(input: Partial<ExpedicaoRow>): Promise<Exp
     vagas_total_padrao: input.vagas_total_padrao ?? 10,
     parcelamento_max: input.parcelamento_max ?? 1,
   };
-  const { data, error } = await supabase.from("expedicoes").insert(payload).select().maybeSingle();
+  const { data, error } = await supabase.from("expedicoes").insert(payload).select().single();
   if (error) {
     // Conflito de slug raríssimo (corrida) — tenta de novo com sufixo timestamp
     if (error.message.includes("duplicate key") || error.code === "23505") {
       const retrySlug = `${slug}-${Date.now().toString(36)}`;
       const { data: retryData, error: retryErr } = await supabase
-        .from("expedicoes").insert({ ...payload, slug: retrySlug }).select().maybeSingle();
+        .from("expedicoes").insert({ ...payload, slug: retrySlug }).select().single();
       if (retryErr) throw new Error(retryErr.message);
       if (!retryData) throw new Error("Expedição criada mas não retornada.");
       await logActivity({ modulo: "expedicoes", acao: "criar", descricao: retryData.nome });
