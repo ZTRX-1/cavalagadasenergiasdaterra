@@ -47,10 +47,14 @@ function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: s
   return (
     <>
       <div className="flex items-center gap-3 px-6 py-5 border-b border-[color:var(--admin-borda)]">
-        <div className="grid h-9 w-9 place-items-center rounded-md bg-gradient-to-br from-[color:var(--admin-dourado)] to-[color:var(--admin-dourado-glow)] text-[color:var(--admin-carvao-deep)] font-display text-lg font-semibold shadow-[var(--admin-glow-dourado)]">C</div>
-        <div className="flex flex-col leading-tight">
-          <span className="font-display text-[15px] text-[color:var(--admin-cinza-1)]">Cavalgadas</span>
-          <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)]">Painel interno</span>
+        <img
+          src={logoCavalgadas}
+          alt="Cavalgadas Energias da Terra"
+          className="h-10 w-10 shrink-0 rounded-md object-cover ring-1 ring-[color:var(--admin-borda-strong)] shadow-[var(--admin-glow-dourado)]"
+        />
+        <div className="flex flex-col leading-tight min-w-0">
+          <span className="font-display text-[15px] text-[color:var(--admin-cinza-1)] truncate">Cavalgadas</span>
+          <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)] truncate">Energias da Terra</span>
         </div>
       </div>
       <nav className="flex-1 overflow-y-auto px-3 py-5 space-y-0.5">

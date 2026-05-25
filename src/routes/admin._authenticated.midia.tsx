@@ -75,6 +75,12 @@ function MidiaPage() {
         description="Biblioteca de fotos e vídeos por expedição. Defina capa, organize a galeria e adicione vídeos externos."
       />
 
+      <div className="admin-card mb-4 border-l-2 border-[color:var(--admin-dourado)]/60 bg-[color:var(--admin-petroleo-soft)]/30">
+        <p className="text-[12.5px] leading-relaxed text-[color:var(--admin-cinza-2)]">
+          Toda mídia desta tela fica <strong className="text-[color:var(--admin-cinza-1)]">vinculada à expedição selecionada</strong> e aparece na página pública dela. A foto marcada como <strong className="text-[color:var(--admin-dourado)]">CAPA</strong> é usada no card e no topo da expedição no site.
+        </p>
+      </div>
+
       {expedicoes.length === 0 ? (
         <AdminEmpty icon={ImageIcon} titulo="Nenhuma expedição" descricao="Crie uma expedição primeiro para gerenciar mídia." />
       ) : (
