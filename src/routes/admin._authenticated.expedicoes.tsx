@@ -152,7 +152,7 @@ function ExpedicoesPage() {
         description={`Esta ação não pode ser desfeita. "${confirmDel?.nome ?? ""}" será removida permanentemente.`}
         confirmLabel="Excluir"
         destructive
-        onConfirm={() => confirmDel && delMut.mutate(confirmDel.id)}
+        onConfirm={() => { if (confirmDel) delMut.mutate(confirmDel.id); }}
       />
     </div>
   );

@@ -110,7 +110,7 @@ function ParticipantesPage() {
         />
       ) : null}
 
-      <ConfirmDialog open={!!del} onOpenChange={(v) => !v && setDel(null)} title="Remover participante" destructive onConfirm={() => del && delMut.mutate(del.id)} />
+      <ConfirmDialog open={!!del} onOpenChange={(v) => !v && setDel(null)} title="Remover participante" destructive onConfirm={() => { if (del) delMut.mutate(del.id); }} />
     </div>
   );
 }
