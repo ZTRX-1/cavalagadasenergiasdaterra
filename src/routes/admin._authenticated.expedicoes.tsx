@@ -39,12 +39,13 @@ function ExpedicoesPage() {
 
   const novaMut = useMutation({
     mutationFn: () => createExpedicao({ nome: "Nova expedição", status: "rascunho" }),
-    onSuccess: async (row) => {
-      toast.success("Expedição criada");
-      await qc.invalidateQueries({ queryKey: ["admin", "expedicoes"] });
-      // Pré-popula cache da rota de detalhe para evitar flash branco
+    onSuccess: (row) => {
+      // Pré-popula o cache do detalhe e navega ANTES de invalidar a lista,
+      // para que uma eventual falha de refetch não bloqueie a abertura.
       qc.setQueryData(["admin", "expedicao", row.id], row);
       nav({ to: "/admin/expedicoes/$id", params: { id: row.id } });
+      qc.invalidateQueries({ queryKey: ["admin", "expedicoes"] });
+      toast.success("Expedição criada — configure os dados abaixo");
     },
     onError: (e) => toast.error((e as Error).message),
   });

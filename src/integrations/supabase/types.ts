@@ -230,7 +230,15 @@ export type Database = {
           titulo?: string | null
           url?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "expedicao_assets_expedicao_id_fkey"
+            columns: ["expedicao_id"]
+            isOneToOne: false
+            referencedRelation: "expedicoes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       expedicoes: {
         Row: {
@@ -362,7 +370,15 @@ export type Database = {
           lead_id?: string
           tipo?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "lead_atividades_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       leads: {
         Row: {
