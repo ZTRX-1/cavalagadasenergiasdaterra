@@ -291,7 +291,7 @@ function QuemSomosPage() {
           <div className="md:col-span-5">
             <EditorialFrame
               src={expedicaoMulheres}
-              alt="Cavaleiras em expedição por estrada cercada de árvores"
+              alt="Amazonas em expedição por estrada cercada de árvores"
               variant="organic"
               accent="cobre"
               side="left"
