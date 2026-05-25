@@ -145,8 +145,9 @@ export async function createExpedicao(input: Partial<ExpedicaoRow>): Promise<Exp
     vagas_total_padrao: input.vagas_total_padrao ?? 10,
     parcelamento_max: input.parcelamento_max ?? 1,
   };
-  const { data, error } = await supabase.from("expedicoes").insert(payload).select().single();
-  if (error) throw error;
+  const { data, error } = await supabase.from("expedicoes").insert(payload).select().maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Expedição criada mas não retornada (verifique permissões internas).");
   await logActivity({ modulo: "expedicoes", acao: "criar", descricao: data.nome });
   return data as unknown as ExpedicaoRow;
 }
@@ -157,8 +158,9 @@ export async function updateExpedicao(id: string, patch: Partial<ExpedicaoRow>):
     .update(patch as never)
     .eq("id", id)
     .select()
-    .single();
-  if (error) throw error;
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Expedição não encontrada ou sem permissão.");
   await logActivity({ modulo: "expedicoes", acao: "atualizar", descricao: data.nome });
   return data as unknown as ExpedicaoRow;
 }
