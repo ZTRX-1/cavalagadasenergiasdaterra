@@ -66,7 +66,7 @@ async function fetchDashboard(range: { from: string; to: string }) {
     supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
     supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
     supabase.from("reservas").select("valor_pago, status_pagamento, created_at").gte("created_at", range.from).lte("created_at", range.to),
-    supabase.from("expedicoes").select("id", { count: "exact", head: true }).eq("ativo", true),
+    supabase.from("expedicoes").select("id", { count: "exact", head: true }).eq("ativo", true).eq("status", "publicado"),
     supabase.from("datas").select("vagas_disponiveis, vagas_total, preco_pix, preco_cartao, expedicoes(preco)").eq("status", "disponivel").gte("data_inicio", today),
     supabase
       .from("datas")
