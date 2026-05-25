@@ -73,7 +73,10 @@ export function SiteFooter() {
                   ))}
                 </ul>
               </li>
-              <li className="text-areia/65 pt-1">Minas Gerais · Brasil</li>
+              <li className="text-areia/65 pt-1">
+                <div className="font-eyebrow text-[0.6rem] uppercase tracking-[0.32em] text-areia/60 mb-1">Base de Operações</div>
+                Serra da Mantiqueira — Maria da Fé / MG
+              </li>
             </ul>
           </div>
         </div>
