@@ -10,6 +10,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { PageLoader } from "@/components/page-loader";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { CookieConsent } from "@/components/cookie-consent";
+import { VLibras } from "@/components/vlibras";
 import heroOg from "@/assets/founders/ligia-rio.jpg";
 
 import { Toaster } from "@/components/ui/sonner";
@@ -88,14 +89,23 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {!isAdmin && (
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-full focus:bg-cobre focus:px-5 focus:py-3 focus:font-eyebrow focus:text-[0.7rem] focus:uppercase focus:tracking-[0.22em] focus:text-areia focus:shadow-elegant"
+        >
+          Pular para o conteúdo principal
+        </a>
+      )}
       {!isAdmin && <PageLoader />}
       <ScrollToTop />
       {!isAdmin && <SiteHeader />}
-      <main className={isAdmin ? "min-h-screen" : "min-h-screen"}>
+      <main id="main-content" tabIndex={-1} className="min-h-screen focus:outline-none">
         <Outlet />
       </main>
       {!isAdmin && <SiteFooter />}
       {!isAdmin && <CookieConsent />}
+      {!isAdmin && <VLibras />}
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );

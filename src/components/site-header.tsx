@@ -119,13 +119,16 @@ export function SiteHeader() {
           )}
         />
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu de navegação"
           className={cn(
             "absolute inset-x-0 top-0 bg-background border-b border-border shadow-elegant transition-transform duration-500 ease-out",
             open ? "translate-y-0" : "-translate-y-full",
           )}
         >
           <div className="h-[5.5rem] md:h-[7rem]" />
-          <nav className="container-tight flex flex-col gap-1 pb-8 pt-2">
+          <nav aria-label="Menu principal mobile" className="container-tight flex flex-col gap-1 pb-8 pt-2">
             {NAV.map((item) => (
               <Link
                 key={item.label}
