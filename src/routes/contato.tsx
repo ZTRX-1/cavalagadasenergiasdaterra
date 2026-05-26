@@ -6,7 +6,7 @@ import cavaloCloseup from "@/assets/cavalo-closeup.jpg";
 export const Route = createFileRoute("/contato")({
   head: () => ({
     meta: [
-      { title: "Contato, FAQ e Quem Somos, Cavalgadas Energias da Terra" },
+      { title: "Contato — Cavalgadas Energias da Terra" },
       { name: "description", content: "Fale conosco, conheça nossa história e tire suas dúvidas sobre as expedições." },
     ],
   }),
@@ -15,12 +15,10 @@ export const Route = createFileRoute("/contato")({
 
 const FAQ = [
   { q: "Quem pode participar das expedições?", a: "Qualquer pessoa em boas condições de saúde, dentro dos requisitos de cada expedição (idade e peso). Temos roteiros para todos os níveis." },
-  { q: "Preciso de experiência prévia com cavalos?", a: "Não. Nossas expedições iniciantes são desenhadas para quem nunca montou. Para os roteiros avançados pedimos experiência prévia." },
-  { q: "Como funciona a hospedagem?", a: "Trabalhamos com pousadas selecionadas de três a quatro estrelas, conforme o roteiro e a região, todas escolhidas por nossa curadoria, garantindo conforto, autenticidade e qualidade em cada experiência." },
+  { q: "Preciso de experiência prévia com cavalos?", a: "Não. Oferecemos expedições para diferentes níveis de experiência, desde quem nunca montou até cavaleiros e amazonas experientes. Nossa equipe orienta na escolha do roteiro ideal para que cada pessoa aproveite a jornada com segurança e confiança." },
+  { q: "Como funciona a hospedagem?", a: "Trabalhamos com pousadas, hotéis e acomodações locais cuidadosamente selecionadas conforme o roteiro e a região, garantindo conforto, autenticidade e qualidade em cada experiência." },
   { q: "Os cavalos são treinados?", a: "Sim. Todos os cavalos são treinados, descansados entre expedições e acompanhados por equipe profissional." },
-  { q: "Posso fazer uma expedição privada?", a: "Sim. Organizamos expedições privadas para grupos, casais e empresas. Fale conosco para um orçamento personalizado." },
-  { q: "Qual a melhor época para ir?", a: "Cada região tem sua melhor janela. Em geral, abril a outubro são meses ideais · clima seco e paisagens em equilíbrio." },
-  { q: "Como faço o pagamento?", a: "Aceitamos Pix, transferência, boleto e cartão parcelado. Combinamos tudo via WhatsApp após a pré-reserva." },
+  { q: "Posso fazer uma expedição privada?", a: "Sim. Criamos experiências privativas e personalizadas, desenvolvidas de acordo com os interesses, ritmo e perfil de cada grupo." },
 ];
 
 function ContatoPage() {
@@ -42,18 +40,18 @@ function ContatoPage() {
                   <div className="text-sm text-muted-foreground">+55 11 94162-6907</div>
                 </div>
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-sm border border-border bg-card p-5 transition-colors hover:border-cobre">
+              <a href="https://instagram.com/cavalgadasenergiasdaterra" target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-sm border border-border bg-card p-5 transition-colors hover:border-cobre">
                 <Instagram className="h-6 w-6 text-cobre" />
                 <div>
                   <div className="font-display text-lg">Instagram</div>
-                  <div className="text-sm text-muted-foreground">@cavalgadasenergiadaterra</div>
+                  <div className="text-sm text-muted-foreground">@cavalgadasenergiasdaterra</div>
                 </div>
               </a>
               <div className="flex items-center gap-4 rounded-sm border border-border bg-card p-5">
                 <MapPin className="h-6 w-6 text-cobre" />
                 <div>
-                  <div className="font-display text-lg">Base de operações</div>
-                  <div className="text-sm text-muted-foreground">Serra da Canastra · Minas Gerais</div>
+                  <div className="font-display text-lg">Base de Operações</div>
+                  <div className="text-sm text-muted-foreground">Serra da Mantiqueira — Maria da Fé, MG</div>
                 </div>
               </div>
             </div>
@@ -69,14 +67,14 @@ function ContatoPage() {
         <div className="container-tight grid gap-12 md:grid-cols-12">
           <div className="md:col-span-4">
             <div className="eyebrow text-cobre-soft">Quem somos</div>
-            <h2 className="mt-4 font-display text-4xl md:text-5xl">Apaixonados por cavalos, natureza e experiências transformadoras.</h2>
+            <h2 className="mt-4 font-display text-4xl md:text-5xl">Vivemos o que oferecemos.</h2>
           </div>
           <div className="md:col-span-8 space-y-6 text-lg leading-relaxed text-areia/85 text-pretty">
             <p>
-              A Cavalgadas Energias da Terra nasceu do desejo de unir turismo, cultura, aventura e o universo equestre em jornadas cuidadosamente planejadas para pessoas que buscam algo além do turismo convencional.
+              A Cavalgadas Energias da Terra foi criada por quem vive o universo equestre todos os dias. Somos criadores de cavalos, anfitriões e especialistas em expedições a cavalo.
             </p>
             <p>
-              Como criadores de cavalos, proprietários de haras e operadores de experiências equestres, vivemos esse universo diariamente.
+              Cada roteiro é cuidadosamente planejado para unir natureza, cultura, gastronomia e hospitalidade em experiências autênticas e memoráveis.
             </p>
           </div>
         </div>
@@ -87,17 +85,17 @@ function ContatoPage() {
         <div className="container-tight grid gap-12 md:grid-cols-12">
           <div className="md:col-span-4">
             <div className="eyebrow">Nosso diferencial</div>
-            <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">Não vendemos cavalgadas · criamos experiências boutique.</h2>
+            <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">Não vendemos cavalgadas — criamos experiências autorais.</h2>
           </div>
           <div className="md:col-span-8 space-y-6 text-lg leading-relaxed text-foreground/80 text-pretty">
             <p>
-              Criamos experiências equestres boutique para pequenos grupos, acompanhando pessoalmente cada etapa da jornada e cuidando de cada detalhe para que nossos clientes possam simplesmente viver o momento.
+              Criamos experiências equestres para pequenos grupos, acompanhando pessoalmente cada etapa da jornada e cuidando de cada detalhe para que nossos clientes possam simplesmente viver o momento.
             </p>
             <p>
               Além de operar expedições no Brasil e no exterior, também somos criadores de cavalos da raça Mangalarga Marchador.
             </p>
             <p>
-              Cada roteiro é desenvolvido para proporcionar muito mais do que uma viagem: uma expedição na cultura local, paisagens extraordinárias, conexão com os cavalos e encontros entre pessoas que compartilham a mesma paixão.
+              Cada roteiro é desenvolvido para proporcionar muito mais do que uma viagem: uma imersão na cultura local, paisagens extraordinárias, conexão com os cavalos e encontros entre pessoas que compartilham a mesma paixão.
             </p>
             <p className="font-display text-2xl text-cobre">
               Mais do que clientes, formamos uma verdadeira manada.

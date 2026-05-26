@@ -1,12 +1,14 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, MessageCircle } from "lucide-react";
 import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
 import { getExpedicaoImage, getExpedicaoGaleria } from "@/lib/expedicao-images";
 import { GaleriaEditorial } from "@/components/galeria-editorial";
 import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
 import { formatDateRange, formatPrice, formatPriceWithBRL } from "@/lib/format";
 import { DataCard } from "@/components/data-card";
+import { buildContactWhatsappUrl } from "@/lib/whatsapp";
+
 
 const qo = (slug: string) =>
   queryOptions({
@@ -37,6 +39,9 @@ function DetalhesExpedicao() {
   const publicSlug = getPublicExpedicaoSlug(expedicao.slug);
   const heroImg = getExpedicaoImage(expedicao.slug);
   const galeria = getExpedicaoGaleria(expedicao.slug);
+  const whatsappMsg = `Olá! Gostaria de reservar minha vaga na expedição "${expedicao.nome}".`;
+  const whatsappUrl = buildContactWhatsappUrl(whatsappMsg);
+
 
   return (
     <>
@@ -55,12 +60,18 @@ function DetalhesExpedicao() {
           <h1 className="mt-5 max-w-3xl font-display text-5xl text-balance md:text-7xl">{expedicao.nome}</h1>
           <p className="mt-5 max-w-2xl text-lg text-areia/85 text-pretty">{expedicao.descricao_curta}</p>
           {datas.length > 0 && (
-            <Link to="/reserva/$slug" params={{ slug: publicSlug }} className="mt-10 inline-flex w-fit items-center gap-2 rounded-full bg-cobre px-7 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">
-              Fazer pré-reserva <ArrowRight className="h-4 w-4" />
-            </Link>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-10 inline-flex w-fit items-center gap-2 rounded-full bg-cobre px-7 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft"
+            >
+              <MessageCircle className="h-4 w-4" /> Reservar Agora
+            </a>
           )}
         </div>
       </section>
+
 
       {/* Descrição + Inclui */}
       <section className="bg-background py-24 md:py-32">
@@ -72,7 +83,7 @@ function DetalhesExpedicao() {
 
             {expedicao.requisitos?.length > 0 && (
               <div className="mt-12">
-                <div className="eyebrow">Requisitos</div>
+                <div className="eyebrow">Informações importantes</div>
                 <ul className="mt-4 space-y-2 text-sm text-foreground/80">
                   {expedicao.requisitos.map((r) => (
                     <li key={r} className="flex items-start gap-2"><span className="mt-2 h-1 w-1 rounded-full bg-cobre" />{r}</li>
@@ -80,6 +91,7 @@ function DetalhesExpedicao() {
                 </ul>
               </div>
             )}
+
           </div>
           <aside className="md:col-span-5">
             <div className="rounded-sm border border-border bg-card p-8 shadow-card">
@@ -121,7 +133,7 @@ function DetalhesExpedicao() {
           <div className="container-tight">
             <div className="max-w-2xl">
               <div className="eyebrow">Galeria</div>
-              <h2 className="mt-4 font-display text-3xl md:text-4xl">A travessia em imagens</h2>
+              <h2 className="mt-4 font-display text-3xl md:text-4xl">A expedição em imagens</h2>
               <p className="mt-4 text-foreground/70 text-pretty">
                 Cenas reais das nossas expedições, registradas em campo.
               </p>
@@ -132,6 +144,7 @@ function DetalhesExpedicao() {
           </div>
         </section>
       )}
+
 
       {/* Próximas datas */}
       <section className="bg-secondary/40 py-24 md:py-32">
@@ -154,12 +167,18 @@ function DetalhesExpedicao() {
       <section className="bg-floresta-deep py-20 text-areia md:py-28">
         <div className="container-tight text-center">
           <h2 className="font-display text-3xl text-balance md:text-5xl">Pronto para reservar sua vaga?</h2>
-          <p className="mx-auto mt-4 max-w-xl text-areia/75">Pré-reserva em poucos minutos. Sem compromisso de pagamento · nossa equipe entra em contato para confirmar.</p>
-          <Link to="/reserva/$slug" params={{ slug: publicSlug }} className="mt-8 inline-flex items-center gap-2 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">
-            Fazer pré-reserva <ArrowRight className="h-4 w-4" />
-          </Link>
+          <p className="mx-auto mt-4 max-w-xl text-areia/75">Fale com nossa equipe pelo WhatsApp para alinhar detalhes e confirmar sua vaga.</p>
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft"
+          >
+            <MessageCircle className="h-4 w-4" /> Reservar Agora
+          </a>
         </div>
       </section>
+
     </>
   );
 }
