@@ -1,47 +1,49 @@
-## 1. Página Contato — novo texto de apresentação
+## Problema
 
-`src/routes/contato.tsx`, parágrafo logo abaixo do "Vamos conversar." — substituir o texto atual por:
+No mobile, o painel de Acessibilidade (`src/components/accessibility-panel.tsx`) está posicionado como um cartão flutuante fixo (`bottom-40 right-5 w-[20rem]`). Em telas pequenas (≤360px, ou em paisagem), ele:
 
-> Atendemos pelo WhatsApp e Instagram. Nossa equipe está à disposição para esclarecer dúvidas, apresentar roteiros e auxiliar em sua reserva.
+- Estoura a largura da tela (1.25rem + 20rem ≈ 340px) → corta o conteúdo lateral.
+- Sobe acima da área visível por causa do `bottom-40` + `max-h-[70vh]`, ficando com topo cortado em telas curtas.
+- Não respeita `safe-area-inset` (notch / barra inferior do iOS).
 
-(Mantém a frase de tempo de resposta? **Será removida**, pois você pediu apenas esse texto. Se quiser preservar a frase "em geral respondemos em menos de 2 horas", me avise.)
+Além disso, a estrutura tem muitos grupos visuais (narração + toggles + radios + VLibras + reset) num cartão pequeno, o que dificulta a navegação sequencial por leitor de tela e por toque.
 
-## 2. Correção de dados das expedições (banco `datas` + `expedicoes`)
+## O que vou fazer
 
-Migration/UPDATEs no Supabase:
+Mexer **apenas** em `src/components/accessibility-panel.tsx`. Sem mudar lógica de TTS, VLibras ou preferências persistidas.
 
-- **Serra da Canastra 04–07/06/2026** → `preco_pix = 4900`, `preco_cartao = 5200` (estava 3.900/4.400).
-- **Peru, Vale do Colca** → garantir `expedicoes.moeda = 'USD'`.
-- **Patagônia Gaúcha** (ambas as datas de janeiro/2027) → garantir `expedicoes.moeda = 'USD'`.
-- **Caminho de Santiago a Cavalo** → garantir `expedicoes.moeda = 'EUR'`.
-- **Remover todas as tags "poucas vagas"**:
-  - `UPDATE datas SET status = 'disponivel' WHERE status = 'poucas_vagas'` (afeta Mantiqueira 15–19/07 e Peru 04–07/08).
-  - `data-card.tsx`: remover a entrada `poucas_vagas` dos mapas de label/cor para que nunca renderize mais, mesmo se reaparecer no banco.
-- Sincronizar `src/lib/expedicoes-static.ts` (fallback) com os mesmos valores: Canastra 4–7/jun 4.900/5.200 e remover `"status": "poucas_vagas"` das duas entradas.
+### 1. Layout responsivo (bottom sheet no mobile, painel flutuante no desktop)
 
-## 3. Página de detalhes da expedição — quadro "Condições de pagamento"
+- **Mobile (`< md`)**: painel vira *bottom sheet* full-width.
+  - `inset-x-0 bottom-0`, largura total, cantos arredondados só no topo.
+  - Backdrop escuro semi-transparente atrás (clicável para fechar).
+  - `aria-modal="true"` quando aberto no mobile, com trava de scroll do body.
+  - Respeita `padding-bottom: env(safe-area-inset-bottom)`.
+  - Animação slide-up (respeita `prefers-reduced-motion` e a pref `reduceMotion`).
+- **Desktop (`md+`)**: mantém o cartão flutuante atual (ajustado para não cortar — `max-h-[min(70vh,40rem)]`, `bottom-28`).
+- Botão flutuante (FAB) ganha `bottom: max(1.25rem, env(safe-area-inset-bottom))` para não colidir com a barra do iOS, e some/desce quando o sheet está aberto no mobile.
 
-`src/routes/expedicoes.$slug.tsx`, aside (`md:col-span-5`), card "Condições de pagamento":
+### 2. Simplificar para leitor de tela e toque
 
-Reorganizar para:
+- Reagrupar em **3 seções claras** com `<section aria-labelledby>` e cabeçalho visível:
+  1. **Narração** (Ouvir / Parar / Ler ao focar)
+  2. **Leitura** (tamanho do texto, alto contraste)
+  3. **Movimento e Libras** (reduzir animações, VLibras)
+- Cada controle:
+  - Alvo de toque ≥ 48×48 (atualmente `py-2` / `h-9` → subir para `min-h-12`).
+  - Texto maior e mais direto ("Ler a página", "Parar leitura", "Texto maior", "Texto grande", em vez de "A / A+ / A++").
+  - `aria-pressed` em vez de `role="switch"` quando fizer sentido — mais previsível em leitores móveis.
+- Ao abrir: foco vai para o título do painel; ao fechar: foco volta ao FAB.
+- Anúncios: adicionar `aria-live="polite"` invisível que diz "Texto grande ativado", "Alto contraste ativado", "Leitura iniciada", etc.
+- ESC fecha; clique no backdrop fecha; botão "Fechar" continua visível.
+- Reduzir hierarquia visual (menos badges/eyebrows pequenos) para o painel "respirar" e não parecer denso.
 
-```text
-[eyebrow] Condições de pagamento
-[valor grande]  A partir de R$ 4.900    ← novo, em destaque (formatPriceWithBRL)
-  • À vista no Pix/transferência
-  • Cartão de crédito em até 6x sem juros, via link de pagamento seguro
-  • Parcelamento via Pix (consulte nossa equipe para conhecer as opções)
-[linha única, discreta, no rodapé do card]  Valores por pessoa em acomodação dupla.
-```
+### 3. Verificação
 
-- Remover a linha "Valores por pessoa em acomodação dupla" do topo (logo abaixo do eyebrow).
-- Adicionar logo abaixo do eyebrow o preço em destaque, usando `formatPriceWithBRL(expedicao.preco, expedicao.moeda)` (mesma fonte que o hero — assim Peru aparece "US$ 1.600 (≈ R$ 8.800)", Caminho de Santiago "€ 3.335 (≈ R$ 20.010)", etc.).
-- No rodapé do card, em uma única linha pequena (`text-xs text-muted-foreground`), exibir: *"Valores por pessoa em acomodação dupla."*
-- Padrão aplicado a **todas** as expedições (o componente é único, então a mudança propaga automaticamente).
+- Testar nos viewports 320, 360, 390 e 768 px (sandbox tem screenshot).
+- Confirmar que: nada é cortado, FAB não cobre conteúdo crítico, painel abre/fecha por teclado, foco entra/sai corretamente, e nenhuma preferência salva é perdida.
 
-## Detalhes técnicos
+## Fora de escopo
 
-- Atualizações de dados em tabelas existentes (`datas`, `expedicoes`) usam a ferramenta de insert/update do Supabase, não migration (apenas DML).
-- `data-card.tsx`: além de remover do mapa, manter compatibilidade caso o status venha do banco — apenas não renderiza badge para "poucas_vagas".
-- Nenhuma alteração de identidade visual, tipografia ou layout além do quadro descrito.
-- Nenhum impacto em rotas, loaders ou tipos.
+- Não vou mudar VLibras, TTS, persistência em `localStorage`, nem o design system (`src/styles.css`).
+- Não vou tocar em outras páginas/componentes.
