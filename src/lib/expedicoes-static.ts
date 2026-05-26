@@ -278,7 +278,7 @@ const EXPEDICOES: Expedicao[] = [
             "Transfer aeroporto até a pousada não incluído",
             "Vagas extremamente limitadas, sem turmas extras"
         ],
-        "descricao_curta": "Expedição equestre rara em Jericoacoara, com cavalgadas entre lagoas cristalinas, dunas douradas e o mar do Nordeste.",
+        "descricao_curta": "Expedição equestre em Jericoacoara, com cavalgadas entre lagoas cristalinas, dunas douradas e o mar do Nordeste.",
         "descricao_longa": "Uma experiência equestre desenhada para grupo extremamente reduzido. Durante quatro dias, você vive Jericoacoara de uma forma reservada a poucos: a cavalo, em paisagens intocadas, com ritmo desacelerado e atenção individual.\n\nCavalos criteriosamente selecionados entre mestiços nordestinos e Mangalarga Marchador, guias bilíngues especializados e hospedagem de alto padrão."
     },
     {
