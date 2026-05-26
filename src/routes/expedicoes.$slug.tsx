@@ -55,7 +55,7 @@ function DetalhesExpedicao() {
             <span className="h-1 w-1 rounded-full bg-cobre" />
             <span>{expedicao.nivel}</span>
             <span className="h-1 w-1 rounded-full bg-cobre" />
-            <span>A partir de {formatPriceWithBRL(expedicao.preco, expedicao.moeda)}</span>
+            <span>A partir de {formatPriceWithBRL(expedicao.preco, expedicao.moeda)} <span className="text-areia/60">por pessoa em acomodação dupla</span></span>
           </div>
           <h1 className="mt-5 max-w-3xl font-display text-5xl text-balance md:text-7xl">{expedicao.nome}</h1>
           <p className="mt-5 max-w-2xl text-lg text-areia/85 text-pretty">{expedicao.descricao_curta}</p>
