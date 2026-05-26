@@ -108,6 +108,7 @@ function RootComponent() {
       {!isAdmin && <SiteFooter />}
       {!isAdmin && <CookieConsent />}
       {!isAdmin && <VLibras />}
+      {!isAdmin && <WhatsappFloat />}
       {!isAdmin && <AccessibilityPanel />}
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
