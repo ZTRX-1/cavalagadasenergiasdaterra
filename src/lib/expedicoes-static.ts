@@ -33,6 +33,7 @@ export interface DataExpedicao {
   preco_pix?: number | null;
   preco_cartao?: number | null;
   tag?: string | null;
+  moeda?: string;
 }
 
 const EXPEDICOES: Expedicao[] = [
@@ -603,10 +604,13 @@ export async function getExpedicaoBySlug(input: { data: { slug: string } }): Pro
   if (!expedicao) return null;
   return {
     expedicao,
-    datas: DATAS.filter((data) => data.expedicao_id === expedicao.id),
+    datas: DATAS.filter((data) => data.expedicao_id === expedicao.id).map((d) => ({ ...d, moeda: expedicao.moeda })),
   };
 }
 
 export async function listProximasDatas(): Promise<DataExpedicao[]> {
-  return DATAS;
+  return DATAS.map((d) => {
+    const exp = EXPEDICOES.find((e) => e.id === d.expedicao_id);
+    return { ...d, moeda: exp?.moeda ?? "BRL" };
+  });
 }
