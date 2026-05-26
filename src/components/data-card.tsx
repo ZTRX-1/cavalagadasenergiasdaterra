@@ -67,13 +67,24 @@ export function DataCard({ data, variant = "link" }: { data: DataExpedicao; vari
           )}
         </div>
         {!isEsgotado && (
-          <Link
-            to="/expedicoes/$slug"
-            params={{ slug: publicSlug }}
-            className="inline-flex items-center gap-2 rounded-full bg-floresta-deep px-4 py-2 text-xs uppercase tracking-widest text-areia transition-colors hover:bg-cobre"
-          >
-            Ver expedição <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
+          variant === "reservar" ? (
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-cobre px-4 py-2 text-xs uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft"
+            >
+              Reservar <MessageCircle className="h-3.5 w-3.5" />
+            </a>
+          ) : (
+            <Link
+              to="/expedicoes/$slug"
+              params={{ slug: publicSlug }}
+              className="inline-flex items-center gap-2 rounded-full bg-floresta-deep px-4 py-2 text-xs uppercase tracking-widest text-areia transition-colors hover:bg-cobre"
+            >
+              Ver expedição <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          )
         )}
       </div>
     </div>
