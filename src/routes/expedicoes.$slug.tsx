@@ -93,13 +93,21 @@ function DetalhesExpedicao() {
             )}
 
           </div>
-          <aside className="md:col-span-5">
+          <aside className="md:col-span-5 space-y-6">
             <div className="rounded-sm border border-border bg-card p-8 shadow-card">
               <div className="eyebrow">O que está incluso</div>
               <ul className="mt-5 space-y-3 text-sm text-foreground/85">
                 {expedicao.inclui.map((i) => (
                   <li key={i} className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />{i}</li>
                 ))}
+              </ul>
+            </div>
+            <div className="rounded-sm border border-border bg-card p-8 shadow-card">
+              <div className="eyebrow">Condições de pagamento</div>
+              <ul className="mt-5 space-y-3 text-sm text-foreground/85">
+                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />À vista</li>
+                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Cartão de crédito em até 6x sem juros, via link de pagamento seguro</li>
+                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Parcelamento via Pix (consulte nossa equipe para conhecer as opções)</li>
               </ul>
             </div>
           </aside>
