@@ -192,7 +192,7 @@ export function AccessibilityPanel() {
           "bg-gradient-to-br from-cobre via-couro to-cobre-soft text-areia",
           "ring-2 ring-areia/40 shadow-elegant",
           "transition-transform duration-300 hover:scale-105 hover:ring-areia/70",
-          "bottom-24 right-5 h-12 w-12 md:bottom-28 md:right-8 md:h-14 md:w-14",
+          "bottom-5 right-5 h-12 w-12 md:bottom-8 md:right-8 md:h-14 md:w-14",
         )}
       >
         <span
