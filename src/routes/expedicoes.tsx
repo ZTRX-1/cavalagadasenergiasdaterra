@@ -36,7 +36,7 @@ function ExpedicoesCatalog() {
           <div className="eyebrow">Catálogo</div>
           <h1 className="mt-4 font-display text-5xl text-balance md:text-7xl">Expedições</h1>
           <p className="mt-6 max-w-xl text-lg text-muted-foreground text-pretty">
-            Cada expedição é um roteiro autoral, com curadoria de trilhas, hospedagens e gastronomia. Escolha a sua próxima travessia.
+            Cada expedição é um roteiro autoral, com curadoria de trilhas, hospedagens e gastronomia. Escolha a sua próxima expedição.
           </p>
         </div>
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
