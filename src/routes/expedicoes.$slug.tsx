@@ -4,6 +4,7 @@ import { ArrowRight, Check, MessageCircle } from "lucide-react";
 import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
 import { getExpedicaoImage, getExpedicaoGaleria } from "@/lib/expedicao-images";
 import { GaleriaEditorial } from "@/components/galeria-editorial";
+import { VideoCinematic } from "@/components/video-cinematic";
 import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
 import { formatDateRange, formatPrice, formatPriceWithBRL } from "@/lib/format";
 import { DataCard } from "@/components/data-card";
@@ -132,6 +133,21 @@ function DetalhesExpedicao() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* Vídeo cinematográfico — Serra da Canastra */}
+      {expedicao.slug === "serra-da-canastra" && (
+        <section className="bg-carvao py-24 md:py-32">
+          <div className="container-tight">
+            <VideoCinematic
+              youtubeId="nPoJeABD5ko"
+              poster={heroImg}
+              eyebrow="Serra da Canastra · filme da expedição"
+              title="Expedições a cavalo na Serra da Canastra. Memórias para a vida toda."
+              subtitle="Toque para assistir com som"
+            />
           </div>
         </section>
       )}

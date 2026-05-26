@@ -248,12 +248,11 @@ function HomePage() {
       <section className="bg-carvao py-24 md:py-32">
         <div className="container-tight">
           <VideoCinematic
-            youtubeId="nPoJeABD5ko"
+            youtubeId="nf2b6gTJ_j8"
             poster={acampamento}
             eyebrow="Energias da Terra · filme oficial"
             title={lng === "en" ? "Horseback expeditions. Memories for a lifetime." : lng === "es" ? "Expediciones a caballo. Memorias para toda la vida." : "Expedições a cavalo. Memórias para a vida toda."}
             subtitle={lng === "en" ? "Tap to watch with sound" : lng === "es" ? "Toca para ver con sonido" : "Toque para assistir com som"}
-
           />
         </div>
       </section>
