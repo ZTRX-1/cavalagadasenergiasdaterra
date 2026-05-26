@@ -73,6 +73,23 @@ function DetalhesExpedicao() {
         </div>
       </section>
 
+      {/* Vídeo cinematográfico — destaque Serra da Canastra */}
+      {expedicao.slug === "serra-da-canastra" && (
+        <section className="bg-carvao py-16 md:py-20">
+          <div className="container-tight">
+            <VideoCinematic
+              youtubeId="nPoJeABD5ko"
+              poster={heroImg}
+              eyebrow="Serra da Canastra · filme da expedição"
+              title="Expedições a cavalo na Serra da Canastra. Memórias para a vida toda."
+              subtitle="Toque para assistir com som"
+            />
+          </div>
+        </section>
+      )}
+
+
+
 
       {/* Descrição + Inclui */}
       <section className="bg-background py-24 md:py-32">
@@ -137,20 +154,6 @@ function DetalhesExpedicao() {
         </section>
       )}
 
-      {/* Vídeo cinematográfico — Serra da Canastra */}
-      {expedicao.slug === "serra-da-canastra" && (
-        <section className="bg-carvao py-24 md:py-32">
-          <div className="container-tight">
-            <VideoCinematic
-              youtubeId="nPoJeABD5ko"
-              poster={heroImg}
-              eyebrow="Serra da Canastra · filme da expedição"
-              title="Expedições a cavalo na Serra da Canastra. Memórias para a vida toda."
-              subtitle="Toque para assistir com som"
-            />
-          </div>
-        </section>
-      )}
 
       {/* Galeria */}
       {galeria.length > 0 && (
