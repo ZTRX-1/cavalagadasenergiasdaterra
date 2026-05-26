@@ -30,7 +30,7 @@ function ContatoPage() {
             <div className="eyebrow">Contato</div>
             <h1 className="mt-4 font-display text-5xl text-balance md:text-7xl">Vamos conversar.</h1>
             <p className="mt-6 max-w-xl text-lg text-muted-foreground text-pretty">
-              Atendemos pelo WhatsApp e Instagram. Em geral respondemos em menos de 2 horas durante o horário comercial.
+              Atendemos pelo WhatsApp e Instagram. Nossa equipe está à disposição para esclarecer dúvidas, apresentar roteiros e auxiliar em sua reserva.
             </p>
             <div className="mt-10 space-y-4">
               <a href={buildContactWhatsappUrl()} target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-sm border border-border bg-card p-5 transition-colors hover:border-cobre">

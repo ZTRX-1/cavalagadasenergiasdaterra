@@ -462,11 +462,11 @@ const DATAS: DataExpedicao[] = [
         "id": "9e910682-0ce1-4ebe-b6f4-306814ef32c9",
         "status": "disponivel",
         "data_fim": "2026-06-07",
-        "preco_pix": 3900,
+        "preco_pix": 4900,
         "data_inicio": "2026-06-04",
         "vagas_total": 14,
         "expedicao_id": "c9e9f1dd-039d-4301-9181-ab26b30b9f2f",
-        "preco_cartao": 4400,
+        "preco_cartao": 5200,
         "expedicao_nome": "Serra da Canastra",
         "expedicao_slug": "serra-da-canastra",
         "vagas_disponiveis": 8
@@ -486,7 +486,7 @@ const DATAS: DataExpedicao[] = [
     },
     {
         "id": "d0f875d2-e37e-4447-b0f6-40ba64f4aad5",
-        "status": "poucas_vagas",
+        "status": "disponivel",
         "data_fim": "2026-07-19",
         "preco_pix": 4200,
         "data_inicio": "2026-07-15",
@@ -499,7 +499,7 @@ const DATAS: DataExpedicao[] = [
     },
     {
         "id": "696d31b1-ed97-4e5f-bf7f-3453f058dda4",
-        "status": "poucas_vagas",
+        "status": "disponivel",
         "data_fim": "2026-08-07",
         "preco_pix": 1600,
         "data_inicio": "2026-08-04",
@@ -510,6 +510,7 @@ const DATAS: DataExpedicao[] = [
         "expedicao_slug": "peru-vale-do-colca",
         "vagas_disponiveis": 3
     },
+
     {
         "id": "49b808dc-aac6-401e-81c7-f4eb66853940",
         "status": "disponivel",
