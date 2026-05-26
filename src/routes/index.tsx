@@ -53,24 +53,24 @@ const INCLUI = [
 const INCLUI_TXT: Record<string, Record<string, { label: string; desc: string }>> = {
   pt: {
     cavalos: { label: "Cavalos selecionados", desc: "Animais dóceis, treinados e acompanhados por equipe experiente." },
-    hospedagem: { label: "Hospedagem premium", desc: "Pousadas de charme e acampamentos de luxo cuidadosamente curados." },
-    gastronomia: { label: "Gastronomia curada", desc: "Refeições assinadas, ingredientes regionais e fogueira ao anoitecer." },
+    hospedagem: { label: "Hospedagem cuidadosamente selecionada", desc: "Pousadas, hotéis e acomodações locais escolhidas de acordo com as características de cada roteiro." },
+    gastronomia: { label: "Gastronomia regional", desc: "Refeições inspiradas nos sabores, ingredientes e tradições de cada destino." },
     seguro: { label: "Seguro aventura", desc: "Cobertura completa, briefing técnico e equipe de apoio em campo." },
     guias: { label: "Guias bilíngues", desc: "Roteiros conduzidos por guias profissionais com profundo conhecimento local." },
     grupos: { label: "Grupos íntimos", desc: "Expedições limitadas para preservar a experiência e o silêncio." },
   },
   en: {
     cavalos: { label: "Selected horses", desc: "Gentle, well-trained animals accompanied by an experienced team." },
-    hospedagem: { label: "Premium lodging", desc: "Boutique inns and luxury camps, carefully curated." },
-    gastronomia: { label: "Curated cuisine", desc: "Signature meals, regional ingredients and a fire at nightfall." },
+    hospedagem: { label: "Carefully selected lodging", desc: "Inns, hotels and local accommodations chosen according to the character of each itinerary." },
+    gastronomia: { label: "Regional cuisine", desc: "Meals inspired by the flavors, ingredients and traditions of each destination." },
     seguro: { label: "Adventure insurance", desc: "Full coverage, technical briefing and a support team on field." },
     guias: { label: "Bilingual guides", desc: "Itineraries led by professional guides with deep local knowledge." },
     grupos: { label: "Intimate groups", desc: "Limited expeditions to preserve the experience and the silence." },
   },
   es: {
     cavalos: { label: "Caballos seleccionados", desc: "Animales dóciles, entrenados y acompañados por un equipo experto." },
-    hospedagem: { label: "Alojamiento premium", desc: "Posadas con encanto y campamentos de lujo cuidadosamente seleccionados." },
-    gastronomia: { label: "Gastronomía curada", desc: "Comidas firmadas, ingredientes regionales y fogón al anochecer." },
+    hospedagem: { label: "Alojamiento cuidadosamente seleccionado", desc: "Posadas, hoteles y alojamientos locales elegidos según las características de cada ruta." },
+    gastronomia: { label: "Gastronomía regional", desc: "Comidas inspiradas en los sabores, ingredientes y tradiciones de cada destino." },
     seguro: { label: "Seguro de aventura", desc: "Cobertura completa, briefing técnico y equipo de apoyo en campo." },
     guias: { label: "Guías bilingües", desc: "Itinerarios conducidos por guías profesionales con profundo conocimiento local." },
     grupos: { label: "Grupos íntimos", desc: "Expediciones limitadas para preservar la experiencia y el silencio." },
@@ -79,48 +79,43 @@ const INCLUI_TXT: Record<string, Record<string, { label: string; desc: string }>
 
 const PASSOS_TXT: Record<string, Array<{ n: string; t: string; d: string }>> = {
   pt: [
-    { n: "01", t: "Escolha sua expedição", d: "Explore os destinos e selecione a experiência que mais ressoa com você." },
-    { n: "02", t: "Faça sua pré-reserva", d: "Preencha o formulário em poucos minutos. Você receberá um protocolo automaticamente." },
-    { n: "03", t: "Confirme via WhatsApp", d: "Nossa equipe entra em contato para alinhar detalhes e confirmar a sua vaga." },
-    { n: "04", t: "Viva a experiência", d: "Chegue, monte e deixe o resto com a gente. Cada detalhe foi pensado." },
+    { n: "01", t: "Escolha sua expedição", d: "Encontre a expedição que mais combina com você." },
+    { n: "02", t: "Conheça os detalhes", d: "Veja roteiro, datas, valores e o que está incluído." },
+    { n: "03", t: "Garanta sua vaga via WhatsApp", d: "Nossa equipe entra em contato para alinhar detalhes e confirmar sua vaga." },
+    { n: "04", t: "Viva a experiência", d: "Chegue, monte e aproveite cada momento da sua expedição." },
   ],
   en: [
-    { n: "01", t: "Choose your expedition", d: "Explore the destinations and select the experience that resonates most with you." },
-    { n: "02", t: "Request your booking", d: "Fill in the short form in minutes. You'll receive a confirmation protocol automatically." },
-    { n: "03", t: "Confirm on WhatsApp", d: "Our team gets in touch to align details and confirm your spot." },
-    { n: "04", t: "Live the experience", d: "Arrive, mount and leave the rest to us. Every detail has been considered." },
+    { n: "01", t: "Choose your expedition", d: "Find the expedition that fits you best." },
+    { n: "02", t: "Discover the details", d: "Explore the itinerary, dates, prices and what's included." },
+    { n: "03", t: "Secure your spot via WhatsApp", d: "Our team gets in touch to align details and confirm your spot." },
+    { n: "04", t: "Live the experience", d: "Arrive, mount up and enjoy every moment of your expedition." },
   ],
   es: [
-    { n: "01", t: "Elige tu expedición", d: "Explora los destinos y selecciona la experiencia que más te resuene." },
-    { n: "02", t: "Solicita tu reserva", d: "Completa el formulario en minutos. Recibirás un protocolo automáticamente." },
-    { n: "03", t: "Confirma por WhatsApp", d: "Nuestro equipo te contacta para alinear detalles y confirmar tu lugar." },
-    { n: "04", t: "Vive la experiencia", d: "Llega, monta y déjanos el resto. Cada detalle fue pensado." },
+    { n: "01", t: "Elige tu expedición", d: "Encuentra la expedición que más combina contigo." },
+    { n: "02", t: "Conoce los detalles", d: "Mira el itinerario, fechas, precios y lo que está incluido." },
+    { n: "03", t: "Asegura tu lugar por WhatsApp", d: "Nuestro equipo te contacta para alinear detalles y confirmar tu lugar." },
+    { n: "04", t: "Vive la experiencia", d: "Llega, monta y disfruta cada momento de tu expedición." },
   ],
 };
 
 const FAQ_TXT: Record<string, Array<{ q: string; a: string }>> = {
   pt: [
-    { q: "Preciso ter experiência prévia?", a: "Não. Temos expedições para todos os níveis, desde iniciantes até cavaleiros avançados. Indicamos a melhor opção conforme seu perfil." },
-    { q: "Como funciona a hospedagem?", a: "Trabalhamos com pousadas selecionadas de três a quatro estrelas, conforme o roteiro e a região, todas escolhidas por nossa curadoria, garantindo conforto, autenticidade e qualidade em cada experiência." },
-    { q: "Como funciona o pagamento?", a: "Após a pré-reserva, nossa equipe entra em contato via WhatsApp para alinhar o pagamento. Aceitamos Pix, transferência e cartão parcelado." },
-    { q: "E se eu precisar cancelar?", a: "Aplicamos nossa política de cancelamento, transparente e proporcional ao tempo de antecedência. Detalhamos tudo antes da confirmação." },
-    { q: "Vocês oferecem transfer?", a: "Sim. Todas as expedições incluem transfer do aeroporto ou ponto combinado até a base da experiência." },
+    { q: "Preciso de experiência prévia com cavalos?", a: "Não. Oferecemos expedições para diferentes níveis de experiência, desde quem nunca montou até cavaleiros e amazonas experientes. Nossa equipe orienta na escolha do roteiro ideal para que cada pessoa aproveite a jornada com segurança e confiança." },
+    { q: "Como funciona a hospedagem?", a: "Trabalhamos com pousadas, hotéis e acomodações locais cuidadosamente selecionadas conforme o roteiro e a região, garantindo conforto, autenticidade e qualidade em cada experiência." },
+    { q: "Posso fazer uma expedição privada?", a: "Sim. Criamos experiências privativas e personalizadas, desenvolvidas de acordo com os interesses, ritmo e perfil de cada grupo." },
   ],
   en: [
-    { q: "Do I need previous experience?", a: "No. We have expeditions for every level, from first-time riders to advanced. We recommend the best fit based on your profile." },
-    { q: "What is the lodging like?", a: "We work with hand-picked 3 and 4-star inns, chosen according to the itinerary and region. All curated by our team to ensure comfort, authenticity and quality." },
-    { q: "How does payment work?", a: "After requesting your booking, our team contacts you on WhatsApp to align payment. We accept Pix, bank transfer and credit card installments." },
-    { q: "What if I need to cancel?", a: "We apply our cancellation policy, transparent and proportional to how far in advance you cancel. We detail everything before confirmation." },
-    { q: "Do you provide transfers?", a: "Yes. All expeditions include transfer from the airport or agreed pickup point to the base of the experience." },
+    { q: "Do I need previous experience with horses?", a: "No. We offer expeditions for different experience levels, from first-time riders to seasoned riders. Our team helps you choose the ideal itinerary so each person enjoys the journey with safety and confidence." },
+    { q: "What is the lodging like?", a: "We work with carefully selected inns, hotels and local accommodations chosen according to the itinerary and region, ensuring comfort, authenticity and quality." },
+    { q: "Can I book a private expedition?", a: "Yes. We design private, personalized experiences developed around the interests, pace and profile of each group." },
   ],
   es: [
-    { q: "¿Necesito experiencia previa?", a: "No. Tenemos expediciones para todos los niveles, desde principiantes hasta jinetes avanzados. Recomendamos la mejor opción según tu perfil." },
-    { q: "¿Cómo es el alojamiento?", a: "Trabajamos con posadas seleccionadas de 3 y 4 estrellas, según el itinerario y la región. Todas elegidas por nuestra curaduría para garantizar comodidad, autenticidad y calidad." },
-    { q: "¿Cómo funciona el pago?", a: "Tras la solicitud, nuestro equipo te contacta por WhatsApp para alinear el pago. Aceptamos Pix, transferencia y tarjeta en cuotas." },
-    { q: "¿Y si necesito cancelar?", a: "Aplicamos nuestra política de cancelación, transparente y proporcional a la antelación. Lo detallamos todo antes de la confirmación." },
-    { q: "¿Ofrecen traslados?", a: "Sí. Todas las expediciones incluyen traslado desde el aeropuerto o punto acordado hasta la base de la experiencia." },
+    { q: "¿Necesito experiencia previa con caballos?", a: "No. Ofrecemos expediciones para distintos niveles, desde quienes nunca montaron hasta jinetes experimentados. Nuestro equipo te orienta en la elección del itinerario ideal para que aproveches la jornada con seguridad y confianza." },
+    { q: "¿Cómo es el alojamiento?", a: "Trabajamos con posadas, hoteles y alojamientos locales cuidadosamente seleccionados según el itinerario y la región, garantizando comodidad, autenticidad y calidad." },
+    { q: "¿Puedo hacer una expedición privada?", a: "Sí. Creamos experiencias privadas y personalizadas, desarrolladas según los intereses, ritmo y perfil de cada grupo." },
   ],
 };
+
 
 function HomePage() {
   const { t, i18n } = useTranslation();
@@ -256,8 +251,9 @@ function HomePage() {
             youtubeId="nPoJeABD5ko"
             poster={acampamento}
             eyebrow="Energias da Terra · filme oficial"
-            title={lng === "en" ? "The crossing, before the crossing." : lng === "es" ? "La travesía, antes de la travesía." : "A travessia, antes da travessia."}
+            title={lng === "en" ? "Horseback expeditions. Memories for a lifetime." : lng === "es" ? "Expediciones a caballo. Memorias para toda la vida." : "Expedições a cavalo. Memórias para a vida toda."}
             subtitle={lng === "en" ? "Tap to watch with sound" : lng === "es" ? "Toca para ver con sonido" : "Toque para assistir com som"}
+
           />
         </div>
       </section>
@@ -385,10 +381,14 @@ function HomePage() {
           <h2 className="mx-auto mt-7 max-w-3xl font-display text-5xl text-balance leading-[1.02] md:text-7xl">
             {t("ctaFinal.title")}
           </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-pretty text-areia/82 text-lg">
+            {t("ctaFinal.subtitle")}
+          </p>
           <Link to="/expedicoes" className="mt-12 inline-flex items-center gap-3 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">
             {t("ctaFinal.cta")} <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
+
       </section>
     </>
   );
