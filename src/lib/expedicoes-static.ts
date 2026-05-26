@@ -393,7 +393,6 @@ const EXPEDICOES: Expedicao[] = [
         "imagem_url": "expedicao-aerea",
         "requisitos": [
             "Passagens aéreas e despesas pessoais não incluídas",
-            "Entrada de 15% no ato, saldo via PIX mediante contrato",
             "Conversão baseada no dólar turismo do dia",
             "Grupo reduzido para garantir exclusividade"
         ],
