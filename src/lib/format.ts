@@ -57,8 +57,6 @@ export function priceInBRL(n: number, moeda: string): string | null {
 
 /** Formata preço com BRL ao lado, quando aplicável. Ex: "US$ 1.600 (≈ R$ 8.800)" */
 export function formatPriceWithBRL(n: number, moeda: string = "BRL"): string {
-  const principal = formatPrice(n, moeda);
-  const brl = priceInBRL(n, moeda);
-  return brl ? `${principal} (≈ ${brl})` : principal;
+  return formatPrice(n, moeda);
 }
 
