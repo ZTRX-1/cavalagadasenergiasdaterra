@@ -6,9 +6,8 @@
     "quemSomos": "Quem Somos",
     "contato": "Contato",
     "naMidia": "Na Mídia",
-    "minhaReserva": "Minha Reserva",
-    "reservar": "Reservar",
-    "preReserva": "Fazer pré-reserva",
+    "reservar": "Reservar Agora",
+    "preReserva": "Reservar Agora",
     "whatsapp": "WhatsApp"
   },
   "hero": {
@@ -29,12 +28,12 @@
   },
   "manifesto": {
     "eyebrow": "A experiência",
-    "title": "Não é um passeio. É uma travessia interna.",
-    "body": "Desenhamos cada expedição como um filme: roteiro, ritmo, fotografia. Trilhas selecionadas a dedo, hospedagens com alma, gastronomia que conversa com o território. Cada vaga é limitada para preservar o silêncio, e a profundidade, do que estamos oferecendo."
+    "title": "Não é um passeio. É uma jornada que permanece.",
+    "body": "Expedições a cavalo por paisagens extraordinárias, conectando natureza, cultura, gastronomia e experiências que permanecem para a vida toda."
   },
   "inclui": {
     "eyebrow": "O que está incluso",
-    "title": "Tudo cuidado. Você apenas chega e cavalga."
+    "title": "Todo cuidado. Você apenas chega e cavalga."
   },
   "expedicoes": {
     "eyebrow": "Expedições",
@@ -46,8 +45,8 @@
     "proximasDatas": "Próximas datas",
     "inclui": "O que está incluso",
     "roteiro": "Roteiro",
-    "requisitos": "Requisitos",
-    "preReservar": "Pré-reservar"
+    "requisitos": "Informações importantes",
+    "preReservar": "Reservar Agora"
   },
   "datas": {
     "eyebrow": "Calendário",
@@ -60,8 +59,8 @@
   },
   "historias": {
     "eyebrow": "Quem viveu",
-    "title": "Histórias de quem atravessou conosco.",
-    "intro": "Relatos reais de cavaleiros que cruzaram serras, rios e silêncios com a gente."
+    "title": "Histórias de quem cavalgou conosco.",
+    "intro": "Relatos reais de cavaleiros e amazonas que cruzaram serras, rios e silêncios com a gente."
   },
   "faq": {
     "eyebrow": "Perguntas",
@@ -69,12 +68,13 @@
     "verTodas": "Ver todas as perguntas"
   },
   "ctaFinal": {
-    "eyebrow": "Sua próxima travessia",
-    "title": "A serra está te esperando.",
-    "cta": "Escolher minha expedição"
+    "eyebrow": "Sua próxima expedição",
+    "title": "Algumas experiências só podem ser vividas a cavalo.",
+    "subtitle": "Expedições exclusivas para quem busca mais do que uma viagem.",
+    "cta": "Reservar Agora"
   },
   "footer": {
-    "tagline": "Expedições a cavalo pelo Brasil e pelo mundo. As melhores histórias da sua vida ainda estão esperando por você. Pequenos grupos, cavalos selecionados e roteiros autorais criados por quem vive a paixão pelos cavalos e acredita que algumas jornadas têm o poder de nos transformar para sempre.",
+    "tagline": "Expedições a cavalo pelo Brasil e pelo mundo. As melhores histórias da sua vida ainda estão esperando por você. Pequenos grupos, cavalos selecionados e roteiros autorais criados por quem vive a paixão pelos cavalos.",
     "navegue": "Navegue",
     "contato": "Contato",
     "marcas": "Nossas marcas",

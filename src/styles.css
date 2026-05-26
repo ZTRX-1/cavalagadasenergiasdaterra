@@ -79,27 +79,28 @@
   --cobre-soft: oklch(0.72 0.085 65);          /* dourado patinado */
   --carvao: oklch(0.16 0.012 75);              /* preto carvão quente */
 
-  /* Tokens semânticos (light = areia tostada) */
-  --background: oklch(0.965 0.014 78);
+  /* Tokens semânticos (light = areia premium #F4F0E8) */
+  --background: oklch(0.945 0.018 86);
   --foreground: var(--carvao);
-  --card: oklch(0.985 0.012 78);
+  --card: oklch(0.955 0.016 84);
   --card-foreground: var(--carvao);
-  --popover: oklch(0.985 0.012 78);
+  --popover: oklch(0.955 0.016 84);
   --popover-foreground: var(--carvao);
   --primary: var(--floresta-deep);
   --primary-foreground: var(--areia);
-  --secondary: oklch(0.91 0.022 75);
+  --secondary: oklch(0.915 0.022 80);
   --secondary-foreground: var(--carvao);
-  --muted: oklch(0.91 0.018 75);
+  --muted: oklch(0.915 0.020 80);
   --muted-foreground: oklch(0.36 0.022 70);
   --accent: var(--cobre);
   --accent-foreground: var(--areia);
   --destructive: oklch(0.52 0.18 25);
   --destructive-foreground: var(--areia);
-  --border: oklch(0.84 0.022 72);
-  --input: oklch(0.84 0.022 72);
+  --border: oklch(0.84 0.022 76);
+  --input: oklch(0.84 0.022 76);
   --ring: var(--cobre);
 }
+
 
 .dark {
   --background: var(--carvao);
