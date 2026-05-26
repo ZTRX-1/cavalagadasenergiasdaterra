@@ -161,6 +161,52 @@
     background: var(--cobre);
     color: var(--areia);
   }
+
+  /* Foco visível acessível em todos os elementos interativos.
+     Mantém o visual premium usando o cobre da marca como contorno. */
+  :focus-visible {
+    outline: 2px solid var(--cobre);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  [role="link"]:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid var(--cobre);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--cobre) 25%, transparent);
+  }
+
+  /* Respeita usuários que pediram menos movimento */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* VLibras — ajustes para não conflitar com o botão flutuante de WhatsApp */
+  [vw] {
+    z-index: 45 !important;
+  }
+  [vw-access-button] {
+    bottom: 5.5rem !important;
+    right: 1.25rem !important;
+  }
+  @media (min-width: 768px) {
+    [vw-access-button] {
+      bottom: 8rem !important;
+      right: 2rem !important;
+    }
+  }
 }
 
 @layer utilities {
