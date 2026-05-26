@@ -164,7 +164,7 @@ function DetalhesExpedicao() {
           ) : (
             <div className="mt-10 space-y-3">
               {datas.map((d) => (
-                <DataCard key={d.id} data={{ ...d, expedicao_nome: expedicao.nome, expedicao_slug: publicSlug }} />
+                <DataCard key={d.id} data={{ ...d, expedicao_nome: expedicao.nome, expedicao_slug: publicSlug }} variant="reservar" />
               ))}
             </div>
           )}

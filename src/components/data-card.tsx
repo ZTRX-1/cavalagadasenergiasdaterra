@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MessageCircle } from "lucide-react";
 import type { DataExpedicao } from "@/lib/expedicoes.functions";
 import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
 import { formatDateRange, formatDayShort, formatPrice } from "@/lib/format";
+import { buildContactWhatsappUrl } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -17,10 +18,14 @@ const STATUS_CLASS: Record<string, string> = {
   esgotado: "bg-muted text-muted-foreground border-border",
 };
 
-export function DataCard({ data }: { data: DataExpedicao }) {
+export function DataCard({ data, variant = "link" }: { data: DataExpedicao; variant?: "link" | "reservar" }) {
   const inicio = formatDayShort(data.data_inicio);
   const isEsgotado = data.status === "esgotado";
   const publicSlug = getPublicExpedicaoSlug(data.expedicao_slug ?? "");
+  const periodo = formatDateRange(data.data_inicio, data.data_fim);
+  const whatsappUrl = buildContactWhatsappUrl(
+    `Tenho interesse na expedição "${data.expedicao_nome ?? ""}" no período de ${periodo}.`,
+  );
 
   return (
     <div className="group relative flex flex-col gap-4 rounded-sm border border-border bg-card p-5 transition-colors hover:border-cobre/50 md:flex-row md:items-center md:gap-8 md:p-6">
@@ -62,13 +67,24 @@ export function DataCard({ data }: { data: DataExpedicao }) {
           )}
         </div>
         {!isEsgotado && (
-          <Link
-            to="/expedicoes/$slug"
-            params={{ slug: publicSlug }}
-            className="inline-flex items-center gap-2 rounded-full bg-floresta-deep px-4 py-2 text-xs uppercase tracking-widest text-areia transition-colors hover:bg-cobre"
-          >
-            Ver expedição <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
+          variant === "reservar" ? (
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-cobre px-4 py-2 text-xs uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft"
+            >
+              Reservar <MessageCircle className="h-3.5 w-3.5" />
+            </a>
+          ) : (
+            <Link
+              to="/expedicoes/$slug"
+              params={{ slug: publicSlug }}
+              className="inline-flex items-center gap-2 rounded-full bg-floresta-deep px-4 py-2 text-xs uppercase tracking-widest text-areia transition-colors hover:bg-cobre"
+            >
+              Ver expedição <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          )
         )}
       </div>
     </div>
