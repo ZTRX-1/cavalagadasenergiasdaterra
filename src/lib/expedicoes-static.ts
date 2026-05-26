@@ -330,8 +330,7 @@ const EXPEDICOES: Expedicao[] = [
         "imagem_url": "expedicao-chapada",
         "requisitos": [
             "Acomodação single com tarifa adicional de 40%",
-            "Pagamento via PIX em reais com conversão pelo dólar turismo do dia",
-            "25% no ato, saldo em parcelas iguais com quitação até 30 dias antes",
+            "Conversão pelo dólar turismo do dia",
             "Bebidas e extras pessoais não incluídos",
             "Seguro viagem por conta do participante"
         ],
