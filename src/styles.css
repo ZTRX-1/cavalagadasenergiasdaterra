@@ -193,20 +193,43 @@
     }
   }
 
-  /* VLibras — ajustes para não conflitar com o botão flutuante de WhatsApp */
-  [vw] {
-    z-index: 45 !important;
-  }
+  /* VLibras — botão azul nativo escondido visualmente;
+     disparado pelo painel premium de acessibilidade. */
   [vw-access-button] {
-    bottom: 5.5rem !important;
-    right: 1.25rem !important;
+    position: fixed !important;
+    width: 1px !important;
+    height: 1px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    clip: rect(0 0 0 0) !important;
   }
-  @media (min-width: 768px) {
-    [vw-access-button] {
-      bottom: 8rem !important;
-      right: 2rem !important;
-    }
+  /* Plugin (janela do tradutor) precisa ficar acima do nosso painel */
+  [vw-plugin-wrapper] {
+    z-index: 90 !important;
   }
+
+  /* Preferências de acessibilidade controladas pelo painel */
+  html {
+    font-size: calc(16px * var(--a11y-font-scale, 1));
+  }
+  html.a11y-reduce-motion *,
+  html.a11y-reduce-motion *::before,
+  html.a11y-reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  html.a11y-high-contrast {
+    --background: oklch(0 0 0);
+    --foreground: oklch(1 0 0);
+    --muted-foreground: oklch(0.92 0 0);
+    --card: oklch(0.08 0 0);
+    --border: oklch(0.6 0 0);
+    --primary: oklch(0.85 0.18 70);
+    filter: contrast(1.08);
+  }
+}
 }
 
 @layer utilities {
