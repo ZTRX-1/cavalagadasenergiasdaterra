@@ -45,7 +45,7 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
 
           <div className="mt-5 flex items-end justify-between">
             <div>
-              <div className="text-[0.62rem] uppercase tracking-[0.22em] text-areia/60">A partir de</div>
+              <div className="text-[0.62rem] uppercase tracking-[0.22em] text-areia/60">A partir de · acomodação dupla</div>
               <div className="font-display text-xl text-cobre-soft">{formatPriceWithBRL(expedicao.preco, expedicao.moeda)}</div>
             </div>
             <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-areia/40 text-areia transition-all group-hover:bg-cobre group-hover:border-cobre">

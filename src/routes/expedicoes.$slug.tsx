@@ -55,7 +55,7 @@ function DetalhesExpedicao() {
             <span className="h-1 w-1 rounded-full bg-cobre" />
             <span>{expedicao.nivel}</span>
             <span className="h-1 w-1 rounded-full bg-cobre" />
-            <span>A partir de {formatPriceWithBRL(expedicao.preco, expedicao.moeda)}</span>
+            <span>A partir de {formatPriceWithBRL(expedicao.preco, expedicao.moeda)} <span className="text-areia/60">por pessoa em acomodação dupla</span></span>
           </div>
           <h1 className="mt-5 max-w-3xl font-display text-5xl text-balance md:text-7xl">{expedicao.nome}</h1>
           <p className="mt-5 max-w-2xl text-lg text-areia/85 text-pretty">{expedicao.descricao_curta}</p>
@@ -104,7 +104,8 @@ function DetalhesExpedicao() {
             </div>
             <div className="rounded-sm border border-border bg-card p-8 shadow-card">
               <div className="eyebrow">Condições de pagamento</div>
-              <ul className="mt-5 space-y-3 text-sm text-foreground/85">
+              <p className="mt-4 text-xs uppercase tracking-[0.22em] text-cobre">Valores por pessoa em acomodação dupla</p>
+              <ul className="mt-4 space-y-3 text-sm text-foreground/85">
                 <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />À vista</li>
                 <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Cartão de crédito em até 6x sem juros, via link de pagamento seguro</li>
                 <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Parcelamento via Pix (consulte nossa equipe para conhecer as opções)</li>
