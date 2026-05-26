@@ -342,7 +342,7 @@ function ReservaPage() {
 
 
             {step === 1 && (
-              <Step title="Participantes" desc="Informe quantas pessoas embarcam nesta travessia.">
+              <Step title="Participantes" desc="Informe quantas pessoas embarcam nesta expedição.">
                 <div className="grid gap-5 sm:grid-cols-2">
                   <Field label="Tipo de grupo">
                     <select className="input" {...form.register("adicionais.tipo_grupo")}>
