@@ -3,8 +3,8 @@ import { Play, X } from "lucide-react";
 
 type Short = {
   id: string;
-  nome: string;
-  legenda: string;
+  titulo: string;
+  local: string;
   capitulo: string;
   src?: string;
 };
@@ -12,21 +12,21 @@ type Short = {
 const SHORTS: Short[] = [
   {
     id: "depoimento-local-1",
-    nome: "Energias da Terra",
-    legenda: "Quando o cavalo nos devolve ao essencial.",
+    titulo: "Cavalgadas Energia da Terra",
+    local: "Serra da Mantiqueira, MG",
     capitulo: "Capítulo I",
     src: "/depoimentos/depoimento-1.mp4",
   },
   {
-    id: "zTldVJWyVR8",
-    nome: "Refúgio da Mantiqueira",
-    legenda: "O cavalo, o silêncio, o tempo certo.",
+    id: "z0dNP6dztEI",
+    titulo: "Elas na Sela",
+    local: "Serra da Canastra, MG",
     capitulo: "Capítulo II",
   },
   {
-    id: "z0dNP6dztEI",
-    nome: "Elas na Sela",
-    legenda: "Uma irmandade que só a estrada revela.",
+    id: "zTldVJWyVR8",
+    titulo: "Canastra a Cavalo",
+    local: "Serra da Canastra, MG",
     capitulo: "Capítulo III",
   },
 ];
@@ -84,7 +84,7 @@ export function DepoimentosShorts() {
               key={s.id}
               type="button"
               onClick={() => setOpen(s.id)}
-              aria-label={`Assistir mini-documentário — ${s.nome}`}
+              aria-label={`Assistir mini-documentário — ${s.titulo}`}
               className={`group relative block w-full text-left text-areia ${
                 i === 1 ? "md:translate-y-10" : ""
               }`}
@@ -161,11 +161,11 @@ export function DepoimentosShorts() {
 
                   {/* caption */}
                   <div className="absolute inset-x-0 bottom-0 p-6 md:p-7">
-                    <div className="font-eyebrow text-[0.6rem] uppercase tracking-[0.32em] text-cobre-soft [text-shadow:0_1px_2px_rgb(0_0_0/0.5)]">
-                      {s.nome}
+                    <div className="font-display text-[1.5rem] text-balance leading-[1.1] text-areia [text-shadow:0_1px_3px_rgb(0_0_0/0.55)] md:text-[1.75rem]">
+                      {s.titulo}
                     </div>
-                    <div className="mt-3 font-display text-[1.35rem] text-balance leading-[1.15] text-areia [text-shadow:0_1px_3px_rgb(0_0_0/0.55)] md:text-[1.55rem]">
-                      {s.legenda}
+                    <div className="mt-2 font-eyebrow text-[0.65rem] uppercase tracking-[0.32em] text-cobre-soft [text-shadow:0_1px_2px_rgb(0_0_0/0.5)]">
+                      {s.local}
                     </div>
                   </div>
                 </div>
