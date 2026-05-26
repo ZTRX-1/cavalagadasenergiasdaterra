@@ -68,7 +68,7 @@ function Page() {
 
       <section className="bg-secondary/40 py-20 md:py-24">
         <div className="container-tight text-center">
-          <h2 className="font-display text-4xl text-balance md:text-5xl">Sua próxima travessia espera.</h2>
+          <h2 className="font-display text-4xl text-balance md:text-5xl">Sua próxima expedição espera.</h2>
           <Link to="/expedicoes" className="mt-8 inline-flex items-center gap-2 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia hover:bg-cobre-soft">
             Ver expedições <ArrowRight className="h-4 w-4" />
           </Link>

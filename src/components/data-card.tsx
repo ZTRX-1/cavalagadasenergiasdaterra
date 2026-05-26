@@ -20,6 +20,7 @@ const STATUS_CLASS: Record<string, string> = {
 export function DataCard({ data }: { data: DataExpedicao }) {
   const inicio = formatDayShort(data.data_inicio);
   const isEsgotado = data.status === "esgotado";
+  const publicSlug = getPublicExpedicaoSlug(data.expedicao_slug ?? "");
 
   return (
     <div className="group relative flex flex-col gap-4 rounded-sm border border-border bg-card p-5 transition-colors hover:border-cobre/50 md:flex-row md:items-center md:gap-8 md:p-6">
@@ -37,7 +38,6 @@ export function DataCard({ data }: { data: DataExpedicao }) {
       <div className="hidden md:block md:flex-1">
         <div className="font-eyebrow text-[0.72rem] uppercase tracking-[0.22em] text-cobre">{data.expedicao_nome}</div>
         <div className="mt-1.5 font-display text-xl text-foreground">{formatDateRange(data.data_inicio, data.data_fim)}</div>
-        <div className="mt-1 text-sm text-foreground/65">{data.vagas_disponiveis} de {data.vagas_total} vagas restantes</div>
         {(data.preco_pix || data.preco_cartao) && (
           <div className="mt-2 text-xs text-foreground/70">
             {data.preco_pix && <span><strong className="text-cobre">{formatPrice(data.preco_pix)}</strong> à vista (PIX)</span>}
@@ -55,20 +55,19 @@ export function DataCard({ data }: { data: DataExpedicao }) {
               {data.tag}
             </span>
           )}
-          <span className={cn("inline-flex items-center rounded-full border px-3 py-1 text-[0.7rem] uppercase tracking-widest", STATUS_CLASS[data.status])}>
-            {STATUS_LABEL[data.status] ?? data.status}
-          </span>
+          {data.status !== "disponivel" && (
+            <span className={cn("inline-flex items-center rounded-full border px-3 py-1 text-[0.7rem] uppercase tracking-widest", STATUS_CLASS[data.status])}>
+              {STATUS_LABEL[data.status] ?? data.status}
+            </span>
+          )}
         </div>
-        {isEsgotado ? (
-          <span className="text-xs text-muted-foreground md:order-first">{data.vagas_disponiveis} vagas</span>
-        ) : (
+        {!isEsgotado && (
           <Link
-            to="/reserva/$slug"
-            params={{ slug: getPublicExpedicaoSlug(data.expedicao_slug ?? "") }}
-            search={{ data: data.id }}
+            to="/expedicoes/$slug"
+            params={{ slug: publicSlug }}
             className="inline-flex items-center gap-2 rounded-full bg-floresta-deep px-4 py-2 text-xs uppercase tracking-widest text-areia transition-colors hover:bg-cobre"
           >
-            Reservar <ArrowRight className="h-3.5 w-3.5" />
+            Ver expedição <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         )}
       </div>

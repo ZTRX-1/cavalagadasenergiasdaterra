@@ -44,9 +44,9 @@ export function SiteFooter() {
               <li><Link to="/datas" className="text-areia/85 hover:text-cobre">{t("nav.datas")}</Link></li>
               <li><Link to="/quem-somos" className="text-areia/85 hover:text-cobre">{t("nav.quemSomos")}</Link></li>
               <li><Link to="/contato" className="text-areia/85 hover:text-cobre">{t("nav.contato")}</Link></li>
-              <li><Link to="/minha-reserva" className="text-areia/85 hover:text-cobre">{t("nav.minhaReserva")}</Link></li>
             </ul>
           </div>
+
 
           <div className="md:col-span-4">
             <div className="eyebrow text-cobre-soft">{t("footer.contato")}</div>
@@ -75,17 +75,19 @@ export function SiteFooter() {
               </li>
               <li className="text-areia/65 pt-1">
                 <div className="font-eyebrow text-[0.6rem] uppercase tracking-[0.32em] text-areia/60 mb-1">Base de Operações</div>
-                Serra da Mantiqueira, Maria da Fé, MG
+                Serra da Mantiqueira — Maria da Fé, MG
               </li>
+
             </ul>
           </div>
         </div>
 
         <div className="mt-16 flex flex-col items-start justify-between gap-4 border-t border-areia/10 pt-8 text-xs text-areia/65 md:flex-row md:items-center">
           <div className="space-y-1">
-            <div>© {new Date().getFullYear()} Cavalgadas Energias da Terra · {t("footer.rights")}</div>
+            <div>© 2025–Presente | Cavalgadas Energias da Terra. {t("footer.rights")}</div>
             <div className="text-areia/55">CNPJ 60.252.479/0001-85</div>
           </div>
+
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <Link to="/privacidade" className="text-areia/70 hover:text-cobre">Privacidade</Link>
             <Link to="/termos" className="text-areia/70 hover:text-cobre">Termos de Uso</Link>

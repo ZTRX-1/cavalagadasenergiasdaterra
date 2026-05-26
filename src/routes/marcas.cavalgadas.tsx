@@ -50,7 +50,7 @@ function Page() {
           <div className="md:col-span-7 text-lg leading-relaxed text-foreground/85 space-y-5">
             <p>Cavalgar é mais lento que dirigir, mais íntimo que caminhar. É o ritmo certo para atravessar uma paisagem sem violá-la.</p>
             <p>Nossas expedições nascem de uma manada própria de Mangalarga Marchador, criada com tempo e afeto. Não alugada, não improvisada.</p>
-            <p>Cada roteiro é desenhado como um filme: fotografia, ritmo, hospedagem, gastronomia. Tudo cuidado para que você apenas chegue, monte, e se entregue à travessia.</p>
+            <p>Cada roteiro é desenhado como um filme: fotografia, ritmo, hospedagem, gastronomia. Tudo cuidado para que você apenas chegue, monte, e se entregue à expedição.</p>
           </div>
         </div>
       </section>
@@ -69,7 +69,7 @@ function Page() {
 
       <section className="bg-secondary/40 py-20 md:py-24">
         <div className="container-tight text-center">
-          <h2 className="font-display text-4xl text-balance md:text-5xl">Pronto para a próxima travessia?</h2>
+          <h2 className="font-display text-4xl text-balance md:text-5xl">Pronto para a próxima expedição?</h2>
           <Link to="/expedicoes" className="mt-8 inline-flex items-center gap-2 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia hover:bg-cobre-soft">
             Ver expedições <ArrowRight className="h-4 w-4" />
           </Link>

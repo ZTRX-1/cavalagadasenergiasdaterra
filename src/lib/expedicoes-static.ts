@@ -164,13 +164,14 @@ const EXPEDICOES: Expedicao[] = [
         "inclui": [
             "Cavalos Mangalarga Marchador preparados",
             "Selas e equipamentos de montaria",
-            "Guias experientes durante toda a travessia",
+            "Guias experientes durante toda a expedição",
             "Transfer Cruzília até Fazenda Angaí",
             "Transporte logístico e apoio durante os percursos",
-            "Hospedagem durante toda a expedição",
+            "Hospedagem em Fazenda Angaí, Pousada Cruzília ou similares",
             "Café da manhã todos os dias",
             "Almoços nos dias de cavalgada e jantares conforme programação",
-            "Visita ao Museu do Mangalarga Marchador"
+            "Visita ao Museu do Mangalarga Marchador",
+            "Seguro aventura"
         ],
         "regiao": "Cruzília, MG",
         "duracao": "5 dias / 4 noites",
@@ -209,12 +210,18 @@ const EXPEDICOES: Expedicao[] = [
         "imagem_url": "expedicao-chapada",
         "requisitos": [
             "Distância média de 15 a 25 km por dia",
+            "Hospedagens previstas: Fazenda Angaí, Pousada Cruzília ou similares",
             "Bebidas durante refeições não incluídas",
             "Transporte até Cruzília não incluído",
-            "Vagas limitadas a 12 participantes"
+            "Despesas pessoais não inclusas",
+            "Seguro pessoal de viagem não incluso",
+            "Itens não mencionados como inclusos não fazem parte do pacote",
+            "Programação sujeita a alterações por condições climáticas ou logísticas"
         ],
-        "descricao_curta": "Travessia a cavalo por Cruzília (MG), o berço da raça Mangalarga Marchador, visitando fazendas históricas que moldaram a genética do cavalo.",
-        "descricao_longa": "Cruzília, no sul de Minas Gerais, é reconhecida como o berço do cavalo Mangalarga Marchador. Entre chapadões, antigas fazendas e paisagens rurais que guardam séculos de tradição, nasceu uma das raças de sela mais admiradas do Brasil.\n\nEsta travessia é uma jornada pelas origens do Marchador, com cinco dias na cultura equestre mineira e três dias de cavalgadas guiadas por paisagens marcantes da região."
+
+        "descricao_curta": "Expedição a cavalo por Cruzília (MG), o berço da raça Mangalarga Marchador, visitando fazendas históricas que moldaram a genética do cavalo.",
+        "descricao_longa": "Cruzília, no sul de Minas Gerais, é reconhecida como o berço do cavalo Mangalarga Marchador. Entre chapadões, antigas fazendas e paisagens rurais que guardam séculos de tradição, nasceu uma das raças de sela mais admiradas do Brasil.\n\nEsta expedição é uma jornada pelas origens do Marchador, com cinco dias na cultura equestre mineira e três dias de cavalgadas guiadas por paisagens marcantes da região."
+
     },
     {
         "id": "4f698388-a443-406c-a76d-a409fb794fa1",
