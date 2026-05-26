@@ -4,6 +4,7 @@ import { ArrowRight, Check, MessageCircle } from "lucide-react";
 import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
 import { getExpedicaoImage, getExpedicaoGaleria } from "@/lib/expedicao-images";
 import { GaleriaEditorial } from "@/components/galeria-editorial";
+import { VideoCinematic } from "@/components/video-cinematic";
 import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
 import { formatDateRange, formatPrice, formatPriceWithBRL } from "@/lib/format";
 import { DataCard } from "@/components/data-card";
