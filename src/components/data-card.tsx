@@ -42,11 +42,9 @@ export function DataCard({ data, variant = "link" }: { data: DataExpedicao; vari
       <div className="hidden md:block md:flex-1">
         <div className="font-eyebrow text-[0.72rem] uppercase tracking-[0.22em] text-cobre">{data.expedicao_nome}</div>
         <div className="mt-1.5 font-display text-xl text-foreground">{formatDateRange(data.data_inicio, data.data_fim)}</div>
-        {(data.preco_pix || data.preco_cartao) && (
-          <div className="mt-2 text-xs text-foreground/70">
-            {data.preco_pix && <span><strong className="text-cobre">{formatPrice(data.preco_pix)}</strong> à vista (PIX)</span>}
-            {data.preco_pix && data.preco_cartao && <span className="mx-2 text-muted-foreground">·</span>}
-            {data.preco_cartao && <span>{formatPrice(data.preco_cartao)} no cartão</span>}
+        {data.preco_pix != null && (
+          <div className="mt-2 text-sm text-foreground/80">
+            A partir de <strong className="text-cobre">{formatPrice(data.preco_pix, data.moeda)}</strong>
           </div>
         )}
       </div>

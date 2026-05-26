@@ -39,7 +39,7 @@ function normalizeExpedicao(row: Record<string, unknown>): Expedicao {
   };
 }
 
-function normalizeData(row: Record<string, unknown>, exp?: { nome: string; slug: string }): DataExpedicao {
+function normalizeData(row: Record<string, unknown>, exp?: { nome: string; slug: string; moeda?: string }): DataExpedicao {
   return {
     id: row.id as string,
     expedicao_id: row.expedicao_id as string,
@@ -53,6 +53,7 @@ function normalizeData(row: Record<string, unknown>, exp?: { nome: string; slug:
     preco_pix: row.preco_pix == null ? null : Number(row.preco_pix),
     preco_cartao: row.preco_cartao == null ? null : Number(row.preco_cartao),
     tag: (row.tag as string) ?? undefined,
+    moeda: exp?.moeda ?? "BRL",
   };
 }
 
@@ -96,7 +97,7 @@ export async function getExpedicaoBySlug(
     return {
       expedicao: norm,
       datas: (datas ?? []).map((d) =>
-        normalizeData(d as Record<string, unknown>, { nome: norm.nome, slug: norm.slug }),
+        normalizeData(d as Record<string, unknown>, { nome: norm.nome, slug: norm.slug, moeda: norm.moeda }),
       ),
     };
   } catch {
@@ -108,7 +109,7 @@ export async function listProximasDatas(): Promise<DataExpedicao[]> {
   try {
     const { data, error } = await supabase
       .from("datas")
-      .select("*, expedicoes:expedicao_id(nome, slug, ativo, status)")
+      .select("*, expedicoes:expedicao_id(nome, slug, ativo, status, moeda)")
       .order("data_inicio", { ascending: true });
     if (error) throw error;
     if (!data || data.length === 0) return listProximasDatasStatic();
@@ -118,7 +119,7 @@ export async function listProximasDatas(): Promise<DataExpedicao[]> {
         return exp?.ativo && exp.status === "publicado";
       })
       .map((row) => {
-        const exp = (row as { expedicoes?: { nome: string; slug: string } | null }).expedicoes ?? undefined;
+        const exp = (row as { expedicoes?: { nome: string; slug: string; moeda?: string } | null }).expedicoes ?? undefined;
         return normalizeData(row as Record<string, unknown>, exp);
       });
   } catch {
