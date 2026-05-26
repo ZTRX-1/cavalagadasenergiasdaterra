@@ -107,6 +107,7 @@ function RootComponent() {
       {!isAdmin && <SiteFooter />}
       {!isAdmin && <CookieConsent />}
       {!isAdmin && <VLibras />}
+      {!isAdmin && <AccessibilityPanel />}
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );
