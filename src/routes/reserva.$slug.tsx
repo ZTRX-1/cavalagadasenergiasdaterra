@@ -218,9 +218,6 @@ function ReservaPage() {
             {selectedDate && selectedDate.status === "poucas_vagas" && (
               <span className="rounded-full bg-cobre/90 px-3 py-1 font-eyebrow text-[0.62rem] uppercase tracking-[0.22em] text-areia">Últimas vagas</span>
             )}
-            {selectedDate && (
-              <span className="rounded-full border border-areia/25 px-3 py-1 font-eyebrow text-[0.62rem] uppercase tracking-[0.22em]">{selectedDate.vagas_disponiveis} vagas restantes</span>
-            )}
           </div>
           <p className="mt-6 max-w-xl text-areia/80">A partir de <span className="font-display text-xl text-areia">{formatPrice(expedicao.preco, expedicao.moeda)}</span> por participante · concierge dedicado em todas as etapas.</p>
         </div>
@@ -345,7 +342,7 @@ function ReservaPage() {
 
 
             {step === 1 && (
-              <Step title="Participantes" desc="Informe quantas pessoas embarcam nesta travessia.">
+              <Step title="Participantes" desc="Informe quantas pessoas embarcam nesta expedição.">
                 <div className="grid gap-5 sm:grid-cols-2">
                   <Field label="Tipo de grupo">
                     <select className="input" {...form.register("adicionais.tipo_grupo")}>

@@ -330,6 +330,8 @@ const EXPEDICOES: Expedicao[] = [
         "imagem_url": "expedicao-chapada",
         "requisitos": [
             "Acomodação single com tarifa adicional de 40%",
+            "Entrada de 25% na confirmação",
+            "Saldo em parcelas iguais com quitação até 30 dias antes da expedição",
             "Conversão pelo dólar turismo do dia",
             "Bebidas e extras pessoais não incluídos",
             "Seguro viagem por conta do participante"
@@ -393,6 +395,8 @@ const EXPEDICOES: Expedicao[] = [
         "imagem_url": "expedicao-aerea",
         "requisitos": [
             "Passagens aéreas e despesas pessoais não incluídas",
+            "Entrada de 15% na confirmação",
+            "Saldo via Pix mediante contrato",
             "Conversão baseada no dólar turismo do dia",
             "Grupo reduzido para garantir exclusividade"
         ],
@@ -458,11 +462,11 @@ const DATAS: DataExpedicao[] = [
         "id": "9e910682-0ce1-4ebe-b6f4-306814ef32c9",
         "status": "disponivel",
         "data_fim": "2026-06-07",
-        "preco_pix": 4900,
+        "preco_pix": 3900,
         "data_inicio": "2026-06-04",
         "vagas_total": 14,
         "expedicao_id": "c9e9f1dd-039d-4301-9181-ab26b30b9f2f",
-        "preco_cartao": 5200,
+        "preco_cartao": 4400,
         "expedicao_nome": "Serra da Canastra",
         "expedicao_slug": "serra-da-canastra",
         "vagas_disponiveis": 8
@@ -497,7 +501,7 @@ const DATAS: DataExpedicao[] = [
         "id": "696d31b1-ed97-4e5f-bf7f-3453f058dda4",
         "status": "poucas_vagas",
         "data_fim": "2026-08-07",
-        "preco_pix": null,
+        "preco_pix": 1600,
         "data_inicio": "2026-08-04",
         "vagas_total": 10,
         "expedicao_id": "5b8124d0-20f1-416a-8dd9-3ab0b17a0f6b",
@@ -510,7 +514,7 @@ const DATAS: DataExpedicao[] = [
         "id": "49b808dc-aac6-401e-81c7-f4eb66853940",
         "status": "disponivel",
         "data_fim": "2026-08-23",
-        "preco_pix": null,
+        "preco_pix": 5200,
         "data_inicio": "2026-08-19",
         "vagas_total": 12,
         "expedicao_id": "aa0ddccc-6b9a-4c84-99c7-69b722b8cd6f",
@@ -546,10 +550,23 @@ const DATAS: DataExpedicao[] = [
         "vagas_disponiveis": 6
     },
     {
+        "id": "c4a91b22-3d8e-4f7a-9b5c-1e2f3a4b5c6d",
+        "status": "disponivel",
+        "data_fim": "2026-11-02",
+        "preco_pix": 4900,
+        "data_inicio": "2026-10-30",
+        "vagas_total": 14,
+        "expedicao_id": "c9e9f1dd-039d-4301-9181-ab26b30b9f2f",
+        "preco_cartao": 5200,
+        "expedicao_nome": "Serra da Canastra",
+        "expedicao_slug": "serra-da-canastra",
+        "vagas_disponiveis": 14
+    },
+    {
         "id": "d722b618-8af9-4c39-889e-2fdfd5139d62",
         "status": "disponivel",
         "data_fim": "2027-01-19",
-        "preco_pix": null,
+        "preco_pix": 2350,
         "data_inicio": "2027-01-15",
         "vagas_total": 10,
         "expedicao_id": "b72305d1-223e-4835-b87b-ff97d3229429",
@@ -563,7 +580,7 @@ const DATAS: DataExpedicao[] = [
         "id": "f1b3c2d4-7a8b-4c5d-9e0f-2a1b3c4d5e6f",
         "status": "disponivel",
         "data_fim": "2027-01-28",
-        "preco_pix": null,
+        "preco_pix": 2350,
         "data_inicio": "2027-01-24",
         "vagas_total": 10,
         "expedicao_id": "b72305d1-223e-4835-b87b-ff97d3229429",
