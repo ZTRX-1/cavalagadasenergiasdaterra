@@ -12,6 +12,7 @@ import { ScrollToTop } from "@/components/scroll-to-top";
 import { CookieConsent } from "@/components/cookie-consent";
 import { VLibras } from "@/components/vlibras";
 import { AccessibilityPanel } from "@/components/accessibility-panel";
+import { WhatsappFloat } from "@/components/whatsapp-float";
 import heroOg from "@/assets/founders/ligia-rio.jpg";
 
 import { Toaster } from "@/components/ui/sonner";
