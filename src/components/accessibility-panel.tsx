@@ -1,15 +1,31 @@
-import { useEffect, useState } from "react";
-import { Accessibility, X, Type, Contrast, Hand, Pause } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import {
+  Accessibility,
+  X,
+  Type,
+  Contrast,
+  Hand,
+  Pause,
+  Volume2,
+  VolumeX,
+  MousePointer2,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Prefs = {
   fontScale: number; // 1 | 1.15 | 1.3
   highContrast: boolean;
   reduceMotion: boolean;
+  hoverRead: boolean;
 };
 
 const STORAGE_KEY = "cet:a11y-prefs";
-const DEFAULTS: Prefs = { fontScale: 1, highContrast: false, reduceMotion: false };
+const DEFAULTS: Prefs = {
+  fontScale: 1,
+  highContrast: false,
+  reduceMotion: false,
+  hoverRead: false,
+};
 
 function loadPrefs(): Prefs {
   if (typeof window === "undefined") return DEFAULTS;
@@ -34,15 +50,61 @@ function triggerVLibras() {
   if (btn) btn.click();
 }
 
+// ============ Narração / TTS nativa do navegador ============
+function pickPtVoice(): SpeechSynthesisVoice | null {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return null;
+  const voices = window.speechSynthesis.getVoices();
+  return (
+    voices.find((v) => /pt[-_]BR/i.test(v.lang)) ||
+    voices.find((v) => /^pt/i.test(v.lang)) ||
+    voices[0] ||
+    null
+  );
+}
+
+function speak(text: string) {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  const clean = text.replace(/\s+/g, " ").trim().slice(0, 4500);
+  if (!clean) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(clean);
+  utter.lang = "pt-BR";
+  utter.rate = 1;
+  utter.pitch = 1;
+  const v = pickPtVoice();
+  if (v) utter.voice = v;
+  window.speechSynthesis.speak(utter);
+}
+
+function stopSpeaking() {
+  if (typeof window !== "undefined" && "speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+  }
+}
+
+function getMainText(): string {
+  const main = document.getElementById("main-content");
+  if (!main) return document.body.innerText || "";
+  return main.innerText || "";
+}
+
 export function AccessibilityPanel() {
   const [open, setOpen] = useState(false);
   const [prefs, setPrefs] = useState<Prefs>(DEFAULTS);
+  const [speaking, setSpeaking] = useState(false);
+  const hoverHandlerRef = useRef<((e: Event) => void) | null>(null);
 
   // Hidratação das prefs salvas
   useEffect(() => {
     const p = loadPrefs();
     setPrefs(p);
     applyPrefs(p);
+    // Força carregamento das vozes (alguns navegadores só populam após este evento)
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        /* noop: dispara internamente */
+      };
+    }
   }, []);
 
   useEffect(() => {
@@ -61,6 +123,54 @@ export function AccessibilityPanel() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  // Monitora estado de fala para refletir no botão
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        setSpeaking(window.speechSynthesis.speaking);
+      }
+    }, 400);
+    return () => window.clearInterval(id);
+  }, []);
+
+  // Modo "ler ao passar o mouse / focar"
+  useEffect(() => {
+    if (!prefs.hoverRead) {
+      if (hoverHandlerRef.current) {
+        document.removeEventListener("mouseover", hoverHandlerRef.current, true);
+        document.removeEventListener("focusin", hoverHandlerRef.current, true);
+        hoverHandlerRef.current = null;
+      }
+      return;
+    }
+
+    const handler = (e: Event) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      // Ignora o próprio painel
+      if (target.closest("#a11y-panel") || target.closest("[data-a11y-fab]")) return;
+      const text =
+        target.getAttribute("aria-label") ||
+        target.getAttribute("alt") ||
+        (target as HTMLElement).innerText ||
+        "";
+      const clean = text.replace(/\s+/g, " ").trim();
+      if (clean.length < 2 || clean.length > 600) return;
+      speak(clean);
+    };
+
+    hoverHandlerRef.current = handler;
+    document.addEventListener("mouseover", handler, true);
+    document.addEventListener("focusin", handler, true);
+    return () => {
+      document.removeEventListener("mouseover", handler, true);
+      document.removeEventListener("focusin", handler, true);
+    };
+  }, [prefs.hoverRead]);
+
+  // Para a fala ao desmontar
+  useEffect(() => () => stopSpeaking(), []);
+
   const fontOptions = [
     { value: 1, label: "A" },
     { value: 1.15, label: "A+" },
@@ -72,19 +182,23 @@ export function AccessibilityPanel() {
       {/* Botão flutuante */}
       <button
         type="button"
+        data-a11y-fab
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Fechar opções de acessibilidade" : "Abrir opções de acessibilidade"}
         aria-expanded={open}
         aria-controls="a11y-panel"
         className={cn(
-          "fixed z-40 inline-flex items-center justify-center rounded-full",
+          "group fixed z-[60] inline-flex items-center justify-center rounded-full",
           "bg-gradient-to-br from-cobre via-couro to-cobre-soft text-areia",
-          "ring-1 ring-areia/30 shadow-elegant",
-          "transition-transform duration-300 hover:scale-105 hover:ring-areia/60",
+          "ring-2 ring-areia/40 shadow-elegant",
+          "transition-transform duration-300 hover:scale-105 hover:ring-areia/70",
           "bottom-24 right-5 h-12 w-12 md:bottom-28 md:right-8 md:h-14 md:w-14",
         )}
       >
-        <span className="pointer-events-none absolute inset-0 rounded-full bg-cobre/30 opacity-60 blur-md transition-opacity duration-500 group-hover:opacity-90" aria-hidden />
+        <span
+          className="pointer-events-none absolute inset-0 rounded-full bg-cobre/40 opacity-70 blur-md transition-opacity duration-500 group-hover:opacity-100 motion-safe:animate-pulse"
+          aria-hidden
+        />
         <Accessibility className="relative h-6 w-6 md:h-7 md:w-7" aria-hidden />
       </button>
 
@@ -95,8 +209,8 @@ export function AccessibilityPanel() {
         aria-modal="false"
         aria-label="Opções de acessibilidade"
         className={cn(
-          "fixed z-40 origin-bottom-right transition-all duration-300",
-          "bottom-40 right-5 w-[19rem] md:bottom-44 md:right-8 md:w-[21rem]",
+          "fixed z-[60] origin-bottom-right transition-all duration-300",
+          "bottom-40 right-5 w-[20rem] md:bottom-44 md:right-8 md:w-[22rem]",
           open
             ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
             : "pointer-events-none translate-y-2 scale-95 opacity-0",
@@ -120,7 +234,46 @@ export function AccessibilityPanel() {
             </button>
           </div>
 
-          <div className="space-y-5 px-5 py-5">
+          <div className="space-y-5 px-5 py-5 max-h-[70vh] overflow-y-auto">
+            {/* Narração */}
+            <div>
+              <div className="mb-2 flex items-center gap-2 font-eyebrow text-[0.65rem] uppercase tracking-[0.24em] text-areia/70">
+                <Volume2 className="h-3.5 w-3.5 text-cobre-soft" aria-hidden />
+                Narração da página
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => speak(getMainText())}
+                  className="inline-flex items-center justify-center gap-2 rounded-sm border border-cobre/40 bg-cobre/15 px-3 py-2 font-display text-sm text-areia transition-colors hover:border-cobre hover:bg-cobre/25"
+                >
+                  <Volume2 className="h-4 w-4" aria-hidden /> Ouvir
+                </button>
+                <button
+                  type="button"
+                  onClick={stopSpeaking}
+                  disabled={!speaking}
+                  className={cn(
+                    "inline-flex items-center justify-center gap-2 rounded-sm border px-3 py-2 font-display text-sm transition-colors",
+                    speaking
+                      ? "border-areia/30 text-areia hover:border-cobre hover:text-cobre-soft"
+                      : "border-areia/10 text-areia/40",
+                  )}
+                >
+                  <VolumeX className="h-4 w-4" aria-hidden /> Parar
+                </button>
+              </div>
+
+              <div className="mt-3">
+                <ToggleRow
+                  icon={<MousePointer2 className="h-3.5 w-3.5 text-cobre-soft" aria-hidden />}
+                  label="Ler ao passar / focar"
+                  checked={prefs.hoverRead}
+                  onChange={(v) => setPrefs((p) => ({ ...p, hoverRead: v }))}
+                />
+              </div>
+            </div>
+
             {/* Tamanho da fonte */}
             <div>
               <div className="mb-2 flex items-center gap-2 font-eyebrow text-[0.65rem] uppercase tracking-[0.24em] text-areia/70">
@@ -193,6 +346,7 @@ export function AccessibilityPanel() {
             <button
               type="button"
               onClick={() => {
+                stopSpeaking();
                 setPrefs(DEFAULTS);
               }}
               className="w-full pt-1 text-center font-eyebrow text-[0.6rem] uppercase tracking-[0.22em] text-areia/50 transition-colors hover:text-cobre-soft"
