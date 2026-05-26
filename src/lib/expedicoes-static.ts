@@ -330,8 +330,7 @@ const EXPEDICOES: Expedicao[] = [
         "imagem_url": "expedicao-chapada",
         "requisitos": [
             "Acomodação single com tarifa adicional de 40%",
-            "Pagamento via PIX em reais com conversão pelo dólar turismo do dia",
-            "25% no ato, saldo em parcelas iguais com quitação até 30 dias antes",
+            "Conversão pelo dólar turismo do dia",
             "Bebidas e extras pessoais não incluídos",
             "Seguro viagem por conta do participante"
         ],
@@ -394,7 +393,6 @@ const EXPEDICOES: Expedicao[] = [
         "imagem_url": "expedicao-aerea",
         "requisitos": [
             "Passagens aéreas e despesas pessoais não incluídas",
-            "Entrada de 15% no ato, saldo via PIX mediante contrato",
             "Conversão baseada no dólar turismo do dia",
             "Grupo reduzido para garantir exclusividade"
         ],
@@ -448,8 +446,7 @@ const EXPEDICOES: Expedicao[] = [
             "Experiência mínima em montaria obrigatória",
             "Informar previamente: nome, altura, peso, idade, eventuais lesões e nível de equitação",
             "Selas inglesas (principalmente) e algumas brasileiras/endurance, adaptáveis com gel ou lã",
-            "Suplemento quarto individual: € 300 (6 noites)",
-            "Entrada mínima de € 500 para garantir a vaga; saldo parcelado até 20 de julho de 2026"
+            "Suplemento quarto individual: € 300 (6 noites)"
         ],
         "descricao_curta": "Sete dias percorrendo a Rota Francesa do Caminho de Santiago a cavalo, de O Cebreiro até a Plaza do Obradoiro em Santiago de Compostela.",
         "descricao_longa": "Uma travessia de aproximadamente 135 km pelo Caminho de Santiago a cavalo, na Galícia. Sete dias percorrendo a histórica Rota Francesa, de O Cebreiro (Triscastela) até a entrada triunfal na Plaza do Obradoiro, em frente à Catedral de Santiago de Compostela.\n\nEtapas diárias entre 22 e 30 km, com cavalos experientes, hospedagem em hotéis rurais e casas típicas galegas, equipe de apoio diária e transporte de bagagem entre os alojamentos."
