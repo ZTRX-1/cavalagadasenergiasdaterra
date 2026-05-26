@@ -330,6 +330,8 @@ const EXPEDICOES: Expedicao[] = [
         "imagem_url": "expedicao-chapada",
         "requisitos": [
             "Acomodação single com tarifa adicional de 40%",
+            "Entrada de 25% na confirmação",
+            "Saldo em parcelas iguais com quitação até 30 dias antes da expedição",
             "Conversão pelo dólar turismo do dia",
             "Bebidas e extras pessoais não incluídos",
             "Seguro viagem por conta do participante"
@@ -393,6 +395,8 @@ const EXPEDICOES: Expedicao[] = [
         "imagem_url": "expedicao-aerea",
         "requisitos": [
             "Passagens aéreas e despesas pessoais não incluídas",
+            "Entrada de 15% na confirmação",
+            "Saldo via Pix mediante contrato",
             "Conversão baseada no dólar turismo do dia",
             "Grupo reduzido para garantir exclusividade"
         ],
