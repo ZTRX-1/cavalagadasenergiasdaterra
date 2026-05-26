@@ -8,15 +8,14 @@ import { cn } from "@/lib/utils";
 
 const STATUS_LABEL: Record<string, string> = {
   disponivel: "Disponível",
-  poucas_vagas: "Poucas vagas",
   esgotado: "Esgotado",
 };
 
 const STATUS_CLASS: Record<string, string> = {
   disponivel: "bg-floresta/10 text-floresta border-floresta/30",
-  poucas_vagas: "bg-cobre/15 text-cobre border-cobre/40",
   esgotado: "bg-muted text-muted-foreground border-border",
 };
+
 
 export function DataCard({ data, variant = "link" }: { data: DataExpedicao; variant?: "link" | "reservar" }) {
   const inicio = formatDayShort(data.data_inicio);
@@ -60,9 +59,9 @@ export function DataCard({ data, variant = "link" }: { data: DataExpedicao; vari
               {data.tag}
             </span>
           )}
-          {data.status !== "disponivel" && (
+          {data.status !== "disponivel" && STATUS_LABEL[data.status] && (
             <span className={cn("inline-flex items-center rounded-full border px-3 py-1 text-[0.7rem] uppercase tracking-widest", STATUS_CLASS[data.status])}>
-              {STATUS_LABEL[data.status] ?? data.status}
+              {STATUS_LABEL[data.status]}
             </span>
           )}
         </div>
