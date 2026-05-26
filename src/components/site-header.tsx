@@ -66,7 +66,7 @@ export function SiteHeader() {
           </Link>
 
 
-          <nav className="hidden flex-1 items-center justify-center gap-7 xl:flex xl:gap-9 2xl:gap-11">
+          <nav aria-label="Menu principal" className="hidden flex-1 items-center justify-center gap-7 xl:flex xl:gap-9 2xl:gap-11">
             {NAV.map((item) => (
               <Link
                 key={item.label}
