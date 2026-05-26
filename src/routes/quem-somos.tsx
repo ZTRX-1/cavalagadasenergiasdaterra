@@ -37,19 +37,21 @@ const DIFERENCIAIS = [
   },
   {
     icon: Sparkles,
-    title: "Hospitalidade boutique",
-    desc: "Roteiros, pousos, gastronomia e pausas desenhados com intenção, sem excesso e sem ruído.",
+    title: "Hospedagem com propósito",
+    desc: "Pousadas, hotéis e acomodações locais escolhidas com intenção, sem excesso e sem ruído.",
   },
   {
     icon: Compass,
     title: "Expedições no Brasil e exterior",
-    desc: "Travessias conduzidas com repertório, segurança e leitura cultural de cada território." ,
+    desc: "Expedições conduzidas com repertório, segurança e leitura cultural de cada território." ,
   },
+
   {
     icon: Heart,
     title: "Transformação real",
-    desc: "A marca nasce de uma travessia pessoal e se sustenta no propósito de conectar pessoas, natureza e bem-estar.",
+    desc: "A marca nasce de uma jornada pessoal e se sustenta no propósito de conectar pessoas, natureza e bem-estar.",
   },
+
 ];
 
 function QuemSomosPage() {
@@ -72,13 +74,12 @@ function QuemSomosPage() {
           <div className="max-w-3xl">
             <div className="eyebrow text-cobre-soft">Quem Somos</div>
             <h1 className="mt-5 font-display text-4xl leading-[1.01] text-balance md:text-6xl lg:text-[4.5rem]">
-              A alma da marca está em quem vive a <em className="not-italic text-cobre-soft">travessia</em>.
+              Vivemos o que <em className="not-italic text-cobre-soft">oferecemos</em>.
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-areia/82 md:text-lg">
-              A Cavalgadas Energias da Terra nasceu do encontro entre sensibilidade, técnica, criação de cavalos,
-              hospitalidade e um profundo compromisso com a natureza. Não é um cenário montado: é uma vida inteira
-              organizada em torno do cavalo, do território e da experiência humana.
+              A Cavalgadas Energias da Terra foi criada por quem vive o universo equestre todos os dias. Somos criadores de cavalos, anfitriões e especialistas em expedições a cavalo. Cada roteiro é cuidadosamente planejado para unir natureza, cultura, gastronomia e hospitalidade em experiências autênticas e memoráveis.
             </p>
+
           </div>
         </div>
       </section>
@@ -88,24 +89,20 @@ function QuemSomosPage() {
           <div className="md:col-span-7">
             <div className="eyebrow">Nossa origem</div>
             <h2 className="mt-5 font-display text-4xl leading-[1.05] text-balance md:text-5xl">
-              Um projeto nascido do cavalo, amadurecido pela vida e lapidado pela experiência.
+              Onde tudo começou.
             </h2>
             <div className="mt-8 space-y-6 text-[1.02rem] leading-relaxed text-foreground/82">
               <p className="text-pretty">
-                A marca reúne quatro frentes que se completam — Cavalgadas Energias da Terra, Elas na Sela,
-                Canastra a Cavalo e o Refúgio &amp; Haras Energias da Terra. Em todas elas, a mesma assinatura:
-                expedições equestres boutique, criação própria de cavalos, hospitalidade curada e roteiros que fazem
-                da natureza um lugar de presença real.
+                A Cavalgadas Energias da Terra nasceu da paixão pelo universo equestre e da certeza de que algumas experiências só podem ser vividas no ritmo do cavalo.
               </p>
               <p className="text-pretty">
-                O que entregamos não nasce de uma ideia publicitária. Nasce da rotina no haras, da condução dos
-                animais, da observação do terreno, da escolha de parceiros certos, da capacidade de acolher com
-                sofisticação sem romper a verdade rural que sustenta tudo.
+                Ao longo dos anos, transformamos essa paixão em expedições cuidadosamente planejadas, conectando pessoas, natureza, cultura e hospitalidade em destinos selecionados.
               </p>
-              <blockquote className="border-l-2 border-cobre pl-6 font-display text-2xl italic leading-snug text-foreground/90 md:text-3xl">
-                “Luxo, para nós, é profundidade. É saber quando acelerar, quando pausar e quando deixar a paisagem falar.”
-              </blockquote>
+              <p className="text-pretty">
+                Mais do que percorrer caminhos, buscamos criar jornadas que deixem memórias, fortaleçam conexões e revelem a essência de cada lugar.
+              </p>
             </div>
+
           </div>
 
           <div className="md:col-span-5">
@@ -187,8 +184,9 @@ function QuemSomosPage() {
                 <p className="mt-3 text-pretty">
                   Lígia guia, desenha e conduz roteiros que integram cultura, gastronomia, patrimônio imaterial e
                   natureza profunda. É ela quem garante a escolha criteriosa dos cavalos, a segurança dos grupos e a
-                  autenticidade de cada travessia.
+                  autenticidade de cada expedição.
                 </p>
+
               </div>
             </div>
           </div>
@@ -309,10 +307,13 @@ function QuemSomosPage() {
                 do automático e devolver sentido ao tempo vivido.
               </p>
               <p className="text-pretty">
-                Da criação dos roteiros ao ritmo dos grupos, tudo é calibrado para preservar intimidade, beleza e
-                verdade. É por isso que tantas pessoas sentem que não compraram uma atividade — viveram uma travessia.
+                Da criação dos roteiros ao ritmo dos grupos, tudo é cuidadosamente planejado para preservar autenticidade, beleza e conexão.
+              </p>
+              <p className="text-pretty">
+                Mais do que visitar destinos, proporcionamos jornadas que transformam a forma como as pessoas se relacionam com o tempo, a natureza e consigo mesmas.
               </p>
             </div>
+
           </div>
         </div>
       </section>
@@ -328,12 +329,12 @@ function QuemSomosPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-carvao/75 via-carvao/85 to-carvao" />
         <div className="container-tight relative text-center">
-          <div className="eyebrow text-cobre-soft">Sua travessia</div>
+          <div className="eyebrow text-cobre-soft">Sua próxima expedição</div>
           <h2 className="mx-auto mt-5 max-w-3xl font-display text-4xl text-balance md:text-6xl">
-            Se essa história fez sentido, a próxima página é a sua.
+            Toda grande história começa com uma escolha.
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-pretty text-areia/82">
-            Escolha uma expedição, fale com a equipe e descubra qual território conversa melhor com o momento que você está vivendo.
+            Conheça nossas expedições e descubra qual destino, paisagem e experiência combinam com o momento que você está vivendo.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
             <Link
@@ -352,6 +353,7 @@ function QuemSomosPage() {
             </a>
           </div>
         </div>
+
       </section>
     </div>
   );
