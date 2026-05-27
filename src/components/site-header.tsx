@@ -134,7 +134,7 @@ export function SiteHeader() {
                 key={item.label}
                 to={item.to}
                 onClick={() => setOpen(false)}
-                className="group flex items-center justify-between border-b border-border/50 py-4 font-display text-2xl text-foreground transition-colors hover:text-cobre"
+                className="group flex items-center justify-between border-b border-border/50 py-3 font-display text-xl text-foreground transition-colors hover:text-cobre"
                 activeProps={{ className: "text-cobre" }}
               >
                 <span>{item.label}</span>
