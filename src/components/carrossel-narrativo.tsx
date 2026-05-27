@@ -61,8 +61,6 @@ export function CarrosselNarrativo({ cenas, alt = "" }: Props) {
   if (!cenas.length) return null;
 
   const total = cenas.length;
-  const atual = String(selected + 1).padStart(2, "0");
-  const totalStr = String(total).padStart(2, "0");
 
   return (
     <section
@@ -139,10 +137,12 @@ export function CarrosselNarrativo({ cenas, alt = "" }: Props) {
                         isActive ? "opacity-100" : "opacity-0",
                       )}
                     >
-                      <div className="font-eyebrow text-[0.6rem] uppercase tracking-[0.32em] text-areia/75 md:text-[0.65rem]">
-                        {cena.eyebrow}
-                      </div>
-                      <div className="mt-2 font-display text-2xl leading-tight text-balance md:text-3xl">
+                      {cena.eyebrow && (
+                        <div className="font-eyebrow text-[0.6rem] uppercase tracking-[0.32em] text-areia/75 md:text-[0.65rem]">
+                          {cena.eyebrow}
+                        </div>
+                      )}
+                      <div className="max-w-2xl font-display text-lg leading-snug text-balance text-areia/95 md:text-xl lg:text-2xl">
                         {cena.titulo}
                       </div>
                     </figcaption>
@@ -156,10 +156,6 @@ export function CarrosselNarrativo({ cenas, alt = "" }: Props) {
 
       {/* Controles */}
       <div className="container-tight mt-8 flex items-center justify-between gap-6 md:mt-10">
-        <div className="font-eyebrow text-[0.65rem] uppercase tracking-[0.32em] text-foreground/60">
-          {atual} <span className="mx-1 text-foreground/30">/</span> {totalStr}
-        </div>
-
         <div className="relative h-px flex-1 bg-foreground/15">
           <span
             aria-hidden
