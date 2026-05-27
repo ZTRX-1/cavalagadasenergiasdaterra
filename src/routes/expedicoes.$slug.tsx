@@ -201,7 +201,7 @@ function DetalhesExpedicao() {
 
 
       {/* Próximas datas */}
-      <section className="bg-secondary/40 py-24 md:py-32">
+      <section className={`bg-secondary/40 py-20 ${isJeri ? "md:py-24" : "md:py-32"}`}>
         <div className="container-tight">
           <div className="eyebrow">Próximas datas</div>
           <h2 className="mt-4 font-display text-3xl md:text-4xl">Escolha seu período</h2>
