@@ -158,10 +158,6 @@ export function CarrosselNarrativo({ cenas, alt = "" }: Props) {
 
       {/* Controles */}
       <div className="container-tight mt-8 flex items-center justify-between gap-6 md:mt-10">
-        <div className="font-eyebrow text-[0.65rem] uppercase tracking-[0.32em] text-foreground/60">
-          {atual} <span className="mx-1 text-foreground/30">/</span> {totalStr}
-        </div>
-
         <div className="relative h-px flex-1 bg-foreground/15">
           <span
             aria-hidden
