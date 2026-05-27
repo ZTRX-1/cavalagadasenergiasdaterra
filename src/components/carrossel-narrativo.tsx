@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -19,12 +20,13 @@ interface Props {
  * vizinhos atenuados, legenda cinematográfica, swipe nativo.
  */
 export function CarrosselNarrativo({ cenas, alt = "" }: Props) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    align: "center",
-    loop: true,
-    skipSnaps: false,
-    dragFree: false,
-  });
+  const autoplayRef = useRef(
+    Autoplay({ delay: 5500, stopOnInteraction: false, stopOnMouseEnter: true }),
+  );
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { align: "center", loop: true, skipSnaps: false, dragFree: false },
+    [autoplayRef.current],
+  );
   const [selected, setSelected] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
 
