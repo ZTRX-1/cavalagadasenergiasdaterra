@@ -61,8 +61,6 @@ export function CarrosselNarrativo({ cenas, alt = "" }: Props) {
   if (!cenas.length) return null;
 
   const total = cenas.length;
-  const atual = String(selected + 1).padStart(2, "0");
-  const totalStr = String(total).padStart(2, "0");
 
   return (
     <section
