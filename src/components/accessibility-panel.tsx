@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import {
-  Accessibility,
   X,
   Type,
   Contrast,
@@ -10,6 +9,7 @@ import {
   VolumeX,
   MousePointer2,
 } from "lucide-react";
+import { AccessibilityGlyph } from "@/components/icons/accessibility-glyph";
 import { cn } from "@/lib/utils";
 
 type Prefs = {
@@ -45,9 +45,15 @@ function applyPrefs(p: Prefs) {
   root.classList.toggle("a11y-reduce-motion", p.reduceMotion);
 }
 
-function triggerVLibras() {
+function triggerVLibras(retries = 8) {
   const btn = document.querySelector("[vw-access-button]") as HTMLElement | null;
-  if (btn) btn.click();
+  if (btn) {
+    btn.click();
+    return;
+  }
+  if (retries > 0) {
+    window.setTimeout(() => triggerVLibras(retries - 1), 350);
+  }
 }
 
 // ============ Narração / TTS nativa do navegador ============
@@ -244,7 +250,7 @@ export function AccessibilityPanel() {
           className="pointer-events-none absolute inset-0 rounded-full bg-cobre/40 opacity-70 blur-md transition-opacity duration-500 group-hover:opacity-100 motion-safe:animate-pulse"
           aria-hidden
         />
-        <Accessibility className="relative h-7 w-7" aria-hidden />
+        <AccessibilityGlyph className="relative h-7 w-7" />
       </button>
 
       {/* Backdrop (apenas mobile) */}
