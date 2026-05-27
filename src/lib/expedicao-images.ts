@@ -179,14 +179,14 @@ export interface CenaNarrativa {
 
 export const SLUG_NARRATIVA: Record<string, CenaNarrativa[]> = {
   "jericoacoara": [
-    { src: jeri01, eyebrow: "01 — Capa", titulo: "O primeiro raio sobre as dunas" },
-    { src: jeri02, eyebrow: "02 — Paisagem icônica", titulo: "Dunas, palmeiras e horizonte do Ceará" },
-    { src: jeri03, eyebrow: "03 — Cavalgada em movimento", titulo: "Silhuetas na praia ao entardecer" },
-    { src: jeri04, eyebrow: "04 — Conexão", titulo: "Encontro silencioso na lagoa" },
-    { src: jeri05, eyebrow: "05 — Travessia", titulo: "Cavalos atravessando águas claras" },
-    { src: jeri06, eyebrow: "06 — Grupo", titulo: "A tropa reunida diante do mar" },
-    { src: jeri07, eyebrow: "07 — Hospedagem", titulo: "Noite na pousada à beira da piscina" },
-    { src: jeri08, eyebrow: "08 — Encerramento", titulo: "O último pôr do sol sobre as dunas" },
+    { src: jeri01, eyebrow: "", titulo: "O começo de uma experiência que dificilmente será esquecida." },
+    { src: jeri02, eyebrow: "", titulo: "Paisagens que mudam o ritmo da mente e ampliam a sensação de liberdade." },
+    { src: jeri03, eyebrow: "", titulo: "O caminho é vivido no ritmo do cavalo, entre silêncio, natureza e presença." },
+    { src: jeri04, eyebrow: "", titulo: "Mais do que cavalgar, existe uma conexão que transforma a experiência." },
+    { src: jeri05, eyebrow: "", titulo: "Cada expedição revela cenários que não podem ser vividos da mesma forma em outro lugar." },
+    { src: jeri06, eyebrow: "", titulo: "Pessoas diferentes, histórias diferentes, conectadas pela mesma experiência." },
+    { src: jeri07, eyebrow: "", titulo: "Conforto, curadoria e hospitalidade pensados para fazer parte da jornada." },
+    { src: jeri08, eyebrow: "", titulo: "Algumas experiências terminam. Outras permanecem para sempre na memória." },
   ],
 };
 
