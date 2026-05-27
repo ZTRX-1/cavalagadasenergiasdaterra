@@ -80,12 +80,12 @@ function DetalhesExpedicao() {
       {narrativa.length > 0 && (
         <section className={`bg-background py-16 ${isJeri ? "md:py-20" : "md:py-28"}`}>
           <div className="container-tight mb-10 max-w-2xl md:mb-14">
-            <div className="eyebrow">A experiência em imagens</div>
+            <div className="eyebrow">Experiência em imagens</div>
             <h2 className="mt-4 font-display text-3xl md:text-4xl text-balance">
-              Oito cenas que contam essa viagem
+              Algumas paisagens você observa. Outras, atravessam você.
             </h2>
             <p className="mt-4 text-foreground/70 text-pretty">
-              Da primeira luz nas dunas ao último pôr do sol — deslize para percorrer a narrativa.
+              Entre dunas, cavalos, silêncio, vento e encontros inesperados, cada fotografia guarda um fragmento do que essa expedição realmente faz sentir.
             </p>
           </div>
           <CarrosselNarrativo cenas={narrativa} alt={expedicao.nome} />
