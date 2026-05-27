@@ -100,21 +100,34 @@ const PASSOS_TXT: Record<string, Array<{ n: string; t: string; d: string }>> = {
 
 const FAQ_TXT: Record<string, Array<{ q: string; a: string }>> = {
   pt: [
-    { q: "Preciso de experiência prévia com cavalos?", a: "Não. Oferecemos expedições para diferentes níveis de experiência, desde quem nunca montou até cavaleiros e amazonas experientes. Nossa equipe orienta na escolha do roteiro ideal para que cada pessoa aproveite a jornada com segurança e confiança." },
-    { q: "Como funciona a hospedagem?", a: "Trabalhamos com pousadas, hotéis e acomodações locais cuidadosamente selecionadas conforme o roteiro e a região, garantindo conforto, autenticidade e qualidade em cada experiência." },
-    { q: "Posso fazer uma expedição privada?", a: "Sim. Criamos experiências privativas e personalizadas, desenvolvidas de acordo com os interesses, ritmo e perfil de cada grupo." },
+    { q: "Quem pode participar das expedições?", a: "Qualquer pessoa em boas condições de saúde, dentro dos requisitos de cada expedição (idade e peso). Temos roteiros para todos os níveis." },
+    { q: "Preciso de experiência prévia com cavalos?", a: "Não. Nossas expedições iniciantes são desenhadas para quem nunca montou. Para os roteiros avançados pedimos experiência prévia." },
+    { q: "Como funciona a hospedagem?", a: "Trabalhamos com pousadas selecionadas de três a quatro estrelas, conforme o roteiro e a região, todas escolhidas por nossa curadoria, garantindo conforto, autenticidade e qualidade em cada experiência." },
+    { q: "Os cavalos são treinados?", a: "Sim. Todos os cavalos são treinados, descansados entre expedições e acompanhados por equipe profissional." },
+    { q: "Posso fazer uma expedição privada?", a: "Sim. Organizamos expedições privadas para grupos, casais e empresas. Fale conosco para um orçamento personalizado." },
+    { q: "Qual a melhor época para ir?", a: "Cada região tem sua melhor janela. Em geral, abril a outubro são meses ideais · clima seco e paisagens em equilíbrio." },
+    { q: "Como faço o pagamento?", a: "Aceitamos Pix, transferência, boleto e cartão parcelado. Combinamos tudo via WhatsApp após a pré-reserva." },
   ],
   en: [
-    { q: "Do I need previous experience with horses?", a: "No. We offer expeditions for different experience levels, from first-time riders to seasoned riders. Our team helps you choose the ideal itinerary so each person enjoys the journey with safety and confidence." },
-    { q: "What is the lodging like?", a: "We work with carefully selected inns, hotels and local accommodations chosen according to the itinerary and region, ensuring comfort, authenticity and quality." },
-    { q: "Can I book a private expedition?", a: "Yes. We design private, personalized experiences developed around the interests, pace and profile of each group." },
+    { q: "Who can join the expeditions?", a: "Anyone in good health who meets each expedition's requirements (age and weight). We have itineraries for every level." },
+    { q: "Do I need previous experience with horses?", a: "No. Our beginner expeditions are designed for first-time riders. Advanced itineraries do require prior experience." },
+    { q: "What is the lodging like?", a: "We work with carefully curated three to four-star inns chosen according to the itinerary and region, ensuring comfort, authenticity and quality." },
+    { q: "Are the horses trained?", a: "Yes. All horses are trained, rested between expeditions and accompanied by a professional team." },
+    { q: "Can I book a private expedition?", a: "Yes. We organize private expeditions for groups, couples and companies. Contact us for a personalized quote." },
+    { q: "What is the best time of year to go?", a: "Each region has its sweet spot. In general, April to October are ideal — dry weather and balanced landscapes." },
+    { q: "How do I pay?", a: "We accept Pix, bank transfer, boleto and installment credit card. We arrange everything via WhatsApp after the pre-booking." },
   ],
   es: [
-    { q: "¿Necesito experiencia previa con caballos?", a: "No. Ofrecemos expediciones para distintos niveles, desde quienes nunca montaron hasta jinetes experimentados. Nuestro equipo te orienta en la elección del itinerario ideal para que aproveches la jornada con seguridad y confianza." },
-    { q: "¿Cómo es el alojamiento?", a: "Trabajamos con posadas, hoteles y alojamientos locales cuidadosamente seleccionados según el itinerario y la región, garantizando comodidad, autenticidad y calidad." },
-    { q: "¿Puedo hacer una expedición privada?", a: "Sí. Creamos experiencias privadas y personalizadas, desarrolladas según los intereses, ritmo y perfil de cada grupo." },
+    { q: "¿Quién puede participar de las expediciones?", a: "Cualquier persona en buen estado de salud, dentro de los requisitos de cada expedición (edad y peso). Tenemos itinerarios para todos los niveles." },
+    { q: "¿Necesito experiencia previa con caballos?", a: "No. Nuestras expediciones para principiantes están diseñadas para quienes nunca montaron. Los itinerarios avanzados sí requieren experiencia previa." },
+    { q: "¿Cómo es el alojamiento?", a: "Trabajamos con posadas seleccionadas de tres a cuatro estrellas, según el itinerario y la región, todas elegidas por nuestra curaduría, garantizando comodidad, autenticidad y calidad." },
+    { q: "¿Los caballos están entrenados?", a: "Sí. Todos los caballos están entrenados, descansados entre expediciones y acompañados por un equipo profesional." },
+    { q: "¿Puedo hacer una expedición privada?", a: "Sí. Organizamos expediciones privadas para grupos, parejas y empresas. Contáctanos para una cotización personalizada." },
+    { q: "¿Cuál es la mejor época para ir?", a: "Cada región tiene su mejor ventana. En general, de abril a octubre son meses ideales — clima seco y paisajes equilibrados." },
+    { q: "¿Cómo realizo el pago?", a: "Aceptamos Pix, transferencia, boleto y tarjeta en cuotas. Coordinamos todo por WhatsApp tras la pre-reserva." },
   ],
 };
+
 
 
 function HomePage() {
@@ -348,9 +361,7 @@ function HomePage() {
             <div className="eyebrow">{t("faq.eyebrow")}</div>
             <h2 className="mt-5 font-display text-4xl text-balance md:text-5xl">{t("faq.title")}</h2>
             <span aria-hidden className="mt-7 block h-px w-16 bg-cobre" />
-            <Link to="/contato" className="mt-6 inline-flex items-center gap-2 text-sm uppercase tracking-widest hover:text-cobre">
-              {t("faq.verTodas")} <ArrowRight className="h-4 w-4" />
-            </Link>
+
           </div>
           <div className="md:col-span-8">
             <div className="divide-y divide-border border-y border-border">
