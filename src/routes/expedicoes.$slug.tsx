@@ -75,6 +75,24 @@ function DetalhesExpedicao() {
         </div>
       </section>
 
+      {/* Carrossel editorial — narrativa visual da expedição */}
+      {narrativa.length > 0 && (
+        <section className="bg-background py-20 md:py-28">
+          <div className="container-tight mb-10 max-w-2xl md:mb-14">
+            <div className="eyebrow">A experiência em imagens</div>
+            <h2 className="mt-4 font-display text-3xl md:text-4xl text-balance">
+              Oito cenas que contam essa viagem
+            </h2>
+            <p className="mt-4 text-foreground/70 text-pretty">
+              Da primeira luz nas dunas ao último pôr do sol — deslize para percorrer a narrativa.
+            </p>
+          </div>
+          <CarrosselNarrativo cenas={narrativa} alt={expedicao.nome} />
+        </section>
+      )}
+
+
+
       {/* Vídeo cinematográfico — destaque Serra da Canastra */}
       {expedicao.slug === "serra-da-canastra" && (
         <section className="bg-carvao py-16 md:py-20">
