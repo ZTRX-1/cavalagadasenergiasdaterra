@@ -35,7 +35,7 @@ export function EditorialFrame({
     variant === "portrait"
       ? "aspect-[4/5]"
       : variant === "landscape"
-      ? "aspect-[21/9]"
+      ? "aspect-[3/2]"
       : "aspect-[5/6]";
 
   const radius =
