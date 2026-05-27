@@ -191,7 +191,11 @@ export const SLUG_NARRATIVA: Record<string, CenaNarrativa[]> = {
 };
 
 export function getExpedicaoNarrativa(slug: string): CenaNarrativa[] {
-  return SLUG_NARRATIVA[slug] ?? [];
+  const curada = SLUG_NARRATIVA[slug];
+  if (curada && curada.length > 0) return curada;
+  // Fallback: usa as primeiras 8 fotos da galeria existente, sem legendas técnicas.
+  const galeria = SLUG_GALERIA[slug] ?? [];
+  return galeria.slice(0, 8).map((src) => ({ src, eyebrow: "", titulo: "" }));
 }
 
 export { heroCavalgada };
