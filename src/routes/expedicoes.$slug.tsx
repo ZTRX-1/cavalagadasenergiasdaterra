@@ -113,7 +113,7 @@ function DetalhesExpedicao() {
 
 
       {/* Descrição + Inclui */}
-      <section className="bg-background py-24 md:py-32">
+      <section className={`bg-background py-20 ${isJeri ? "md:py-24" : "md:py-32"}`}>
         <div className="container-tight grid gap-16 md:grid-cols-12">
           <div className="md:col-span-7">
             <div className="eyebrow">A experiência</div>
