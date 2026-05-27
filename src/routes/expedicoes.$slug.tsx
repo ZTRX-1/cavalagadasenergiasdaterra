@@ -2,7 +2,8 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight, Check, MessageCircle } from "lucide-react";
 import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
-import { getExpedicaoImage, getExpedicaoGaleria } from "@/lib/expedicao-images";
+import { getExpedicaoImage, getExpedicaoGaleria, getExpedicaoNarrativa } from "@/lib/expedicao-images";
+import { CarrosselNarrativo } from "@/components/carrossel-narrativo";
 import { GaleriaEditorial } from "@/components/galeria-editorial";
 import { VideoCinematic } from "@/components/video-cinematic";
 import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
@@ -40,6 +41,7 @@ function DetalhesExpedicao() {
   const publicSlug = getPublicExpedicaoSlug(expedicao.slug);
   const heroImg = getExpedicaoImage(expedicao.slug);
   const galeria = getExpedicaoGaleria(expedicao.slug);
+  const narrativa = getExpedicaoNarrativa(expedicao.slug);
   const whatsappMsg = `Olá! Gostaria de reservar minha vaga na expedição "${expedicao.nome}".`;
   const whatsappUrl = buildContactWhatsappUrl(whatsappMsg);
 
