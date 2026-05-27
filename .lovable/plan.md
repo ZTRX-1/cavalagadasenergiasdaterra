@@ -1,37 +1,94 @@
-## Mudanças solicitadas
+# Plano de ajustes — UX, acessibilidade e i18n
 
-### 1. Home — substituir título do manifesto
-Em `src/i18n/locales/pt/common.json` (e equivalentes `en` / `es`), atualizar `manifesto.title`:
-- De: "Não é um passeio. É uma jornada que permanece."
-- Para: "Expedições a cavalo por paisagens extraordinárias, conectando natureza, cultura, gastronomia e experiências que permanecem para a vida toda."
+## 1. Ícone do WhatsApp (substituir todos os "balões" de mensagem)
 
-Como em EN/ES o usuário só citou a versão PT, traduzir o novo título de forma equivalente nos locales `en` e `es` mantendo o tom premium. Não mexer em nenhum outro campo.
+Criar componente `src/components/icons/whatsapp-icon.tsx` — SVG oficial do WhatsApp, monocromático (`currentColor`), traço minimalista, sem fundo (transparente). Aceita `className` para herdar tamanho/cor (branco em fundo escuro, cobre em fundo claro).
 
-### 2. Carrossel narrativo em todas as expedições
-Hoje só `jericoacoara` tem entradas em `SLUG_NARRATIVA` (em `src/lib/expedicao-images.ts`). Para as demais expedições com fotos (`serra-da-canastra`, `mantiqueira-refugio`, `peru-vale-do-colca`, `patagonia-gaucha`, `caminho-de-santiago`), gerar automaticamente cenas reusando as fotos já existentes em `SLUG_GALERIA` (até 8 primeiras), sem inventar legendas técnicas.
+Substituir **todas** as ocorrências de `MessageCircle` do `lucide-react` que se referem a contato/WhatsApp:
+- `src/components/site-header.tsx` (botão "WhatsApp" do header + drawer)
+- `src/components/data-card.tsx` ("Reservar")
+- `src/routes/expedicoes.$slug.tsx` (2 CTAs "Reservar Agora")
+- `src/routes/minha-reserva.tsx` ("Continuar pelo WhatsApp")
+- `src/routes/contato.tsx` (card de WhatsApp)
+- `src/components/whatsapp-float.tsx` já usa SVG próprio — padronizar para usar o novo componente.
 
-Abordagem:
-- Adicionar fallback em `getExpedicaoNarrativa(slug)`: se não existir narrativa curada, retornar as primeiras 8 fotos da galeria com `eyebrow: ""` e `titulo: ""` (sem texto). Assim o layout da página fica idêntico ao de Jericoacoara sem precisar duplicar a seção condicional.
-- Manter Jericoacoara com as legendas atuais.
-- Em `src/routes/expedicoes.$slug.tsx`, a seção "Carrossel editorial" já é renderizada quando `narrativa.length > 0` — passará a aparecer em todas. A seção "Galeria" antiga (que só renderiza quando `narrativa.length === 0`) deixa de ser exibida nessas páginas, ficando o layout unificado.
-- Aplicar os ajustes de espaçamento/hero do `isJeri` para todas as expedições (renomear flag para algo neutro ou simplesmente remover o gating `isJeri` nesses paddings, mantendo o resto). O hero continua usando `object-cover`; aplico o tratamento mais compacto (`min-h-[78svh] md:min-h-[62svh] lg:min-h-[64svh]`) para todas, mas removendo o `object-[center_28%]` específico de Jericoacoara (esse é único da composição da Lígia com o cavalo).
-- Em `CarrosselNarrativo` (figcaption), esconder o bloco da legenda quando `titulo` estiver vazio para não aparecer espaço/gradiente vazio.
+## 2. Ícone de acessibilidade — mais moderno e sofisticado
 
-### 3. Autoplay suave no carrossel
-Em `src/components/carrossel-narrativo.tsx`, adicionar autoplay via plugin oficial do Embla:
-- Instalar `embla-carousel-autoplay`.
-- Configurar com `delay: 5500ms`, `stopOnInteraction: false`, `stopOnMouseEnter: true` para experiência contemplativa.
-- Manter setas, swipe, teclado e progress bar funcionando.
-- `loop: true` já está ativo, então a passagem é contínua.
+O FAB hoje usa `Accessibility` (lucide), que parece símbolo institucional antigo. Trocar por um glifo customizado em SVG: figura humana estilizada com aura/círculo concêntrico sutil — universal, sem cadeira de rodas, alinhado ao "Universal Access" moderno (formato de pessoa centrada com braços abertos dentro de círculo fino).
 
-### Escopo / fora de escopo
-- Não mexer em fluxo de reserva, preços, datas, textos comerciais, outras seções da home, header/footer, marcas ou admin.
-- Não alterar a curadoria narrativa de Jericoacoara.
-- Manter a hero image e composição em destaque no topo de cada expedição.
+- Criar `src/components/icons/accessibility-glyph.tsx` (SVG inline, traço fino 1.5, `currentColor`, transparente).
+- Trocar `<Accessibility />` em `accessibility-panel.tsx` pelo novo glifo.
+- Refinar visual do FAB: manter gradiente cobre, reduzir ring para `ring-1`, suavizar pulse (apenas em hover), garantir contraste WCAG do ícone branco sobre cobre.
 
-### Arquivos afetados
-- `src/i18n/locales/pt/common.json` (+ `en/common.json`, `es/common.json`)
-- `src/lib/expedicao-images.ts` — fallback no `getExpedicaoNarrativa`
-- `src/routes/expedicoes.$slug.tsx` — generalizar paddings/hero
-- `src/components/carrossel-narrativo.tsx` — autoplay + ocultar caption vazia
-- `package.json` — nova dep `embla-carousel-autoplay`
+## 3. Autoplay do carrossel — mais fluido
+
+Em `src/components/carrossel-narrativo.tsx`:
+- Reduzir `delay` de **5500ms → 4200ms**.
+- Adicionar `duration: 28` no Embla (transição entre slides um pouco mais rápida e suave).
+- Garantir que `Autoplay` rode em desktop: hoje `stopOnMouseEnter: true` pausa quando o mouse entra na seção; trocar para `stopOnMouseEnter: false` + `stopOnInteraction: false` para fluxo contínuo. Manter pausa ao usar setas/teclado por `stopOnFocusIn: true`.
+- Confirmar swipe mobile (`touch-pan-y` já presente).
+
+## 4. Tradução global do site (i18n)
+
+**Estado atual:** apenas `src/routes/index.tsx` e header/footer consomem `useTranslation`. Todas as outras páginas públicas têm texto fixo em PT. Por isso a troca de idioma "só funciona na Home".
+
+**Escopo desta entrega — páginas públicas:**
+1. `expedicoes.tsx` (listagem)
+2. `expedicoes.$slug.tsx` (detalhe — hero, breadcrumb, blocos comerciais, FAQ, CTAs, seção carrossel, "O que está incluso", etc.)
+3. `datas.tsx` (Próximas datas)
+4. `quem-somos.tsx`
+5. `contato.tsx`
+6. `na-midia.tsx`
+7. `minha-reserva.tsx`
+8. `reserva.$slug.tsx` (labels do formulário, validações, confirmação)
+9. `marcas.canastra-a-cavalo.tsx`, `marcas.cavalgadas.tsx`, `marcas.elas-na-sela.tsx`
+10. `privacidade.tsx`, `termos.tsx`, `regras.tsx`
+11. Componentes compartilhados ainda hardcoded: `historias-editorial.tsx`, `data-card.tsx`, `expedicao-card.tsx`, `galeria-editorial.tsx`, `depoimentos-shorts.tsx`, `marca-cross-nav.tsx`, `na-midia.tsx`, `cookie-consent.tsx`, `editorial-frame.tsx`, `accessibility-panel.tsx`, `page-loader.tsx`, `site-footer.tsx` (partes que faltam).
+
+**Como será feito:**
+- Expandir os 3 JSONs `src/i18n/locales/{pt,en,es}/common.json` com namespaces por página: `expedicoes`, `expedicaoDetalhe`, `datas`, `quemSomos`, `contato`, `naMidia`, `reserva`, `minhaReserva`, `marcas`, `legal`, `a11y`, `cookies`, `common` (botões, labels recorrentes).
+- Substituir strings nas páginas/componentes por `t("namespace.chave")`.
+- Conteúdo dinâmico vindo do banco (nomes/descrições de expedições, FAQ, "o que está incluso") **permanece em PT** — esses textos vêm do admin e exigiriam tradução manual no CMS. Marcar com TODO; UI já fica internacionalizada.
+- `meta` (title/description SEO) das rotas também passa a usar i18n.
+
+**Importante sobre custo/tempo:** este item é o maior do plano — envolve tocar ~25 arquivos e dezenas de strings. Vou executar em um único passe completo e consistente.
+
+## 5. VLibras realmente funcional
+
+Hoje o componente `vlibras.tsx` já injeta o script oficial do Governo Federal e o botão de "Tradutor para Libras" no painel de acessibilidade dispara `[vw-access-button].click()`. A causa provável de "não funciona" é:
+- o widget oficial está oculto/cortado por z-index ou pelo botão do WhatsApp;
+- o `<div vw>` não está ganhando classe `enabled` antes do script carregar.
+
+Correções:
+- Refatorar `src/components/vlibras.tsx`:
+  - injetar `<div vw class="enabled">` corretamente, com `vw-plugin-top-wrapper` aninhado conforme docs oficiais;
+  - aguardar `onload` do script para chamar `new window.VLibras.Widget(...)`;
+  - aplicar CSS para posicionar o widget acima do FAB de acessibilidade e do WhatsApp (`#vlibras-plugin` z-index alto, margem inferior elevada);
+  - esconder o botão padrão do VLibras (`[vw-access-button] { display: none !important }`) — quem dispara é o nosso botão "Ativar" no painel, que mantém a estética premium.
+- Validar no preview: clicar em "Ativar" abre o intérprete real (avatar Ícaro/Hosana), com tradução funcional. Esta é a solução padrão brasileira, gratuita, leve e oficial; alternativas comerciais (Hand Talk) exigem chave paga — não recomendo.
+
+## 6. Revisão de acessibilidade real (a11y)
+
+- `aria-label` em todos os botões icon-only restantes (varredura nas páginas).
+- `aria-current="page"` nos links de navegação ativos do header.
+- Garantir `focus-visible` consistente (ring cobre) em todos os botões/links via `src/styles.css`.
+- `role="main"`/`<main>` único — já existe no `__root.tsx`.
+- Hierarquia de headings: revisar páginas para evitar pulos (h1→h3).
+- Contraste: revisar `text-areia/55`, `text-foreground/40` em fundos claros — subir para `/70` mínimo.
+- `lang` no `<html>` já é trocado pelo `i18n` ao mudar idioma — confirmar.
+- Navegação por teclado: garantir que drawer mobile (`site-header`) traveja foco e ESC fecha.
+
+## Detalhes técnicos
+
+- Nenhuma mudança em lógica de negócio, banco, rotas, fluxo de reserva, preços ou datas.
+- Nenhuma dependência nova (VLibras é script externo já presente).
+- `embla-carousel-autoplay` já instalado — apenas ajuste de opções.
+- Arquivos novos: 2 ícones SVG + ampliação de 3 JSONs de locale.
+- Arquivos editados: ~25 (lista acima).
+
+## Fora de escopo
+
+- Painel admin (não é público; permanece em PT).
+- Tradução de conteúdo dinâmico do banco (expedições, FAQ vindos do CMS).
+- Mudança da identidade visual ou layout geral.
+- Trocar VLibras por solução paga (Hand Talk).

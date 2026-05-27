@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, X, MessageCircle } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { buildContactWhatsappUrl } from "@/lib/whatsapp";
@@ -160,7 +161,7 @@ export function SiteHeader() {
               onClick={() => setOpen(false)}
               className="mt-2 inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-4 font-eyebrow text-[0.72rem] uppercase tracking-[0.22em] text-foreground hover:border-cobre hover:text-cobre"
             >
-              <MessageCircle className="h-4 w-4" /> {t("nav.whatsapp")}
+              <WhatsAppIcon className="h-4 w-4" /> {t("nav.whatsapp")}
             </a>
           </nav>
         </div>

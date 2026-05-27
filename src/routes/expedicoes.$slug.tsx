@@ -1,6 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { ArrowRight, Check, MessageCircle } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
 import { getExpedicaoImage, getExpedicaoGaleria, getExpedicaoNarrativa } from "@/lib/expedicao-images";
 import { CarrosselNarrativo } from "@/components/carrossel-narrativo";
@@ -34,6 +36,7 @@ export const Route = createFileRoute("/expedicoes/$slug")({
 });
 
 function DetalhesExpedicao() {
+  const { t } = useTranslation();
   const { slug } = Route.useParams();
   const { data } = useSuspenseQuery(qo(slug));
   if (!data) return null;
@@ -70,7 +73,7 @@ function DetalhesExpedicao() {
               rel="noreferrer"
               className="mt-10 inline-flex w-fit items-center gap-2 rounded-full bg-cobre px-7 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft"
             >
-              <MessageCircle className="h-4 w-4" /> Reservar Agora
+              <WhatsAppIcon className="h-4 w-4" /> {t("common.reservarAgora")}
             </a>
           )}
         </div>
@@ -80,12 +83,12 @@ function DetalhesExpedicao() {
       {narrativa.length > 0 && (
         <section className="bg-background py-16 md:py-20">
           <div className="container-tight mb-10 max-w-2xl md:mb-14">
-            <div className="eyebrow">Experiência em imagens</div>
+            <div className="eyebrow">{t("expedicoes.experienciaEyebrow")}</div>
             <h2 className="mt-4 font-display text-3xl md:text-4xl text-balance">
-              Algumas paisagens você observa. Outras, atravessam você.
+              {t("expedicoes.experienciaTitle")}
             </h2>
             <p className="mt-4 text-foreground/70 text-pretty">
-              Entre dunas, cavalos, silêncio, vento e encontros inesperados, cada fotografia guarda um fragmento do que essa expedição realmente faz sentir.
+              {t("expedicoes.experienciaIntro")}
             </p>
           </div>
           <CarrosselNarrativo cenas={narrativa} alt={expedicao.nome} />
@@ -220,15 +223,15 @@ function DetalhesExpedicao() {
       {/* CTA */}
       <section className={`bg-floresta-deep py-20 text-areia md:py-24`}>
         <div className="container-tight text-center">
-          <h2 className="font-display text-3xl text-balance md:text-5xl">Pronto para reservar sua vaga?</h2>
-          <p className="mx-auto mt-4 max-w-xl text-areia/75">Fale com nossa equipe pelo WhatsApp para alinhar detalhes e confirmar sua vaga.</p>
+          <h2 className="font-display text-3xl text-balance md:text-5xl">{t("expedicoes.ctaTitle")}</h2>
+          <p className="mx-auto mt-4 max-w-xl text-areia/75">{t("expedicoes.ctaSubtitle")}</p>
           <a
             href={whatsappUrl}
             target="_blank"
             rel="noreferrer"
             className="mt-8 inline-flex items-center gap-2 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft"
           >
-            <MessageCircle className="h-4 w-4" /> Reservar Agora
+            <WhatsAppIcon className="h-4 w-4" /> {t("common.reservarAgora")}
           </a>
         </div>
       </section>

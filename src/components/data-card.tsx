@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, MessageCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import type { DataExpedicao } from "@/lib/expedicoes.functions";
 import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
 import { formatDateRange, formatDayShort, formatPrice } from "@/lib/format";
@@ -71,7 +72,7 @@ export function DataCard({ data, variant = "link" }: { data: DataExpedicao; vari
               rel="noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-cobre px-4 py-2 text-xs uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft"
             >
-              Reservar <MessageCircle className="h-3.5 w-3.5" />
+              Reservar <WhatsAppIcon className="h-3.5 w-3.5" />
             </a>
           ) : (
             <Link

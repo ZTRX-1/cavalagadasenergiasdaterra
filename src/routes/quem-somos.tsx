@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Compass, Heart, Mountain, Sparkles } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { EditorialFrame } from "@/components/editorial-frame";
 import { NaMidia } from "@/components/na-midia";
 import { buildContactWhatsappUrl } from "@/lib/whatsapp";
@@ -55,6 +56,7 @@ const DIFERENCIAIS = [
 ];
 
 function QuemSomosPage() {
+  const { t } = useTranslation();
   return (
     <div className="bg-background">
       <section className="relative overflow-hidden bg-carvao text-areia">
@@ -72,12 +74,13 @@ function QuemSomosPage() {
 
         <div className="container-tight relative -mt-28 pb-18 md:-mt-36 md:pb-24">
           <div className="max-w-3xl">
-            <div className="eyebrow text-cobre-soft">Quem Somos</div>
+            <div className="eyebrow text-cobre-soft">{t("quemSomos.eyebrow")}</div>
             <h1 className="mt-5 font-display text-4xl leading-[1.01] text-balance md:text-6xl lg:text-[4.5rem]">
-              Vivemos o que <em className="not-italic text-cobre-soft">oferecemos</em>.
+              {t("quemSomos.heroTitleStart")} <em className="not-italic text-cobre-soft">{t("quemSomos.heroTitleEm")}</em>.
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-areia/82 md:text-lg">
-              A Cavalgadas Energias da Terra foi criada por quem vive o universo equestre todos os dias. Somos criadores de cavalos, anfitriões e especialistas em expedições a cavalo. Cada roteiro é cuidadosamente planejado para unir natureza, cultura, gastronomia e hospitalidade em experiências autênticas e memoráveis.
+              {t("quemSomos.heroIntro")}
+            </p>
             </p>
 
           </div>
@@ -329,12 +332,12 @@ function QuemSomosPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-carvao/75 via-carvao/85 to-carvao" />
         <div className="container-tight relative text-center">
-          <div className="eyebrow text-cobre-soft">Sua próxima expedição</div>
+          <div className="eyebrow text-cobre-soft">{t("quemSomos.ctaEyebrow")}</div>
           <h2 className="mx-auto mt-5 max-w-3xl font-display text-4xl text-balance md:text-6xl">
-            Toda grande história começa com uma escolha.
+            {t("quemSomos.ctaTitle")}
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-pretty text-areia/82">
-            Conheça nossas expedições e descubra qual destino, paisagem e experiência combinam com o momento que você está vivendo.
+            {t("quemSomos.ctaSubtitle")}
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
             <Link

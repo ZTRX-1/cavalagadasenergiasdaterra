@@ -10,14 +10,13 @@
     "preReserva": "Reservar Ahora",
     "whatsapp": "WhatsApp"
   },
-
   "hero": {
     "eyebrow": "Cavalgadas Energias da Terra",
     "titlePart1": "Expediciones",
     "titleAccent": "a caballo",
     "titlePart2": "por Brasil y el mundo.",
     "subtitle": "Las mejores historias de tu vida todavía te están esperando.",
-    "support": "Grupos pequeños, caballos seleccionados y rutas de autor creadas por quienes viven la pasión por los caballos y creen que algunos viajes tienen el poder de transformarnos para siempre.",
+    "support": "Grupos pequeños, caballos seleccionados e itinerarios de autor creados por quienes viven la pasión por los caballos y creen que algunos viajes tienen el poder de transformarnos para siempre.",
     "ctaPrimary": "Ver Expediciones",
     "ctaSecondary": "Próximas Fechas"
   },
@@ -30,10 +29,10 @@
   "manifesto": {
     "eyebrow": "La experiencia",
     "title": "Expediciones a caballo por paisajes extraordinarios, conectando naturaleza, cultura, gastronomía y experiencias que permanecen para toda la vida.",
-    "body": "Diseñamos cada expedición como una película: guion, ritmo, fotografía. Senderos seleccionados a mano, alojamientos con alma, gastronomía que dialoga con el territorio. Cada plaza es limitada para preservar el silencio, y la profundidad, de lo que ofrecemos."
+    "body": "Expediciones a caballo por paisajes extraordinarios, conectando naturaleza, cultura, gastronomía y experiencias que permanecen para toda la vida."
   },
   "inclui": {
-    "eyebrow": "Qué incluye",
+    "eyebrow": "Qué está incluido",
     "title": "Todo cuidado. Tú solo llegas y cabalgas."
   },
   "expedicoes": {
@@ -44,15 +43,33 @@
     "duracao": "Duración",
     "regiao": "Región",
     "proximasDatas": "Próximas fechas",
-    "inclui": "Qué incluye",
+    "inclui": "Qué está incluido",
     "roteiro": "Itinerario",
-    "requisitos": "Requisitos",
-    "preReservar": "Solicitar reserva"
+    "requisitos": "Información importante",
+    "preReservar": "Reservar Ahora",
+    "catalogoEyebrow": "Catálogo",
+    "catalogoTitle": "Expediciones",
+    "catalogoIntro": "Cada expedición es un itinerario de autor, con curaduría de senderos, alojamientos y gastronomía. Elige tu próxima expedición.",
+    "metaTitle": "Expediciones · Cavalgadas Energias da Terra",
+    "metaDescription": "Conoce nuestras expediciones a caballo: Vale da Canastra, Serra do Cipó, Chapada Diamantina y más.",
+    "experienciaEyebrow": "Experiencia en imágenes",
+    "experienciaTitle": "Algunos paisajes los observas. Otros, te atraviesan.",
+    "experienciaIntro": "Entre dunas, caballos, silencio, viento y encuentros inesperados, cada fotografía guarda un fragmento de lo que esta expedición realmente te hace sentir.",
+    "ctaTitle": "¿Listo para reservar tu lugar?",
+    "ctaSubtitle": "Habla con nuestro equipo por WhatsApp para ajustar detalles y confirmar tu plaza."
   },
   "datas": {
     "eyebrow": "Calendario",
     "title": "Próximas fechas",
-    "verTodas": "Ver todas las fechas"
+    "verTodas": "Ver todas las fechas",
+    "intro": "Cupos limitados por expedición. Reserva con anticipación para asegurar tu fecha ideal.",
+    "expedicoesCount": "expediciones",
+    "metaTitle": "Próximas fechas · Cavalgadas Energias da Terra",
+    "metaDescription": "Calendario completo de expediciones a caballo. Reserva tu lugar.",
+    "verExpedicao": "Ver expedición",
+    "reservar": "Reservar",
+    "disponivel": "Disponible",
+    "esgotado": "Agotado"
   },
   "passos": {
     "eyebrow": "Cómo funciona",
@@ -60,8 +77,8 @@
   },
   "historias": {
     "eyebrow": "Quienes lo vivieron",
-    "title": "Historias de quienes cruzaron con nosotros.",
-    "intro": "Relatos reales de jinetes que cruzaron sierras, ríos y silencios con nosotros."
+    "title": "Historias de quienes cabalgaron con nosotros.",
+    "intro": "Relatos reales de jinetes y amazonas que cruzaron sierras, ríos y silencios con nosotros."
   },
   "faq": {
     "eyebrow": "Preguntas",
@@ -69,16 +86,120 @@
     "verTodas": "Ver todas las preguntas"
   },
   "ctaFinal": {
-    "eyebrow": "Tu próxima travesía",
-    "title": "La sierra te está esperando.",
-    "cta": "Elegir mi expedición"
+    "eyebrow": "Tu próxima expedición",
+    "title": "Algunas experiencias solo pueden vivirse a caballo.",
+    "subtitle": "Expediciones exclusivas para quienes buscan más que un viaje.",
+    "cta": "Reservar Ahora"
   },
   "footer": {
-    "tagline": "Expediciones a caballo por Brasil y el mundo. Las mejores historias de tu vida aún están esperando por ti. Grupos pequeños, caballos seleccionados y rutas autorales creadas por quienes viven la pasión por los caballos y creen que algunos viajes tienen el poder de transformarnos para siempre.",
+    "tagline": "Expediciones a caballo por Brasil y el mundo. Las mejores historias de tu vida todavía te están esperando. Grupos pequeños, caballos seleccionados e itinerarios de autor.",
     "navegue": "Navega",
     "contato": "Contacto",
     "marcas": "Nuestras marcas",
     "rights": "Todos los derechos reservados.",
     "feitoPor": "Hecho con 💙 por"
+  },
+  "quemSomos": {
+    "metaTitle": "Quiénes Somos · Cavalgadas Energias da Terra",
+    "metaDescription": "La historia, el propósito y las fundadoras de Cavalgadas Energias da Terra — expediciones ecuestres boutique, caballos propios y hospitalidad de autor.",
+    "eyebrow": "Quiénes Somos",
+    "heroTitleStart": "Vivimos lo que",
+    "heroTitleEm": "ofrecemos",
+    "heroIntro": "Cavalgadas Energias da Terra fue creada por quienes viven el universo ecuestre todos los días. Somos criadores de caballos, anfitriones y especialistas en expediciones a caballo. Cada itinerario está cuidadosamente diseñado para unir naturaleza, cultura, gastronomía y hospitalidad en experiencias auténticas y memorables.",
+    "origemEyebrow": "Nuestro origen",
+    "origemTitle": "Donde todo comenzó.",
+    "fundadorasEyebrow": "Las fundadoras",
+    "fundadorasTitle": "Dos trayectorias muy diferentes. Una misma verdad.",
+    "estruturaEyebrow": "Estructura propia",
+    "estruturaTitle": "Haras, equipo y crianza propia al servicio de la experiencia.",
+    "propositoEyebrow": "Expediciones y propósito",
+    "propositoTitle": "Creamos experiencias para quienes quieren volver diferentes.",
+    "ctaEyebrow": "Tu próxima expedición",
+    "ctaTitle": "Toda gran historia comienza con una elección.",
+    "ctaSubtitle": "Conoce nuestras expediciones y descubre qué destino, paisaje y experiencia combinan con el momento que estás viviendo.",
+    "ctaVerExpedicoes": "Ver expediciones",
+    "ctaFalar": "Hablar con nosotros"
+  },
+  "contato": {
+    "metaTitle": "Contacto · Cavalgadas Energias da Terra",
+    "metaDescription": "Habla con nosotros, conoce nuestra historia y aclara tus dudas sobre las expediciones.",
+    "eyebrow": "Contacto",
+    "title": "Conversemos.",
+    "intro": "Atendemos por WhatsApp e Instagram. Nuestro equipo está disponible para aclarar dudas, presentar itinerarios y ayudarte con tu reserva.",
+    "whatsappLabel": "WhatsApp",
+    "instagramLabel": "Instagram",
+    "baseLabel": "Sede de Operaciones",
+    "baseValor": "Serra da Mantiqueira — Maria da Fé, MG, Brasil",
+    "quemSomosEyebrow": "Quiénes somos",
+    "quemSomosTitle": "Vivimos lo que ofrecemos.",
+    "diferencialEyebrow": "Nuestro diferencial",
+    "diferencialTitle": "No vendemos cabalgatas — creamos experiencias de autor.",
+    "faqEyebrow": "Preguntas frecuentes",
+    "faqTitle": "FAQ"
+  },
+  "naMidia": {
+    "metaTitle": "Prensa · Cavalgadas Energias da Terra",
+    "metaDescription": "Reportajes, editoriales y entrevistas sobre Cavalgadas Energias da Terra — Globo, Revista Horse, BSC Portugal y otros reconocimientos institucionales.",
+    "eyebrow": "Prensa & Editorial",
+    "title": "La marca que ganó repercusión — porque vive lo que cuenta.",
+    "intro": "Globo, Revista Horse, BSC Portugal y otras publicaciones siguieron de cerca las expediciones, las fundadoras y la filosofía de Energias da Terra. Reunimos aquí los reportajes, videos y editoriales — para leer dentro del propio sitio.",
+    "fullEyebrow": "Reconocimiento institucional",
+    "fullTitle": "Reportajes, editoriales y entrevistas.",
+    "ctaEyebrow": "Prensa & alianzas",
+    "ctaTitle": "Pautas, entrevistas y visitas guiadas para la prensa.",
+    "ctaButton": "Hablar con comunicación"
+  },
+  "minhaReserva": {
+    "metaTitle": "Mi Reserva · Cavalgadas Energias da Terra",
+    "metaDescription": "Consulta el estado de tu pre-reserva por número de protocolo.",
+    "eyebrow": "Consulta",
+    "title": "Mi Reserva",
+    "intro": "Ingresa el protocolo recibido tras tu pre-reserva. Ej:",
+    "consultar": "Consultar",
+    "placeholderProtocolo": "CET-2026-001",
+    "statusAtual": "Estado actual",
+    "cancelada": "Cancelada",
+    "naoEncontrado": "Protocolo no encontrado. Verifica que esté escrito correctamente.",
+    "continuarWhatsapp": "Continuar por WhatsApp",
+    "responsavel": "Responsable",
+    "participantes": "participante(s)",
+    "statusPreReserva": "Pre-reserva enviada",
+    "statusAguardandoContato": "Esperando contacto",
+    "statusAguardandoPagamento": "Esperando pago",
+    "statusConfirmada": "Confirmada"
+  },
+  "common": {
+    "reservarAgora": "Reservar Ahora",
+    "verExpedicoes": "Ver expediciones",
+    "voltar": "Volver",
+    "saibaMais": "Saber más"
+  },
+  "a11y": {
+    "panelTitle": "Tu experiencia, a tu manera",
+    "open": "Abrir opciones de accesibilidad",
+    "close": "Cerrar opciones de accesibilidad",
+    "narracao": "Narración",
+    "lerPagina": "Leer página",
+    "parar": "Detener",
+    "lerAoTocar": "Leer al tocar o enfocar",
+    "leitura": "Lectura",
+    "tamanhoTexto": "Tamaño del texto",
+    "normal": "Normal",
+    "maior": "Más grande",
+    "grande": "Grande",
+    "altoContraste": "Alto contraste",
+    "movimentoLibras": "Movimiento y Libras",
+    "reduzirAnimacoes": "Reducir animaciones",
+    "vlibras": "VLibras",
+    "vlibrasDesc": "Traductor a Lengua de Signos",
+    "ativar": "Activar",
+    "restaurar": "Restaurar predeterminado",
+    "labelAcessibilidade": "Accesibilidad"
+  },
+  "cookies": {
+    "title": "Cookies y privacidad",
+    "body": "Usamos cookies para mejorar tu experiencia. Al continuar navegando, aceptas nuestra política de privacidad.",
+    "aceitar": "Aceptar",
+    "recusar": "Rechazar"
   }
 }

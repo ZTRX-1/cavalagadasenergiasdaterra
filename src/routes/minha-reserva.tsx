@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Loader2, Search, MessageCircle } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { buildReservaWhatsappUrl } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 
@@ -14,13 +16,6 @@ export const Route = createFileRoute("/minha-reserva")({
   component: MinhaReserva,
 });
 
-const STATUS_STEPS = [
-  { key: "pre_reserva_enviada", label: "Pré-reserva enviada" },
-  { key: "aguardando_contato", label: "Aguardando contato" },
-  { key: "aguardando_pagamento", label: "Aguardando pagamento" },
-  { key: "confirmada", label: "Confirmada" },
-] as const;
-
 type Reserva = {
   protocolo: string;
   expedicao_nome: string;
@@ -31,12 +26,19 @@ type Reserva = {
 };
 
 function MinhaReserva() {
+  const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<Reserva | null>(null);
   const [searched, setSearched] = useState(false);
 
-  // Lê ?p= da URL apenas uma vez, sem usar Route.useSearch (evita re-render).
+  const STATUS_STEPS = [
+    { key: "pre_reserva_enviada", label: t("minhaReserva.statusPreReserva") },
+    { key: "aguardando_contato", label: t("minhaReserva.statusAguardandoContato") },
+    { key: "aguardando_pagamento", label: t("minhaReserva.statusAguardandoPagamento") },
+    { key: "confirmada", label: t("minhaReserva.statusConfirmada") },
+  ] as const;
+
   useEffect(() => {
     try {
       const params = new URLSearchParams(window.location.search);
@@ -68,10 +70,10 @@ function MinhaReserva() {
   return (
     <div className="bg-background pb-24 pt-32 md:pb-32 md:pt-40">
       <div className="container-tight max-w-3xl">
-        <div className="eyebrow">Consulta</div>
-        <h1 className="mt-4 font-display text-5xl text-balance md:text-6xl">Minha Reserva</h1>
+        <div className="eyebrow">{t("minhaReserva.eyebrow")}</div>
+        <h1 className="mt-4 font-display text-5xl text-balance md:text-6xl">{t("minhaReserva.title")}</h1>
         <p className="mt-4 text-muted-foreground text-pretty">
-          Informe o protocolo recebido após sua pré-reserva. Ex:{" "}
+          {t("minhaReserva.intro")}{" "}
           <code className="font-mono text-foreground">CET-2026-001</code>
         </p>
 
@@ -81,7 +83,8 @@ function MinhaReserva() {
             type="text"
             name="protocolo"
             defaultValue=""
-            placeholder="CET-2026-001"
+            placeholder={t("minhaReserva.placeholderProtocolo")}
+            aria-label={t("minhaReserva.title")}
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="none"
@@ -95,7 +98,7 @@ function MinhaReserva() {
             className="inline-flex items-center justify-center gap-2 rounded-full bg-floresta-deep px-7 py-4 text-sm uppercase tracking-widest text-areia hover:bg-cobre disabled:opacity-60"
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}{" "}
-            Consultar
+            {t("minhaReserva.consultar")}
           </button>
         </form>
 
@@ -106,17 +109,17 @@ function MinhaReserva() {
                 <div className="eyebrow">{result.protocolo}</div>
                 <h2 className="mt-2 font-display text-2xl">{result.expedicao_nome}</h2>
                 <div className="mt-1 text-sm text-muted-foreground">
-                  {result.data_label} · {result.quantidade_participantes} participante(s)
+                  {result.data_label} · {result.quantidade_participantes} {t("minhaReserva.participantes")}
                 </div>
                 <div className="mt-1 text-sm text-muted-foreground">
-                  Responsável: {result.nome_responsavel}
+                  {t("minhaReserva.responsavel")}: {result.nome_responsavel}
                 </div>
               </div>
               <div className="p-6">
-                <div className="eyebrow">Status atual</div>
+                <div className="eyebrow">{t("minhaReserva.statusAtual")}</div>
                 {result.status === "cancelada" ? (
                   <div className="mt-4 inline-flex items-center rounded-full border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive">
-                    Cancelada
+                    {t("minhaReserva.cancelada")}
                   </div>
                 ) : (
                   <ol className="mt-6 space-y-4">
@@ -168,14 +171,14 @@ function MinhaReserva() {
                     rel="noreferrer"
                     className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-7 py-4 font-eyebrow text-[0.72rem] uppercase tracking-[0.22em] text-white sm:w-auto"
                   >
-                    <MessageCircle className="h-4 w-4" /> Continuar pelo WhatsApp
+                    <WhatsAppIcon className="h-4 w-4" /> {t("minhaReserva.continuarWhatsapp")}
                   </a>
                 </div>
               )}
             </div>
           ) : (
             <div className="mt-12 rounded-sm border border-destructive/30 bg-destructive/5 p-6 text-sm text-foreground">
-              Protocolo não encontrado. Verifique se foi digitado corretamente.
+              {t("minhaReserva.naoEncontrado")}
             </div>
           )
         )}
