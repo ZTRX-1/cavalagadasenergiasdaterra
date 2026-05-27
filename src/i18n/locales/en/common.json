@@ -3,34 +3,33 @@
     "home": "Home",
     "expedicoes": "Expeditions",
     "datas": "Upcoming Dates",
-    "quemSomos": "About",
+    "quemSomos": "About Us",
     "contato": "Contact",
     "naMidia": "Press",
     "reservar": "Book Now",
     "preReserva": "Book Now",
     "whatsapp": "WhatsApp"
   },
-
   "hero": {
     "eyebrow": "Cavalgadas Energias da Terra",
     "titlePart1": "Horseback",
     "titleAccent": "expeditions",
     "titlePart2": "across Brazil and the world.",
     "subtitle": "The best stories of your life are still waiting for you.",
-    "support": "Small groups, hand-picked horses and signature itineraries crafted by people who live their passion for horses — and believe some journeys have the power to transform us forever.",
-    "ctaPrimary": "View Expeditions",
+    "support": "Small groups, hand-picked horses and signature itineraries created by people who live the passion for horses and believe some journeys can transform us forever.",
+    "ctaPrimary": "See Expeditions",
     "ctaSecondary": "Upcoming Dates"
   },
   "marcas": {
     "eyebrow": "Choose your experience",
-    "title": "Three paths. One essence.",
-    "subtitle": "Each brand within Energias da Terra exists for a specific way of living the ride. Find yours.",
-    "cta": "Discover the brand"
+    "title": "Three paths. One same essence.",
+    "subtitle": "Each Energias da Terra brand exists for a specific way of living the ride. Find yours.",
+    "cta": "Explore brand"
   },
   "manifesto": {
     "eyebrow": "The experience",
-    "title": "Horseback expeditions through extraordinary landscapes, connecting nature, culture, gastronomy and experiences that stay with you for a lifetime.",
-    "body": "We design every expedition as a film: script, rhythm, cinematography. Hand-picked trails, soulful lodging, gastronomy that speaks to the land. Each spot is limited to preserve the silence, and the depth, of what we offer."
+    "title": "Horseback expeditions through extraordinary landscapes, connecting nature, culture, gastronomy and experiences that stay for a lifetime.",
+    "body": "Horseback expeditions through extraordinary landscapes, connecting nature, culture, gastronomy and experiences that stay for a lifetime."
   },
   "inclui": {
     "eyebrow": "What's included",
@@ -38,47 +37,169 @@
   },
   "expedicoes": {
     "eyebrow": "Expeditions",
-    "title": "Curated destinations, signature itineraries.",
-    "verTodas": "View all",
-    "aPartirDe": "From",
+    "title": "Selected destinations, signature itineraries.",
+    "verTodas": "See all",
+    "aPartirDe": "Starting at",
     "duracao": "Duration",
     "regiao": "Region",
     "proximasDatas": "Upcoming dates",
     "inclui": "What's included",
     "roteiro": "Itinerary",
-    "requisitos": "Requirements",
-    "preReservar": "Request booking"
+    "requisitos": "Important info",
+    "preReservar": "Book Now",
+    "catalogoEyebrow": "Catalog",
+    "catalogoTitle": "Expeditions",
+    "catalogoIntro": "Each expedition is a signature itinerary, curating trails, lodging and gastronomy. Choose your next expedition.",
+    "metaTitle": "Expeditions · Cavalgadas Energias da Terra",
+    "metaDescription": "Discover our horseback expeditions: Vale da Canastra, Serra do Cipó, Chapada Diamantina and more.",
+    "experienciaEyebrow": "Experience in images",
+    "experienciaTitle": "Some landscapes you observe. Others move through you.",
+    "experienciaIntro": "Among dunes, horses, silence, wind and unexpected encounters, every photograph holds a fragment of what this expedition truly makes you feel.",
+    "ctaTitle": "Ready to book your spot?",
+    "ctaSubtitle": "Reach out on WhatsApp so our team can confirm the details and secure your place."
   },
   "datas": {
     "eyebrow": "Calendar",
     "title": "Upcoming dates",
-    "verTodas": "View all dates"
+    "verTodas": "See all dates",
+    "intro": "Limited spots per expedition. Book early to secure your ideal date.",
+    "expedicoesCount": "expeditions",
+    "metaTitle": "Upcoming dates · Cavalgadas Energias da Terra",
+    "metaDescription": "Full calendar of horseback expeditions. Reserve your spot.",
+    "verExpedicao": "View expedition",
+    "reservar": "Book",
+    "disponivel": "Available",
+    "esgotado": "Sold out"
   },
   "passos": {
     "eyebrow": "How it works",
     "title": "Booking your spot is simple and direct."
   },
   "historias": {
-    "eyebrow": "Those who lived it",
-    "title": "Stories from those who crossed with us.",
+    "eyebrow": "Who lived it",
+    "title": "Stories from those who rode with us.",
     "intro": "Real accounts from riders who crossed mountains, rivers and silences with us."
   },
   "faq": {
     "eyebrow": "Questions",
-    "title": "So you ride with peace of mind.",
-    "verTodas": "View all questions"
+    "title": "So you go at ease.",
+    "verTodas": "See all questions"
   },
   "ctaFinal": {
-    "eyebrow": "Your next crossing",
-    "title": "The mountains are waiting for you.",
-    "cta": "Choose my expedition"
+    "eyebrow": "Your next expedition",
+    "title": "Some experiences can only be lived on horseback.",
+    "subtitle": "Exclusive expeditions for those who seek more than a trip.",
+    "cta": "Book Now"
   },
   "footer": {
-    "tagline": "Horseback expeditions across Brazil and the world. The best stories of your life are still waiting for you. Small groups, hand-picked horses and signature itineraries crafted by people who live their passion for horses and believe some journeys have the power to transform us forever.",
+    "tagline": "Horseback expeditions across Brazil and the world. The best stories of your life are still waiting. Small groups, hand-picked horses and signature itineraries.",
     "navegue": "Navigate",
     "contato": "Contact",
     "marcas": "Our brands",
     "rights": "All rights reserved.",
     "feitoPor": "Crafted with 💙 by"
+  },
+  "quemSomos": {
+    "metaTitle": "About Us · Cavalgadas Energias da Terra",
+    "metaDescription": "The story, purpose and founders of Cavalgadas Energias da Terra — boutique equestrian expeditions, own horses and signature hospitality.",
+    "eyebrow": "About Us",
+    "heroTitleStart": "We live what we",
+    "heroTitleEm": "offer",
+    "heroIntro": "Cavalgadas Energias da Terra was created by people who live the equestrian world every day. We are horse breeders, hosts and specialists in horseback expeditions. Every itinerary is carefully designed to combine nature, culture, gastronomy and hospitality into authentic, memorable experiences.",
+    "origemEyebrow": "Our origin",
+    "origemTitle": "Where it all began.",
+    "fundadorasEyebrow": "The founders",
+    "fundadorasTitle": "Two very different paths. One shared truth.",
+    "estruturaEyebrow": "Our own structure",
+    "estruturaTitle": "Stables, team and our own breeding at the service of the experience.",
+    "propositoEyebrow": "Expeditions and purpose",
+    "propositoTitle": "We create experiences for those who want to come back different.",
+    "ctaEyebrow": "Your next expedition",
+    "ctaTitle": "Every great story begins with a choice.",
+    "ctaSubtitle": "Browse our expeditions and discover which destination, landscape and experience match the moment you're living.",
+    "ctaVerExpedicoes": "See expeditions",
+    "ctaFalar": "Talk to us"
+  },
+  "contato": {
+    "metaTitle": "Contact · Cavalgadas Energias da Terra",
+    "metaDescription": "Get in touch, learn our story and clarify your questions about the expeditions.",
+    "eyebrow": "Contact",
+    "title": "Let's talk.",
+    "intro": "We answer on WhatsApp and Instagram. Our team is here to clarify questions, present itineraries and assist with your booking.",
+    "whatsappLabel": "WhatsApp",
+    "instagramLabel": "Instagram",
+    "baseLabel": "Headquarters",
+    "baseValor": "Serra da Mantiqueira — Maria da Fé, MG, Brazil",
+    "quemSomosEyebrow": "About us",
+    "quemSomosTitle": "We live what we offer.",
+    "diferencialEyebrow": "Our difference",
+    "diferencialTitle": "We don't sell rides — we create signature experiences.",
+    "faqEyebrow": "Frequently asked",
+    "faqTitle": "FAQ"
+  },
+  "naMidia": {
+    "metaTitle": "Press · Cavalgadas Energias da Terra",
+    "metaDescription": "Reports, editorials and interviews about Cavalgadas Energias da Terra — Globo, Revista Horse, BSC Portugal and other institutional recognitions.",
+    "eyebrow": "Press & Editorial",
+    "title": "The brand that earned its echo — because it lives what it tells.",
+    "intro": "Globo, Revista Horse, BSC Portugal and other publications followed the expeditions, the founders and the philosophy of Energias da Terra. We've gathered the stories, videos and editorials here — to read inside the site itself.",
+    "fullEyebrow": "Institutional recognition",
+    "fullTitle": "Reports, editorials and interviews.",
+    "ctaEyebrow": "Press & partnerships",
+    "ctaTitle": "Pitches, interviews and guided press visits.",
+    "ctaButton": "Talk to our press team"
+  },
+  "minhaReserva": {
+    "metaTitle": "My Reservation · Cavalgadas Energias da Terra",
+    "metaDescription": "Check the status of your pre-reservation by protocol number.",
+    "eyebrow": "Lookup",
+    "title": "My Reservation",
+    "intro": "Enter the protocol you received after your pre-reservation. E.g.:",
+    "consultar": "Check",
+    "placeholderProtocolo": "CET-2026-001",
+    "statusAtual": "Current status",
+    "cancelada": "Cancelled",
+    "naoEncontrado": "Protocol not found. Please check it was typed correctly.",
+    "continuarWhatsapp": "Continue on WhatsApp",
+    "responsavel": "Lead guest",
+    "participantes": "participant(s)",
+    "statusPreReserva": "Pre-reservation sent",
+    "statusAguardandoContato": "Awaiting contact",
+    "statusAguardandoPagamento": "Awaiting payment",
+    "statusConfirmada": "Confirmed"
+  },
+  "common": {
+    "reservarAgora": "Book Now",
+    "verExpedicoes": "See expeditions",
+    "voltar": "Back",
+    "saibaMais": "Learn more"
+  },
+  "a11y": {
+    "panelTitle": "Your experience, your way",
+    "open": "Open accessibility options",
+    "close": "Close accessibility options",
+    "narracao": "Narration",
+    "lerPagina": "Read page",
+    "parar": "Stop",
+    "lerAoTocar": "Read on tap or focus",
+    "leitura": "Reading",
+    "tamanhoTexto": "Text size",
+    "normal": "Normal",
+    "maior": "Larger",
+    "grande": "Large",
+    "altoContraste": "High contrast",
+    "movimentoLibras": "Motion and Libras",
+    "reduzirAnimacoes": "Reduce animations",
+    "vlibras": "VLibras",
+    "vlibrasDesc": "Brazilian Sign Language translator",
+    "ativar": "Activate",
+    "restaurar": "Restore defaults",
+    "labelAcessibilidade": "Accessibility"
+  },
+  "cookies": {
+    "title": "Cookies & privacy",
+    "body": "We use cookies to improve your experience. By continuing to browse, you agree to our privacy policy.",
+    "aceitar": "Accept",
+    "recusar": "Decline"
   }
 }
