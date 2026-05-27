@@ -78,7 +78,7 @@ function DetalhesExpedicao() {
 
       {/* Carrossel editorial — narrativa visual da expedição */}
       {narrativa.length > 0 && (
-        <section className="bg-background py-20 md:py-28">
+        <section className={`bg-background py-16 ${isJeri ? "md:py-20" : "md:py-28"}`}>
           <div className="container-tight mb-10 max-w-2xl md:mb-14">
             <div className="eyebrow">A experiência em imagens</div>
             <h2 className="mt-4 font-display text-3xl md:text-4xl text-balance">
