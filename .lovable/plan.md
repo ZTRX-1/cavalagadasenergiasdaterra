@@ -1,49 +1,56 @@
-## Problema
+## Objetivo
+Adicionar um carrossel editorial premium nas páginas de cada expedição, logo abaixo da capa, seguindo a narrativa visual definida (8 cenas em ordem). Primeira aplicação: **Jericoacoara**, com as 8 fotos enviadas exatamente na ordem recebida. Mesma estrutura ficará pronta para as demais expedições, alimentadas por dados.
 
-No mobile, o painel de Acessibilidade (`src/components/accessibility-panel.tsx`) está posicionado como um cartão flutuante fixo (`bottom-40 right-5 w-[20rem]`). Em telas pequenas (≤360px, ou em paisagem), ele:
+## Mudanças
 
-- Estoura a largura da tela (1.25rem + 20rem ≈ 340px) → corta o conteúdo lateral.
-- Sobe acima da área visível por causa do `bottom-40` + `max-h-[70vh]`, ficando com topo cortado em telas curtas.
-- Não respeita `safe-area-inset` (notch / barra inferior do iOS).
+### 1. Novas imagens (Jericoacoara)
+Copiar as 8 fotos enviadas para `src/assets/fotos/jericoacoara/01.jpg`…`08.jpg`, na ordem:
+1. Capa — cavaleira na duna ao nascer do sol
+2. Paisagem — duna ondulada com palmeiras
+3. Cavalgada — silhuetas na praia ao pôr do sol
+4. Conexão — mulher e cavalo na lagoa
+5. Roteiro exclusivo — travessia na água
+6. Grupo — sete cavaleiros enfileirados na lagoa
+7. Hospedagem — piscina iluminada à noite
+8. Encerramento — trio em silhueta no pôr do sol das dunas
 
-Além disso, a estrutura tem muitos grupos visuais (narração + toggles + radios + VLibras + reset) num cartão pequeno, o que dificulta a navegação sequencial por leitor de tela e por toque.
+A foto 1 vira o novo **hero** de Jericoacoara (substitui o placeholder atual).
 
-## O que vou fazer
+### 2. Novo componente `CarrosselNarrativo`
+`src/components/carrossel-narrativo.tsx`, baseado em **embla-carousel-react** (já instalado, mesma lib do `ui/carousel`).
 
-Mexer **apenas** em `src/components/accessibility-panel.tsx`. Sem mudar lógica de TTS, VLibras ou preferências persistidas.
+Características:
+- Swipe nativo no mobile, drag no desktop, snap suave (`align: "center"`, `loop: true`).
+- Slide central em destaque (90vw mobile, ~62vw desktop, aspect 4/5), vizinhos com leve opacidade/scale para efeito cinematográfico.
+- Legenda editorial sobreposta no canto inferior: eyebrow ("01 — Paisagem icônica") + título curto (ex.: "Dunas de Jericoacoara").
+- Navegação minimalista: setas circulares discretas (visíveis só ≥ md), barra de progresso fina em vez de bolinhas, contador "03 / 08".
+- Vinheta sutil + grão leve nas imagens (mesma linguagem de `EditorialFrame`).
+- Autoplay desligado por padrão; `prefers-reduced-motion` respeitado.
+- Lazy load nos slides fora do viewport; `fetchpriority="high"` apenas no primeiro.
+- Acessível: `role="region" aria-roledescription="carousel"`, slides com `aria-label`, setas com `aria-label`, navegação por teclado (← →).
 
-### 1. Layout responsivo (bottom sheet no mobile, painel flutuante no desktop)
+### 3. Dados narrativos por expedição
+Em `src/lib/expedicao-images.ts`:
+- Adicionar imports das 8 fotos de Jericoacoara.
+- Trocar `SLUG_IMAGE["jericoacoara"]` para `jeri01`.
+- Criar novo mapa `SLUG_NARRATIVA: Record<string, { src: string; eyebrow: string; titulo: string }[]>` com a sequência das 8 cenas para `jericoacoara`. Demais expedições ficam vazias por enquanto (vamos preencher depois, expedição por expedição).
+- Helper `getExpedicaoNarrativa(slug)`.
 
-- **Mobile (`< md`)**: painel vira *bottom sheet* full-width.
-  - `inset-x-0 bottom-0`, largura total, cantos arredondados só no topo.
-  - Backdrop escuro semi-transparente atrás (clicável para fechar).
-  - `aria-modal="true"` quando aberto no mobile, com trava de scroll do body.
-  - Respeita `padding-bottom: env(safe-area-inset-bottom)`.
-  - Animação slide-up (respeita `prefers-reduced-motion` e a pref `reduceMotion`).
-- **Desktop (`md+`)**: mantém o cartão flutuante atual (ajustado para não cortar — `max-h-[min(70vh,40rem)]`, `bottom-28`).
-- Botão flutuante (FAB) ganha `bottom: max(1.25rem, env(safe-area-inset-bottom))` para não colidir com a barra do iOS, e some/desce quando o sheet está aberto no mobile.
+### 4. Integração na página da expedição
+`src/routes/expedicoes.$slug.tsx`:
+- Logo após o `<section>` do hero (e antes do bloco do vídeo da Canastra), renderizar uma nova `<section className="bg-background py-20 md:py-28">` com eyebrow "A experiência em imagens" + título curto + o `CarrosselNarrativo`, **apenas quando** `getExpedicaoNarrativa(slug).length > 0`.
+- A seção atual "Galeria — A expedição em imagens" (que usa `GaleriaEditorial`) continua existindo para as expedições que ainda dependem dela; quando houver narrativa, ela é ocultada para não duplicar.
 
-### 2. Simplificar para leitor de tela e toque
+### 5. Performance
+- Imagens são bundladas via Vite (`@/assets/...`) — beneficiam de hashing e cache longo.
+- `loading="lazy"` + `decoding="async"` em todos os slides exceto o primeiro.
+- Embla é leve (~5kb) e já está no bundle.
 
-- Reagrupar em **3 seções claras** com `<section aria-labelledby>` e cabeçalho visível:
-  1. **Narração** (Ouvir / Parar / Ler ao focar)
-  2. **Leitura** (tamanho do texto, alto contraste)
-  3. **Movimento e Libras** (reduzir animações, VLibras)
-- Cada controle:
-  - Alvo de toque ≥ 48×48 (atualmente `py-2` / `h-9` → subir para `min-h-12`).
-  - Texto maior e mais direto ("Ler a página", "Parar leitura", "Texto maior", "Texto grande", em vez de "A / A+ / A++").
-  - `aria-pressed` em vez de `role="switch"` quando fizer sentido — mais previsível em leitores móveis.
-- Ao abrir: foco vai para o título do painel; ao fechar: foco volta ao FAB.
-- Anúncios: adicionar `aria-live="polite"` invisível que diz "Texto grande ativado", "Alto contraste ativado", "Leitura iniciada", etc.
-- ESC fecha; clique no backdrop fecha; botão "Fechar" continua visível.
-- Reduzir hierarquia visual (menos badges/eyebrows pequenos) para o painel "respirar" e não parecer denso.
+## Detalhes técnicos
+- Sem novas dependências.
+- Tokens existentes: `cobre`, `areia`, `carvao`, `font-display`, `eyebrow`.
+- Mobile-first: slide ocupa ~88vw, padding lateral generoso para preview dos vizinhos.
+- Sem alterações em backend, rotas ou tipos do Supabase.
 
-### 3. Verificação
-
-- Testar nos viewports 320, 360, 390 e 768 px (sandbox tem screenshot).
-- Confirmar que: nada é cortado, FAB não cobre conteúdo crítico, painel abre/fecha por teclado, foco entra/sai corretamente, e nenhuma preferência salva é perdida.
-
-## Fora de escopo
-
-- Não vou mudar VLibras, TTS, persistência em `localStorage`, nem o design system (`src/styles.css`).
-- Não vou tocar em outras páginas/componentes.
+## Próximos passos (fora deste plano)
+Após aprovação e validação visual em Jeri, replicaremos a mesma estrutura para Canastra, Mantiqueira, Berço do Marchador, Peru, Patagônia e Caminho de Santiago — uma expedição por vez, conforme você enviar as fotos na ordem narrativa.
