@@ -161,7 +161,7 @@ function DetalhesExpedicao() {
 
       {/* Roteiro */}
       {expedicao.roteiro?.length > 0 && (
-        <section className="bg-secondary/40 py-24 md:py-32">
+        <section className={`bg-secondary/40 py-20 ${isJeri ? "md:py-24" : "md:py-32"}`}>
           <div className="container-tight">
             <div className="max-w-2xl">
               <div className="eyebrow">Roteiro resumido</div>
