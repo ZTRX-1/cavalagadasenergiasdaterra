@@ -44,15 +44,16 @@ function DetalhesExpedicao() {
   const narrativa = getExpedicaoNarrativa(expedicao.slug);
   const whatsappMsg = `Olá! Gostaria de reservar minha vaga na expedição "${expedicao.nome}".`;
   const whatsappUrl = buildContactWhatsappUrl(whatsappMsg);
+  const isJeri = expedicao.slug === "jericoacoara";
 
 
   return (
     <>
       {/* HERO */}
-      <section className="relative min-h-[80svh] text-areia">
-        <img src={heroImg} alt={expedicao.nome} className="absolute inset-0 h-full w-full object-cover" fetchPriority="high" />
+      <section className={`relative text-areia ${isJeri ? "min-h-[78svh] md:min-h-[62svh] lg:min-h-[64svh]" : "min-h-[80svh]"}`}>
+        <img src={heroImg} alt={expedicao.nome} className={`absolute inset-0 h-full w-full object-cover ${isJeri ? "object-[center_28%]" : ""}`} fetchPriority="high" />
         <div className="absolute inset-0 bg-gradient-to-t from-carvao via-carvao/50 to-carvao/30" />
-        <div className="container-tight relative flex min-h-[80svh] flex-col justify-end pb-16 pt-32 md:pb-20 md:pt-40">
+        <div className={`container-tight relative flex flex-col justify-end pb-16 pt-32 ${isJeri ? "min-h-[78svh] md:min-h-[62svh] md:pb-14 md:pt-32 lg:min-h-[64svh]" : "min-h-[80svh] md:pb-20 md:pt-40"}`}>
           <div className="flex items-center gap-3 text-[0.7rem] uppercase tracking-[0.22em] text-areia/80">
             <span>{expedicao.duracao}</span>
             <span className="h-1 w-1 rounded-full bg-cobre" />
