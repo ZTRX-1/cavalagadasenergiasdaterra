@@ -30,7 +30,14 @@ export function VLibras() {
       const style = document.createElement("style");
       style.id = "vlibras-style";
       style.textContent = `
-        [vw][vw] [vw-access-button] { display: none !important; }
+        /* Oculta o botão padrão mas mantém clicável via JS */
+        [vw][vw] [vw-access-button] {
+          position: fixed !important;
+          left: -9999px !important;
+          top: -9999px !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+        }
         [vw][vw] { z-index: 80 !important; }
         [vw][vw] [vw-plugin-wrapper],
         [vw][vw] .vw-plugin-top-wrapper,
