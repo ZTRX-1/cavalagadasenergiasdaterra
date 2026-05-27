@@ -50,10 +50,10 @@ function DetalhesExpedicao() {
   return (
     <>
       {/* HERO */}
-      <section className={`relative text-areia ${isJeri ? "min-h-[78svh] md:min-h-[62svh] lg:min-h-[64svh]" : "min-h-[80svh]"}`}>
+      <section className="relative text-areia min-h-[78svh] md:min-h-[62svh] lg:min-h-[64svh]">
         <img src={heroImg} alt={expedicao.nome} className={`absolute inset-0 h-full w-full object-cover ${isJeri ? "object-[center_28%]" : ""}`} fetchPriority="high" />
         <div className="absolute inset-0 bg-gradient-to-t from-carvao via-carvao/50 to-carvao/30" />
-        <div className={`container-tight relative flex flex-col justify-end pb-16 pt-32 ${isJeri ? "min-h-[78svh] md:min-h-[62svh] md:pb-14 md:pt-32 lg:min-h-[64svh]" : "min-h-[80svh] md:pb-20 md:pt-40"}`}>
+        <div className="container-tight relative flex flex-col justify-end pb-14 pt-32 min-h-[78svh] md:min-h-[62svh] lg:min-h-[64svh]">
           <div className="flex items-center gap-3 text-[0.7rem] uppercase tracking-[0.22em] text-areia/80">
             <span>{expedicao.duracao}</span>
             <span className="h-1 w-1 rounded-full bg-cobre" />
@@ -78,7 +78,7 @@ function DetalhesExpedicao() {
 
       {/* Carrossel editorial — narrativa visual da expedição */}
       {narrativa.length > 0 && (
-        <section className={`bg-background py-16 ${isJeri ? "md:py-20" : "md:py-28"}`}>
+        <section className="bg-background py-16 md:py-20">
           <div className="container-tight mb-10 max-w-2xl md:mb-14">
             <div className="eyebrow">Experiência em imagens</div>
             <h2 className="mt-4 font-display text-3xl md:text-4xl text-balance">
