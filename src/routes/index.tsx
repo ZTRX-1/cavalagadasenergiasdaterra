@@ -361,9 +361,7 @@ function HomePage() {
             <div className="eyebrow">{t("faq.eyebrow")}</div>
             <h2 className="mt-5 font-display text-4xl text-balance md:text-5xl">{t("faq.title")}</h2>
             <span aria-hidden className="mt-7 block h-px w-16 bg-cobre" />
-            <Link to="/contato" className="mt-6 inline-flex items-center gap-2 text-sm uppercase tracking-widest hover:text-cobre">
-              {t("faq.verTodas")} <ArrowRight className="h-4 w-4" />
-            </Link>
+
           </div>
           <div className="md:col-span-8">
             <div className="divide-y divide-border border-y border-border">
