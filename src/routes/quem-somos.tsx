@@ -81,7 +81,6 @@ function QuemSomosPage() {
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-areia/82 md:text-lg">
               {t("quemSomos.heroIntro")}
             </p>
-            </p>
 
           </div>
         </div>
