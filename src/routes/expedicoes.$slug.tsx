@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { ArrowRight, Check, MessageCircle } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
 import { getExpedicaoImage, getExpedicaoGaleria, getExpedicaoNarrativa } from "@/lib/expedicao-images";
 import { CarrosselNarrativo } from "@/components/carrossel-narrativo";
@@ -70,7 +71,7 @@ function DetalhesExpedicao() {
               rel="noreferrer"
               className="mt-10 inline-flex w-fit items-center gap-2 rounded-full bg-cobre px-7 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft"
             >
-              <MessageCircle className="h-4 w-4" /> Reservar Agora
+              <WhatsAppIcon className="h-4 w-4" /> Reservar Agora
             </a>
           )}
         </div>
@@ -228,7 +229,7 @@ function DetalhesExpedicao() {
             rel="noreferrer"
             className="mt-8 inline-flex items-center gap-2 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft"
           >
-            <MessageCircle className="h-4 w-4" /> Reservar Agora
+            <WhatsAppIcon className="h-4 w-4" /> Reservar Agora
           </a>
         </div>
       </section>

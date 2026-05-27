@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Instagram, MessageCircle, MapPin } from "lucide-react";
+import { Instagram, MapPin } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { buildContactWhatsappUrl } from "@/lib/whatsapp";
 import cavaloCloseup from "@/assets/cavalo-closeup.jpg";
 
@@ -34,7 +35,7 @@ function ContatoPage() {
             </p>
             <div className="mt-10 space-y-4">
               <a href={buildContactWhatsappUrl()} target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-sm border border-border bg-card p-5 transition-colors hover:border-cobre">
-                <MessageCircle className="h-6 w-6 text-cobre" />
+                <WhatsAppIcon className="h-6 w-6 text-cobre" />
                 <div>
                   <div className="font-display text-lg">WhatsApp</div>
                   <div className="text-sm text-muted-foreground">+55 11 94162-6907</div>

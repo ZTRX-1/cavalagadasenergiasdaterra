@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Loader2, Search, MessageCircle } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { buildReservaWhatsappUrl } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 
@@ -168,7 +169,7 @@ function MinhaReserva() {
                     rel="noreferrer"
                     className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-7 py-4 font-eyebrow text-[0.72rem] uppercase tracking-[0.22em] text-white sm:w-auto"
                   >
-                    <MessageCircle className="h-4 w-4" /> Continuar pelo WhatsApp
+                    <WhatsAppIcon className="h-4 w-4" /> Continuar pelo WhatsApp
                   </a>
                 </div>
               )}
