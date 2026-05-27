@@ -89,16 +89,25 @@ export function CarrosselNarrativo({ cenas, alt = "" }: Props) {
                     isActive ? "opacity-100 scale-100" : "opacity-50 scale-[0.96]",
                   )}
                 >
-                  <div className="relative aspect-[4/5] md:aspect-[3/4]">
+                  <div className="relative aspect-[4/5] md:aspect-[3/4] bg-carvao">
+                    {/* fundo desfocado para preencher elegantemente */}
+                    <img
+                      src={cena.src}
+                      alt=""
+                      aria-hidden
+                      className="absolute inset-0 h-full w-full object-cover scale-110 blur-2xl opacity-40"
+                      draggable={false}
+                    />
                     <img
                       src={cena.src}
                       alt={`${alt} — ${cena.titulo}`}
                       loading={i === 0 ? "eager" : "lazy"}
                       decoding={i === 0 ? "sync" : "async"}
                       fetchPriority={i === 0 ? "high" : undefined}
-                      className="absolute inset-0 h-full w-full object-cover"
+                      className="absolute inset-0 h-full w-full object-contain"
                       draggable={false}
                     />
+
                     {/* grão sutil */}
                     <span
                       aria-hidden
