@@ -1,5 +1,6 @@
 import { Outlet, createFileRoute, useRouterState } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { listExpedicoes } from "@/lib/expedicoes.functions";
 import { ExpedicaoCard } from "@/components/expedicao-card";
 
@@ -28,15 +29,16 @@ function ExpedicoesPage() {
 }
 
 function ExpedicoesCatalog() {
+  const { t } = useTranslation();
   const { data: expedicoes } = useSuspenseQuery(qo);
   return (
     <div className="bg-background pb-24 pt-32 md:pb-32 md:pt-40">
       <div className="container-tight">
         <div className="max-w-3xl">
-          <div className="eyebrow">Catálogo</div>
-          <h1 className="mt-4 font-display text-5xl text-balance md:text-7xl">Expedições</h1>
+          <div className="eyebrow">{t("expedicoes.catalogoEyebrow")}</div>
+          <h1 className="mt-4 font-display text-5xl text-balance md:text-7xl">{t("expedicoes.catalogoTitle")}</h1>
           <p className="mt-6 max-w-xl text-lg text-muted-foreground text-pretty">
-            Cada expedição é um roteiro autoral, com curadoria de trilhas, hospedagens e gastronomia. Escolha a sua próxima expedição.
+            {t("expedicoes.catalogoIntro")}
           </p>
         </div>
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
