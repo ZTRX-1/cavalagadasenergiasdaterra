@@ -139,10 +139,12 @@ export function CarrosselNarrativo({ cenas, alt = "" }: Props) {
                         isActive ? "opacity-100" : "opacity-0",
                       )}
                     >
-                      <div className="font-eyebrow text-[0.6rem] uppercase tracking-[0.32em] text-areia/75 md:text-[0.65rem]">
-                        {cena.eyebrow}
-                      </div>
-                      <div className="mt-2 font-display text-2xl leading-tight text-balance md:text-3xl">
+                      {cena.eyebrow && (
+                        <div className="font-eyebrow text-[0.6rem] uppercase tracking-[0.32em] text-areia/75 md:text-[0.65rem]">
+                          {cena.eyebrow}
+                        </div>
+                      )}
+                      <div className="max-w-2xl font-display text-lg leading-snug text-balance text-areia/95 md:text-xl lg:text-2xl">
                         {cena.titulo}
                       </div>
                     </figcaption>
