@@ -218,7 +218,7 @@ function DetalhesExpedicao() {
       </section>
 
       {/* CTA */}
-      <section className="bg-floresta-deep py-20 text-areia md:py-28">
+      <section className={`bg-floresta-deep py-20 text-areia ${isJeri ? "md:py-20" : "md:py-28"}`}>
         <div className="container-tight text-center">
           <h2 className="font-display text-3xl text-balance md:text-5xl">Pronto para reservar sua vaga?</h2>
           <p className="mx-auto mt-4 max-w-xl text-areia/75">Fale com nossa equipe pelo WhatsApp para alinhar detalhes e confirmar sua vaga.</p>
