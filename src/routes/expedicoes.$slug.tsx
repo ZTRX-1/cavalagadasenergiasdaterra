@@ -181,7 +181,7 @@ function DetalhesExpedicao() {
 
 
       {/* Galeria */}
-      {galeria.length > 0 && (
+      {galeria.length > 0 && narrativa.length === 0 && (
         <section className="bg-background py-24 md:py-32">
           <div className="container-tight">
             <div className="max-w-2xl">
