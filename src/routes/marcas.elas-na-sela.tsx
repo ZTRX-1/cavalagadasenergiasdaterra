@@ -4,7 +4,9 @@ import hero from "@/assets/fotos/mantiqueira/01.jpg";
 import logo from "@/assets/logo-elas-na-sela.jpg";
 import { MarcaCrossNav } from "@/components/marca-cross-nav";
 import { GaleriaEditorial } from "@/components/galeria-editorial";
+import { DepoimentoDestaque } from "@/components/depoimento-destaque";
 import { GALERIA_ELAS_NA_SELA } from "@/lib/expedicao-images";
+
 
 
 export const Route = createFileRoute("/marcas/elas-na-sela")({
