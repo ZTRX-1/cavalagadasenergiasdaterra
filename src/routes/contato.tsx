@@ -13,13 +13,6 @@ export const Route = createFileRoute("/contato")({
   component: ContatoPage,
 });
 
-const FAQ = [
-  { q: "Quem pode participar das expedições?", a: "Qualquer pessoa em boas condições de saúde, dentro dos requisitos de cada expedição (idade e peso). Temos roteiros para todos os níveis." },
-  { q: "Preciso de experiência prévia com cavalos?", a: "Não. Oferecemos expedições para diferentes níveis de experiência, desde quem nunca montou até cavaleiros e amazonas experientes. Nossa equipe orienta na escolha do roteiro ideal para que cada pessoa aproveite a jornada com segurança e confiança." },
-  { q: "Como funciona a hospedagem?", a: "Trabalhamos com pousadas, hotéis e acomodações locais cuidadosamente selecionadas conforme o roteiro e a região, garantindo conforto, autenticidade e qualidade em cada experiência." },
-  { q: "Os cavalos são treinados?", a: "Sim. Todos os cavalos são treinados, descansados entre expedições e acompanhados por equipe profissional." },
-  { q: "Posso fazer uma expedição privada?", a: "Sim. Criamos experiências privativas e personalizadas, desenvolvidas de acordo com os interesses, ritmo e perfil de cada grupo." },
-];
 
 function ContatoPage() {
   return (
@@ -104,28 +97,6 @@ function ContatoPage() {
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="bg-background py-24 md:py-32">
-        <div className="container-tight grid gap-12 md:grid-cols-12">
-          <div className="md:col-span-4">
-            <div className="eyebrow">Perguntas frequentes</div>
-            <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">FAQ</h2>
-          </div>
-          <div className="md:col-span-8">
-            <div className="divide-y divide-border border-y border-border">
-              {FAQ.map((f) => (
-                <details key={f.q} className="group py-6">
-                  <summary className="flex cursor-pointer items-center justify-between font-display text-lg">
-                    {f.q}
-                    <span className="ml-4 text-cobre transition-transform group-open:rotate-45">+</span>
-                  </summary>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{f.a}</p>
-                </details>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
     </>
   );
 }

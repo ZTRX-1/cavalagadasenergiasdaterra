@@ -4,7 +4,9 @@ import hero from "@/assets/fotos/mantiqueira/01.jpg";
 import logo from "@/assets/logo-elas-na-sela.jpg";
 import { MarcaCrossNav } from "@/components/marca-cross-nav";
 import { GaleriaEditorial } from "@/components/galeria-editorial";
+import { DepoimentoDestaque } from "@/components/depoimento-destaque";
 import { GALERIA_ELAS_NA_SELA } from "@/lib/expedicao-images";
+
 
 
 export const Route = createFileRoute("/marcas/elas-na-sela")({
@@ -66,7 +68,26 @@ function Page() {
         </div>
       </section>
 
+
+      <DepoimentoDestaque
+        eyebrow="Relato — Elas na Sela"
+        preview={`Oiiieee, Alinne e Lígia suas queridas, vcs estão bem?
+Passando aqui só pra dizer que ainda estou tentando encontrar palavras para traduzir tudo o que vivi nessa expedição.
+
+Fui sozinha, com frio na barriga e o coração cheio de coragem, em busca de algo que sempre viveu dentro de mim desde menina: o amor pelos cavalos. E, de alguma forma, também uma conexão profunda com meu pai, que foi quem me apresentou esse universo tão especial.`}
+        resto={`No meio das trilhas, dos morros, dos riachos, do mato fechado e da chegada emocionante ao Rio São Francisco, encontrei muito mais do que aventura. Encontrei mulheres incríveis, fortes, acolhedoras e inspiradoras.
+
+Obrigada a vocês duas e a todos os envolvidos dessa cavalgada por criarem algo tão lindo e transformador. Vocês despertaram em mim sonhos que eu nem sabia que ainda existiam. Voltei diferente. Mais viva, mais corajosa e mais perto de mim mesma.
+
+E foi depois dessa experiência que tomei coragem para começar minhas aulas de 3 tambores — algo que eu sempre quis, mas precisava de fôlego para acreditar que podia viver.
+
+Talvez tenha sido exatamente aí que tudo começou. 🐎✨`}
+        autora="Daniela De Barros Corona"
+        cidade="Cabreúva — SP"
+      />
+
       <section className="bg-secondary/40 py-20 md:py-24">
+
         <div className="container-tight text-center">
           <h2 className="font-display text-4xl text-balance md:text-5xl">Sua próxima expedição espera.</h2>
           <Link to="/expedicoes" className="mt-8 inline-flex items-center gap-2 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia hover:bg-cobre-soft">
