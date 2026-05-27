@@ -55,6 +55,16 @@ import man27 from "@/assets/fotos/mantiqueira/27.jpg";
 import man28 from "@/assets/fotos/mantiqueira/28.jpg";
 import man34 from "@/assets/fotos/mantiqueira/34.jpg";
 
+// MANTIQUEIRA — novas fotos curadas (ordem narrativa)
+import manNew01 from "@/assets/fotos/mantiqueira/new-01.jpg";
+import manNew02 from "@/assets/fotos/mantiqueira/new-02.jpg";
+import manNew03 from "@/assets/fotos/mantiqueira/new-03.jpg";
+import manNew04 from "@/assets/fotos/mantiqueira/new-04.jpg";
+import manNew05 from "@/assets/fotos/mantiqueira/new-05.jpg";
+import manNew06 from "@/assets/fotos/mantiqueira/new-06.jpg";
+import manNew07 from "@/assets/fotos/mantiqueira/new-07.jpg";
+import manNew08 from "@/assets/fotos/mantiqueira/new-08.jpg";
+
 // PERU — 12 fotos disponíveis
 import peru01 from "@/assets/fotos/peru/01.jpg";
 import peru03 from "@/assets/fotos/peru/03.jpg";
@@ -113,7 +123,7 @@ export const IMAGES: Record<string, string> = {
 // ============================================================
 export const SLUG_IMAGE: Record<string, string> = {
   "serra-da-canastra": can23,        // travessia no rio — foto do rio
-  "mantiqueira-refugio": man27,      // tropa em movimento na serra
+  "mantiqueira-refugio": manNew01,   // tropa em movimento na estrada de terra
   "berco-do-marchador": chapada,     // placeholder — imagens reais de Cruzília virão
   "jericoacoara": jeri01,            // cavaleira ao nascer do sol nas dunas
   "peru-vale-do-colca": peru09,      // grupo a cavalo no canyon do Colca
@@ -126,7 +136,7 @@ export const SLUG_IMAGE: Record<string, string> = {
 // ============================================================
 export const SLUG_GALERIA: Record<string, string[]> = {
   "serra-da-canastra": [can23, can26, can37, can21, can15, can18, can22, can25, can13, can27, can28, can16, can05, can10],
-  "mantiqueira-refugio": [man13, man01, man27, man19, man03, man21, man28, man07, man02, man04, man09, man16, man34, man06],
+  "mantiqueira-refugio": [manNew01, manNew02, manNew03, manNew04, manNew05, manNew06, manNew07, manNew08],
   "berco-do-marchador": [],
   "peru-vale-do-colca": [peru09, peru12, peru03, peru01, peru05, peru08, peru07, peru11, peru04, peru06, peru10],
   "patagonia-gaucha": [pat01, pat02, pat03],
