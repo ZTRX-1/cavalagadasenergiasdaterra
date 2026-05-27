@@ -84,6 +84,17 @@ import elas04 from "@/assets/fotos/elas-na-sela/04.jpg";
 import elas05 from "@/assets/fotos/elas-na-sela/05.jpg";
 import elas06 from "@/assets/fotos/elas-na-sela/06.jpg";
 
+// JERICOACOARA — 8 fotos curadas em ordem narrativa
+import jeri01 from "@/assets/fotos/jericoacoara/01.jpg";
+import jeri02 from "@/assets/fotos/jericoacoara/02.jpg";
+import jeri03 from "@/assets/fotos/jericoacoara/03.jpg";
+import jeri04 from "@/assets/fotos/jericoacoara/04.jpg";
+import jeri05 from "@/assets/fotos/jericoacoara/05.jpg";
+import jeri06 from "@/assets/fotos/jericoacoara/06.jpg";
+import jeri07 from "@/assets/fotos/jericoacoara/07.jpg";
+import jeri08 from "@/assets/fotos/jericoacoara/08.jpg";
+
+
 // ============================================================
 // MAPA DE CHAVES (compat com strings vindas do banco)
 // ============================================================
@@ -104,7 +115,7 @@ export const SLUG_IMAGE: Record<string, string> = {
   "serra-da-canastra": can23,        // travessia no rio — foto do rio
   "mantiqueira-refugio": man27,      // tropa em movimento na serra
   "berco-do-marchador": chapada,     // placeholder — imagens reais de Cruzília virão
-  "jericoacoara": can18,             // placeholder — imagens reais de Jeri virão
+  "jericoacoara": jeri01,            // cavaleira ao nascer do sol nas dunas
   "peru-vale-do-colca": peru09,      // grupo a cavalo no canyon do Colca
   "patagonia-gaucha": pat01,         // cavalo nas montanhas nevadas
   "caminho-de-santiago": man19,      // cavaleiros em trilha aberta
@@ -155,6 +166,32 @@ export function getExpedicaoGaleria(slug: string): string[] {
 
 export function getImageByKey(key: string): string {
   return IMAGES[key] ?? heroCavalgada;
+}
+
+// ============================================================
+// NARRATIVA VISUAL POR EXPEDIÇÃO — 8 cenas em ordem cinematográfica
+// ============================================================
+export interface CenaNarrativa {
+  src: string;
+  eyebrow: string;
+  titulo: string;
+}
+
+export const SLUG_NARRATIVA: Record<string, CenaNarrativa[]> = {
+  "jericoacoara": [
+    { src: jeri01, eyebrow: "01 — Capa", titulo: "O primeiro raio sobre as dunas" },
+    { src: jeri02, eyebrow: "02 — Paisagem icônica", titulo: "Dunas, palmeiras e horizonte do Ceará" },
+    { src: jeri03, eyebrow: "03 — Cavalgada em movimento", titulo: "Silhuetas na praia ao entardecer" },
+    { src: jeri04, eyebrow: "04 — Conexão", titulo: "Encontro silencioso na lagoa" },
+    { src: jeri05, eyebrow: "05 — Travessia", titulo: "Cavalos atravessando águas claras" },
+    { src: jeri06, eyebrow: "06 — Grupo", titulo: "A tropa reunida diante do mar" },
+    { src: jeri07, eyebrow: "07 — Hospedagem", titulo: "Noite na pousada à beira da piscina" },
+    { src: jeri08, eyebrow: "08 — Encerramento", titulo: "O último pôr do sol sobre as dunas" },
+  ],
+};
+
+export function getExpedicaoNarrativa(slug: string): CenaNarrativa[] {
+  return SLUG_NARRATIVA[slug] ?? [];
 }
 
 export { heroCavalgada };
