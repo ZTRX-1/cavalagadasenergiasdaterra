@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Instagram, MapPin } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { buildContactWhatsappUrl } from "@/lib/whatsapp";
 import cavaloCloseup from "@/assets/cavalo-closeup.jpg";
@@ -23,36 +24,37 @@ const FAQ = [
 ];
 
 function ContatoPage() {
+  const { t } = useTranslation();
   return (
     <>
       <section className="bg-background pb-20 pt-32 md:pb-28 md:pt-40">
         <div className="container-tight grid gap-12 md:grid-cols-12">
           <div className="md:col-span-7">
-            <div className="eyebrow">Contato</div>
-            <h1 className="mt-4 font-display text-5xl text-balance md:text-7xl">Vamos conversar.</h1>
+            <div className="eyebrow">{t("contato.eyebrow")}</div>
+            <h1 className="mt-4 font-display text-5xl text-balance md:text-7xl">{t("contato.title")}</h1>
             <p className="mt-6 max-w-xl text-lg text-muted-foreground text-pretty">
-              Atendemos pelo WhatsApp e Instagram. Nossa equipe está à disposição para esclarecer dúvidas, apresentar roteiros e auxiliar em sua reserva.
+              {t("contato.intro")}
             </p>
             <div className="mt-10 space-y-4">
               <a href={buildContactWhatsappUrl()} target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-sm border border-border bg-card p-5 transition-colors hover:border-cobre">
                 <WhatsAppIcon className="h-6 w-6 text-cobre" />
                 <div>
-                  <div className="font-display text-lg">WhatsApp</div>
+                  <div className="font-display text-lg">{t("contato.whatsappLabel")}</div>
                   <div className="text-sm text-muted-foreground">+55 11 94162-6907</div>
                 </div>
               </a>
               <a href="https://instagram.com/cavalgadasenergiasdaterra" target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-sm border border-border bg-card p-5 transition-colors hover:border-cobre">
                 <Instagram className="h-6 w-6 text-cobre" />
                 <div>
-                  <div className="font-display text-lg">Instagram</div>
+                  <div className="font-display text-lg">{t("contato.instagramLabel")}</div>
                   <div className="text-sm text-muted-foreground">@cavalgadasenergiasdaterra</div>
                 </div>
               </a>
               <div className="flex items-center gap-4 rounded-sm border border-border bg-card p-5">
                 <MapPin className="h-6 w-6 text-cobre" />
                 <div>
-                  <div className="font-display text-lg">Base de Operações</div>
-                  <div className="text-sm text-muted-foreground">Serra da Mantiqueira — Maria da Fé, MG</div>
+                  <div className="font-display text-lg">{t("contato.baseLabel")}</div>
+                  <div className="text-sm text-muted-foreground">{t("contato.baseValor")}</div>
                 </div>
               </div>
             </div>
@@ -63,12 +65,11 @@ function ContatoPage() {
         </div>
       </section>
 
-      {/* Quem somos */}
       <section className="bg-floresta-deep py-24 text-areia md:py-32">
         <div className="container-tight grid gap-12 md:grid-cols-12">
           <div className="md:col-span-4">
-            <div className="eyebrow text-cobre-soft">Quem somos</div>
-            <h2 className="mt-4 font-display text-4xl md:text-5xl">Vivemos o que oferecemos.</h2>
+            <div className="eyebrow text-cobre-soft">{t("contato.quemSomosEyebrow")}</div>
+            <h2 className="mt-4 font-display text-4xl md:text-5xl">{t("contato.quemSomosTitle")}</h2>
           </div>
           <div className="md:col-span-8 space-y-6 text-lg leading-relaxed text-areia/85 text-pretty">
             <p>
@@ -81,12 +82,11 @@ function ContatoPage() {
         </div>
       </section>
 
-      {/* Nosso diferencial */}
       <section className="bg-background py-24 md:py-32">
         <div className="container-tight grid gap-12 md:grid-cols-12">
           <div className="md:col-span-4">
-            <div className="eyebrow">Nosso diferencial</div>
-            <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">Não vendemos cavalgadas — criamos experiências autorais.</h2>
+            <div className="eyebrow">{t("contato.diferencialEyebrow")}</div>
+            <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">{t("contato.diferencialTitle")}</h2>
           </div>
           <div className="md:col-span-8 space-y-6 text-lg leading-relaxed text-foreground/80 text-pretty">
             <p>
@@ -105,12 +105,11 @@ function ContatoPage() {
         </div>
       </section>
 
-      {/* FAQ */}
       <section className="bg-background py-24 md:py-32">
         <div className="container-tight grid gap-12 md:grid-cols-12">
           <div className="md:col-span-4">
-            <div className="eyebrow">Perguntas frequentes</div>
-            <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">FAQ</h2>
+            <div className="eyebrow">{t("contato.faqEyebrow")}</div>
+            <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">{t("contato.faqTitle")}</h2>
           </div>
           <div className="md:col-span-8">
             <div className="divide-y divide-border border-y border-border">
