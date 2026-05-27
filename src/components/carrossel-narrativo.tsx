@@ -133,21 +133,23 @@ export function CarrosselNarrativo({ cenas, alt = "" }: Props) {
                       }}
                     />
                     {/* legenda */}
-                    <figcaption
-                      className={cn(
-                        "absolute inset-x-0 bottom-0 p-6 md:p-9 text-areia transition-opacity duration-500",
-                        isActive ? "opacity-100" : "opacity-0",
-                      )}
-                    >
-                      {cena.eyebrow && (
-                        <div className="font-eyebrow text-[0.6rem] uppercase tracking-[0.32em] text-areia/75 md:text-[0.65rem]">
-                          {cena.eyebrow}
+                    {cena.titulo && (
+                      <figcaption
+                        className={cn(
+                          "absolute inset-x-0 bottom-0 p-6 md:p-9 text-areia transition-opacity duration-500",
+                          isActive ? "opacity-100" : "opacity-0",
+                        )}
+                      >
+                        {cena.eyebrow && (
+                          <div className="font-eyebrow text-[0.6rem] uppercase tracking-[0.32em] text-areia/75 md:text-[0.65rem]">
+                            {cena.eyebrow}
+                          </div>
+                        )}
+                        <div className="max-w-2xl font-display text-lg leading-snug text-balance text-areia/95 md:text-xl lg:text-2xl">
+                          {cena.titulo}
                         </div>
-                      )}
-                      <div className="max-w-2xl font-display text-lg leading-snug text-balance text-areia/95 md:text-xl lg:text-2xl">
-                        {cena.titulo}
-                      </div>
-                    </figcaption>
+                      </figcaption>
+                    )}
                   </div>
                 </figure>
               </div>
