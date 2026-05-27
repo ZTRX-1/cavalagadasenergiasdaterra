@@ -2,7 +2,8 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight, Check, MessageCircle } from "lucide-react";
 import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
-import { getExpedicaoImage, getExpedicaoGaleria } from "@/lib/expedicao-images";
+import { getExpedicaoImage, getExpedicaoGaleria, getExpedicaoNarrativa } from "@/lib/expedicao-images";
+import { CarrosselNarrativo } from "@/components/carrossel-narrativo";
 import { GaleriaEditorial } from "@/components/galeria-editorial";
 import { VideoCinematic } from "@/components/video-cinematic";
 import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
@@ -40,6 +41,7 @@ function DetalhesExpedicao() {
   const publicSlug = getPublicExpedicaoSlug(expedicao.slug);
   const heroImg = getExpedicaoImage(expedicao.slug);
   const galeria = getExpedicaoGaleria(expedicao.slug);
+  const narrativa = getExpedicaoNarrativa(expedicao.slug);
   const whatsappMsg = `Olá! Gostaria de reservar minha vaga na expedição "${expedicao.nome}".`;
   const whatsappUrl = buildContactWhatsappUrl(whatsappMsg);
 
@@ -72,6 +74,24 @@ function DetalhesExpedicao() {
           )}
         </div>
       </section>
+
+      {/* Carrossel editorial — narrativa visual da expedição */}
+      {narrativa.length > 0 && (
+        <section className="bg-background py-20 md:py-28">
+          <div className="container-tight mb-10 max-w-2xl md:mb-14">
+            <div className="eyebrow">A experiência em imagens</div>
+            <h2 className="mt-4 font-display text-3xl md:text-4xl text-balance">
+              Oito cenas que contam essa viagem
+            </h2>
+            <p className="mt-4 text-foreground/70 text-pretty">
+              Da primeira luz nas dunas ao último pôr do sol — deslize para percorrer a narrativa.
+            </p>
+          </div>
+          <CarrosselNarrativo cenas={narrativa} alt={expedicao.nome} />
+        </section>
+      )}
+
+
 
       {/* Vídeo cinematográfico — destaque Serra da Canastra */}
       {expedicao.slug === "serra-da-canastra" && (
@@ -161,7 +181,7 @@ function DetalhesExpedicao() {
 
 
       {/* Galeria */}
-      {galeria.length > 0 && (
+      {galeria.length > 0 && narrativa.length === 0 && (
         <section className="bg-background py-24 md:py-32">
           <div className="container-tight">
             <div className="max-w-2xl">
