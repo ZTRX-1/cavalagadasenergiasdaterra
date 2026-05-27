@@ -97,28 +97,6 @@ function ContatoPage() {
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="bg-background py-24 md:py-32">
-        <div className="container-tight grid gap-12 md:grid-cols-12">
-          <div className="md:col-span-4">
-            <div className="eyebrow">Perguntas frequentes</div>
-            <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">FAQ</h2>
-          </div>
-          <div className="md:col-span-8">
-            <div className="divide-y divide-border border-y border-border">
-              {FAQ.map((f) => (
-                <details key={f.q} className="group py-6">
-                  <summary className="flex cursor-pointer items-center justify-between font-display text-lg">
-                    {f.q}
-                    <span className="ml-4 text-cobre transition-transform group-open:rotate-45">+</span>
-                  </summary>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{f.a}</p>
-                </details>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
     </>
   );
 }
