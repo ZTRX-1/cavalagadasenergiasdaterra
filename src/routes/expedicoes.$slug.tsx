@@ -113,7 +113,7 @@ function DetalhesExpedicao() {
 
 
       {/* Descrição + Inclui */}
-      <section className={`bg-background py-20 ${isJeri ? "md:py-24" : "md:py-32"}`}>
+      <section className={`bg-background py-20 md:py-24`}>
         <div className="container-tight grid gap-16 md:grid-cols-12">
           <div className="md:col-span-7">
             <div className="eyebrow">A experiência</div>
@@ -161,7 +161,7 @@ function DetalhesExpedicao() {
 
       {/* Roteiro */}
       {expedicao.roteiro?.length > 0 && (
-        <section className={`bg-secondary/40 py-20 ${isJeri ? "md:py-24" : "md:py-32"}`}>
+        <section className={`bg-secondary/40 py-20 md:py-24`}>
           <div className="container-tight">
             <div className="max-w-2xl">
               <div className="eyebrow">Roteiro resumido</div>
@@ -201,7 +201,7 @@ function DetalhesExpedicao() {
 
 
       {/* Próximas datas */}
-      <section className={`bg-secondary/40 py-20 ${isJeri ? "md:py-24" : "md:py-32"}`}>
+      <section className={`bg-secondary/40 py-20 md:py-24`}>
         <div className="container-tight">
           <div className="eyebrow">Próximas datas</div>
           <h2 className="mt-4 font-display text-3xl md:text-4xl">Escolha seu período</h2>
@@ -218,7 +218,7 @@ function DetalhesExpedicao() {
       </section>
 
       {/* CTA */}
-      <section className={`bg-floresta-deep py-20 text-areia ${isJeri ? "md:py-20" : "md:py-28"}`}>
+      <section className={`bg-floresta-deep py-20 text-areia md:py-24`}>
         <div className="container-tight text-center">
           <h2 className="font-display text-3xl text-balance md:text-5xl">Pronto para reservar sua vaga?</h2>
           <p className="mx-auto mt-4 max-w-xl text-areia/75">Fale com nossa equipe pelo WhatsApp para alinhar detalhes e confirmar sua vaga.</p>
