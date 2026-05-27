@@ -13,13 +13,6 @@ export const Route = createFileRoute("/contato")({
   component: ContatoPage,
 });
 
-const FAQ = [
-  { q: "Quem pode participar das expedições?", a: "Qualquer pessoa em boas condições de saúde, dentro dos requisitos de cada expedição (idade e peso). Temos roteiros para todos os níveis." },
-  { q: "Preciso de experiência prévia com cavalos?", a: "Não. Oferecemos expedições para diferentes níveis de experiência, desde quem nunca montou até cavaleiros e amazonas experientes. Nossa equipe orienta na escolha do roteiro ideal para que cada pessoa aproveite a jornada com segurança e confiança." },
-  { q: "Como funciona a hospedagem?", a: "Trabalhamos com pousadas, hotéis e acomodações locais cuidadosamente selecionadas conforme o roteiro e a região, garantindo conforto, autenticidade e qualidade em cada experiência." },
-  { q: "Os cavalos são treinados?", a: "Sim. Todos os cavalos são treinados, descansados entre expedições e acompanhados por equipe profissional." },
-  { q: "Posso fazer uma expedição privada?", a: "Sim. Criamos experiências privativas e personalizadas, desenvolvidas de acordo com os interesses, ritmo e perfil de cada grupo." },
-];
 
 function ContatoPage() {
   return (
