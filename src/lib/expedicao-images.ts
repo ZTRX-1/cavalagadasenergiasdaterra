@@ -93,6 +93,16 @@ import pat01 from "@/assets/fotos/patagonia/01.jpg";
 import pat02 from "@/assets/fotos/patagonia/02.jpg";
 import pat03 from "@/assets/fotos/patagonia/03.jpg";
 
+// PATAGONIA — novas fotos curadas (ordem narrativa)
+import patNew01 from "@/assets/fotos/patagonia/new-01.jpg";
+import patNew02 from "@/assets/fotos/patagonia/new-02.jpg";
+import patNew03 from "@/assets/fotos/patagonia/new-03.jpg";
+import patNew04 from "@/assets/fotos/patagonia/new-04.jpg";
+import patNew05 from "@/assets/fotos/patagonia/new-05.jpg";
+import patNew06 from "@/assets/fotos/patagonia/new-06.jpg";
+import patNew07 from "@/assets/fotos/patagonia/new-07.jpg";
+import patNew08 from "@/assets/fotos/patagonia/new-08.jpg";
+
 // EQUIPE
 import equipeMangalarga from "@/assets/fotos/equipe/equipe-mangalarga.jpg";
 
@@ -137,7 +147,7 @@ export const SLUG_IMAGE: Record<string, string> = {
   "berco-do-marchador": chapada,     // placeholder — imagens reais de Cruzília virão
   "jericoacoara": jeri01,            // cavaleira ao nascer do sol nas dunas
   "peru-vale-do-colca": peru09,      // grupo a cavalo no canyon do Colca
-  "patagonia-gaucha": pat01,         // cavalo nas montanhas nevadas
+  "patagonia-gaucha": patNew01,      // tropa nas montanhas nevadas da Patagônia
   "caminho-de-santiago": man19,      // cavaleiros em trilha aberta
 };
 
@@ -149,7 +159,7 @@ export const SLUG_GALERIA: Record<string, string[]> = {
   "mantiqueira-refugio": [manNew01, manNew02, manNew03, manNew04, manNew05, manNew06, manNew07, manNew08],
   "berco-do-marchador": [],
   "peru-vale-do-colca": [peru09, peru12, peru03, peru01, peru05, peru08, peru07, peru11, peru04, peru06, peru10],
-  "patagonia-gaucha": [pat01, pat02, pat03],
+  "patagonia-gaucha": [patNew01, patNew02, patNew03, patNew04, patNew05, patNew06, patNew07, patNew08],
   "jericoacoara": [],
   "caminho-de-santiago": [man13, man27, man19, man03, man21, man01],
 };
@@ -207,6 +217,16 @@ export const SLUG_NARRATIVA: Record<string, CenaNarrativa[]> = {
     { src: canNew06, eyebrow: "", titulo: "Estranhos no primeiro dia. Manada no último." },
     { src: canNew07, eyebrow: "", titulo: "Café mineiro, hospitalidade local e o tempo correndo mais devagar." },
     { src: canNew08, eyebrow: "", titulo: "E quando a expedição termina… uma parte sua ainda fica na Canastra." },
+  ],
+  "patagonia-gaucha": [
+    { src: patNew01, eyebrow: "", titulo: "Na Patagônia, a sensação é de estar cavalgando no fim do mundo. Tudo parece maior, mais intenso e mais selvagem." },
+    { src: patNew02, eyebrow: "", titulo: "Montanhas nevadas, vento gelado e quilômetros de paisagens que fazem qualquer pessoa parar em silêncio." },
+    { src: patNew03, eyebrow: "", titulo: "Aqui, o cavalo deixa de ser só companhia. Ele vira parte da conexão com esse lugar absurdo." },
+    { src: patNew04, eyebrow: "", titulo: "A cada curva da trilha, uma nova paisagem. Lagos, vales, rios e montanhas que parecem cenário de filme." },
+    { src: patNew05, eyebrow: "", titulo: "Viajar a cavalo pela Patagônia é acessar lugares onde quase ninguém chega da forma certa." },
+    { src: patNew06, eyebrow: "", titulo: "O frio, o silêncio e a imensidão fazem você esquecer completamente da correria da vida." },
+    { src: patNew07, eyebrow: "", titulo: "Existem momentos da viagem em que tudo fica em silêncio. Só o som do vento, dos cavalos e da natureza." },
+    { src: patNew08, eyebrow: "", titulo: "A Patagônia não é um destino comum. É o tipo de experiência que fica com você mesmo depois da volta." },
   ],
   "jericoacoara": [
     { src: jeri01, eyebrow: "", titulo: "O começo de uma experiência que dificilmente será esquecida." },
