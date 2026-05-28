@@ -50,6 +50,7 @@ function DetalhesExpedicao() {
   const whatsappMsg = `Olá! Gostaria de reservar minha vaga na expedição "${expedicao.nome}".`;
   const whatsappUrl = buildContactWhatsappUrl(whatsappMsg);
   const isJeri = expedicao.slug === "jericoacoara";
+  const isElas = expedicao.marca === "elas-na-sela";
 
 
   return (
