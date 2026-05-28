@@ -94,7 +94,8 @@ export function CarrosselNarrativo({ cenas, alt = "" }: Props) {
                     isActive ? "opacity-100 scale-100" : "opacity-50 scale-[0.96]",
                   )}
                 >
-                  <div className="relative aspect-[4/5] bg-carvao md:aspect-auto md:h-[68vh] md:min-h-[520px] md:max-h-[760px] lg:h-[70vh]">
+                  <div className="relative aspect-[4/5] bg-carvao md:aspect-auto md:h-[58vh] md:min-h-[460px] md:max-h-[640px] lg:h-[62vh]">
+
                     {/* fundo desfocado para preencher elegantemente */}
                     <img
                       src={cena.src}
