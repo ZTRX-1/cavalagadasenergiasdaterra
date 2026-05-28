@@ -10,7 +10,7 @@ import { VideoCinematic } from "@/components/video-cinematic";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { NaMidia } from "@/components/na-midia";
 import hero from "@/assets/founders/ligia-rio.jpg";
-import manifestoImg from "@/assets/fotos/mantiqueira/13.jpg";
+import manifestoImg from "@/assets/fotos/home/experiencia.jpg";
 import ctaFinal from "@/assets/fotos/canastra/26.jpg";
 import acampamento from "@/assets/acampamento.jpg";
 import logoCavalgadas from "@/assets/logo-cavalgadas.jpg";
