@@ -152,6 +152,7 @@ export const SLUG_IMAGE: Record<string, string> = {
   "peru-vale-do-colca": peruNew01,   // cavaleiros nos cânions do Peru — capa da expedição
   "patagonia-gaucha": patNew01,      // tropa nas montanhas nevadas da Patagônia
   "caminho-de-santiago": man19,      // cavaleiros em trilha aberta
+  "canastra-elas-na-sela": elas01,   // edição especial feminina na Canastra
 };
 
 // ============================================================
