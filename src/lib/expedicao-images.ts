@@ -152,6 +152,7 @@ export const SLUG_IMAGE: Record<string, string> = {
   "peru-vale-do-colca": peruNew01,   // cavaleiros nos cânions do Peru — capa da expedição
   "patagonia-gaucha": patNew01,      // tropa nas montanhas nevadas da Patagônia
   "caminho-de-santiago": man19,      // cavaleiros em trilha aberta
+  "canastra-elas-na-sela": elas01,   // edição especial feminina na Canastra
 };
 
 // ============================================================
@@ -165,6 +166,7 @@ export const SLUG_GALERIA: Record<string, string[]> = {
   "patagonia-gaucha": [patNew01, patNew02, patNew03, patNew04, patNew05, patNew06, patNew07, patNew08],
   "jericoacoara": [],
   "caminho-de-santiago": [man13, man27, man19, man03, man21, man01],
+  "canastra-elas-na-sela": [elas01, elas02, elas03, elas04, elas05, elas06, canNew05, canNew07],
 };
 
 
@@ -260,6 +262,16 @@ export const SLUG_NARRATIVA: Record<string, CenaNarrativa[]> = {
     { src: peruNew06, eyebrow: "", titulo: "Conhecer as comunidades locais no meio da rota torna tudo ainda mais especial." },
     { src: peruNew07, eyebrow: "", titulo: "No meio das montanhas, o tempo desacelera. Fica só o cavalo, o caminho e o silêncio." },
     { src: peruNew08, eyebrow: "", titulo: "O Peru a cavalo não é só uma viagem. É uma experiência que muda a forma de enxergar o mundo." },
+  ],
+  "canastra-elas-na-sela": [
+    { src: elas01, eyebrow: "", titulo: "Um final de semana só nosso — mulheres, cavalos e Serra da Canastra." },
+    { src: elas02, eyebrow: "", titulo: "Encontros que começam entre desconhecidas e terminam em uma manada de amigas." },
+    { src: elas03, eyebrow: "", titulo: "Cavalgar com calma, no nosso tempo, sem pressa de ninguém." },
+    { src: elas04, eyebrow: "", titulo: "Mesmo quem nunca montou descobre que o cavalo é uma forma muito íntima de se sentir livre." },
+    { src: canNew05, eyebrow: "", titulo: "Almoços ao ar livre, sabor mineiro e pausas que fazem parte da jornada." },
+    { src: elas05, eyebrow: "", titulo: "O Rio São Francisco, a água fria e aquela sensação de estar exatamente no lugar certo." },
+    { src: elas06, eyebrow: "", titulo: "Música ao vivo, conversa boa e a leveza de estar entre mulheres." },
+    { src: canNew07, eyebrow: "", titulo: "Você chega como uma e volta um pouco diferente. Sempre é assim." },
   ],
 };
 
