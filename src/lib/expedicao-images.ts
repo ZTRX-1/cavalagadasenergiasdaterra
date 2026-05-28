@@ -117,6 +117,17 @@ import elas04 from "@/assets/fotos/elas-na-sela/04.jpg";
 import elas05 from "@/assets/fotos/elas-na-sela/05.jpg";
 import elas06 from "@/assets/fotos/elas-na-sela/06.jpg";
 
+// ELAS NA SELA — novas fotos curadas (ordem narrativa cinematográfica)
+import elasNew01 from "@/assets/fotos/elas-na-sela/new-01.jpg";
+import elasNew02 from "@/assets/fotos/elas-na-sela/new-02.jpg";
+import elasNew03 from "@/assets/fotos/elas-na-sela/new-03.jpg";
+import elasNew04 from "@/assets/fotos/elas-na-sela/new-04.jpg";
+import elasNew05 from "@/assets/fotos/elas-na-sela/new-05.jpg";
+import elasNew06 from "@/assets/fotos/elas-na-sela/new-06.jpg";
+import elasNew07 from "@/assets/fotos/elas-na-sela/new-07.jpg";
+import elasNew08 from "@/assets/fotos/elas-na-sela/new-08.jpg";
+
+
 // JERICOACOARA — 8 fotos curadas em ordem narrativa
 import jeri01 from "@/assets/fotos/jericoacoara/01.jpg";
 import jeri02 from "@/assets/fotos/jericoacoara/02.jpg";
@@ -152,7 +163,8 @@ export const SLUG_IMAGE: Record<string, string> = {
   "peru-vale-do-colca": peruNew01,   // cavaleiros nos cânions do Peru — capa da expedição
   "patagonia-gaucha": patNew01,      // tropa nas montanhas nevadas da Patagônia
   "caminho-de-santiago": man19,      // cavaleiros em trilha aberta
-  "canastra-elas-na-sela": elas01,   // edição especial feminina na Canastra
+  "canastra-elas-na-sela": elasNew01,   // edição especial feminina na Canastra
+
 };
 
 // ============================================================
@@ -166,7 +178,8 @@ export const SLUG_GALERIA: Record<string, string[]> = {
   "patagonia-gaucha": [patNew01, patNew02, patNew03, patNew04, patNew05, patNew06, patNew07, patNew08],
   "jericoacoara": [],
   "caminho-de-santiago": [man13, man27, man19, man03, man21, man01],
-  "canastra-elas-na-sela": [elas01, elas02, elas03, elas04, elas05, elas06, canNew05, canNew07],
+  "canastra-elas-na-sela": [elasNew01, elasNew02, elasNew03, elasNew04, elasNew05, elasNew06, elasNew07, elasNew08],
+
 };
 
 
@@ -264,15 +277,16 @@ export const SLUG_NARRATIVA: Record<string, CenaNarrativa[]> = {
     { src: peruNew08, eyebrow: "", titulo: "O Peru a cavalo não é só uma viagem. É uma experiência que muda a forma de enxergar o mundo." },
   ],
   "canastra-elas-na-sela": [
-    { src: elas01, eyebrow: "", titulo: "Um final de semana só nosso — mulheres, cavalos e Serra da Canastra." },
-    { src: elas02, eyebrow: "", titulo: "Encontros que começam entre desconhecidas e terminam em uma manada de amigas." },
-    { src: elas03, eyebrow: "", titulo: "Cavalgar com calma, no nosso tempo, sem pressa de ninguém." },
-    { src: elas04, eyebrow: "", titulo: "Mesmo quem nunca montou descobre que o cavalo é uma forma muito íntima de se sentir livre." },
-    { src: canNew05, eyebrow: "", titulo: "Almoços ao ar livre, sabor mineiro e pausas que fazem parte da jornada." },
-    { src: elas05, eyebrow: "", titulo: "O Rio São Francisco, a água fria e aquela sensação de estar exatamente no lugar certo." },
-    { src: elas06, eyebrow: "", titulo: "Música ao vivo, conversa boa e a leveza de estar entre mulheres." },
-    { src: canNew07, eyebrow: "", titulo: "Você chega como uma e volta um pouco diferente. Sempre é assim." },
+    { src: elasNew01, eyebrow: "", titulo: "Existem experiências que despertam a força que existe dentro de toda mulher." },
+    { src: elasNew02, eyebrow: "", titulo: "Existem caminhos que fazem mulheres desacelerarem por dentro." },
+    { src: elasNew03, eyebrow: "", titulo: "Entre trilhas, poeira e silêncio, mulheres descobrem novas versões de si mesmas." },
+    { src: elasNew04, eyebrow: "", titulo: "Existe algo no cavalo que faz uma mulher voltar para si mesma." },
+    { src: elasNew05, eyebrow: "", titulo: "Algumas experiências despertam coragem, liberdade e verdade." },
+    { src: elasNew06, eyebrow: "", titulo: "A melhor parte do caminho é encontrar mulheres que vibram na mesma frequência que você." },
+    { src: elasNew07, eyebrow: "", titulo: "Entre montanhas, silêncio e cavalos, muitas mulheres reencontram a própria essência." },
+    { src: elasNew08, eyebrow: "", titulo: "Algumas viagens terminam. Outras permanecem para sempre dentro de uma mulher." },
   ],
+
 };
 
 export function getExpedicaoNarrativa(slug: string): CenaNarrativa[] {

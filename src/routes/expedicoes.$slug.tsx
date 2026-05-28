@@ -61,13 +61,15 @@ function DetalhesExpedicao() {
         <div className="absolute inset-0 bg-gradient-to-t from-carvao via-carvao/50 to-carvao/30" />
         <div className="container-tight relative flex flex-col justify-end pb-14 pt-32 min-h-[78svh] md:min-h-[62svh] lg:min-h-[64svh]">
           {isElas && (
-            <div className="mb-6 inline-flex w-fit items-center gap-3 rounded-full border border-cobre-soft/40 bg-carvao/45 px-4 py-2 backdrop-blur-sm">
-              <img src={elasLogo} alt="Elas na Sela" className="h-6 w-6 rounded-full object-cover ring-1 ring-cobre-soft/40" />
-              <span className="font-eyebrow text-[0.62rem] uppercase tracking-[0.28em] text-cobre-soft">
-                Edição especial · exclusiva para mulheres
+
+            <div className="mb-6 inline-flex w-fit items-center gap-2.5 rounded-full border border-areia/25 bg-carvao/40 px-3.5 py-1.5 backdrop-blur-sm">
+              <span className="h-1 w-1 rounded-full bg-cobre-soft" />
+              <span className="font-eyebrow text-[0.6rem] uppercase tracking-[0.32em] text-areia/85">
+                Exclusivo para mulheres
               </span>
             </div>
           )}
+
           <div className="flex items-center gap-3 text-[0.7rem] uppercase tracking-[0.22em] text-areia/80">
             <span>{expedicao.duracao}</span>
             <span className="h-1 w-1 rounded-full bg-cobre" />

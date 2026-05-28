@@ -1,0 +1,1 @@
+UPDATE public.expedicoes SET nome='Serra da Canastra · Elas na Sela' WHERE slug='canastra-elas-na-sela';

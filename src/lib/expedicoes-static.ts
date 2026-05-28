@@ -460,7 +460,8 @@ const EXPEDICOES: Expedicao[] = [
     {
         "id": "e9a1d4f2-7c84-4d4a-9b2a-1f7c8a5b3e21",
         "slug": "canastra-elas-na-sela",
-        "nome": "Canastra a Cavalo · Elas na Sela",
+        "nome": "Serra da Canastra · Elas na Sela",
+
         "marca": "elas-na-sela",
         "pais": "brasil",
         "moeda": "BRL",
