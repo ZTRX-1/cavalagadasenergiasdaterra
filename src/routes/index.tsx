@@ -246,6 +246,8 @@ function HomePage() {
             </p>
           </div>
         </div>
+      </section>
+
 
 
       {/* VÍDEO CINEMATOGRÁFICO */}
