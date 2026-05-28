@@ -13,6 +13,7 @@ import { formatDateRange, formatPrice, formatPriceWithBRL } from "@/lib/format";
 import { DataCard } from "@/components/data-card";
 import { buildContactWhatsappUrl } from "@/lib/whatsapp";
 import canastraVideoPoster from "@/assets/fotos/canastra/video-poster.jpg";
+import elasLogo from "@/assets/logo-elas-na-sela.jpg";
 
 
 const qo = (slug: string) =>
