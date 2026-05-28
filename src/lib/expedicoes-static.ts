@@ -456,6 +456,48 @@ const EXPEDICOES: Expedicao[] = [
         "descricao_curta": "Sete dias percorrendo a Rota Francesa do Caminho de Santiago a cavalo, de O Cebreiro até a Plaza do Obradoiro em Santiago de Compostela.",
         "descricao_longa": "Uma travessia de aproximadamente 135 km pelo Caminho de Santiago a cavalo, na Galícia. Sete dias percorrendo a histórica Rota Francesa, de O Cebreiro (Triscastela) até a entrada triunfal na Plaza do Obradoiro, em frente à Catedral de Santiago de Compostela.\n\nEtapas diárias entre 22 e 30 km, com cavalos experientes, hospedagem em hotéis rurais e casas típicas galegas, equipe de apoio diária e transporte de bagagem entre os alojamentos."
     }
+    ,
+    {
+        "id": "e9a1d4f2-7c84-4d4a-9b2a-1f7c8a5b3e21",
+        "slug": "canastra-elas-na-sela",
+        "nome": "Canastra a Cavalo · Elas na Sela",
+        "marca": "elas-na-sela",
+        "pais": "brasil",
+        "moeda": "BRL",
+        "nivel": "Iniciante",
+        "preco": 3200.00,
+        "regiao": "Vargem Bonita, MG",
+        "duracao": "3 dias / 2 noites",
+        "imagem_url": "expedicao-canastra",
+        "galeria": ["expedicao-canastra"],
+        "inclui": [
+            "Hospedagem em pousada selecionada, acomodação dupla",
+            "Café da manhã todos os dias",
+            "Jantar de boas-vindas",
+            "Almoço durante a cavalgada",
+            "Cavalos Mangalarga Marchador próprios e dóceis",
+            "Material completo de montaria (selas, cabeçadas, mantas)",
+            "Guias experientes e suporte dedicado para iniciantes",
+            "Carro de apoio durante toda a expedição",
+            "Música ao vivo em um dos jantares",
+            "Seguro aventura"
+        ],
+        "requisitos": [
+            "Experiência exclusiva para mulheres",
+            "Perfeita para iniciantes — não é necessária experiência prévia em montaria",
+            "Grupos pequenos para uma experiência mais exclusiva, segura e personalizada",
+            "Acomodação dupla compartilhada; quem vem sozinha pode dividir o quarto com outra participante",
+            "Acomodação single com tarifa adicional de 40%",
+            "Bebidas não incluídas"
+        ],
+        "roteiro": [
+            { "dia": "Dia 1", "titulo": "Chegada e acolhimento", "desc": "Recepção na pousada a partir da tarde, com tempo para descansar e conhecer as outras participantes. Jantar de boas-vindas em clima leve, apresentação da equipe, dos cavalos e do que vem pela frente." },
+            { "dia": "Dia 2", "titulo": "Cavalgada pela Serra da Canastra", "desc": "Café da manhã reforçado e saída para a cavalgada principal. Trilhas tranquilas pelos campos da Canastra, parada para almoço ao ar livre, banho no Rio São Francisco e fim de tarde de volta à pousada. Jantar mineiro com música ao vivo." },
+            { "dia": "Dia 3", "titulo": "Despedida com gosto de quero mais", "desc": "Café da manhã, última cavalgada curta pelas redondezas e despedida no início da tarde — com a sensação de já querer marcar a próxima." }
+        ],
+        "descricao_curta": "Um final de semana criado para mulheres que desejam viver a Serra da Canastra de forma leve, intensa e inesquecível.",
+        "descricao_longa": "Uma edição especial da Canastra a Cavalo, pensada exclusivamente para mulheres que querem viver a Serra da Canastra em outro ritmo — entre cavalos, natureza, rios e silêncio.\n\nTrês dias de cavalgada acolhedora pela Serra da Canastra, com paradas no Rio São Francisco, almoços ao ar livre, gastronomia mineira, música ao vivo e a companhia de uma equipe inteiramente preparada para receber também quem nunca montou.\n\nMais do que uma expedição, é um encontro: de mulheres com cavalos, com a natureza e com elas mesmas. Grupos pequenos, hospedagem confortável e curadoria delicada para que cada participante se sinta segura, livre e em casa."
+    }
 ];
 
 const DATAS: DataExpedicao[] = [
