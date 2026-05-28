@@ -39,6 +39,16 @@ import can29 from "@/assets/fotos/canastra/29.jpg";
 import can30 from "@/assets/fotos/canastra/30.jpg";
 import can37 from "@/assets/fotos/canastra/37.jpg";
 
+// CANASTRA — novas fotos curadas (ordem narrativa)
+import canNew01 from "@/assets/fotos/canastra/new-01.jpg";
+import canNew02 from "@/assets/fotos/canastra/new-02.jpg";
+import canNew03 from "@/assets/fotos/canastra/new-03.jpg";
+import canNew04 from "@/assets/fotos/canastra/new-04.jpg";
+import canNew05 from "@/assets/fotos/canastra/new-05.jpg";
+import canNew06 from "@/assets/fotos/canastra/new-06.jpg";
+import canNew07 from "@/assets/fotos/canastra/new-07.jpg";
+import canNew08 from "@/assets/fotos/canastra/new-08.jpg";
+
 // MANTIQUEIRA — 34 fotos disponíveis
 import man01 from "@/assets/fotos/mantiqueira/01.jpg";
 import man02 from "@/assets/fotos/mantiqueira/02.jpg";
