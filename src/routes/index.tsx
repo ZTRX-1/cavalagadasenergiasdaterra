@@ -100,23 +100,6 @@ const PASSOS_TXT: Record<string, Array<{ n: string; t: string; d: string }>> = {
   ],
 };
 
-const FAQ_TXT: Record<string, Array<{ q: string; a: string }>> = {
-  pt: [
-    { q: "Preciso de experiência prévia com cavalos?", a: "Não. Oferecemos expedições para diferentes níveis de experiência, desde quem nunca montou até cavaleiros e amazonas experientes. Nossa equipe orienta na escolha do roteiro ideal para que cada pessoa aproveite a jornada com segurança e confiança." },
-    { q: "Como funciona a hospedagem?", a: "Trabalhamos com pousadas, hotéis e acomodações locais cuidadosamente selecionadas conforme o roteiro e a região, garantindo conforto, autenticidade e qualidade em cada experiência." },
-    { q: "Posso fazer uma expedição privada?", a: "Sim. Criamos experiências privativas e personalizadas, desenvolvidas de acordo com os interesses, ritmo e perfil de cada grupo." },
-  ],
-  en: [
-    { q: "Do I need previous experience with horses?", a: "No. We offer expeditions for different experience levels, from first-time riders to seasoned riders. Our team helps you choose the ideal itinerary so each person enjoys the journey with safety and confidence." },
-    { q: "What is the lodging like?", a: "We work with carefully selected inns, hotels and local accommodations chosen according to the itinerary and region, ensuring comfort, authenticity and quality." },
-    { q: "Can I book a private expedition?", a: "Yes. We design private, personalized experiences developed around the interests, pace and profile of each group." },
-  ],
-  es: [
-    { q: "¿Necesito experiencia previa con caballos?", a: "No. Ofrecemos expediciones para distintos niveles, desde quienes nunca montaron hasta jinetes experimentados. Nuestro equipo te orienta en la elección del itinerario ideal para que aproveches la jornada con seguridad y confianza." },
-    { q: "¿Cómo es el alojamiento?", a: "Trabajamos con posadas, hoteles y alojamientos locales cuidadosamente seleccionados según el itinerario y la región, garantizando comodidad, autenticidad y calidad." },
-    { q: "¿Puedo hacer una expedición privada?", a: "Sí. Creamos experiencias privadas y personalizadas, desarrolladas según los intereses, ritmo y perfil de cada grupo." },
-  ],
-};
 
 
 function HomePage() {
@@ -129,7 +112,7 @@ function HomePage() {
   const lng = (["pt", "en", "es"].includes(i18n.language) ? i18n.language : "pt") as "pt" | "en" | "es";
   const incluiCopy = INCLUI_TXT[lng];
   const passos = PASSOS_TXT[lng];
-  const faq = FAQ_TXT[lng];
+  const faq = (t("faq.items", { returnObjects: true }) as Array<{ q: string; a: string }>) ?? [];
 
   return (
     <>
