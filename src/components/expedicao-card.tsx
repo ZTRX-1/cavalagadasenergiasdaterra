@@ -1,11 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { Expedicao } from "@/lib/expedicoes.functions";
 import { getExpedicaoImage } from "@/lib/expedicao-images";
 import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
 import { formatPriceWithBRL } from "@/lib/format";
 
 export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
+  const { t } = useTranslation();
   const isElas = expedicao.marca === "elas-na-sela";
   return (
     <Link
@@ -26,12 +28,11 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
         <div className="absolute inset-x-0 bottom-0 h-[78%] bg-gradient-to-t from-carvao via-carvao/85 to-transparent" />
 
         {isElas && (
-          <span className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full border border-cobre-soft/60 bg-carvao/55 px-3 py-1.5 text-[0.62rem] uppercase tracking-[0.24em] text-cobre-soft backdrop-blur-sm">
-            <span className="h-1 w-1 rounded-full bg-cobre-soft" />
-            Exclusiva para mulheres
+          <span className="absolute left-5 top-5 z-10 inline-flex items-center gap-1.5 rounded-full border border-areia/25 bg-areia/10 px-2.5 py-1 text-[0.58rem] uppercase tracking-[0.26em] text-areia/90 backdrop-blur-md shadow-[0_1px_8px_rgb(0_0_0/0.18)]">
+            <span className="h-[3px] w-[3px] rounded-full bg-cobre-soft" />
+            {t("expedicoes.badgeElas", "Exclusiva para mulheres")}
           </span>
         )}
-
 
         <div className="absolute inset-x-0 bottom-0 p-6 text-areia md:p-7 [text-shadow:0_1px_3px_rgb(0_0_0/0.55)]">
           {expedicao.regiao && (
@@ -39,11 +40,10 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
               {expedicao.regiao}
             </div>
           )}
-          <h3 className="mt-2 font-display text-2xl md:text-3xl text-balance leading-[1.05] text-areia">
+          <h3 className="mt-2 font-display text-2xl md:text-[1.7rem] lg:text-3xl text-balance leading-[1.05] text-areia">
             {expedicao.nome}
           </h3>
           <p className="mt-2 text-sm leading-relaxed text-areia/90 line-clamp-2 text-pretty">
-
             {expedicao.descricao_curta}
           </p>
           <div className="mt-4 flex items-center gap-3 text-[0.65rem] uppercase tracking-[0.22em] text-areia/70">
