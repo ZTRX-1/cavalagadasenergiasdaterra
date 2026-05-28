@@ -82,9 +82,16 @@
     "intro": "Real accounts from riders who crossed mountains, rivers and silences with us."
   },
   "faq": {
-    "eyebrow": "Questions",
-    "title": "So you go at ease.",
-    "verTodas": "See all questions"
+    "eyebrow": "Frequently asked",
+    "title": "Everything you need to arrive at ease.",
+    "intro": "We gathered the most common questions from those who ride with us. If something is missing, talk to our team on WhatsApp.",
+    "items": [
+      { "q": "Do I need previous experience with horses?", "a": "No. We offer expeditions for different experience levels, from first-time riders to seasoned riders. Our team helps you choose the ideal itinerary so each person enjoys the journey with safety and confidence." },
+      { "q": "What is the lodging like?", "a": "We work with carefully selected inns, hotels and local accommodations chosen according to the itinerary and region, ensuring comfort, authenticity and quality in every experience." },
+      { "q": "Can I book a private expedition?", "a": "Yes. We design private, personalized experiences developed around the interests, pace and profile of each group." },
+      { "q": "Who can join the expeditions?", "a": "Anyone in good health and within each expedition's requirements (age and weight). We have itineraries for every level." },
+      { "q": "Are the horses trained?", "a": "Yes. All horses are trained, rested between expeditions and accompanied by a professional team." }
+    ]
   },
   "ctaFinal": {
     "eyebrow": "Your next expedition",

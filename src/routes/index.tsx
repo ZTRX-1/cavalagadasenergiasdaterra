@@ -10,6 +10,7 @@ import { VideoCinematic } from "@/components/video-cinematic";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { NaMidia } from "@/components/na-midia";
 import { EditorialFrame } from "@/components/editorial-frame";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 import hero from "@/assets/founders/ligia-rio.jpg";
 import manifestoImg from "@/assets/fotos/home/experiencia.jpg";
@@ -100,23 +101,6 @@ const PASSOS_TXT: Record<string, Array<{ n: string; t: string; d: string }>> = {
   ],
 };
 
-const FAQ_TXT: Record<string, Array<{ q: string; a: string }>> = {
-  pt: [
-    { q: "Preciso de experiência prévia com cavalos?", a: "Não. Oferecemos expedições para diferentes níveis de experiência, desde quem nunca montou até cavaleiros e amazonas experientes. Nossa equipe orienta na escolha do roteiro ideal para que cada pessoa aproveite a jornada com segurança e confiança." },
-    { q: "Como funciona a hospedagem?", a: "Trabalhamos com pousadas, hotéis e acomodações locais cuidadosamente selecionadas conforme o roteiro e a região, garantindo conforto, autenticidade e qualidade em cada experiência." },
-    { q: "Posso fazer uma expedição privada?", a: "Sim. Criamos experiências privativas e personalizadas, desenvolvidas de acordo com os interesses, ritmo e perfil de cada grupo." },
-  ],
-  en: [
-    { q: "Do I need previous experience with horses?", a: "No. We offer expeditions for different experience levels, from first-time riders to seasoned riders. Our team helps you choose the ideal itinerary so each person enjoys the journey with safety and confidence." },
-    { q: "What is the lodging like?", a: "We work with carefully selected inns, hotels and local accommodations chosen according to the itinerary and region, ensuring comfort, authenticity and quality." },
-    { q: "Can I book a private expedition?", a: "Yes. We design private, personalized experiences developed around the interests, pace and profile of each group." },
-  ],
-  es: [
-    { q: "¿Necesito experiencia previa con caballos?", a: "No. Ofrecemos expediciones para distintos niveles, desde quienes nunca montaron hasta jinetes experimentados. Nuestro equipo te orienta en la elección del itinerario ideal para que aproveches la jornada con seguridad y confianza." },
-    { q: "¿Cómo es el alojamiento?", a: "Trabajamos con posadas, hoteles y alojamientos locales cuidadosamente seleccionados según el itinerario y la región, garantizando comodidad, autenticidad y calidad." },
-    { q: "¿Puedo hacer una expedición privada?", a: "Sí. Creamos experiencias privadas y personalizadas, desarrolladas según los intereses, ritmo y perfil de cada grupo." },
-  ],
-};
 
 
 function HomePage() {
@@ -129,7 +113,7 @@ function HomePage() {
   const lng = (["pt", "en", "es"].includes(i18n.language) ? i18n.language : "pt") as "pt" | "en" | "es";
   const incluiCopy = INCLUI_TXT[lng];
   const passos = PASSOS_TXT[lng];
-  const faq = FAQ_TXT[lng];
+  const faq = (t("faq.items", { returnObjects: true }) as Array<{ q: string; a: string }>) ?? [];
 
   return (
     <>
@@ -350,32 +334,46 @@ function HomePage() {
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-carvao/15 to-transparent" />
       </section>
 
-      {/* FAQ — fundo claro, contraste editorial */}
-      <section className="bg-background py-28 md:py-36">
-        <div className="container-tight grid gap-12 md:grid-cols-12">
+      {/* FAQ — única seção oficial, editorial e premium */}
+      <section className="bg-background py-28 md:py-40">
+        <div className="container-tight grid gap-16 md:grid-cols-12 md:gap-12">
           <div className="md:col-span-4">
             <div className="eyebrow">{t("faq.eyebrow")}</div>
-            <h2 className="mt-5 font-display text-4xl text-balance md:text-5xl">{t("faq.title")}</h2>
-            <span aria-hidden className="mt-7 block h-px w-16 bg-cobre" />
-            <Link to="/contato" className="mt-6 inline-flex items-center gap-2 text-sm uppercase tracking-widest hover:text-cobre">
-              {t("faq.verTodas")} <ArrowRight className="h-4 w-4" />
-            </Link>
+            <h2 className="mt-5 font-display text-4xl text-balance leading-[1.05] md:text-5xl">
+              {t("faq.title")}
+            </h2>
+            <span aria-hidden className="mt-8 block h-px w-16 bg-cobre" />
+            <p className="mt-8 max-w-sm text-pretty text-base leading-relaxed text-muted-foreground">
+              {t("faq.intro")}
+            </p>
           </div>
-          <div className="md:col-span-8">
-            <div className="divide-y divide-border border-y border-border">
-              {faq.map((f) => (
-                <details key={f.q} className="group py-6">
-                  <summary className="flex cursor-pointer items-center justify-between font-display text-lg">
-                    {f.q}
-                    <span className="ml-4 text-cobre transition-transform group-open:rotate-45">+</span>
-                  </summary>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{f.a}</p>
-                </details>
+          <div className="md:col-span-7 md:col-start-6">
+            <Accordion type="single" collapsible className="border-t border-border/70">
+              {faq.map((f, i) => (
+                <AccordionItem
+                  key={f.q}
+                  value={`item-${i}`}
+                  className="border-b border-border/70"
+                >
+                  <AccordionTrigger className="group gap-6 py-7 text-left font-display text-lg leading-snug text-foreground transition-colors hover:no-underline hover:text-cobre md:text-xl [&>svg]:hidden">
+                    <span className="flex-1 text-pretty">{f.q}</span>
+                    <span
+                      aria-hidden
+                      className="ml-4 text-2xl font-light text-cobre transition-transform duration-300 group-data-[state=open]:rotate-45"
+                    >
+                      +
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-7 pr-10 text-base leading-relaxed text-muted-foreground">
+                    {f.a}
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
+            </Accordion>
           </div>
         </div>
       </section>
+
 
       {/* CTA FINAL — uma imagem cinematográfica forte */}
       <section className="relative isolate overflow-hidden bg-floresta-deep py-36 text-areia md:py-48">

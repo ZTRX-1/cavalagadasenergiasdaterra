@@ -82,9 +82,16 @@
     "intro": "Relatos reales de jinetes y amazonas que cruzaron sierras, ríos y silencios con nosotros."
   },
   "faq": {
-    "eyebrow": "Preguntas",
-    "title": "Para que vayas tranquilo.",
-    "verTodas": "Ver todas las preguntas"
+    "eyebrow": "Preguntas frecuentes",
+    "title": "Todo para que llegues tranquilo.",
+    "intro": "Reunimos las dudas más comunes de quienes cabalgan con nosotros. Si falta algo, habla con nuestro equipo por WhatsApp.",
+    "items": [
+      { "q": "¿Necesito experiencia previa con caballos?", "a": "No. Ofrecemos expediciones para distintos niveles, desde quienes nunca montaron hasta jinetes y amazonas experimentados. Nuestro equipo te orienta en la elección del itinerario ideal para que aproveches la jornada con seguridad y confianza." },
+      { "q": "¿Cómo es el alojamiento?", "a": "Trabajamos con posadas, hoteles y alojamientos locales cuidadosamente seleccionados según el itinerario y la región, garantizando comodidad, autenticidad y calidad en cada experiencia." },
+      { "q": "¿Puedo hacer una expedición privada?", "a": "Sí. Creamos experiencias privadas y personalizadas, desarrolladas según los intereses, ritmo y perfil de cada grupo." },
+      { "q": "¿Quién puede participar de las expediciones?", "a": "Cualquier persona en buenas condiciones de salud y dentro de los requisitos de cada expedición (edad y peso). Tenemos itinerarios para todos los niveles." },
+      { "q": "¿Los caballos están entrenados?", "a": "Sí. Todos los caballos están entrenados, descansados entre expediciones y acompañados por un equipo profesional." }
+    ]
   },
   "ctaFinal": {
     "eyebrow": "Tu próxima expedición",
