@@ -75,18 +75,21 @@ import manNew06 from "@/assets/fotos/mantiqueira/new-06.jpg";
 import manNew07 from "@/assets/fotos/mantiqueira/new-07.jpg";
 import manNew08 from "@/assets/fotos/mantiqueira/new-08.jpg";
 
-// PERU — 12 fotos disponíveis
+// PERU — fotos antigas mantidas para galerias temáticas
 import peru01 from "@/assets/fotos/peru/01.jpg";
 import peru03 from "@/assets/fotos/peru/03.jpg";
-import peru04 from "@/assets/fotos/peru/04.jpg";
-import peru05 from "@/assets/fotos/peru/05.jpg";
-import peru06 from "@/assets/fotos/peru/06.jpg";
-import peru07 from "@/assets/fotos/peru/07.jpg";
-import peru08 from "@/assets/fotos/peru/08.jpg";
 import peru09 from "@/assets/fotos/peru/09.jpg";
-import peru10 from "@/assets/fotos/peru/10.jpg";
-import peru11 from "@/assets/fotos/peru/11.jpg";
 import peru12 from "@/assets/fotos/peru/12.jpg";
+
+// PERU — novas fotos curadas (ordem narrativa)
+import peruNew01 from "@/assets/fotos/peru/new-01.jpg";
+import peruNew02 from "@/assets/fotos/peru/new-02.jpg";
+import peruNew03 from "@/assets/fotos/peru/new-03.jpg";
+import peruNew04 from "@/assets/fotos/peru/new-04.jpg";
+import peruNew05 from "@/assets/fotos/peru/new-05.jpg";
+import peruNew06 from "@/assets/fotos/peru/new-06.jpg";
+import peruNew07 from "@/assets/fotos/peru/new-07.jpg";
+import peruNew08 from "@/assets/fotos/peru/new-08.jpg";
 
 // PATAGONIA — 3 fotos
 import pat01 from "@/assets/fotos/patagonia/01.jpg";
@@ -146,7 +149,7 @@ export const SLUG_IMAGE: Record<string, string> = {
   "mantiqueira-refugio": manNew01,   // tropa em movimento na estrada de terra
   "berco-do-marchador": chapada,     // placeholder — imagens reais de Cruzília virão
   "jericoacoara": jeri01,            // cavaleira ao nascer do sol nas dunas
-  "peru-vale-do-colca": peru09,      // grupo a cavalo no canyon do Colca
+  "peru-vale-do-colca": peruNew01,   // cavaleiros nos cânions do Peru — capa da expedição
   "patagonia-gaucha": patNew01,      // tropa nas montanhas nevadas da Patagônia
   "caminho-de-santiago": man19,      // cavaleiros em trilha aberta
 };
@@ -158,7 +161,7 @@ export const SLUG_GALERIA: Record<string, string[]> = {
   "serra-da-canastra": [canNew01, canNew02, canNew03, canNew04, canNew05, canNew06, canNew07, canNew08],
   "mantiqueira-refugio": [manNew01, manNew02, manNew03, manNew04, manNew05, manNew06, manNew07, manNew08],
   "berco-do-marchador": [],
-  "peru-vale-do-colca": [peru09, peru12, peru03, peru01, peru05, peru08, peru07, peru11, peru04, peru06, peru10],
+  "peru-vale-do-colca": [peruNew01, peruNew02, peruNew03, peruNew04, peruNew05, peruNew06, peruNew07, peruNew08],
   "patagonia-gaucha": [patNew01, patNew02, patNew03, patNew04, patNew05, patNew06, patNew07, patNew08],
   "jericoacoara": [],
   "caminho-de-santiago": [man13, man27, man19, man03, man21, man01],
@@ -247,6 +250,16 @@ export const SLUG_NARRATIVA: Record<string, CenaNarrativa[]> = {
     { src: manNew06, eyebrow: "", titulo: "Dias vividos a cavalo, cercados pelas montanhas da Serra da Mantiqueira." },
     { src: manNew07, eyebrow: "", titulo: "Existem lugares que não se explicam. Apenas se vivem." },
     { src: manNew08, eyebrow: "", titulo: "Uma expedição para quem deseja voltar diferente." },
+  ],
+  "peru-vale-do-colca": [
+    { src: peruNew01, eyebrow: "", titulo: "Cavalgar entre cânions gigantes no Peru é daquelas experiências que ficam na memória pra sempre." },
+    { src: peruNew02, eyebrow: "", titulo: "Levar nossa bandeira até lugares assim mostra exatamente o que são as viagens da Cavalgadas Energias da Terra." },
+    { src: peruNew03, eyebrow: "", titulo: "Estradas de terra, cavalos, poeira e paisagens que parecem de outro planeta." },
+    { src: peruNew04, eyebrow: "", titulo: "O Peru mistura história, montanhas e cultura de um jeito impossível de explicar em foto." },
+    { src: peruNew05, eyebrow: "", titulo: "Viajar a cavalo permite acessar lugares e paisagens que pouca gente vive de verdade." },
+    { src: peruNew06, eyebrow: "", titulo: "Conhecer as comunidades locais no meio da rota torna tudo ainda mais especial." },
+    { src: peruNew07, eyebrow: "", titulo: "No meio das montanhas, o tempo desacelera. Fica só o cavalo, o caminho e o silêncio." },
+    { src: peruNew08, eyebrow: "", titulo: "O Peru a cavalo não é só uma viagem. É uma experiência que muda a forma de enxergar o mundo." },
   ],
 };
 
