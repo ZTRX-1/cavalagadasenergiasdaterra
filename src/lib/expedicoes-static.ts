@@ -633,6 +633,20 @@ const DATAS: DataExpedicao[] = [
         "expedicao_slug": "patagonia-gaucha",
         "vagas_disponiveis": 10,
         "tag": "Novo percurso"
+    },
+    {
+        "id": "a3f9b0c2-4d18-4e6f-8b91-2a55c7d6e042",
+        "status": "disponivel",
+        "data_fim": "2026-09-27",
+        "preco_pix": 3200,
+        "data_inicio": "2026-09-25",
+        "vagas_total": 8,
+        "expedicao_id": "e9a1d4f2-7c84-4d4a-9b2a-1f7c8a5b3e21",
+        "preco_cartao": 3520,
+        "expedicao_nome": "Canastra a Cavalo · Elas na Sela",
+        "expedicao_slug": "canastra-elas-na-sela",
+        "vagas_disponiveis": 8,
+        "tag": "Exclusiva para mulheres"
     }
 ];
 
