@@ -12,6 +12,7 @@ import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
 import { formatDateRange, formatPrice, formatPriceWithBRL } from "@/lib/format";
 import { DataCard } from "@/components/data-card";
 import { buildContactWhatsappUrl } from "@/lib/whatsapp";
+import canastraVideoPoster from "@/assets/fotos/canastra/video-poster.jpg";
 
 
 const qo = (slug: string) =>
