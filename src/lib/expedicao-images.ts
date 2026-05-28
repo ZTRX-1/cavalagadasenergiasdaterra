@@ -75,18 +75,21 @@ import manNew06 from "@/assets/fotos/mantiqueira/new-06.jpg";
 import manNew07 from "@/assets/fotos/mantiqueira/new-07.jpg";
 import manNew08 from "@/assets/fotos/mantiqueira/new-08.jpg";
 
-// PERU — 12 fotos disponíveis
+// PERU — fotos antigas mantidas para galerias temáticas
 import peru01 from "@/assets/fotos/peru/01.jpg";
 import peru03 from "@/assets/fotos/peru/03.jpg";
-import peru04 from "@/assets/fotos/peru/04.jpg";
-import peru05 from "@/assets/fotos/peru/05.jpg";
-import peru06 from "@/assets/fotos/peru/06.jpg";
-import peru07 from "@/assets/fotos/peru/07.jpg";
-import peru08 from "@/assets/fotos/peru/08.jpg";
 import peru09 from "@/assets/fotos/peru/09.jpg";
-import peru10 from "@/assets/fotos/peru/10.jpg";
-import peru11 from "@/assets/fotos/peru/11.jpg";
 import peru12 from "@/assets/fotos/peru/12.jpg";
+
+// PERU — novas fotos curadas (ordem narrativa)
+import peruNew01 from "@/assets/fotos/peru/new-01.jpg";
+import peruNew02 from "@/assets/fotos/peru/new-02.jpg";
+import peruNew03 from "@/assets/fotos/peru/new-03.jpg";
+import peruNew04 from "@/assets/fotos/peru/new-04.jpg";
+import peruNew05 from "@/assets/fotos/peru/new-05.jpg";
+import peruNew06 from "@/assets/fotos/peru/new-06.jpg";
+import peruNew07 from "@/assets/fotos/peru/new-07.jpg";
+import peruNew08 from "@/assets/fotos/peru/new-08.jpg";
 
 // PATAGONIA — 3 fotos
 import pat01 from "@/assets/fotos/patagonia/01.jpg";
