@@ -12,6 +12,7 @@ import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
 import { formatDateRange, formatPrice, formatPriceWithBRL } from "@/lib/format";
 import { DataCard } from "@/components/data-card";
 import { buildContactWhatsappUrl } from "@/lib/whatsapp";
+import canastraVideoPoster from "@/assets/fotos/canastra/video-poster.jpg";
 
 
 const qo = (slug: string) =>
@@ -103,7 +104,7 @@ function DetalhesExpedicao() {
           <div className="container-tight">
             <VideoCinematic
               youtubeId="nPoJeABD5ko"
-              poster={heroImg}
+              poster={canastraVideoPoster}
               eyebrow="Serra da Canastra · filme da expedição"
               title="Expedições a cavalo na Serra da Canastra. Memórias para a vida toda."
               subtitle="Toque para assistir com som"
