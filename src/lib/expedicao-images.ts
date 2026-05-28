@@ -132,7 +132,7 @@ export const IMAGES: Record<string, string> = {
 // HERO POR EXPEDIÇÃO — foto cinematográfica de capa
 // ============================================================
 export const SLUG_IMAGE: Record<string, string> = {
-  "serra-da-canastra": can23,        // travessia no rio — foto do rio
+  "serra-da-canastra": canNew01,     // cavaleira no rio — capa da expedição
   "mantiqueira-refugio": manNew01,   // tropa em movimento na estrada de terra
   "berco-do-marchador": chapada,     // placeholder — imagens reais de Cruzília virão
   "jericoacoara": jeri01,            // cavaleira ao nascer do sol nas dunas
@@ -145,7 +145,7 @@ export const SLUG_IMAGE: Record<string, string> = {
 // GALERIA EDITORIAL POR EXPEDIÇÃO, selecionadas e ordenadas
 // ============================================================
 export const SLUG_GALERIA: Record<string, string[]> = {
-  "serra-da-canastra": [can23, can26, can37, can21, can15, can18, can22, can25, can13, can27, can28, can16, can05, can10],
+  "serra-da-canastra": [canNew01, canNew02, canNew03, canNew04, canNew05, canNew06, canNew07, canNew08],
   "mantiqueira-refugio": [manNew01, manNew02, manNew03, manNew04, manNew05, manNew06, manNew07, manNew08],
   "berco-do-marchador": [],
   "peru-vale-do-colca": [peru09, peru12, peru03, peru01, peru05, peru08, peru07, peru11, peru04, peru06, peru10],
