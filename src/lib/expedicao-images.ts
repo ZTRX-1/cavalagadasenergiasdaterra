@@ -166,6 +166,7 @@ export const SLUG_GALERIA: Record<string, string[]> = {
   "patagonia-gaucha": [patNew01, patNew02, patNew03, patNew04, patNew05, patNew06, patNew07, patNew08],
   "jericoacoara": [],
   "caminho-de-santiago": [man13, man27, man19, man03, man21, man01],
+  "canastra-elas-na-sela": [elas01, elas02, elas03, elas04, elas05, elas06, canNew05, canNew07],
 };
 
 
