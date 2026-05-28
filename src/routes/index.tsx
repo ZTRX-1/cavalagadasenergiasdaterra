@@ -333,32 +333,46 @@ function HomePage() {
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-carvao/15 to-transparent" />
       </section>
 
-      {/* FAQ — fundo claro, contraste editorial */}
-      <section className="bg-background py-28 md:py-36">
-        <div className="container-tight grid gap-12 md:grid-cols-12">
+      {/* FAQ — única seção oficial, editorial e premium */}
+      <section className="bg-background py-28 md:py-40">
+        <div className="container-tight grid gap-16 md:grid-cols-12 md:gap-12">
           <div className="md:col-span-4">
             <div className="eyebrow">{t("faq.eyebrow")}</div>
-            <h2 className="mt-5 font-display text-4xl text-balance md:text-5xl">{t("faq.title")}</h2>
-            <span aria-hidden className="mt-7 block h-px w-16 bg-cobre" />
-            <Link to="/contato" className="mt-6 inline-flex items-center gap-2 text-sm uppercase tracking-widest hover:text-cobre">
-              {t("faq.verTodas")} <ArrowRight className="h-4 w-4" />
-            </Link>
+            <h2 className="mt-5 font-display text-4xl text-balance leading-[1.05] md:text-5xl">
+              {t("faq.title")}
+            </h2>
+            <span aria-hidden className="mt-8 block h-px w-16 bg-cobre" />
+            <p className="mt-8 max-w-sm text-pretty text-base leading-relaxed text-muted-foreground">
+              {t("faq.intro")}
+            </p>
           </div>
-          <div className="md:col-span-8">
-            <div className="divide-y divide-border border-y border-border">
-              {faq.map((f) => (
-                <details key={f.q} className="group py-6">
-                  <summary className="flex cursor-pointer items-center justify-between font-display text-lg">
-                    {f.q}
-                    <span className="ml-4 text-cobre transition-transform group-open:rotate-45">+</span>
-                  </summary>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{f.a}</p>
-                </details>
+          <div className="md:col-span-7 md:col-start-6">
+            <Accordion type="single" collapsible className="border-t border-border/70">
+              {faq.map((f, i) => (
+                <AccordionItem
+                  key={f.q}
+                  value={`item-${i}`}
+                  className="border-b border-border/70"
+                >
+                  <AccordionTrigger className="group gap-6 py-7 text-left font-display text-lg leading-snug text-foreground transition-colors hover:no-underline hover:text-cobre md:text-xl [&>svg]:hidden">
+                    <span className="flex-1 text-pretty">{f.q}</span>
+                    <span
+                      aria-hidden
+                      className="ml-4 text-2xl font-light text-cobre transition-transform duration-300 group-data-[state=open]:rotate-45"
+                    >
+                      +
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-7 pr-10 text-base leading-relaxed text-muted-foreground">
+                    {f.a}
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
+            </Accordion>
           </div>
         </div>
       </section>
+
 
       {/* CTA FINAL — uma imagem cinematográfica forte */}
       <section className="relative isolate overflow-hidden bg-floresta-deep py-36 text-areia md:py-48">
