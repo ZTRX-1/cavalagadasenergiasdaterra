@@ -39,6 +39,16 @@ import can29 from "@/assets/fotos/canastra/29.jpg";
 import can30 from "@/assets/fotos/canastra/30.jpg";
 import can37 from "@/assets/fotos/canastra/37.jpg";
 
+// CANASTRA — novas fotos curadas (ordem narrativa)
+import canNew01 from "@/assets/fotos/canastra/new-01.jpg";
+import canNew02 from "@/assets/fotos/canastra/new-02.jpg";
+import canNew03 from "@/assets/fotos/canastra/new-03.jpg";
+import canNew04 from "@/assets/fotos/canastra/new-04.jpg";
+import canNew05 from "@/assets/fotos/canastra/new-05.jpg";
+import canNew06 from "@/assets/fotos/canastra/new-06.jpg";
+import canNew07 from "@/assets/fotos/canastra/new-07.jpg";
+import canNew08 from "@/assets/fotos/canastra/new-08.jpg";
+
 // MANTIQUEIRA — 34 fotos disponíveis
 import man01 from "@/assets/fotos/mantiqueira/01.jpg";
 import man02 from "@/assets/fotos/mantiqueira/02.jpg";
@@ -122,7 +132,7 @@ export const IMAGES: Record<string, string> = {
 // HERO POR EXPEDIÇÃO — foto cinematográfica de capa
 // ============================================================
 export const SLUG_IMAGE: Record<string, string> = {
-  "serra-da-canastra": can23,        // travessia no rio — foto do rio
+  "serra-da-canastra": canNew01,     // cavaleira no rio — capa da expedição
   "mantiqueira-refugio": manNew01,   // tropa em movimento na estrada de terra
   "berco-do-marchador": chapada,     // placeholder — imagens reais de Cruzília virão
   "jericoacoara": jeri01,            // cavaleira ao nascer do sol nas dunas
@@ -135,7 +145,7 @@ export const SLUG_IMAGE: Record<string, string> = {
 // GALERIA EDITORIAL POR EXPEDIÇÃO, selecionadas e ordenadas
 // ============================================================
 export const SLUG_GALERIA: Record<string, string[]> = {
-  "serra-da-canastra": [can23, can26, can37, can21, can15, can18, can22, can25, can13, can27, can28, can16, can05, can10],
+  "serra-da-canastra": [canNew01, canNew02, canNew03, canNew04, canNew05, canNew06, canNew07, canNew08],
   "mantiqueira-refugio": [manNew01, manNew02, manNew03, manNew04, manNew05, manNew06, manNew07, manNew08],
   "berco-do-marchador": [],
   "peru-vale-do-colca": [peru09, peru12, peru03, peru01, peru05, peru08, peru07, peru11, peru04, peru06, peru10],
@@ -188,6 +198,16 @@ export interface CenaNarrativa {
 }
 
 export const SLUG_NARRATIVA: Record<string, CenaNarrativa[]> = {
+  "serra-da-canastra": [
+    { src: canNew01, eyebrow: "", titulo: "Serra da Canastra não se visita. Se vive a cavalo." },
+    { src: canNew02, eyebrow: "", titulo: "Entre cânions, cachoeiras e estradas de terra, a Canastra revela um Brasil raro." },
+    { src: canNew03, eyebrow: "", titulo: "Dias guiados pelo ritmo do cavalo e pelo silêncio da natureza." },
+    { src: canNew04, eyebrow: "", titulo: "Alguns lugares não ficam nas fotos. Ficam na gente." },
+    { src: canNew05, eyebrow: "", titulo: "Almoços ao ar livre, sabores mineiros e pausas que fazem parte da jornada." },
+    { src: canNew06, eyebrow: "", titulo: "Estranhos no primeiro dia. Manada no último." },
+    { src: canNew07, eyebrow: "", titulo: "Café mineiro, hospitalidade local e o tempo correndo mais devagar." },
+    { src: canNew08, eyebrow: "", titulo: "E quando a expedição termina… uma parte sua ainda fica na Canastra." },
+  ],
   "jericoacoara": [
     { src: jeri01, eyebrow: "", titulo: "O começo de uma experiência que dificilmente será esquecida." },
     { src: jeri02, eyebrow: "", titulo: "Paisagens que mudam o ritmo da mente e ampliam a sensação de liberdade." },
