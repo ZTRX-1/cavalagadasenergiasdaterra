@@ -57,7 +57,67 @@
     "experienciaIntro": "Among dunes, horses, silence, wind and unexpected encounters, every photograph holds a fragment of what this expedition truly makes you feel.",
     "ctaTitle": "Ready to book your spot?",
     "ctaSubtitle": "Reach out on WhatsApp so our team can confirm the details and secure your place.",
-    "badgeElas": "Women only"
+    "badgeElas": "Women only",
+    "cardAPartirDe": "Starting from · double occupancy",
+    "abrirExperiencia": "Open experience",
+    "cards": {
+      "serra-da-canastra": {
+        "nome": "Serra da Canastra",
+        "regiao": "Vargem Bonita, Brazil",
+        "descricao": "Explore the Serra da Canastra on horseback, along carefully selected trails.",
+        "duracao": "4 days / 3 nights",
+        "nivel": "Intermediate"
+      },
+      "mantiqueira-refugio": {
+        "nome": "Serra da Mantiqueira",
+        "regiao": "Maria da Fé, Brazil",
+        "descricao": "A horseback expedition between mountains, nature and connection. For those who want to slow down, be present and reconnect.",
+        "duracao": "5 days / 4 nights",
+        "nivel": "Beginner to intermediate"
+      },
+      "berco-do-marchador": {
+        "nome": "Birthplace of the Mangalarga Marchador",
+        "regiao": "Cruzília, Brazil",
+        "descricao": "Horseback expedition through Cruzília (MG), birthplace of the Mangalarga Marchador breed, visiting historic farms that shaped the horse's genetics.",
+        "duracao": "5 days / 4 nights",
+        "nivel": "Intermediate"
+      },
+      "jericoacoara": {
+        "nome": "Jericoacoara · Dunes and Lagoons",
+        "regiao": "Jericoacoara, Brazil",
+        "descricao": "An equestrian expedition in Jericoacoara, riding among crystal-clear lagoons, golden dunes and the sea of the Brazilian Northeast.",
+        "duracao": "4 days / 3 nights",
+        "nivel": "Intermediate"
+      },
+      "peru-vale-do-colca": {
+        "nome": "Peru · Colca Valley",
+        "regiao": "Colca Valley, Peru",
+        "descricao": "A horseback expedition through the mystical landscapes of the Colca Valley, with deep canyons, Andean culture and the sacred flight of the condor.",
+        "duracao": "4 days / 3 nights",
+        "nivel": "Intermediate"
+      },
+      "patagonia-gaucha": {
+        "nome": "Patagonia Gaucho Experience",
+        "regiao": "El Calafate and San Martín, Argentina",
+        "descricao": "Riding is one thing. Riding in Patagonia is another. An authentic experience among steppes, snow-capped cordillera and real gaucho culture.",
+        "duracao": "5 days / 4 nights",
+        "nivel": "Intermediate to advanced"
+      },
+      "caminho-de-santiago": {
+        "nome": "Camino de Santiago on Horseback",
+        "regiao": "Galicia, Spain",
+        "descricao": "Seven days riding the French Way of the Camino de Santiago on horseback, from O Cebreiro to Plaza do Obradoiro in Santiago de Compostela.",
+        "duracao": "7 days / 6 nights",
+        "nivel": "Intermediate to advanced"
+      },
+      "canastra-elas-na-sela": {
+        "nome": "Serra da Canastra · Women in the Saddle",
+        "regiao": "Vargem Bonita, Brazil",
+        "descricao": "A weekend designed for women who want to experience the Serra da Canastra in a light, intense and unforgettable way.",
+        "duracao": "3 days / 2 nights",
+        "nivel": "Beginner"
+      }
+    }
   },
   "datas": {
     "eyebrow": "Calendar",
