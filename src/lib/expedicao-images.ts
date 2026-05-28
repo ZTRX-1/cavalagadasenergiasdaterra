@@ -198,6 +198,16 @@ export const SLUG_NARRATIVA: Record<string, CenaNarrativa[]> = {
     { src: jeri07, eyebrow: "", titulo: "Conforto, curadoria e hospitalidade pensados para fazer parte da jornada." },
     { src: jeri08, eyebrow: "", titulo: "Algumas experiências terminam. Outras permanecem para sempre na memória." },
   ],
+  "mantiqueira-refugio": [
+    { src: manNew01, eyebrow: "", titulo: "Onde o tempo desacelera e a alma volta a respirar." },
+    { src: manNew02, eyebrow: "", titulo: "Entre montanhas, cavalos e silêncio, a Mantiqueira revela outro ritmo de vida." },
+    { src: manNew03, eyebrow: "", titulo: "Mais do que uma cavalgada: uma experiência para sentir a natureza de verdade." },
+    { src: manNew04, eyebrow: "", titulo: "Caminhos que conectam pessoas, cavalos e paisagens inesquecíveis." },
+    { src: manNew05, eyebrow: "", titulo: "A liberdade tem som de casco na terra e horizonte sem fim." },
+    { src: manNew06, eyebrow: "", titulo: "Dias vividos a cavalo, cercados pelas montanhas da Serra da Mantiqueira." },
+    { src: manNew07, eyebrow: "", titulo: "Existem lugares que não se explicam. Apenas se vivem." },
+    { src: manNew08, eyebrow: "", titulo: "Uma expedição para quem deseja voltar diferente." },
+  ],
 };
 
 export function getExpedicaoNarrativa(slug: string): CenaNarrativa[] {
