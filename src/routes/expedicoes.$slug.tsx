@@ -104,7 +104,7 @@ function DetalhesExpedicao() {
           <div className="container-tight">
             <VideoCinematic
               youtubeId="nPoJeABD5ko"
-              poster={heroImg}
+              poster={canastraVideoPoster}
               eyebrow="Serra da Canastra · filme da expedição"
               title="Expedições a cavalo na Serra da Canastra. Memórias para a vida toda."
               subtitle="Toque para assistir com som"
