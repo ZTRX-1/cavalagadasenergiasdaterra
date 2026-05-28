@@ -9,6 +9,8 @@ import { DepoimentosShorts } from "@/components/depoimentos-shorts";
 import { VideoCinematic } from "@/components/video-cinematic";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { NaMidia } from "@/components/na-midia";
+import { EditorialFrame } from "@/components/editorial-frame";
+
 import hero from "@/assets/founders/ligia-rio.jpg";
 import manifestoImg from "@/assets/fotos/home/experiencia.jpg";
 import ctaFinal from "@/assets/fotos/canastra/26.jpg";
@@ -225,11 +227,16 @@ function HomePage() {
 
       {/* MANIFESTO — texto + 1 imagem lateral */}
       <section className="bg-background py-28 md:py-36">
-        <div className="container-tight grid gap-12 md:grid-cols-12 md:gap-16">
+        <div className="container-tight grid items-center gap-14 md:grid-cols-12 md:gap-20">
           <div className="md:col-span-5">
-            <div className="overflow-hidden">
-              <img src={manifestoImg} alt="" loading="lazy" decoding="async" className="h-full max-h-[640px] w-full object-cover" />
-            </div>
+            <EditorialFrame
+              src={manifestoImg}
+              alt="Mulher e cavalo em momento de conexão"
+              variant="portrait"
+              accent="cobre"
+              side="left"
+              className="mx-auto w-full max-w-md md:max-w-none"
+            />
           </div>
           <div className="md:col-span-7 flex flex-col justify-center">
             <div className="eyebrow">{t("manifesto.eyebrow")}</div>
@@ -239,7 +246,7 @@ function HomePage() {
             </p>
           </div>
         </div>
-      </section>
+
 
       {/* VÍDEO CINEMATOGRÁFICO */}
       <section className="bg-carvao py-24 md:py-32">
