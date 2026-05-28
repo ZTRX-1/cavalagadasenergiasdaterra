@@ -57,7 +57,67 @@
     "experienciaIntro": "Entre dunas, caballos, silencio, viento y encuentros inesperados, cada fotografía guarda un fragmento de lo que esta expedición realmente te hace sentir.",
     "ctaTitle": "¿Listo para reservar tu lugar?",
     "ctaSubtitle": "Habla con nuestro equipo por WhatsApp para ajustar detalles y confirmar tu plaza.",
-    "badgeElas": "Exclusiva para mujeres"
+    "badgeElas": "Exclusiva para mujeres",
+    "cardAPartirDe": "Desde · ocupación doble",
+    "abrirExperiencia": "Abrir experiencia",
+    "cards": {
+      "serra-da-canastra": {
+        "nome": "Serra da Canastra",
+        "regiao": "Vargem Bonita, Brasil",
+        "descricao": "Explora la Serra da Canastra a caballo, por rutas cuidadosamente seleccionadas.",
+        "duracao": "4 días / 3 noches",
+        "nivel": "Intermedio"
+      },
+      "mantiqueira-refugio": {
+        "nome": "Serra da Mantiqueira",
+        "regiao": "Maria da Fé, Brasil",
+        "descricao": "Expedición a caballo entre montañas, naturaleza y conexión. Para quien busca desacelerar, vivir el presente y reconectarse.",
+        "duracao": "5 días / 4 noches",
+        "nivel": "Principiante a intermedio"
+      },
+      "berco-do-marchador": {
+        "nome": "Cuna del Mangalarga Marchador",
+        "regiao": "Cruzília, Brasil",
+        "descricao": "Expedición a caballo por Cruzília (MG), cuna de la raza Mangalarga Marchador, visitando haciendas históricas que moldearon la genética del caballo.",
+        "duracao": "5 días / 4 noches",
+        "nivel": "Intermedio"
+      },
+      "jericoacoara": {
+        "nome": "Jericoacoara · Dunas y Lagunas",
+        "regiao": "Jericoacoara, Brasil",
+        "descricao": "Expedición ecuestre en Jericoacoara, cabalgando entre lagunas cristalinas, dunas doradas y el mar del Nordeste brasileño.",
+        "duracao": "4 días / 3 noches",
+        "nivel": "Intermedio"
+      },
+      "peru-vale-do-colca": {
+        "nome": "Perú · Valle del Colca",
+        "regiao": "Valle del Colca, Perú",
+        "descricao": "Expedición a caballo por los paisajes místicos del Valle del Colca, con cañones profundos, cultura andina y el vuelo sagrado del cóndor.",
+        "duracao": "4 días / 3 noches",
+        "nivel": "Intermedio"
+      },
+      "patagonia-gaucha": {
+        "nome": "Patagonia Gaucha Experience",
+        "regiao": "El Calafate y San Martín, Argentina",
+        "descricao": "Una cosa es cabalgar. Otra es cabalgar en la Patagonia. Experiencia auténtica entre estepas, cordillera nevada y cultura gaucha real.",
+        "duracao": "5 días / 4 noches",
+        "nivel": "Intermedio a avanzado"
+      },
+      "caminho-de-santiago": {
+        "nome": "Camino de Santiago a Caballo",
+        "regiao": "Galicia, España",
+        "descricao": "Siete días recorriendo la Ruta Francesa del Camino de Santiago a caballo, desde O Cebreiro hasta la Plaza do Obradoiro en Santiago de Compostela.",
+        "duracao": "7 días / 6 noches",
+        "nivel": "Intermedio a avanzado"
+      },
+      "canastra-elas-na-sela": {
+        "nome": "Serra da Canastra · Ellas en la Silla",
+        "regiao": "Vargem Bonita, Brasil",
+        "descricao": "Un fin de semana creado para mujeres que desean vivir la Serra da Canastra de forma ligera, intensa e inolvidable.",
+        "duracao": "3 días / 2 noches",
+        "nivel": "Principiante"
+      }
+    }
   },
   "datas": {
     "eyebrow": "Calendario",
