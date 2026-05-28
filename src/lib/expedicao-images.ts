@@ -198,6 +198,16 @@ export interface CenaNarrativa {
 }
 
 export const SLUG_NARRATIVA: Record<string, CenaNarrativa[]> = {
+  "serra-da-canastra": [
+    { src: canNew01, eyebrow: "", titulo: "Serra da Canastra não se visita. Se vive a cavalo." },
+    { src: canNew02, eyebrow: "", titulo: "Entre cânions, cachoeiras e estradas de terra, a Canastra revela um Brasil raro." },
+    { src: canNew03, eyebrow: "", titulo: "Dias guiados pelo ritmo do cavalo e pelo silêncio da natureza." },
+    { src: canNew04, eyebrow: "", titulo: "Alguns lugares não ficam nas fotos. Ficam na gente." },
+    { src: canNew05, eyebrow: "", titulo: "Almoços ao ar livre, sabores mineiros e pausas que fazem parte da jornada." },
+    { src: canNew06, eyebrow: "", titulo: "Estranhos no primeiro dia. Manada no último." },
+    { src: canNew07, eyebrow: "", titulo: "Café mineiro, hospitalidade local e o tempo correndo mais devagar." },
+    { src: canNew08, eyebrow: "", titulo: "E quando a expedição termina… uma parte sua ainda fica na Canastra." },
+  ],
   "jericoacoara": [
     { src: jeri01, eyebrow: "", titulo: "O começo de uma experiência que dificilmente será esquecida." },
     { src: jeri02, eyebrow: "", titulo: "Paisagens que mudam o ritmo da mente e ampliam a sensação de liberdade." },
