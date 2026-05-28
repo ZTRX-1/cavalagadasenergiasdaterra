@@ -10,6 +10,7 @@ import { VideoCinematic } from "@/components/video-cinematic";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { NaMidia } from "@/components/na-midia";
 import { EditorialFrame } from "@/components/editorial-frame";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 import hero from "@/assets/founders/ligia-rio.jpg";
 import manifestoImg from "@/assets/fotos/home/experiencia.jpg";
