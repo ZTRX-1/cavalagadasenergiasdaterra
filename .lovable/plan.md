@@ -1,44 +1,60 @@
 
-## Diagnóstico
+## O que será ajustado no editor de expedição
 
-1. **Editar não abre nada.** Os arquivos `admin._authenticated.expedicoes.tsx` (lista) e `admin._authenticated.expedicoes.$id.tsx` (editor) compartilham o segmento `/admin/expedicoes`, então o TanStack Router trata o arquivo da lista como **layout pai** do editor. Como a lista não renderiza `<Outlet />`, clicar no lápis muda a URL mas continua mostrando a lista. O mesmo afeta "Criar nova": a criação funciona no banco, navega para `/admin/expedicoes/:id`, mas o editor nunca aparece.
+### 1. Preview com capa editável (aba Geral, coluna direita)
 
-2. **Capas quebradas na lista.** A lista usa `getExpedicaoImage(slug)` que só conhece slugs hard-coded. Para expedições novas (slugs desconhecidos) retorna vazio → ícone de imagem quebrada. Já existe `_capa` resolvido a partir dos assets do banco, mas é usado só como fallback secundário.
+Hoje o "Preview" só mostra a imagem (ou um placeholder seco quando não há capa). Vamos transformá-lo em **capa editável** ali mesmo, sem precisar ir até a aba Mídia:
 
-3. **Preview da página pública.** O botão "Ver página pública" precisa existir tanto na lista quanto dentro do editor, e deve abrir em nova aba apontando para `/expedicoes/{slug}`.
+- Quando **já existe capa**: mostra a imagem com um botão flutuante "Trocar capa" no canto + um botão discreto "Remover capa".
+- Quando **não há capa**: área pontilhada com texto claro "Clique para enviar a capa (JPG, PNG ou WebP)". Aceita clique e drag-and-drop.
+- O upload usa o mesmo `uploadAsset` da aba Mídia e marca automaticamente como `is_capa`. A foto também passa a fazer parte do carrossel (mesmo padrão atual), evitando duplicidade.
+- Texto auxiliar abaixo: "Esta imagem aparece no card de listagem e no topo da página pública."
 
-## O que será feito
+Resolve o relato "não sei porque tá aparecendo como se a imagem não tivesse ali".
 
-### 1. Corrigir a rota (causa raiz do "nada acontece")
-Renomear `src/routes/admin._authenticated.expedicoes.tsx` → `src/routes/admin._authenticated.expedicoes.index.tsx`.
+### 2. Carrossel de fotos mais intuitivo (aba Mídia & narrativa)
 
-Com isso a lista vira rota irmã do editor (e não pai), eliminando o conflito de layout. Clicar no lápis passa a montar de fato o editor. Nenhuma alteração de URL pública — `/admin/expedicoes` e `/admin/expedicoes/:id` continuam funcionando.
+A estrutura atual já permite enviar, reordenar, marcar capa e legendar. Vamos tornar o fluxo dos **8 slots padrão** explícito e mais fácil:
 
-### 2. Corrigir capas na lista
-Em `admin._authenticated.expedicoes.index.tsx`, trocar a prioridade da resolução de capa para: `_capa` (banco) → `getExpedicaoImage(slug)` (hardcoded legado) → placeholder neutro com inicial da expedição. Adicionar `onError` no `<img>` para cair no placeholder se a URL do banco quebrar. Isso garante que expedições novas e antigas sempre mostrem algo.
+- Cabeçalho da seção mostra contador: **"Foto X de 8"** (verde quando ≥ 8, âmbar abaixo). Texto explicativo: "O padrão das expedições é um carrossel de 8 fotos com uma legenda emocional em cada uma. Você pode ter mais ou menos."
+- Dropzone com cópia mais clara: "Arraste até 8 fotos de uma vez ou clique para escolher".
+- Cada cartão de foto ganha:
+  - Etiquetas visíveis nos botões de ação (não só ícone): **Subir / Descer / Definir capa / Remover** (no desktop com texto pequeno; no mobile vira menu de ações).
+  - Campo de legenda com placeholder novo: "Ex.: 'O primeiro passo antes da travessia.'" e contador "0/140" — só visual, sem cortar.
+  - Cabeçalho do cartão mostra "Foto N — Capa" ou "Foto N" para deixar claro a ordem do carrossel.
+- Quando há 0 fotos: bloco de "primeiros passos" com botão grande "Enviar primeira foto" + dica "A primeira foto enviada vira automaticamente a capa".
 
-### 3. Botão "Ver página pública"
-- Na lista: adicionar ícone `ExternalLink` na coluna Ações, abrindo `/expedicoes/{slug}` em nova aba (apenas se `status === "publicado"`; senão fica desabilitado com tooltip "publique para visualizar").
-- No editor: garantir que o botão já existente no header aponte corretamente para `/expedicoes/{slug}` em nova aba (verificar e ajustar se necessário).
+### 3. Aba "Datas & Vagas" com legendas e layout responsivo
 
-### 4. Modal "Nova expedição" — garantir que abra editável
-A criação já faz `nav({ to: "/admin/expedicoes/$id", params: { id: row.id } })` e cacheia o registro com `qc.setQueryData`. Com a correção #1 isso passa a renderizar o editor de verdade. Validar que `getExpedicao(id)` devolve a linha logo após criar (sem race com RLS) — se necessário, fazer a navegação só depois de `await qc.invalidateQueries` para evitar `notFound` momentâneo.
+Hoje a linha é `grid-cols-12` com 6 campos numéricos sem rótulo — daí o "número 8, 3200, 3520" que a cliente não entende. E em mobile a linha estoura.
 
-### 5. Polimento mínimo do editor (sem redesign)
-- Mostrar o nome da expedição e o `StatusBadge` no header do editor (já importado mas não usado em todo lugar — confirmar).
-- Garantir que o botão "Salvar" fique sticky/visível no topo durante scroll longo (ajuste de classe).
-- Mensagem clara quando não há fotos: "Envie ao menos 1 foto na aba Mídia para definir a capa."
+- Adicionar **cabeçalho de colunas** uma única vez no topo da tabela (desktop): `Início · Fim · Vagas total · Vagas disponíveis · Preço Pix (R$) · Preço cartão (R$) · Ações`.
+- Cada linha vira um **cartão**:
+  - **Desktop (≥ md):** mantém layout em grid, mas com rótulo curto acima de cada input (`text-[10px] uppercase tracking-wider text-muted`).
+  - **Mobile (< md):** empilha em 2 colunas (datas lado a lado; vagas lado a lado; preços lado a lado), botão "Remover" full-width no rodapé. Sem overflow horizontal.
+- Tooltip de ajuda no título da seção: ícone "?" com explicação curta — "Vagas total é o limite da turma. Vagas disponíveis é quanto ainda pode ser vendido. Pix e Cartão são os preços que aparecem no site."
+- Botão "Adicionar data" abre a nova linha já com datas = hoje, vagas = padrão da expedição e preços herdando o `preco` geral (em vez de vir vazio).
+- Validação leve: se `vagas_disponiveis > vagas_total`, mostrar aviso âmbar inline ("Vagas disponíveis não pode passar do total").
 
-## Fora do escopo (mantido como está)
-- Visual geral do admin (cores, tipografia, layout) — só consertos pontuais.
-- Drag-and-drop de fotos/dias (continua com setas ↑↓).
-- Editor rich-text para descrições.
-- i18n do conteúdo editado.
+### 4. Responsividade geral do editor
 
-## Arquivos afetados
+Varredura no arquivo para corrigir overflow em telas pequenas:
 
-- **Rename:** `src/routes/admin._authenticated.expedicoes.tsx` → `src/routes/admin._authenticated.expedicoes.index.tsx`
-- **Edit:** o arquivo renomeado (capas + botão "ver pública" na lista)
-- **Edit:** `src/routes/admin._authenticated.expedicoes.$id.tsx` (polimento de header, link de preview, mensagem de fotos)
+- **Header de ações** (`flex-wrap` já existe — manter, mas garantir `gap-2` consistente e botões com `text-xs` em < sm).
+- **Tabs**: `TabsList` já tem `flex-wrap h-auto`. Adicionar `gap-1` para não cortar texto em iPhone SE.
+- **Aba Geral**: grid `lg:grid-cols-3` mantida; em mobile a coluna do Preview vira primeira (`order-first lg:order-none`) — assim a cliente vê o resultado antes de rolar tudo.
+- **Aba Mídia**: cartões `md:grid-cols-[140px_1fr_auto]` viram coluna única em mobile com a foto em cima, legenda no meio e ações empilhadas — sem botões cortados.
+- **Aba Comercial**: `grid-cols-3` vira `grid-cols-2 sm:grid-cols-3` para não amassar inputs em < sm.
 
-Nenhuma alteração no banco, RLS ou no site público.
+### Fora de escopo
+
+- Redesign visual geral do admin (mantém o padrão atual).
+- Drag-and-drop para reordenar fotos (continua com setas ↑↓).
+- Mudanças no site público.
+- Mudanças de schema do banco (todas as colunas necessárias já existem).
+
+### Arquivos afetados
+
+- **Edit:** `src/routes/admin._authenticated.expedicoes.$id.tsx` — Preview editável, melhorias do carrossel, legendas/responsividade da aba Datas, ajustes responsivos gerais.
+
+Sem alterações em banco, RLS, server functions ou site público.

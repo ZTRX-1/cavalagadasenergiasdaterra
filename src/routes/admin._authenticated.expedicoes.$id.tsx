@@ -179,7 +179,7 @@ function ExpedicaoEdit() {
       </div>
 
       <Tabs defaultValue="geral">
-        <TabsList className="bg-[color:var(--admin-carvao-deep)]/60 border border-[color:var(--admin-borda)] flex-wrap h-auto">
+        <TabsList className="bg-[color:var(--admin-carvao-deep)]/60 border border-[color:var(--admin-borda)] flex-wrap h-auto gap-1">
           <TabsTrigger value="geral">Geral</TabsTrigger>
           <TabsTrigger value="roteiro">Roteiro</TabsTrigger>
           <TabsTrigger value="midia">Mídia & narrativa</TabsTrigger>
@@ -189,7 +189,7 @@ function ExpedicaoEdit() {
         </TabsList>
 
         <TabsContent value="geral" className="mt-6 grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-6 order-2 lg:order-1">
             <AdminSection titulo="Identidade">
               <AdminField label="Nome">
                 <input className="admin-input" value={form.nome ?? ""} onChange={(e) => setF({ nome: e.target.value, slug: form.slug || slugify(e.target.value) })} />
@@ -200,7 +200,7 @@ function ExpedicaoEdit() {
               <AdminField label="Slug" hint="Endereço da página pública: /expedicoes/seu-slug. Cuidado ao editar depois de publicar.">
                 <input className="admin-input font-mono text-sm" value={form.slug ?? ""} onChange={(e) => setF({ slug: slugify(e.target.value) })} />
               </AdminField>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <AdminField label="Marca">
                   <select className="admin-input" value={form.marca ?? "cavalgadas"} onChange={(e) => setF({ marca: e.target.value })}>
                     <option value="cavalgadas">Cavalgadas</option>
@@ -224,7 +224,7 @@ function ExpedicaoEdit() {
             </AdminSection>
 
             <AdminSection titulo="Localização">
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <AdminField label="País">
                   <input className="admin-input" value={form.pais ?? ""} onChange={(e) => setF({ pais: e.target.value })} />
                 </AdminField>
@@ -253,25 +253,39 @@ function ExpedicaoEdit() {
             </AdminSection>
           </div>
 
-          <div className="space-y-6">
-            <AdminSection titulo="Preview">
-              <div className="space-y-3">
-                {(() => {
-                  const capa = form.capa_url || form.imagem_url || assets.find((a) => a.tipo === "imagem" && a.is_capa)?.url || assets.find((a) => a.tipo === "imagem")?.url;
-                  return capa ? (
-                    <img src={capa} className="aspect-[4/3] w-full rounded-md object-cover ring-1 ring-[color:var(--admin-borda)]" />
-                  ) : (
-                    <div className="aspect-[4/3] w-full rounded-md bg-[color:var(--admin-petroleo)] grid place-items-center text-center text-[11px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] px-4">
-                      Envie uma imagem na aba Mídia & narrativa
+          <div className="space-y-6 order-1 lg:order-2">
+            <AdminSection titulo="Capa & Preview" descricao="Esta imagem aparece no card de listagem e no topo da página pública.">
+              {(() => {
+                const capaAsset = assets.find((a) => a.tipo === "imagem" && a.is_capa) ?? assets.find((a) => a.tipo === "imagem");
+                const capa = form.capa_url || form.imagem_url || capaAsset?.url;
+                return (
+                  <div className="space-y-3">
+                    <CapaEditor
+                      capaUrl={capa ?? null}
+                      onUpload={async (file) => {
+                        try {
+                          const row = await uploadAsset(id, file, "imagem");
+                          await setCapa(row);
+                          qc.invalidateQueries({ queryKey: ["admin"] });
+                          toast.success("Capa atualizada");
+                        } catch (err) { toast.error((err as Error).message); }
+                      }}
+                      onRemove={capaAsset ? async () => {
+                        try {
+                          await deleteAsset(capaAsset);
+                          qc.invalidateQueries({ queryKey: ["admin"] });
+                          toast.success("Capa removida");
+                        } catch (err) { toast.error((err as Error).message); }
+                      } : undefined}
+                    />
+                    <div>
+                      <StatusBadge status={form.status ?? "rascunho"} />
                     </div>
-                  );
-                })()}
-                <div>
-                  <StatusBadge status={form.status ?? "rascunho"} />
-                </div>
-                <h3 className="font-display text-lg">{form.nome}</h3>
-                <p className="text-xs text-[color:var(--admin-cinza-2)]">{form.descricao_curta}</p>
-              </div>
+                    <h3 className="font-display text-lg break-words">{form.nome}</h3>
+                    <p className="text-xs text-[color:var(--admin-cinza-2)] break-words">{form.descricao_curta}</p>
+                  </div>
+                );
+              })()}
             </AdminSection>
             <AdminSection titulo="Tags">
               <AdminField label="Tags (separadas por vírgula)">
@@ -284,6 +298,7 @@ function ExpedicaoEdit() {
             </AdminSection>
           </div>
         </TabsContent>
+
 
         {/* ============== ROTEIRO ============== */}
         <TabsContent value="roteiro" className="mt-6">
@@ -362,74 +377,94 @@ function ExpedicaoEdit() {
 
         {/* ============== MÍDIA ============== */}
         <TabsContent value="midia" className="mt-6 space-y-6">
-          <AdminSection
-            titulo="Fotos da expedição"
-            descricao="A imagem com a estrela é a capa pública. A legenda de cada foto vira o texto emocional que aparece no carrossel narrativo da página."
-          >
-            <AdminUploader
-              accept={{ "image/*": [".jpg", ".jpeg", ".png", ".webp"] }}
-              hint="JPG, PNG ou WebP"
-              onFiles={async (files) => {
-                for (const f of files) {
-                  try { await uploadAsset(id, f, "imagem"); } catch (e) { toast.error((e as Error).message); }
+          {(() => {
+            const imagens = assets.filter((a) => a.tipo === "imagem");
+            const ok = imagens.length >= 8;
+            return (
+              <AdminSection
+                titulo="Fotos da expedição"
+                descricao="Padrão: 8 fotos com uma legenda emocional em cada uma. Você pode ter mais ou menos. A primeira foto enviada vira automaticamente a capa."
+                actions={
+                  <span className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${ok ? "bg-emerald-500/15 text-emerald-300" : "bg-amber-500/15 text-amber-300"}`}>
+                    {imagens.length} / 8 fotos
+                  </span>
                 }
-                qc.invalidateQueries({ queryKey: ["admin", "assets", id] });
-                toast.success(`${files.length} arquivo(s) enviado(s)`);
-              }}
-            />
-            <div className="space-y-3">
-              {assets.filter((a) => a.tipo === "imagem").length === 0 && (
-                <p className="text-sm text-[color:var(--admin-cinza-3)]">Nenhuma foto ainda. Envie acima.</p>
-              )}
-              {assets.filter((a) => a.tipo === "imagem").map((a, idx) => (
-                <div key={a.id} className="grid gap-3 rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 p-3 md:grid-cols-[140px_1fr_auto]">
-                  <div className="relative">
-                    <img src={a.url} className="aspect-[4/3] w-full rounded-md object-cover ring-1 ring-[color:var(--admin-borda)]" />
-                    {a.is_capa && (
-                      <div className="absolute left-1.5 top-1.5 rounded-full bg-[color:var(--admin-dourado)]/95 px-2 py-0.5 text-[10px] font-medium text-[color:var(--admin-carvao-deep)]">
-                        Capa
-                      </div>
-                    )}
-                    <div className="absolute right-1.5 top-1.5 rounded-full bg-black/70 px-2 py-0.5 text-[10px] font-medium text-white">
-                      #{idx + 1}
+              >
+                <AdminUploader
+                  accept={{ "image/*": [".jpg", ".jpeg", ".png", ".webp"] }}
+                  hint="Arraste até 8 fotos de uma vez ou clique para escolher. JPG, PNG ou WebP."
+                  onFiles={async (files) => {
+                    for (const f of files) {
+                      try { await uploadAsset(id, f, "imagem"); } catch (e) { toast.error((e as Error).message); }
+                    }
+                    qc.invalidateQueries({ queryKey: ["admin", "assets", id] });
+                    qc.invalidateQueries({ queryKey: ["admin", "expedicao", id] });
+                    toast.success(`${files.length} foto(s) enviada(s)`);
+                  }}
+                />
+                <div className="space-y-3">
+                  {imagens.length === 0 && (
+                    <div className="rounded-md border border-dashed border-[color:var(--admin-borda)] p-6 text-center text-sm text-[color:var(--admin-cinza-3)]">
+                      Nenhuma foto ainda. Envie acima — a primeira vira a capa.
                     </div>
-                  </div>
-                  <div className="space-y-2">
-                    <AdminField label="Legenda (texto emocional, aparece sob a foto)">
-                      <textarea
-                        className="admin-input min-h-[70px]"
-                        defaultValue={a.titulo ?? ""}
-                        onBlur={async (e) => {
-                          const value = e.target.value.trim();
-                          if (value === (a.titulo ?? "").trim()) return;
-                          try {
-                            await updateAsset(a.id, { titulo: value || null });
-                            qc.invalidateQueries({ queryKey: ["admin", "assets", id] });
-                            toast.success("Legenda salva");
-                          } catch (err) { toast.error((err as Error).message); }
-                        }}
-                        placeholder="Deixe em branco se esta foto não deve ter texto narrativo."
-                      />
-                    </AdminField>
-                  </div>
-                  <div className="flex flex-row md:flex-col items-center gap-1 justify-end">
-                    <button title="Subir" className="admin-btn-ghost px-2 py-1.5" onClick={async () => { await moveAsset(a, "up"); qc.invalidateQueries({ queryKey: ["admin", "assets", id] }); }}>
-                      <ChevronUp className="h-3.5 w-3.5" />
-                    </button>
-                    <button title="Descer" className="admin-btn-ghost px-2 py-1.5" onClick={async () => { await moveAsset(a, "down"); qc.invalidateQueries({ queryKey: ["admin", "assets", id] }); }}>
-                      <ChevronDown className="h-3.5 w-3.5" />
-                    </button>
-                    <button title="Definir como capa" className="admin-btn-ghost px-2 py-1.5" onClick={async () => { await setCapa(a); qc.invalidateQueries({ queryKey: ["admin"] }); toast.success("Capa atualizada"); }}>
-                      <Star className="h-3.5 w-3.5" />
-                    </button>
-                    <button title="Remover" className="admin-btn-ghost px-2 py-1.5 hover:!bg-rose-500/10" onClick={async () => { await deleteAsset(a); qc.invalidateQueries({ queryKey: ["admin", "assets", id] }); }}>
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
+                  )}
+                  {imagens.map((a, idx) => (
+                    <div key={a.id} className="grid gap-3 rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 p-3 md:grid-cols-[160px_1fr]">
+                      <div className="relative">
+                        <img src={a.url} alt="" className="aspect-[4/3] w-full rounded-md object-cover ring-1 ring-[color:var(--admin-borda)]" />
+                        {a.is_capa && (
+                          <div className="absolute left-1.5 top-1.5 rounded-full bg-[color:var(--admin-dourado)]/95 px-2 py-0.5 text-[10px] font-medium text-[color:var(--admin-carvao-deep)]">
+                            Capa
+                          </div>
+                        )}
+                        <div className="absolute right-1.5 top-1.5 rounded-full bg-black/70 px-2 py-0.5 text-[10px] font-medium text-white">
+                          #{idx + 1}
+                        </div>
+                      </div>
+                      <div className="space-y-2 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="text-[11px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">
+                            Foto {idx + 1}{a.is_capa ? " — Capa" : ""}
+                          </div>
+                        </div>
+                        <AdminField label="Legenda (aparece sob a foto no carrossel)">
+                          <textarea
+                            className="admin-input min-h-[70px]"
+                            defaultValue={a.titulo ?? ""}
+                            onBlur={async (e) => {
+                              const value = e.target.value.trim();
+                              if (value === (a.titulo ?? "").trim()) return;
+                              try {
+                                await updateAsset(a.id, { titulo: value || null });
+                                qc.invalidateQueries({ queryKey: ["admin", "assets", id] });
+                                toast.success("Legenda salva");
+                              } catch (err) { toast.error((err as Error).message); }
+                            }}
+                            placeholder="Ex.: 'O primeiro passo antes da travessia.'"
+                          />
+                        </AdminField>
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <button className="admin-btn-ghost gap-1 px-2 py-1.5 text-[11px]" onClick={async () => { await moveAsset(a, "up"); qc.invalidateQueries({ queryKey: ["admin", "assets", id] }); }} disabled={idx === 0}>
+                            <ChevronUp className="h-3.5 w-3.5" /> Subir
+                          </button>
+                          <button className="admin-btn-ghost gap-1 px-2 py-1.5 text-[11px]" onClick={async () => { await moveAsset(a, "down"); qc.invalidateQueries({ queryKey: ["admin", "assets", id] }); }} disabled={idx === imagens.length - 1}>
+                            <ChevronDown className="h-3.5 w-3.5" /> Descer
+                          </button>
+                          <button className="admin-btn-ghost gap-1 px-2 py-1.5 text-[11px]" onClick={async () => { await setCapa(a); qc.invalidateQueries({ queryKey: ["admin"] }); toast.success("Capa atualizada"); }} disabled={a.is_capa}>
+                            <Star className="h-3.5 w-3.5" /> Definir capa
+                          </button>
+                          <button className="admin-btn-ghost gap-1 px-2 py-1.5 text-[11px] hover:!bg-rose-500/10 hover:!text-rose-300 ml-auto" onClick={async () => { if (!confirm("Remover esta foto?")) return; await deleteAsset(a); qc.invalidateQueries({ queryKey: ["admin"] }); }}>
+                            <Trash2 className="h-3.5 w-3.5" /> Remover
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </AdminSection>
+              </AdminSection>
+            );
+          })()}
+
 
           <AdminSection titulo="Vídeo">
             <AdminField label="URL do vídeo (YouTube ou Vimeo)" hint="Use embed externo — sem upload para storage.">
@@ -463,7 +498,8 @@ function ExpedicaoEdit() {
 
         <TabsContent value="datas" className="mt-6">
           <AdminSection
-            titulo="Próximas datas"
+            titulo="Próximas datas e vagas"
+            descricao="Cada linha é uma turma. Vagas total = limite da turma. Vagas disponíveis = quanto ainda pode ser vendido. Preço Pix e Cartão são os valores que aparecem no site."
             actions={
               <button
                 className="admin-btn-ghost"
@@ -476,8 +512,8 @@ function ExpedicaoEdit() {
                     vagas_total: form.vagas_total_padrao ?? 10,
                     vagas_disponiveis: form.vagas_total_padrao ?? 10,
                     status: "disponivel",
-                    preco_pix: null,
-                    preco_cartao: null,
+                    preco_pix: form.preco ?? null,
+                    preco_cartao: form.preco ?? null,
                   });
                   qc.invalidateQueries({ queryKey: ["admin", "datas", id] });
                 }}
@@ -487,31 +523,65 @@ function ExpedicaoEdit() {
             }
           >
             {datas.length === 0 ? (
-              <p className="text-sm text-[color:var(--admin-cinza-3)]">Nenhuma data cadastrada ainda.</p>
+              <div className="rounded-md border border-dashed border-[color:var(--admin-borda)] p-6 text-center text-sm text-[color:var(--admin-cinza-3)]">
+                Nenhuma data cadastrada ainda. Clique em "Adicionar data" para começar.
+              </div>
             ) : (
-              <div className="space-y-2">
-                {datas.map((d) => (
-                  <div key={d.id} className="grid grid-cols-12 items-center gap-2 rounded-md border border-[color:var(--admin-borda)] p-3">
-                    <input type="date" className="admin-input col-span-2" value={d.data_inicio} onChange={(e) => updateData(d.id, { data_inicio: e.target.value }).then(() => qc.invalidateQueries({ queryKey: ["admin", "datas", id] }))} />
-                    <input type="date" className="admin-input col-span-2" value={d.data_fim} onChange={(e) => updateData(d.id, { data_fim: e.target.value }).then(() => qc.invalidateQueries({ queryKey: ["admin", "datas", id] }))} />
-                    <input type="number" placeholder="Vagas total" className="admin-input col-span-1" value={d.vagas_total} onChange={(e) => updateData(d.id, { vagas_total: Number(e.target.value) }).then(() => qc.invalidateQueries({ queryKey: ["admin", "datas", id] }))} />
-                    <input type="number" placeholder="Disp." className="admin-input col-span-1" value={d.vagas_disponiveis} onChange={(e) => updateData(d.id, { vagas_disponiveis: Number(e.target.value) }).then(() => qc.invalidateQueries({ queryKey: ["admin", "datas", id] }))} />
-                    <input type="number" placeholder="Pix" className="admin-input col-span-2" value={d.preco_pix ?? ""} onChange={(e) => updateData(d.id, { preco_pix: e.target.value ? Number(e.target.value) : null }).then(() => qc.invalidateQueries({ queryKey: ["admin", "datas", id] }))} />
-                    <input type="number" placeholder="Cartão" className="admin-input col-span-2" value={d.preco_cartao ?? ""} onChange={(e) => updateData(d.id, { preco_cartao: e.target.value ? Number(e.target.value) : null }).then(() => qc.invalidateQueries({ queryKey: ["admin", "datas", id] }))} />
-                    <button className="admin-btn-ghost col-span-2 hover:!bg-rose-500/10" onClick={async () => { await deleteData(d.id); qc.invalidateQueries({ queryKey: ["admin", "datas", id] }); }}>
-                      <Trash2 className="h-3.5 w-3.5" /> Remover
-                    </button>
-                  </div>
-                ))}
+              <div className="space-y-3">
+                {datas.map((d) => {
+                  const dispOver = (d.vagas_disponiveis ?? 0) > (d.vagas_total ?? 0);
+                  const upd = (patch: Partial<typeof d>) => updateData(d.id, patch).then(() => qc.invalidateQueries({ queryKey: ["admin", "datas", id] }));
+                  const Lbl = ({ children }: { children: React.ReactNode }) => (
+                    <span className="block text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] mb-1">{children}</span>
+                  );
+                  return (
+                    <div key={d.id} className="rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 p-3">
+                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+                        <div>
+                          <Lbl>Início</Lbl>
+                          <input type="date" className="admin-input w-full" value={d.data_inicio} onChange={(e) => upd({ data_inicio: e.target.value })} />
+                        </div>
+                        <div>
+                          <Lbl>Fim</Lbl>
+                          <input type="date" className="admin-input w-full" value={d.data_fim} onChange={(e) => upd({ data_fim: e.target.value })} />
+                        </div>
+                        <div>
+                          <Lbl>Vagas total</Lbl>
+                          <input type="number" min={0} className="admin-input w-full" value={d.vagas_total} onChange={(e) => upd({ vagas_total: Number(e.target.value) })} />
+                        </div>
+                        <div>
+                          <Lbl>Vagas disponíveis</Lbl>
+                          <input type="number" min={0} className={`admin-input w-full ${dispOver ? "ring-1 ring-amber-400/60" : ""}`} value={d.vagas_disponiveis} onChange={(e) => upd({ vagas_disponiveis: Number(e.target.value) })} />
+                        </div>
+                        <div>
+                          <Lbl>Preço Pix (R$)</Lbl>
+                          <input type="number" min={0} className="admin-input w-full" value={d.preco_pix ?? ""} onChange={(e) => upd({ preco_pix: e.target.value ? Number(e.target.value) : null })} />
+                        </div>
+                        <div>
+                          <Lbl>Preço cartão (R$)</Lbl>
+                          <input type="number" min={0} className="admin-input w-full" value={d.preco_cartao ?? ""} onChange={(e) => upd({ preco_cartao: e.target.value ? Number(e.target.value) : null })} />
+                        </div>
+                      </div>
+                      {dispOver && (
+                        <p className="mt-2 text-[11px] text-amber-300">Vagas disponíveis não pode passar do total da turma.</p>
+                      )}
+                      <div className="mt-3 flex justify-end">
+                        <button className="admin-btn-ghost gap-1 text-[12px] hover:!bg-rose-500/10 hover:!text-rose-300" onClick={async () => { if (!confirm("Remover esta data?")) return; await deleteData(d.id); qc.invalidateQueries({ queryKey: ["admin", "datas", id] }); }}>
+                          <Trash2 className="h-3.5 w-3.5" /> Remover data
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </AdminSection>
         </TabsContent>
-
         <TabsContent value="comercial" className="mt-6 space-y-6">
           <AdminSection titulo="Preço & parcelamento">
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <AdminField label="Moeda">
+
                 <select className="admin-input" value={form.moeda ?? "BRL"} onChange={(e) => setF({ moeda: e.target.value })}>
                   <option value="BRL">BRL</option>
                   <option value="USD">USD</option>
@@ -564,3 +634,61 @@ function ExpedicaoEdit() {
     </div>
   );
 }
+
+function CapaEditor({
+  capaUrl,
+  onUpload,
+  onRemove,
+}: {
+  capaUrl: string | null;
+  onUpload: (file: File) => Promise<void> | void;
+  onRemove?: () => Promise<void> | void;
+}) {
+  const inputId = "capa-upload-input";
+  if (capaUrl) {
+    return (
+      <div className="relative group">
+        <img src={capaUrl} alt="Capa da expedição" className="aspect-[4/3] w-full rounded-md object-cover ring-1 ring-[color:var(--admin-borda)]" />
+        <div className="absolute inset-0 flex items-end justify-between gap-2 rounded-md bg-gradient-to-t from-black/70 via-black/0 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
+          <label htmlFor={inputId} className="admin-btn-primary cursor-pointer text-[11px] px-2 py-1.5">
+            Trocar capa
+          </label>
+          {onRemove && (
+            <button className="admin-btn-ghost text-[11px] px-2 py-1.5 bg-black/40 hover:!bg-rose-500/30" onClick={() => onRemove()}>
+              Remover
+            </button>
+          )}
+        </div>
+        <input
+          id={inputId}
+          type="file"
+          accept="image/*"
+          className="sr-only"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) onUpload(f);
+            e.target.value = "";
+          }}
+        />
+      </div>
+    );
+  }
+  return (
+    <label htmlFor={inputId} className="flex aspect-[4/3] w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-md border border-dashed border-[color:var(--admin-borda-strong)] bg-[color:var(--admin-petroleo)]/40 px-4 text-center transition hover:border-[color:var(--admin-dourado)]/60 hover:bg-[color:var(--admin-petroleo)]/60">
+      <span className="text-xs font-medium text-[color:var(--admin-cinza-1)]">Clique para enviar a capa</span>
+      <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">JPG, PNG ou WebP</span>
+      <input
+        id={inputId}
+        type="file"
+        accept="image/*"
+        className="sr-only"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) onUpload(f);
+          e.target.value = "";
+        }}
+      />
+    </label>
+  );
+}
+
