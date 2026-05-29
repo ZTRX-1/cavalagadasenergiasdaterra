@@ -18,6 +18,9 @@ import {
   type UsuarioInternoRow,
 } from "@/lib/admin/api";
 import { ConfirmDialog } from "@/components/admin/admin-confirm";
+import { AdminPageIntro } from "@/components/admin/admin-page-intro";
+import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
+import { useCan } from "@/hooks/use-permissions";
 
 export const Route = createFileRoute("/admin/_authenticated/configuracoes")({
   component: ConfiguracoesPage,
@@ -29,6 +32,7 @@ function ConfiguracoesPage() {
   const { data: usuarios = [] } = useQuery({ queryKey: ["admin", "usuarios-internos"], queryFn: listUsuariosInternos });
 
   const [aba, setAba] = useState<"empresa" | "usuarios">("empresa");
+  const { canEdit } = useCan("configuracoes");
 
   return (
     <div>
@@ -37,6 +41,12 @@ function ConfiguracoesPage() {
         title="Configurações"
         description="Dados da empresa, canais de comunicação, identidade visual e equipe interna."
       />
+
+      {!canEdit ? <EmDesenvolvimentoBanner /> : null}
+      <AdminPageIntro>
+        <strong className="text-[color:var(--admin-cinza-1)]">Configurações globais do sistema.</strong> Em <em>Empresa</em>: nome, CNPJ, endereço, WhatsApp, Instagram, logo e cor de destaque — esses dados alimentam o rodapé do site, e-mails de confirmação e contratos. Em <em>Equipe interna</em>: cria novos usuários, define o cargo (Super Administrador, CEO, Sócia, Operador) e o que cada um pode ver ou editar.
+      </AdminPageIntro>
+
 
       <div className="mb-4 flex gap-2 border-b border-[color:var(--admin-borda)]">
         <button onClick={() => setAba("empresa")} className={tabClass(aba === "empresa")}>

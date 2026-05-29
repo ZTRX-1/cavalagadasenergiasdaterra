@@ -17,6 +17,9 @@ import {
   listExpedicoes,
   type ParticipanteRow,
 } from "@/lib/admin/api";
+import { AdminPageIntro } from "@/components/admin/admin-page-intro";
+import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
+import { useCan } from "@/hooks/use-permissions";
 
 export const Route = createFileRoute("/admin/_authenticated/participantes")({
   component: ParticipantesPage,
@@ -38,6 +41,7 @@ function ParticipantesPage() {
   const [edit, setEdit] = useState<ParticipanteRow | null>(null);
   const [del, setDel] = useState<ParticipanteRow | null>(null);
   const refresh = () => qc.invalidateQueries({ queryKey: ["admin", "participantes"] });
+  const { canEdit } = useCan("participantes");
 
   const delMut = useMutation({
     mutationFn: (id: string) => deleteParticipante(id),
@@ -52,6 +56,12 @@ function ParticipantesPage() {
         description="Ficha completa de cavaleiros e amazonas, vinculados às expedições."
         actions={<button className="admin-btn-primary" onClick={() => setNovo(true)}><Plus className="h-4 w-4" /> Novo participante</button>}
       />
+
+      {!canEdit ? <EmDesenvolvimentoBanner /> : null}
+      <AdminPageIntro>
+        <strong className="text-[color:var(--admin-cinza-1)]">Lista de viajantes confirmados.</strong> Aqui ficam todos os cavaleiros e amazonas que vão participar de cada expedição. Use para montar a lista que vai pro guia em campo, conferir restrições alimentares, peso (pra escolher o cavalo certo) e contatos de emergência.
+      </AdminPageIntro>
+
 
       {isLoading ? (
         <div className="admin-card h-40 animate-pulse" />

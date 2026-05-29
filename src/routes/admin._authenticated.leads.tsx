@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { Plus, Sparkles, Trash2 } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Plus, Sparkles, Trash2, Filter, X } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminEmpty } from "@/components/admin/admin-empty";
@@ -9,6 +9,9 @@ import { StatusBadge } from "@/components/admin/admin-status-badge";
 import { ConfirmDialog } from "@/components/admin/admin-confirm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AdminField } from "@/components/admin/admin-section";
+import { AdminPageIntro } from "@/components/admin/admin-page-intro";
+import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
+import { useCan } from "@/hooks/use-permissions";
 import {
   listLeads,
   createLead,
@@ -28,6 +31,10 @@ function LeadsPage() {
   const { data: leads = [], isLoading } = useQuery({ queryKey: ["admin", "leads"], queryFn: listLeads });
   const [novo, setNovo] = useState(false);
   const [del, setDel] = useState<LeadRow | null>(null);
+  const [fOrigem, setFOrigem] = useState<string>("todas");
+  const [fExpedicao, setFExpedicao] = useState<string>("todas");
+  const [fBusca, setFBusca] = useState<string>("");
+  const { canEdit } = useCan("leads");
   const refresh = () => qc.invalidateQueries({ queryKey: ["admin", "leads"] });
 
   const moveMut = useMutation({
@@ -41,8 +48,36 @@ function LeadsPage() {
     onSuccess: () => { toast.success("Excluído"); setDel(null); refresh(); },
   });
 
+  // Listas únicas para os filtros
+  const origensDisponiveis = useMemo(() => {
+    const set = new Set<string>();
+    leads.forEach((l) => l.origem && set.add(l.origem));
+    return Array.from(set);
+  }, [leads]);
+  const expedicoesDisponiveis = useMemo(() => {
+    const set = new Set<string>();
+    leads.forEach((l) => l.expedicao_interesse && set.add(l.expedicao_interesse));
+    return Array.from(set);
+  }, [leads]);
+
+  const leadsFiltrados = useMemo(() => {
+    const q = fBusca.trim().toLowerCase();
+    return leads.filter((l) => {
+      if (fOrigem !== "todas" && l.origem !== fOrigem) return false;
+      if (fExpedicao !== "todas" && l.expedicao_interesse !== fExpedicao) return false;
+      if (q) {
+        const hay = `${l.nome ?? ""} ${l.email ?? ""} ${l.telefone ?? ""} ${l.protocolo ?? ""}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [leads, fOrigem, fExpedicao, fBusca]);
+
+  const filtrosAtivos = fOrigem !== "todas" || fExpedicao !== "todas" || fBusca.trim().length > 0;
+  const limparFiltros = () => { setFOrigem("todas"); setFExpedicao("todas"); setFBusca(""); };
+
   const grouped: Record<LeadStatusId, LeadRow[]> = LEAD_STATUS.reduce((acc, s) => {
-    acc[s.id] = leads.filter((l) => l.status === s.id);
+    acc[s.id] = leadsFiltrados.filter((l) => l.status === s.id);
     return acc;
   }, {} as Record<LeadStatusId, LeadRow[]>);
 
@@ -59,6 +94,54 @@ function LeadsPage() {
         }
       />
 
+      {!canEdit ? <EmDesenvolvimentoBanner /> : null}
+      <AdminPageIntro>
+        <strong className="text-[color:var(--admin-cinza-1)]">Pipeline comercial.</strong> Cada contato que chega por WhatsApp, Instagram, indicação ou cadastro manual aparece aqui. Use os filtros para focar em uma origem específica, em uma expedição, ou buscar por nome/protocolo. Mude o status arrastando o card pelos botões "→" pra acompanhar a jornada até o fechamento.
+      </AdminPageIntro>
+
+      {/* Filtros */}
+      <div className="admin-card mb-4 p-4">
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="flex flex-1 min-w-[200px] items-center gap-2">
+            <Filter className="h-4 w-4 text-[color:var(--admin-cinza-3)]" strokeWidth={1.8} />
+            <input
+              className="admin-input flex-1"
+              placeholder="Buscar por nome, e-mail, telefone ou protocolo…"
+              value={fBusca}
+              onChange={(e) => setFBusca(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="block text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)] mb-1">Origem</label>
+            <select className="admin-input" value={fOrigem} onChange={(e) => setFOrigem(e.target.value)}>
+              <option value="todas">Todas</option>
+              {origensDisponiveis.map((o) => (
+                <option key={o} value={o}>{o.charAt(0).toUpperCase() + o.slice(1)}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)] mb-1">Expedição de interesse</label>
+            <select className="admin-input min-w-[200px]" value={fExpedicao} onChange={(e) => setFExpedicao(e.target.value)}>
+              <option value="todas">Todas</option>
+              {expedicoesDisponiveis.map((e) => (
+                <option key={e} value={e}>{e}</option>
+              ))}
+            </select>
+          </div>
+          {filtrosAtivos ? (
+            <button className="admin-btn-ghost px-3 py-2 text-[12px]" onClick={limparFiltros}>
+              <X className="h-3.5 w-3.5" /> Limpar
+            </button>
+          ) : null}
+        </div>
+        {filtrosAtivos ? (
+          <p className="mt-3 text-[11px] text-[color:var(--admin-cinza-3)]">
+            Mostrando <strong className="text-[color:var(--admin-cinza-1)]">{leadsFiltrados.length}</strong> de {leads.length} leads
+          </p>
+        ) : null}
+      </div>
+
       {isLoading ? (
         <div className="admin-card h-40 animate-pulse" />
       ) : leads.length === 0 ? (
@@ -67,6 +150,13 @@ function LeadsPage() {
           titulo="Sem leads ainda"
           descricao="Os leads recebidos pelos formulários e pré-reservas aparecerão aqui automaticamente."
           acao={<button className="admin-btn-primary" onClick={() => setNovo(true)}><Plus className="h-4 w-4" /> Adicionar manualmente</button>}
+        />
+      ) : leadsFiltrados.length === 0 ? (
+        <AdminEmpty
+          icon={Filter}
+          titulo="Nenhum lead corresponde aos filtros"
+          descricao="Ajuste os filtros acima ou limpe para ver todos os leads novamente."
+          acao={<button className="admin-btn-ghost" onClick={limparFiltros}><X className="h-4 w-4" /> Limpar filtros</button>}
         />
       ) : (
         <div className="grid gap-3 overflow-x-auto pb-4" style={{ gridTemplateColumns: `repeat(${LEAD_STATUS.length}, minmax(260px, 1fr))` }}>

@@ -17,6 +17,9 @@ import {
   TIPOS_DOCUMENTO,
   type DocumentoRow,
 } from "@/lib/admin/api";
+import { AdminPageIntro } from "@/components/admin/admin-page-intro";
+import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
+import { useCan } from "@/hooks/use-permissions";
 
 export const Route = createFileRoute("/admin/_authenticated/documentos")({
   component: DocumentosPage,
@@ -120,6 +123,7 @@ function DocumentosPage() {
   }, [docs, aba, filtroExp, filtroPart]);
 
   const abaAtual = ABAS.find((a) => a.id === aba)!;
+  const { canEdit } = useCan("documentos");
 
   return (
     <div>
@@ -128,6 +132,12 @@ function DocumentosPage() {
         title="Documentos"
         description="Três escopos isolados: jurídico da empresa, operacional por expedição e individual por participante."
       />
+
+      {!canEdit ? <EmDesenvolvimentoBanner /> : null}
+      <AdminPageIntro>
+        <strong className="text-[color:var(--admin-cinza-1)]">Central de documentos.</strong> Aqui você armazena contratos-modelo, termos e políticas da empresa (escopo <em>institucional</em>), PDFs específicos de cada viagem (escopo <em>operacional</em>) e documentos pessoais de cada participante (RG, exames, comprovantes). Cada escopo aparece em um lugar diferente: institucionais no rodapé do site e no checkout, operacionais na expedição, e participantes na ficha individual.
+      </AdminPageIntro>
+
 
       {/* Tabs */}
       <div className="mb-4 flex flex-wrap gap-1 border-b border-[color:var(--admin-borda)]">
