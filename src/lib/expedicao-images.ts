@@ -138,6 +138,16 @@ import jeri06 from "@/assets/fotos/jericoacoara/06.jpg";
 import jeri07 from "@/assets/fotos/jericoacoara/07.jpg";
 import jeri08 from "@/assets/fotos/jericoacoara/08.jpg";
 
+// BERÇO DO MANGALARGA MARCHADOR — 8 fotos curadas (Cruzília/MG)
+import berco01 from "@/assets/fotos/berco-do-marchador/01.jpg";
+import berco02 from "@/assets/fotos/berco-do-marchador/02.jpg";
+import berco03 from "@/assets/fotos/berco-do-marchador/03.jpg";
+import berco04 from "@/assets/fotos/berco-do-marchador/04.jpg";
+import berco05 from "@/assets/fotos/berco-do-marchador/05.jpg";
+import berco06 from "@/assets/fotos/berco-do-marchador/06.jpg";
+import berco07 from "@/assets/fotos/berco-do-marchador/07.jpg";
+import berco08 from "@/assets/fotos/berco-do-marchador/08.jpg";
+
 
 // ============================================================
 // MAPA DE CHAVES (compat com strings vindas do banco)
@@ -158,7 +168,7 @@ export const IMAGES: Record<string, string> = {
 export const SLUG_IMAGE: Record<string, string> = {
   "serra-da-canastra": canNew01,     // cavaleira no rio — capa da expedição
   "mantiqueira-refugio": manNew01,   // tropa em movimento na estrada de terra
-  "berco-do-marchador": chapada,     // placeholder — imagens reais de Cruzília virão
+  "berco-do-marchador": berco01,     // cavaleiros no berço do Marchador — Cruzília/MG
   "jericoacoara": jeri01,            // cavaleira ao nascer do sol nas dunas
   "peru-vale-do-colca": peruNew01,   // cavaleiros nos cânions do Peru — capa da expedição
   "patagonia-gaucha": patNew01,      // tropa nas montanhas nevadas da Patagônia
@@ -173,7 +183,7 @@ export const SLUG_IMAGE: Record<string, string> = {
 export const SLUG_GALERIA: Record<string, string[]> = {
   "serra-da-canastra": [canNew01, canNew02, canNew03, canNew04, canNew05, canNew06, canNew07, canNew08],
   "mantiqueira-refugio": [manNew01, manNew02, manNew03, manNew04, manNew05, manNew06, manNew07, manNew08],
-  "berco-do-marchador": [],
+  "berco-do-marchador": [berco01, berco02, berco03, berco04, berco05, berco06, berco07, berco08],
   "peru-vale-do-colca": [peruNew01, peruNew02, peruNew03, peruNew04, peruNew05, peruNew06, peruNew07, peruNew08],
   "patagonia-gaucha": [patNew01, patNew02, patNew03, patNew04, patNew05, patNew06, patNew07, patNew08],
   "jericoacoara": [],
@@ -285,6 +295,16 @@ export const SLUG_NARRATIVA: Record<string, CenaNarrativa[]> = {
     { src: elasNew06, eyebrow: "", titulo: "A melhor parte do caminho é encontrar mulheres que vibram na mesma frequência que você." },
     { src: elasNew07, eyebrow: "", titulo: "Entre montanhas, silêncio e cavalos, muitas mulheres reencontram a própria essência." },
     { src: elasNew08, eyebrow: "", titulo: "Algumas viagens terminam. Outras permanecem para sempre dentro de uma mulher." },
+  ],
+  "berco-do-marchador": [
+    { src: berco01, eyebrow: "", titulo: "No berço do Mangalarga Marchador, cada caminho revela a essência de Minas Gerais e a paixão que une cavaleiros e amazonas de todo o Brasil." },
+    { src: berco02, eyebrow: "", titulo: "Fazendas centenárias, paisagens preservadas e histórias que ajudaram a construir a tradição equestre brasileira." },
+    { src: berco03, eyebrow: "", titulo: "Casarões históricos e cenários autênticos mantêm viva a memória de uma das regiões mais emblemáticas do universo do cavalo." },
+    { src: berco04, eyebrow: "", titulo: "Entre campos abertos e horizontes sem pressa, a conexão com a natureza acontece de forma genuína." },
+    { src: berco05, eyebrow: "", titulo: "Cruzília abriga o Museu Nacional do Mangalarga Marchador, um encontro com a história da raça que conquistou o Brasil." },
+    { src: berco06, eyebrow: "", titulo: "Mais do que uma expedição, uma oportunidade de compartilhar momentos, histórias e a paixão pelos cavalos." },
+    { src: berco07, eyebrow: "", titulo: "Patrimônio, hospitalidade e paisagens inesquecíveis se encontram em lugares que parecem ter parado no tempo." },
+    { src: berco08, eyebrow: "", titulo: "Ao final da jornada, fica a certeza de que algumas experiências permanecem conosco muito depois da viagem terminar." },
   ],
 
 };
