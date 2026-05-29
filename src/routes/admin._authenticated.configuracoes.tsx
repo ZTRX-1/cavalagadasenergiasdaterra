@@ -14,10 +14,11 @@ import {
   alternarAtivoUsuario,
   excluirUsuarioInterno,
   CARGOS_EQUIPE,
+  ROLE_LABELS,
   type AppRole,
   type UsuarioInternoRow,
 } from "@/lib/admin/api";
-import { ConfirmDialog } from "@/components/admin/admin-confirm";
+
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
 import { useCan } from "@/hooks/use-permissions";
@@ -180,10 +181,13 @@ function UsuariosPanel({ usuarios, onChange }: { usuarios: UsuarioInternoRow[]; 
   });
 
   const delMut = useMutation({
-    mutationFn: (user_id: string) => excluirUsuarioInterno(user_id),
-    onSuccess: () => { toast.success("Usuário excluído"); setConfirmDel(null); onChange(); },
+    mutationFn: ({ user_id, master_password }: { user_id: string; master_password?: string }) =>
+      excluirUsuarioInterno(user_id, master_password),
+    onSuccess: () => { toast.success("Usuário excluído"); setConfirmDel(null); setMasterPwd(""); onChange(); },
     onError: (e) => toast.error((e as Error).message),
   });
+
+  const [masterPwd, setMasterPwd] = useState("");
 
   return (
     <div className="space-y-4">
@@ -213,8 +217,10 @@ function UsuariosPanel({ usuarios, onChange }: { usuarios: UsuarioInternoRow[]; 
             </Field>
             <Field label="Papel no sistema">
               <select className="admin-input w-full" value={novo.role} onChange={(e) => setNovo({ ...novo, role: e.target.value as AppRole })}>
-                <option value="operador">Operador (acesso operacional)</option>
-                <option value="admin">Administrador (acesso total)</option>
+                <option value="operador">{ROLE_LABELS.operador} — custom por módulo</option>
+                <option value="socia">{ROLE_LABELS.socia} — só edita Expedições</option>
+                <option value="ceo">{ROLE_LABELS.ceo} — acesso total</option>
+                <option value="admin">{ROLE_LABELS.admin} — acesso total</option>
               </select>
             </Field>
           </div>
@@ -272,14 +278,22 @@ function UsuariosPanel({ usuarios, onChange }: { usuarios: UsuarioInternoRow[]; 
                   </select>
                 </td>
                 <td className="px-3 py-4">
-                  <select
-                    className="admin-input h-8 text-[12px]"
-                    value={u.role ?? "operador"}
-                    onChange={(e) => roleMut.mutate({ user_id: u.user_id, role: e.target.value as AppRole })}
-                  >
-                    <option value="operador">Operador</option>
-                    <option value="admin">Administrador</option>
-                  </select>
+                  {u.role === "superadmin" ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-md bg-amber-500/15 px-2 py-1 text-[11px] text-amber-300">
+                      <Shield className="h-3 w-3" /> Super Administrador
+                    </span>
+                  ) : (
+                    <select
+                      className="admin-input h-8 text-[12px]"
+                      value={u.role ?? "operador"}
+                      onChange={(e) => roleMut.mutate({ user_id: u.user_id, role: e.target.value as AppRole })}
+                    >
+                      <option value="operador">Operador</option>
+                      <option value="socia">Sócia</option>
+                      <option value="ceo">CEO</option>
+                      <option value="admin">Administrador</option>
+                    </select>
+                  )}
                 </td>
                 <td className="px-3 py-4">
                   <span className={`inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] ${u.ativo ? "bg-emerald-500/15 text-emerald-300" : "bg-rose-500/15 text-rose-300"}`}>
@@ -291,10 +305,14 @@ function UsuariosPanel({ usuarios, onChange }: { usuarios: UsuarioInternoRow[]; 
                     <button className="admin-btn-ghost px-2 py-1.5" title="Redefinir senha" onClick={() => setSenhaModal({ user_id: u.user_id, nome: u.nome })}>
                       <KeyRound className="h-3.5 w-3.5" />
                     </button>
-                    <button className="admin-btn-ghost px-2 py-1.5" title={u.ativo ? "Desativar" : "Reativar"} onClick={() => ativoMut.mutate({ user_id: u.user_id, ativo: !u.ativo })}>
+                    <button className="admin-btn-ghost px-2 py-1.5" title={u.ativo ? "Desativar" : "Reativar"} onClick={() => ativoMut.mutate({ user_id: u.user_id, ativo: !u.ativo })} disabled={u.role === "superadmin"}>
                       <Power className="h-3.5 w-3.5" />
                     </button>
-                    <button className="admin-btn-ghost px-2 py-1.5 hover:!bg-rose-500/10 hover:!text-rose-300" title="Excluir" onClick={() => setConfirmDel(u)}>
+                    <button
+                      className="admin-btn-ghost px-2 py-1.5 hover:!bg-rose-500/10 hover:!text-rose-300"
+                      title={u.role === "superadmin" ? "Exclusão exige senha-mestre" : "Excluir"}
+                      onClick={() => { setMasterPwd(""); setConfirmDel(u); }}
+                    >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   </div>
@@ -324,15 +342,43 @@ function UsuariosPanel({ usuarios, onChange }: { usuarios: UsuarioInternoRow[]; 
         </div>
       )}
 
-      <ConfirmDialog
-        open={!!confirmDel}
-        onOpenChange={(v) => !v && setConfirmDel(null)}
-        title="Excluir usuário"
-        description={`Tem certeza que deseja excluir "${confirmDel?.nome ?? confirmDel?.user_id ?? ""}"? Esta ação não pode ser desfeita.`}
-        confirmLabel="Excluir"
-        destructive
-        onConfirm={() => { if (confirmDel) delMut.mutate(confirmDel.user_id); }}
-      />
+      {confirmDel && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setConfirmDel(null)}>
+          <div className="admin-card w-full max-w-md space-y-3" onClick={(e) => e.stopPropagation()}>
+            <h3 className="font-display text-[15px] text-rose-300">Excluir usuário</h3>
+            <p className="text-[13px] text-[color:var(--admin-cinza-2)] leading-relaxed">
+              Tem certeza que deseja excluir <strong>{confirmDel.nome ?? confirmDel.user_id}</strong>? Esta ação não pode ser desfeita.
+            </p>
+            {confirmDel.role === "superadmin" && (
+              <div className="space-y-2 rounded-lg border border-amber-400/30 bg-amber-400/5 p-3">
+                <p className="text-[12px] text-amber-200">
+                  Este é o usuário <strong>Super Administrador</strong>. A exclusão exige a senha-mestre.
+                </p>
+                <input
+                  type="password"
+                  className="admin-input w-full font-mono"
+                  placeholder="Senha-mestre"
+                  value={masterPwd}
+                  onChange={(e) => setMasterPwd(e.target.value)}
+                />
+              </div>
+            )}
+            <div className="flex justify-end gap-2 pt-1">
+              <button className="admin-btn-ghost" onClick={() => setConfirmDel(null)}>Cancelar</button>
+              <button
+                className="admin-btn-primary !bg-rose-500/90 hover:!bg-rose-500"
+                disabled={delMut.isPending || (confirmDel.role === "superadmin" && masterPwd.length < 6)}
+                onClick={() => delMut.mutate({
+                  user_id: confirmDel.user_id,
+                  master_password: confirmDel.role === "superadmin" ? masterPwd : undefined,
+                })}
+              >
+                <Trash2 className="h-4 w-4" /> Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
