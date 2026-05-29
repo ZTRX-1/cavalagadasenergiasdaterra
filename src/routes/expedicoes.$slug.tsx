@@ -42,11 +42,11 @@ function DetalhesExpedicao() {
   const { slug } = Route.useParams();
   const { data } = useSuspenseQuery(qo(slug));
   if (!data) return null;
-  const { expedicao, datas } = data;
+  const { expedicao, datas, assets, capa_url } = data;
   const publicSlug = getPublicExpedicaoSlug(expedicao.slug);
-  const heroImg = getExpedicaoImage(expedicao.slug);
-  const galeria = getExpedicaoGaleria(expedicao.slug);
-  const narrativa = getExpedicaoNarrativa(expedicao.slug);
+  const heroImg = getExpedicaoImage(expedicao.slug, { capaUrl: capa_url, assets });
+  const galeria = getExpedicaoGaleria(expedicao.slug, assets);
+  const narrativa = getExpedicaoNarrativa(expedicao.slug, assets);
   const whatsappMsg = `Olá! Gostaria de reservar minha vaga na expedição "${expedicao.nome}".`;
   const whatsappUrl = buildContactWhatsappUrl(whatsappMsg);
   const isJeri = expedicao.slug === "jericoacoara";
