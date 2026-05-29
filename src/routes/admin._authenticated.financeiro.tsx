@@ -9,6 +9,9 @@ import { AdminSection, AdminField } from "@/components/admin/admin-section";
 import { StatusBadge } from "@/components/admin/admin-status-badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { listReservas, updatePagamento, type ReservaRow } from "@/lib/admin/api";
+import { AdminPageIntro } from "@/components/admin/admin-page-intro";
+import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
+import { useCan } from "@/hooks/use-permissions";
 
 export const Route = createFileRoute("/admin/_authenticated/financeiro")({
   component: FinanceiroPage,
@@ -18,6 +21,7 @@ function FinanceiroPage() {
   const qc = useQueryClient();
   const { data: reservas = [], isLoading } = useQuery({ queryKey: ["admin", "reservas"], queryFn: listReservas });
   const [edit, setEdit] = useState<ReservaRow | null>(null);
+  const { canEdit } = useCan("financeiro");
 
   const confirmados = reservas.filter((r) => r.status_pagamento === "confirmado");
   const pendentes = reservas.filter((r) => r.status_pagamento !== "confirmado");
@@ -37,6 +41,12 @@ function FinanceiroPage() {
   return (
     <div className="space-y-6">
       <AdminPageHeader eyebrow="Operação" title="Financeiro" description="Acompanhe pagamentos, faturamento e expedições mais lucrativas." />
+
+      {!canEdit ? <EmDesenvolvimentoBanner /> : null}
+      <AdminPageIntro>
+        <strong className="text-[color:var(--admin-cinza-1)]">Controle financeiro.</strong> Hoje você vê o que entrou em <em>reservas pagas</em> (confirmado), o que está previsto e o que está pendente. Em breve: aba de <strong>Despesas</strong> (cavalos, alimentação, equipe, logística…), <strong>Contas a pagar</strong>, <strong>Fluxo de caixa</strong> e <strong>DRE por expedição</strong> (lucro real de cada viagem). Tudo com filtro por período.
+      </AdminPageIntro>
+
 
       <div className="grid gap-4 md:grid-cols-3">
         <KPI label="Faturamento confirmado" value={`R$ ${totalConfirmado.toLocaleString("pt-BR")}`} accent />
