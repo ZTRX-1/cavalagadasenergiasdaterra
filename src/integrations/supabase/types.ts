@@ -732,6 +732,54 @@ export type Database = {
           },
         ]
       }
+      superadmin_protection: {
+        Row: {
+          id: boolean
+          password_hash: string | null
+          updated_at: string
+        }
+        Insert: {
+          id?: boolean
+          password_hash?: string | null
+          updated_at?: string
+        }
+        Update: {
+          id?: boolean
+          password_hash?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_module_permissions: {
+        Row: {
+          created_at: string
+          id: string
+          modulo: string
+          pode_editar: boolean
+          pode_ver: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          modulo: string
+          pode_editar?: boolean
+          pode_ver?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          modulo?: string
+          pode_editar?: boolean
+          pode_ver?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -760,6 +808,7 @@ export type Database = {
     Functions: {
       gerar_protocolo: { Args: never; Returns: string }
       gerar_protocolo_lead: { Args: never; Returns: string }
+      get_primary_role: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
