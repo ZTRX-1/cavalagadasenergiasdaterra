@@ -23,6 +23,7 @@ import { formatDateRange } from "@/lib/format";
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
 import { useCan } from "@/hooks/use-permissions";
+import { DashboardAnalytics } from "@/components/admin/dashboard-analytics";
 
 export const Route = createFileRoute("/admin/_authenticated/")({
   component: DashboardPage,
