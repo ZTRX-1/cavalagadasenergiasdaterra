@@ -18,7 +18,7 @@ import {
   type AppRole,
   type UsuarioInternoRow,
 } from "@/lib/admin/api";
-import { ConfirmDialog } from "@/components/admin/admin-confirm";
+
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
 import { useCan } from "@/hooks/use-permissions";
