@@ -577,9 +577,11 @@ function ExpedicaoEdit() {
             )}
           </AdminSection>
         </TabsContent>
-
-
+        <TabsContent value="comercial" className="mt-6 space-y-6">
+          <AdminSection titulo="Preço & parcelamento">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <AdminField label="Moeda">
+
                 <select className="admin-input" value={form.moeda ?? "BRL"} onChange={(e) => setF({ moeda: e.target.value })}>
                   <option value="BRL">BRL</option>
                   <option value="USD">USD</option>
