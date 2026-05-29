@@ -10,15 +10,15 @@ export function AdminSection({
   actions?: React.ReactNode;
 }) {
   return (
-    <section className="admin-card p-6 md:p-7">
-      <header className="mb-5 flex items-start justify-between gap-4">
-        <div>
+    <section className="admin-card p-6 md:p-8 lg:p-9">
+      <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+        <div className="min-w-0">
           <h2 className="font-display text-xl text-[color:var(--admin-cinza-1)]">{titulo}</h2>
           {descricao ? (
-            <p className="mt-1 text-xs text-[color:var(--admin-cinza-3)]">{descricao}</p>
+            <p className="mt-1.5 text-[12px] leading-relaxed text-[color:var(--admin-cinza-3)] md:text-xs">{descricao}</p>
           ) : null}
         </div>
-        {actions}
+        {actions ? <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div> : null}
       </header>
       <div className="space-y-4">{children}</div>
     </section>
