@@ -383,7 +383,7 @@ function ExpedicaoEdit() {
             return (
               <AdminSection
                 titulo="Fotos da expedição"
-                descricao="Padrão: 8 fotos com uma legenda emocional em cada uma. Você pode ter mais ou menos. A primeira foto enviada vira automaticamente a capa."
+                descricao="Estas são as fotos do carrossel da página pública. A primeira é também a capa que aparece no topo da página e no card de listagem. Você pode reordenar, trocar legenda ou substituir qualquer foto. Padrão: 8 fotos com uma legenda emocional em cada uma."
                 actions={
                   <span className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${ok ? "bg-emerald-500/15 text-emerald-300" : "bg-amber-500/15 text-amber-300"}`}>
                     {imagens.length} / 8 fotos
