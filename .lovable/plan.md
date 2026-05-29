@@ -1,74 +1,44 @@
+
 ## Diagnóstico
 
-O painel admin **já tem** um editor de expedições em `/admin/expedicoes` e `/admin/expedicoes/:id` com abas Geral, Mídia, Datas & Vagas, Comercial, Publicação. Ele já permite criar, duplicar, arquivar, publicar e editar a maioria dos campos. O que falta para a dona conseguir gerenciar tudo sozinha:
+1. **Editar não abre nada.** Os arquivos `admin._authenticated.expedicoes.tsx` (lista) e `admin._authenticated.expedicoes.$id.tsx` (editor) compartilham o segmento `/admin/expedicoes`, então o TanStack Router trata o arquivo da lista como **layout pai** do editor. Como a lista não renderiza `<Outlet />`, clicar no lápis muda a URL mas continua mostrando a lista. O mesmo afeta "Criar nova": a criação funciona no banco, navega para `/admin/expedicoes/:id`, mas o editor nunca aparece.
 
-1. **Roteiro dia-a-dia não é editável** pela interface (o campo existe no banco como `roteiro` jsonb, mas a aba não existe no editor).
-2. **A narrativa visual (carrossel com legendas emocionais)** de cada expedição está **codada à mão** em `src/lib/expedicao-images.ts`. A cliente não consegue trocar fotos, reordenar nem editar legendas sem programador.
-3. **Galeria editorial e imagem de capa** também caem no fallback hardcoded de `expedicao-images.ts` quando o banco não tem assets — então hoje, mesmo subindo foto pela aba Mídia, ela não aparece na página pública porque a página lê do arquivo estático.
-4. **Legendas por foto** não existem na aba Mídia (o campo `titulo` em `expedicao_assets` está ocioso).
-5. **Card da lista pública** (`/expedicoes`) também usa o mapeamento hardcoded em vez da capa salva no banco.
+2. **Capas quebradas na lista.** A lista usa `getExpedicaoImage(slug)` que só conhece slugs hard-coded. Para expedições novas (slugs desconhecidos) retorna vazio → ícone de imagem quebrada. Já existe `_capa` resolvido a partir dos assets do banco, mas é usado só como fallback secundário.
 
-Resultado: hoje a cliente consegue editar nome/preço/inclui/datas, mas **não consegue trocar fotos, legendas nem roteiro** sem mexer em código.
+3. **Preview da página pública.** O botão "Ver página pública" precisa existir tanto na lista quanto dentro do editor, e deve abrir em nova aba apontando para `/expedicoes/{slug}`.
 
-## O que vamos construir
+## O que será feito
 
-### 1. Nova aba "Roteiro" no editor da expedição
-Em `/admin/expedicoes/:id`, adicionar aba **Roteiro** entre "Geral" e "Mídia". Interface minimalista:
-- Lista de dias arrastáveis (Dia 1, Dia 2, …)
-- Cada dia: campo título + campo descrição (textarea)
-- Botões: **+ Adicionar dia**, subir, descer, remover
-- Salva no campo `roteiro` jsonb que já existe na tabela `expedicoes`
+### 1. Corrigir a rota (causa raiz do "nada acontece")
+Renomear `src/routes/admin._authenticated.expedicoes.tsx` → `src/routes/admin._authenticated.expedicoes.index.tsx`.
 
-### 2. Mídia com legendas e narrativa editorial
-Reformular a aba **Mídia** para virar o "carrossel narrativo" editável:
-- Cada foto enviada ganha campo **legenda** (texto emocional que aparece sob a foto na página pública) — usa o campo `titulo` já existente em `expedicao_assets`.
-- Reordenação por setas (já existe) + indicador visual de ordem.
-- Marcar capa (já existe).
-- Bloco separado dentro da aba para "Imagem de capa alternativa" (opcional, URL externa) — já existe via `capa_url`.
+Com isso a lista vira rota irmã do editor (e não pai), eliminando o conflito de layout. Clicar no lápis passa a montar de fato o editor. Nenhuma alteração de URL pública — `/admin/expedicoes` e `/admin/expedicoes/:id` continuam funcionando.
 
-### 3. Página pública lê do banco
-Rewire as 3 funções de `src/lib/expedicao-images.ts` para, **quando a expedição tiver assets no banco, usar eles**:
-- `getExpedicaoImage(slug)` → capa do banco (asset `is_capa=true` ou `capa_url`), fallback estático só se não houver nada.
-- `getExpedicaoGaleria(slug)` → todos os assets `tipo='imagem'` ordenados.
-- `getExpedicaoNarrativa(slug)` → assets com `titulo` preenchido viram cenas narrativas (foto + legenda).
+### 2. Corrigir capas na lista
+Em `admin._authenticated.expedicoes.index.tsx`, trocar a prioridade da resolução de capa para: `_capa` (banco) → `getExpedicaoImage(slug)` (hardcoded legado) → placeholder neutro com inicial da expedição. Adicionar `onError` no `<img>` para cair no placeholder se a URL do banco quebrar. Isso garante que expedições novas e antigas sempre mostrem algo.
 
-Isso significa: quando a cliente subir fotos novas pelo admin, **elas substituem automaticamente** as hardcoded na página pública. As atuais continuam funcionando como fallback enquanto ninguém editar.
+### 3. Botão "Ver página pública"
+- Na lista: adicionar ícone `ExternalLink` na coluna Ações, abrindo `/expedicoes/{slug}` em nova aba (apenas se `status === "publicado"`; senão fica desabilitado com tooltip "publique para visualizar").
+- No editor: garantir que o botão já existente no header aponte corretamente para `/expedicoes/{slug}` em nova aba (verificar e ajustar se necessário).
 
-### 4. Polimento do editor para uso pela dona
-- Indicador visual no topo de **"o que falta para publicar"** (ex.: "Adicione pelo menos 1 foto", "Defina o preço", "Escreva a descrição curta") com checklist.
-- Botão **"Visualizar página pública"** já existe — mover para o header em destaque.
-- Tooltip/hint discreto em campos críticos (slug, capa).
-- Ajustar o botão "Nova expedição" para abrir um pequeno modal com **nome + marca + país** antes de criar, evitando expedições "Nova expedição" vazias na lista.
+### 4. Modal "Nova expedição" — garantir que abra editável
+A criação já faz `nav({ to: "/admin/expedicoes/$id", params: { id: row.id } })` e cacheia o registro com `qc.setQueryData`. Com a correção #1 isso passa a renderizar o editor de verdade. Validar que `getExpedicao(id)` devolve a linha logo após criar (sem race com RLS) — se necessário, fazer a navegação só depois de `await qc.invalidateQueries` para evitar `notFound` momentâneo.
 
-### 5. Lista pública e cards
-- `/expedicoes` (lista) e `expedicao-card.tsx` passam a usar `capa_url` ou primeiro asset, não o mapeamento hardcoded por slug.
+### 5. Polimento mínimo do editor (sem redesign)
+- Mostrar o nome da expedição e o `StatusBadge` no header do editor (já importado mas não usado em todo lugar — confirmar).
+- Garantir que o botão "Salvar" fique sticky/visível no topo durante scroll longo (ajuste de classe).
+- Mensagem clara quando não há fotos: "Envie ao menos 1 foto na aba Mídia para definir a capa."
 
-## Detalhes técnicos
+## Fora do escopo (mantido como está)
+- Visual geral do admin (cores, tipografia, layout) — só consertos pontuais.
+- Drag-and-drop de fotos/dias (continua com setas ↑↓).
+- Editor rich-text para descrições.
+- i18n do conteúdo editado.
 
-```text
-Arquivos modificados:
-  src/routes/admin._authenticated.expedicoes.$id.tsx   ← +aba Roteiro, +legenda nos assets, +checklist publicação
-  src/routes/admin._authenticated.expedicoes.tsx       ← modal "criar nova" com nome/marca/país
-  src/lib/admin/api.ts                                  ← updateAsset({ titulo }) (adicionar se faltar)
-  src/lib/expedicao-images.ts                          ← funções viram async/aceitam assets do banco
-  src/lib/expedicoes.functions.ts                      ← getExpedicaoBySlug retorna também `assets`
-  src/routes/expedicoes.$slug.tsx                      ← consome assets do banco; fallback estático
-  src/routes/expedicoes.tsx + src/components/expedicao-card.tsx ← capa via DB
+## Arquivos afetados
 
-Tabelas (sem migration — schema já comporta):
-  expedicoes.roteiro (jsonb) — já usado, só falta UI
-  expedicao_assets.titulo (text) — vira "legenda"
-  expedicao_assets.ordem / is_capa — já usados
-```
+- **Rename:** `src/routes/admin._authenticated.expedicoes.tsx` → `src/routes/admin._authenticated.expedicoes.index.tsx`
+- **Edit:** o arquivo renomeado (capas + botão "ver pública" na lista)
+- **Edit:** `src/routes/admin._authenticated.expedicoes.$id.tsx` (polimento de header, link de preview, mensagem de fotos)
 
-Sem mudanças de schema, sem nova migration. Mantém o fallback estático para não quebrar nada enquanto a cliente ainda não editou.
-
-## Estética da interface admin
-
-Manter o design tecnológico/minimalista já em uso (tokens `--admin-*`, cards escuros, dourado discreto). Sem ícones extras desnecessários. Tudo dentro do mesmo padrão das outras abas do painel.
-
-## Fora de escopo
-
-- Drag-and-drop "de verdade" (HTML5 DnD) para reordenar — vamos com setas ↑↓ que já são o padrão da Mídia atual. Posso adicionar DnD depois se a cliente pedir.
-- Internacionalização do conteúdo editado (PT/EN/ES por expedição) — campos hoje são single-language; entrar nisso dobra a UI e exige decisão de produto separada.
-- Editor rich-text (negrito/itálico) — descrições continuam em texto simples, como hoje.
+Nenhuma alteração no banco, RLS ou no site público.
