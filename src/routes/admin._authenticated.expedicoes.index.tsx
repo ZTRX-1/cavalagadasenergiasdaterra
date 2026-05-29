@@ -17,7 +17,7 @@ import {
 } from "@/lib/admin/api";
 import { getExpedicaoImage } from "@/lib/expedicao-images";
 
-export const Route = createFileRoute("/admin/_authenticated/expedicoes")({
+export const Route = createFileRoute("/admin/_authenticated/expedicoes/")({
   component: ExpedicoesPage,
 });
 
