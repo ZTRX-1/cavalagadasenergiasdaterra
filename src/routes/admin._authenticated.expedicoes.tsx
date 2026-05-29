@@ -35,18 +35,26 @@ function ExpedicoesPage() {
   const { data: list = [], isLoading } = useQuery({ queryKey: ["admin", "expedicoes"], queryFn: listExpedicoes });
   const [confirmDel, setConfirmDel] = useState<ExpedicaoRow | null>(null);
   const [filtro, setFiltro] = useState<ExpedicaoRow["status"] | "todos">("todos");
+  const [novaOpen, setNovaOpen] = useState(false);
+  const [novaForm, setNovaForm] = useState({ nome: "", marca: "cavalgadas", pais: "brasil" });
 
   const refresh = () => qc.invalidateQueries({ queryKey: ["admin", "expedicoes"] });
 
   const novaMut = useMutation({
-    mutationFn: () => createExpedicao({ nome: "Nova expedição", status: "rascunho" }),
+    mutationFn: () =>
+      createExpedicao({
+        nome: novaForm.nome.trim() || "Nova expedição",
+        marca: novaForm.marca,
+        pais: novaForm.pais,
+        status: "rascunho",
+      }),
     onSuccess: (row) => {
-      // Pré-popula o cache do detalhe e navega ANTES de invalidar a lista,
-      // para que uma eventual falha de refetch não bloqueie a abertura.
       qc.setQueryData(["admin", "expedicao", row.id], row);
+      setNovaOpen(false);
+      setNovaForm({ nome: "", marca: "cavalgadas", pais: "brasil" });
       nav({ to: "/admin/expedicoes/$id", params: { id: row.id } });
       qc.invalidateQueries({ queryKey: ["admin", "expedicoes"] });
-      toast.success("Expedição criada — configure os dados abaixo");
+      toast.success("Expedição criada — configure os dados");
     },
     onError: (e) => toast.error((e as Error).message),
   });
@@ -87,7 +95,7 @@ function ExpedicoesPage() {
         title="Expedições"
         description="Gerencie todas as expedições, mídia, datas e publicação no site."
         actions={
-          <button className="admin-btn-primary" onClick={() => novaMut.mutate()} disabled={novaMut.isPending}>
+          <button className="admin-btn-primary" onClick={() => setNovaOpen(true)}>
             <Plus className="h-4 w-4" /> Nova expedição
           </button>
         }
@@ -122,7 +130,7 @@ function ExpedicoesPage() {
           titulo={filtro === "todos" ? "Nenhuma expedição ainda" : "Nenhuma expedição neste status"}
           descricao="Crie sua primeira expedição para começar a publicar no site."
           acao={
-            <button className="admin-btn-primary" onClick={() => novaMut.mutate()}>
+            <button className="admin-btn-primary" onClick={() => setNovaOpen(true)}>
               <Plus className="h-4 w-4" /> Criar agora
             </button>
           }
@@ -205,6 +213,45 @@ function ExpedicoesPage() {
         destructive
         onConfirm={() => { if (confirmDel) delMut.mutate(confirmDel.id); }}
       />
+
+      {/* Modal nova expedição */}
+      {novaOpen && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setNovaOpen(false)}>
+          <div className="admin-card w-full max-w-md space-y-4" onClick={(e) => e.stopPropagation()}>
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)]">Nova expedição</div>
+              <h3 className="mt-1 font-display text-lg text-[color:var(--admin-cinza-1)]">Comece pelo essencial</h3>
+              <p className="mt-1 text-xs text-[color:var(--admin-cinza-3)]">Depois você completa fotos, roteiro, datas e preço.</p>
+            </div>
+            <div className="space-y-3">
+              <label className="block">
+                <span className="mb-1 block text-[11px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">Nome</span>
+                <input className="admin-input" autoFocus value={novaForm.nome} onChange={(e) => setNovaForm({ ...novaForm, nome: e.target.value })} placeholder="Ex: Serra do Cipó" />
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <label className="block">
+                  <span className="mb-1 block text-[11px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">Marca</span>
+                  <select className="admin-input" value={novaForm.marca} onChange={(e) => setNovaForm({ ...novaForm, marca: e.target.value })}>
+                    <option value="cavalgadas">Cavalgadas</option>
+                    <option value="canastra-a-cavalo">Canastra a Cavalo</option>
+                    <option value="elas-na-sela">Elas na Sela</option>
+                  </select>
+                </label>
+                <label className="block">
+                  <span className="mb-1 block text-[11px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">País</span>
+                  <input className="admin-input" value={novaForm.pais} onChange={(e) => setNovaForm({ ...novaForm, pais: e.target.value })} placeholder="brasil" />
+                </label>
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button className="admin-btn-ghost" onClick={() => setNovaOpen(false)}>Cancelar</button>
+              <button className="admin-btn-primary" onClick={() => novaMut.mutate()} disabled={novaMut.isPending || !novaForm.nome.trim()}>
+                <Plus className="h-4 w-4" /> Criar e abrir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

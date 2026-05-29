@@ -224,11 +224,41 @@ export const FOTO_EQUIPE = equipeMangalarga;
 // ============================================================
 // API
 // ============================================================
-export function getExpedicaoImage(slug: string): string {
+/** Asset vindo do banco — usado para sobrescrever a curadoria estática. */
+export interface AssetOverride {
+  url: string;
+  tipo?: string;
+  titulo?: string | null;
+  ordem?: number;
+  is_capa?: boolean;
+}
+
+function isHttpUrl(s?: string | null): s is string {
+  return !!s && /^https?:\/\//.test(s);
+}
+
+/** Capa: 1) capa_url do banco, 2) asset is_capa, 3) primeiro asset, 4) curadoria estática. */
+export function getExpedicaoImage(
+  slug: string,
+  opts?: { capaUrl?: string | null; assets?: AssetOverride[] },
+): string {
+  if (isHttpUrl(opts?.capaUrl)) return opts!.capaUrl!;
+  const imagens = (opts?.assets ?? []).filter((a) => (a.tipo ?? "imagem") === "imagem");
+  if (imagens.length > 0) {
+    const capa = imagens.find((a) => a.is_capa);
+    if (capa) return capa.url;
+    const ord = [...imagens].sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0));
+    return ord[0].url;
+  }
   return SLUG_IMAGE[slug] ?? heroCavalgada;
 }
 
-export function getExpedicaoGaleria(slug: string): string[] {
+/** Galeria: todos os assets do banco (ordenados); senão a curadoria estática. */
+export function getExpedicaoGaleria(slug: string, assets?: AssetOverride[]): string[] {
+  const imagens = (assets ?? []).filter((a) => (a.tipo ?? "imagem") === "imagem");
+  if (imagens.length > 0) {
+    return [...imagens].sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0)).map((a) => a.url);
+  }
   return SLUG_GALERIA[slug] ?? [];
 }
 
@@ -329,10 +359,21 @@ export const SLUG_NARRATIVA: Record<string, CenaNarrativa[]> = {
 
 };
 
-export function getExpedicaoNarrativa(slug: string): CenaNarrativa[] {
+/**
+ * Narrativa: prioriza assets do banco com `titulo` (legenda). Se nenhum asset
+ * tiver legenda, cai para a curadoria estática. Se a curadoria também não
+ * existir, usa as 8 primeiras imagens da galeria sem legenda.
+ */
+export function getExpedicaoNarrativa(slug: string, assets?: AssetOverride[]): CenaNarrativa[] {
+  const imagens = (assets ?? []).filter((a) => (a.tipo ?? "imagem") === "imagem");
+  const comLegenda = imagens.filter((a) => a.titulo && a.titulo.trim().length > 0);
+  if (comLegenda.length > 0) {
+    return [...comLegenda]
+      .sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0))
+      .map((a) => ({ src: a.url, eyebrow: "", titulo: (a.titulo ?? "").trim() }));
+  }
   const curada = SLUG_NARRATIVA[slug];
   if (curada && curada.length > 0) return curada;
-  // Fallback: usa as primeiras 8 fotos da galeria existente, sem legendas técnicas.
   const galeria = SLUG_GALERIA[slug] ?? [];
   return galeria.slice(0, 8).map((src) => ({ src, eyebrow: "", titulo: "" }));
 }
