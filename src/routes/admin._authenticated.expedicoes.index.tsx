@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Compass, Plus, Pencil, Copy, Trash2, Archive, PlayCircle, PauseCircle } from "lucide-react";
+import { Compass, Plus, Pencil, Copy, Trash2, Archive, PlayCircle, PauseCircle, ExternalLink, ImageOff } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
