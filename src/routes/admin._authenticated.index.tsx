@@ -8,7 +8,6 @@ import {
   Users,
   TrendingUp,
   ArrowUpRight,
-  BarChart3,
 } from "lucide-react";
 import {
   AreaChart,
@@ -23,6 +22,7 @@ import { formatDateRange } from "@/lib/format";
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
 import { useCan } from "@/hooks/use-permissions";
+import { DashboardAnalytics } from "@/components/admin/dashboard-analytics";
 
 export const Route = createFileRoute("/admin/_authenticated/")({
   component: DashboardPage,
@@ -275,17 +275,8 @@ function DashboardPage() {
         </div>
       </div>
 
-      {/* Placeholder analytics */}
-      <div className="admin-card flex items-center gap-4 p-6">
-        <div className="grid h-10 w-10 place-items-center rounded-lg bg-[color:var(--admin-carvao-deep)]/70 text-[color:var(--admin-dourado)] ring-1 ring-[color:var(--admin-borda)]">
-          <BarChart3 className="h-4 w-4" />
-        </div>
-        <div className="flex-1">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)]">Acessos ao site</p>
-          <p className="text-[13px] text-[color:var(--admin-cinza-1)]">Visitas, páginas mais acessadas e origem do tráfego</p>
-        </div>
-        <span className="rounded-full border border-[color:var(--admin-borda)] px-3 py-1 text-[11px] text-[color:var(--admin-cinza-3)]">em breve</span>
-      </div>
+      {/* Analytics próprio */}
+      <DashboardAnalytics range={range} />
     </div>
   );
 }

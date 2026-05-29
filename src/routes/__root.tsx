@@ -12,6 +12,7 @@ import { ScrollToTop } from "@/components/scroll-to-top";
 import { CookieConsent } from "@/components/cookie-consent";
 import { VLibras } from "@/components/vlibras";
 import { AccessibilityPanel } from "@/components/accessibility-panel";
+import { AnalyticsTracker } from "@/components/analytics-tracker";
 
 import heroOg from "@/assets/founders/ligia-rio.jpg";
 
@@ -110,6 +111,7 @@ function RootComponent() {
       {!isAdmin && <VLibras />}
       
       {!isAdmin && <AccessibilityPanel />}
+      {!isAdmin && <AnalyticsTracker />}
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );

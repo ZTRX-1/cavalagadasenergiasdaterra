@@ -1,14 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { Wallet, Save } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Wallet, Save, Plus, Trash2, Download } from "lucide-react";
 import { toast } from "sonner";
+import {
+  AreaChart,
+  Area,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from "recharts";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
-import { AdminEmpty } from "@/components/admin/admin-empty";
 import { AdminSection, AdminField } from "@/components/admin/admin-section";
 import { StatusBadge } from "@/components/admin/admin-status-badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { listReservas, updatePagamento, type ReservaRow } from "@/lib/admin/api";
+import { listReservas, updatePagamento, listExpedicoes, type ReservaRow } from "@/lib/admin/api";
+import {
+  listDespesas, createDespesa, updateDespesa, deleteDespesa,
+  listContasPagar, createContaPagar, updateContaPagar, deleteContaPagar,
+  listContasReceber, createContaReceber, updateContaReceber, deleteContaReceber,
+  dreExpedicoes, fluxoCaixa,
+  CATEGORIAS_DESPESA, STATUS_DESPESA, STATUS_CONTA,
+  type Despesa, type ContaPagar, type ContaReceber,
+} from "@/lib/admin/financeiro-api";
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
 import { useCan } from "@/hooks/use-permissions";
@@ -17,97 +32,156 @@ export const Route = createFileRoute("/admin/_authenticated/financeiro")({
   component: FinanceiroPage,
 });
 
+type Preset = "mes" | "ano" | "tudo" | "custom";
+
+function rangeFor(preset: Preset, custom: { from: string; to: string }) {
+  const now = new Date();
+  const start = new Date(now);
+  const end = new Date(now);
+  end.setHours(23, 59, 59, 999);
+  switch (preset) {
+    case "mes": start.setDate(1); start.setHours(0,0,0,0); break;
+    case "ano": start.setMonth(0,1); start.setHours(0,0,0,0); break;
+    case "tudo": return { from: "2020-01-01T00:00:00.000Z", to: end.toISOString() };
+    case "custom":
+      return {
+        from: new Date(custom.from + "T00:00:00").toISOString(),
+        to: new Date(custom.to + "T23:59:59").toISOString(),
+      };
+  }
+  return { from: start.toISOString(), to: end.toISOString() };
+}
+
+const TABS = [
+  { id: "receitas", label: "Receitas" },
+  { id: "despesas", label: "Despesas" },
+  { id: "a-pagar", label: "A pagar" },
+  { id: "a-receber", label: "A receber" },
+  { id: "fluxo", label: "Fluxo de caixa" },
+  { id: "dre", label: "DRE por expedição" },
+] as const;
+type TabId = typeof TABS[number]["id"];
+
+const fmtBRL = (n: number) =>
+  n.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+
 function FinanceiroPage() {
   const qc = useQueryClient();
-  const { data: reservas = [], isLoading } = useQuery({ queryKey: ["admin", "reservas"], queryFn: listReservas });
-  const [edit, setEdit] = useState<ReservaRow | null>(null);
   const { canEdit } = useCan("financeiro");
+  const [preset, setPreset] = useState<Preset>("mes");
+  const [custom, setCustom] = useState({
+    from: new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0,10),
+    to: new Date().toISOString().slice(0,10),
+  });
+  const [tab, setTab] = useState<TabId>("receitas");
+  const range = useMemo(() => rangeFor(preset, custom), [preset, custom]);
+  const rangeDate = useMemo(() => ({ from: range.from.slice(0,10), to: range.to.slice(0,10) }), [range]);
 
-  const confirmados = reservas.filter((r) => r.status_pagamento === "confirmado");
-  const pendentes = reservas.filter((r) => r.status_pagamento !== "confirmado");
+  const { data: reservas = [] } = useQuery({ queryKey: ["admin","reservas"], queryFn: listReservas });
+  const { data: despesas = [] } = useQuery({
+    queryKey: ["admin","despesas", rangeDate.from, rangeDate.to],
+    queryFn: () => listDespesas(rangeDate),
+  });
+  const { data: contasPagar = [] } = useQuery({ queryKey: ["admin","contas-pagar"], queryFn: listContasPagar });
+  const { data: contasReceber = [] } = useQuery({ queryKey: ["admin","contas-receber"], queryFn: listContasReceber });
 
-  const totalConfirmado = confirmados.reduce((s, r) => s + (Number(r.valor_pago) || 0), 0);
-  const totalEstimado = reservas.reduce((s, r) => s + (Number(r.valor_total) || 0), 0);
-  const totalPendente = pendentes.reduce((s, r) => s + ((Number(r.valor_total) || 0) - (Number(r.valor_pago) || 0)), 0);
+  const reservasNoPeriodo = useMemo(
+    () => reservas.filter((r) => r.created_at >= range.from && r.created_at <= range.to),
+    [reservas, range],
+  );
+  const totalConfirmado = reservasNoPeriodo
+    .filter((r) => r.status_pagamento === "confirmado")
+    .reduce((s, r) => s + Number(r.valor_pago || 0), 0);
+  const totalEstimado = reservasNoPeriodo.reduce((s, r) => s + Number(r.valor_total || 0), 0);
+  const totalPendente = reservasNoPeriodo
+    .filter((r) => r.status_pagamento !== "confirmado")
+    .reduce((s, r) => s + (Number(r.valor_total || 0) - Number(r.valor_pago || 0)), 0);
+  const totalDespesas = despesas.reduce((s, d) => s + Number(d.valor), 0);
+  const lucro = totalConfirmado - totalDespesas;
+  const margem = totalConfirmado > 0 ? (lucro / totalConfirmado) * 100 : 0;
 
-  const porExpedicao = Object.entries(
-    reservas.reduce<Record<string, number>>((acc, r) => {
-      const key = r.expedicao_nome || "Outros";
-      acc[key] = (acc[key] || 0) + (Number(r.valor_pago) || 0);
-      return acc;
-    }, {}),
-  ).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  function exportCSV() {
+    const lines = [
+      ["tipo","data","descricao","categoria","valor"].join(";"),
+      ...reservasNoPeriodo.map((r) => ["RECEITA", r.created_at.slice(0,10), r.expedicao_nome, "reserva", String(r.valor_pago || 0)].join(";")),
+      ...despesas.map((d) => ["DESPESA", d.data, d.descricao, d.categoria, String(d.valor)].join(";")),
+    ];
+    const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `financeiro_${rangeDate.from}_${rangeDate.to}.csv`; a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader eyebrow="Operação" title="Financeiro" description="Acompanhe pagamentos, faturamento e expedições mais lucrativas." />
-
+      <AdminPageHeader eyebrow="Operação" title="Financeiro" description="Receitas, despesas, contas e lucro real por expedição." />
       {!canEdit ? <EmDesenvolvimentoBanner /> : null}
       <AdminPageIntro>
-        <strong className="text-[color:var(--admin-cinza-1)]">Controle financeiro.</strong> Hoje você vê o que entrou em <em>reservas pagas</em> (confirmado), o que está previsto e o que está pendente. Em breve: aba de <strong>Despesas</strong> (cavalos, alimentação, equipe, logística…), <strong>Contas a pagar</strong>, <strong>Fluxo de caixa</strong> e <strong>DRE por expedição</strong> (lucro real de cada viagem). Tudo com filtro por período.
+        <strong className="text-[color:var(--admin-cinza-1)]">Controle financeiro completo.</strong> Aqui você vê <em>o que entrou</em> (reservas pagas), <em>o que saiu</em> (despesas), <em>o que está previsto</em> (contas a pagar/receber), o fluxo de caixa diário, e o <strong>lucro real de cada expedição</strong>. Use o filtro de período no topo para focar no mês, ano ou intervalo desejado.
       </AdminPageIntro>
 
-
-      <div className="grid gap-4 md:grid-cols-3">
-        <KPI label="Faturamento confirmado" value={`R$ ${totalConfirmado.toLocaleString("pt-BR")}`} accent />
-        <KPI label="Faturamento estimado" value={`R$ ${totalEstimado.toLocaleString("pt-BR")}`} />
-        <KPI label="Pagamentos pendentes" value={`R$ ${totalPendente.toLocaleString("pt-BR")}`} />
+      {/* Filtros + export */}
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          {([
+            { id: "mes" as const, label: "Mês" },
+            { id: "ano" as const, label: "Ano" },
+            { id: "tudo" as const, label: "Tudo" },
+            { id: "custom" as const, label: "Personalizado" },
+          ]).map((p) => (
+            <button
+              key={p.id}
+              onClick={() => setPreset(p.id)}
+              className={`rounded-md px-3 py-1.5 text-[12px] transition ${
+                preset === p.id
+                  ? "bg-[color:var(--admin-dourado)] text-[color:var(--admin-carvao-deep)]"
+                  : "border border-[color:var(--admin-borda)] text-[color:var(--admin-cinza-2)] hover:border-[color:var(--admin-dourado)]/40"
+              }`}
+            >{p.label}</button>
+          ))}
+          {preset === "custom" ? (
+            <div className="flex items-center gap-2">
+              <input type="date" className="admin-input h-8 text-[12px]" value={custom.from} onChange={(e) => setCustom({ ...custom, from: e.target.value })} />
+              <span className="text-[color:var(--admin-cinza-3)]">→</span>
+              <input type="date" className="admin-input h-8 text-[12px]" value={custom.to} onChange={(e) => setCustom({ ...custom, to: e.target.value })} />
+            </div>
+          ) : null}
+        </div>
+        <button className="admin-btn-ghost gap-2" onClick={exportCSV}><Download className="h-4 w-4" /> Exportar CSV</button>
       </div>
 
-      {isLoading ? (
-        <div className="admin-card h-40 animate-pulse" />
-      ) : reservas.length === 0 ? (
-        <AdminEmpty icon={Wallet} titulo="Nenhuma reserva ainda" descricao="As reservas confirmadas pelo site aparecerão aqui automaticamente." />
-      ) : (
-        <>
-          <AdminSection titulo="Top expedições por receita">
-            <div className="space-y-2">
-              {porExpedicao.map(([nome, v]) => (
-                <div key={nome} className="flex items-center justify-between rounded-md border border-[color:var(--admin-borda)] p-3">
-                  <span className="text-sm text-[color:var(--admin-cinza-1)] truncate">{nome}</span>
-                  <span className="text-sm font-medium text-[color:var(--admin-dourado)]">R$ {v.toLocaleString("pt-BR")}</span>
-                </div>
-              ))}
-              {porExpedicao.length === 0 ? <p className="text-sm text-[color:var(--admin-cinza-3)]">Sem dados.</p> : null}
-            </div>
-          </AdminSection>
+      {/* 6 KPIs */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+        <KPI label="Faturamento confirmado" value={fmtBRL(totalConfirmado)} accent />
+        <KPI label="Faturamento estimado" value={fmtBRL(totalEstimado)} />
+        <KPI label="Pagamentos pendentes" value={fmtBRL(totalPendente)} />
+        <KPI label="Despesas totais" value={fmtBRL(totalDespesas)} />
+        <KPI label="Lucro líquido" value={fmtBRL(lucro)} accent={lucro > 0} />
+        <KPI label="Margem" value={`${margem.toFixed(1)}%`} />
+      </div>
 
-          <AdminSection titulo="Reservas">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
-                  <tr>
-                    <th className="py-2 font-medium">Protocolo</th>
-                    <th className="py-2 font-medium">Expedição</th>
-                    <th className="py-2 font-medium">Data</th>
-                    <th className="py-2 font-medium">Pessoas</th>
-                    <th className="py-2 font-medium">Valor</th>
-                    <th className="py-2 font-medium">Pago</th>
-                    <th className="py-2 font-medium">Status</th>
-                    <th />
-                  </tr>
-                </thead>
-                <tbody>
-                  {reservas.map((r) => (
-                    <tr key={r.id} className="border-t border-[color:var(--admin-borda)]">
-                      <td className="py-3 font-mono text-xs text-[color:var(--admin-cinza-2)]">{r.protocolo}</td>
-                      <td className="py-3 text-[color:var(--admin-cinza-1)] truncate max-w-[200px]">{r.expedicao_nome}</td>
-                      <td className="py-3 text-[color:var(--admin-cinza-2)]">{r.data_label}</td>
-                      <td className="py-3 text-[color:var(--admin-cinza-2)]">{r.quantidade_participantes}</td>
-                      <td className="py-3 text-[color:var(--admin-cinza-2)]">R$ {Number(r.valor_total ?? 0).toLocaleString("pt-BR")}</td>
-                      <td className="py-3 text-[color:var(--admin-cinza-2)]">R$ {Number(r.valor_pago).toLocaleString("pt-BR")}</td>
-                      <td className="py-3"><StatusBadge status={r.status_pagamento} /></td>
-                      <td className="py-3 text-right"><button className="admin-btn-ghost px-3 py-1" onClick={() => setEdit(r)}>Editar</button></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </AdminSection>
-        </>
-      )}
+      {/* Tabs */}
+      <div className="flex flex-wrap gap-1 border-b border-[color:var(--admin-borda)]">
+        {TABS.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setTab(t.id)}
+            className={`-mb-px border-b-2 px-3 py-2 text-[13px] transition ${
+              tab === t.id
+                ? "border-[color:var(--admin-dourado)] text-[color:var(--admin-cinza-1)]"
+                : "border-transparent text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-cinza-1)]"
+            }`}
+          >{t.label}</button>
+        ))}
+      </div>
 
-      {edit ? <PagamentoDialog reserva={edit} onClose={() => setEdit(null)} onSaved={() => qc.invalidateQueries({ queryKey: ["admin", "reservas"] })} /> : null}
+      {tab === "receitas" && <TabReceitas reservas={reservasNoPeriodo} onChanged={() => qc.invalidateQueries({ queryKey: ["admin","reservas"] })} />}
+      {tab === "despesas" && <TabDespesas despesas={despesas} canEdit={canEdit} onChanged={() => qc.invalidateQueries({ queryKey: ["admin","despesas"] })} />}
+      {tab === "a-pagar" && <TabContasPagar contas={contasPagar} canEdit={canEdit} onChanged={() => qc.invalidateQueries({ queryKey: ["admin","contas-pagar"] })} />}
+      {tab === "a-receber" && <TabContasReceber contas={contasReceber} canEdit={canEdit} onChanged={() => qc.invalidateQueries({ queryKey: ["admin","contas-receber"] })} />}
+      {tab === "fluxo" && <TabFluxo range={range} />}
+      {tab === "dre" && <TabDRE range={range} />}
     </div>
   );
 }
@@ -116,11 +190,449 @@ function KPI({ label, value, accent }: { label: string; value: string; accent?: 
   return (
     <div className="admin-card p-5">
       <div className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">{label}</div>
-      <div className={`mt-2 font-display text-3xl ${accent ? "text-[color:var(--admin-dourado)]" : "text-[color:var(--admin-cinza-1)]"}`}>{value}</div>
+      <div className={`mt-2 font-display text-2xl lg:text-3xl ${accent ? "text-[color:var(--admin-dourado)]" : "text-[color:var(--admin-cinza-1)]"}`}>{value}</div>
     </div>
   );
 }
 
+// ============ Tab Receitas ============
+function TabReceitas({ reservas, onChanged }: { reservas: ReservaRow[]; onChanged: () => void }) {
+  const [edit, setEdit] = useState<ReservaRow | null>(null);
+  if (reservas.length === 0)
+    return <AdminSection titulo="Reservas no período"><p className="text-sm text-[color:var(--admin-cinza-3)]">Nenhuma reserva nesse período.</p></AdminSection>;
+  return (
+    <>
+      <AdminSection titulo="Reservas no período">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
+              <tr>
+                <th className="py-2 font-medium">Protocolo</th>
+                <th className="py-2 font-medium">Expedição</th>
+                <th className="py-2 font-medium">Data</th>
+                <th className="py-2 font-medium">Pax</th>
+                <th className="py-2 font-medium">Valor</th>
+                <th className="py-2 font-medium">Pago</th>
+                <th className="py-2 font-medium">Status</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {reservas.map((r) => (
+                <tr key={r.id} className="border-t border-[color:var(--admin-borda)]">
+                  <td className="py-3 font-mono text-xs text-[color:var(--admin-cinza-2)]">{r.protocolo}</td>
+                  <td className="py-3 text-[color:var(--admin-cinza-1)] truncate max-w-[200px]">{r.expedicao_nome}</td>
+                  <td className="py-3 text-[color:var(--admin-cinza-2)]">{r.data_label}</td>
+                  <td className="py-3 text-[color:var(--admin-cinza-2)]">{r.quantidade_participantes}</td>
+                  <td className="py-3 text-[color:var(--admin-cinza-2)]">{fmtBRL(Number(r.valor_total ?? 0))}</td>
+                  <td className="py-3 text-[color:var(--admin-cinza-2)]">{fmtBRL(Number(r.valor_pago))}</td>
+                  <td className="py-3"><StatusBadge status={r.status_pagamento} /></td>
+                  <td className="py-3 text-right"><button className="admin-btn-ghost px-3 py-1" onClick={() => setEdit(r)}>Editar</button></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </AdminSection>
+      {edit ? <PagamentoDialog reserva={edit} onClose={() => setEdit(null)} onSaved={onChanged} /> : null}
+    </>
+  );
+}
+
+// ============ Tab Despesas ============
+function TabDespesas({ despesas, canEdit, onChanged }: { despesas: Despesa[]; canEdit: boolean; onChanged: () => void }) {
+  const [editing, setEditing] = useState<Despesa | "new" | null>(null);
+  const delMut = useMutation({
+    mutationFn: (id: string) => deleteDespesa(id),
+    onSuccess: () => { toast.success("Despesa removida"); onChanged(); },
+    onError: (e) => toast.error((e as Error).message),
+  });
+  return (
+    <>
+      <AdminSection
+        titulo="Despesas"
+        actions={canEdit ? <button className="admin-btn-primary gap-2" onClick={() => setEditing("new")}><Plus className="h-4 w-4" /> Nova despesa</button> : undefined}
+      >
+        {despesas.length === 0 ? (
+          <p className="text-sm text-[color:var(--admin-cinza-3)]">Nenhuma despesa lançada nesse período.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
+                <tr>
+                  <th className="py-2 font-medium">Data</th>
+                  <th className="py-2 font-medium">Categoria</th>
+                  <th className="py-2 font-medium">Descrição</th>
+                  <th className="py-2 font-medium">Fornecedor</th>
+                  <th className="py-2 font-medium">Valor</th>
+                  <th className="py-2 font-medium">Status</th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                {despesas.map((d) => (
+                  <tr key={d.id} className="border-t border-[color:var(--admin-borda)]">
+                    <td className="py-3 text-[color:var(--admin-cinza-2)]">{new Date(d.data).toLocaleDateString("pt-BR")}</td>
+                    <td className="py-3 text-[color:var(--admin-cinza-2)] capitalize">{d.categoria}</td>
+                    <td className="py-3 text-[color:var(--admin-cinza-1)]">{d.descricao}</td>
+                    <td className="py-3 text-[color:var(--admin-cinza-3)]">{d.fornecedor ?? "—"}</td>
+                    <td className="py-3 text-[color:var(--admin-cinza-2)]">{fmtBRL(Number(d.valor))}</td>
+                    <td className="py-3"><StatusBadge status={d.status} /></td>
+                    <td className="py-3 text-right space-x-2">
+                      {canEdit ? <button className="admin-btn-ghost px-3 py-1" onClick={() => setEditing(d)}>Editar</button> : null}
+                      {canEdit ? <button className="admin-btn-ghost px-2 py-1" onClick={() => { if (confirm("Excluir despesa?")) delMut.mutate(d.id); }}><Trash2 className="h-4 w-4" /></button> : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </AdminSection>
+      {editing ? <DespesaDialog despesa={editing === "new" ? null : editing} onClose={() => setEditing(null)} onSaved={onChanged} /> : null}
+    </>
+  );
+}
+
+function DespesaDialog({ despesa, onClose, onSaved }: { despesa: Despesa | null; onClose: () => void; onSaved: () => void }) {
+  const { data: expedicoes = [] } = useQuery({ queryKey: ["admin","expedicoes-light"], queryFn: () => listExpedicoes() });
+  const [form, setForm] = useState({
+    data: despesa?.data ?? new Date().toISOString().slice(0,10),
+    categoria: despesa?.categoria ?? "outros",
+    descricao: despesa?.descricao ?? "",
+    valor: despesa?.valor ?? 0,
+    expedicao_id: despesa?.expedicao_id ?? "",
+    fornecedor: despesa?.fornecedor ?? "",
+    status: despesa?.status ?? "pago",
+    observacoes: despesa?.observacoes ?? "",
+  });
+  const mut = useMutation({
+    mutationFn: async () => {
+      const payload = {
+        ...form,
+        valor: Number(form.valor),
+        expedicao_id: form.expedicao_id || null,
+        fornecedor: form.fornecedor || null,
+        observacoes: form.observacoes || null,
+        anexo_url: null,
+        created_by: null,
+      };
+      if (despesa) await updateDespesa(despesa.id, payload as Partial<Despesa>);
+      else await createDespesa(payload as Omit<Despesa,"id"|"created_at">);
+    },
+    onSuccess: () => { toast.success("Despesa salva"); onSaved(); onClose(); },
+    onError: (e) => toast.error((e as Error).message),
+  });
+  return (
+    <Dialog open onOpenChange={(v) => !v && onClose()}>
+      <DialogContent className="border border-[color:var(--admin-borda-strong)] bg-[color:var(--admin-carvao)] text-[color:var(--admin-cinza-1)]">
+        <DialogHeader><DialogTitle className="font-display text-2xl">{despesa ? "Editar despesa" : "Nova despesa"}</DialogTitle></DialogHeader>
+        <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <AdminField label="Data"><input type="date" className="admin-input" value={form.data} onChange={(e) => setForm({ ...form, data: e.target.value })} /></AdminField>
+            <AdminField label="Valor (R$)"><input type="number" step="0.01" className="admin-input" value={form.valor} onChange={(e) => setForm({ ...form, valor: Number(e.target.value) })} /></AdminField>
+          </div>
+          <AdminField label="Descrição"><input className="admin-input" value={form.descricao} onChange={(e) => setForm({ ...form, descricao: e.target.value })} /></AdminField>
+          <div className="grid grid-cols-2 gap-3">
+            <AdminField label="Categoria">
+              <select className="admin-input" value={form.categoria} onChange={(e) => setForm({ ...form, categoria: e.target.value })}>
+                {CATEGORIAS_DESPESA.map((c) => <option key={c} value={c} className="capitalize">{c}</option>)}
+              </select>
+            </AdminField>
+            <AdminField label="Status">
+              <select className="admin-input" value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
+                {STATUS_DESPESA.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </AdminField>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <AdminField label="Expedição (opcional)">
+              <select className="admin-input" value={form.expedicao_id} onChange={(e) => setForm({ ...form, expedicao_id: e.target.value })}>
+                <option value="">— Geral —</option>
+                {expedicoes.map((e) => <option key={e.id} value={e.id}>{e.nome}</option>)}
+              </select>
+            </AdminField>
+            <AdminField label="Fornecedor"><input className="admin-input" value={form.fornecedor} onChange={(e) => setForm({ ...form, fornecedor: e.target.value })} /></AdminField>
+          </div>
+          <AdminField label="Observações"><textarea className="admin-input min-h-[60px]" value={form.observacoes} onChange={(e) => setForm({ ...form, observacoes: e.target.value })} /></AdminField>
+          <div className="flex justify-end gap-2 pt-2">
+            <button className="admin-btn-ghost" onClick={onClose}>Cancelar</button>
+            <button className="admin-btn-primary" onClick={() => mut.mutate()} disabled={mut.isPending}><Save className="h-4 w-4" /> Salvar</button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// ============ Tab Contas a Pagar ============
+function TabContasPagar({ contas, canEdit, onChanged }: { contas: ContaPagar[]; canEdit: boolean; onChanged: () => void }) {
+  const [editing, setEditing] = useState<ContaPagar | "new" | null>(null);
+  const delMut = useMutation({
+    mutationFn: (id: string) => deleteContaPagar(id),
+    onSuccess: () => { toast.success("Conta removida"); onChanged(); },
+  });
+  return (
+    <>
+      <AdminSection
+        titulo="Contas a pagar"
+        actions={canEdit ? <button className="admin-btn-primary gap-2" onClick={() => setEditing("new")}><Plus className="h-4 w-4" /> Nova conta</button> : undefined}
+      >
+        {contas.length === 0 ? <p className="text-sm text-[color:var(--admin-cinza-3)]">Nenhuma conta lançada.</p> : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
+                <tr><th className="py-2 font-medium">Vencimento</th><th className="py-2 font-medium">Descrição</th><th className="py-2 font-medium">Fornecedor</th><th className="py-2 font-medium">Valor</th><th className="py-2 font-medium">Status</th><th /></tr>
+              </thead>
+              <tbody>
+                {contas.map((c) => (
+                  <tr key={c.id} className="border-t border-[color:var(--admin-borda)]">
+                    <td className="py-3 text-[color:var(--admin-cinza-2)]">{new Date(c.vencimento).toLocaleDateString("pt-BR")}</td>
+                    <td className="py-3 text-[color:var(--admin-cinza-1)]">{c.descricao}</td>
+                    <td className="py-3 text-[color:var(--admin-cinza-3)]">{c.fornecedor ?? "—"}</td>
+                    <td className="py-3 text-[color:var(--admin-cinza-2)]">{fmtBRL(Number(c.valor))}</td>
+                    <td className="py-3"><StatusBadge status={c.status} /></td>
+                    <td className="py-3 text-right space-x-2">
+                      {canEdit ? <button className="admin-btn-ghost px-3 py-1" onClick={() => setEditing(c)}>Editar</button> : null}
+                      {canEdit ? <button className="admin-btn-ghost px-2 py-1" onClick={() => { if (confirm("Excluir conta?")) delMut.mutate(c.id); }}><Trash2 className="h-4 w-4" /></button> : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </AdminSection>
+      {editing ? <ContaPagarDialog conta={editing === "new" ? null : editing} onClose={() => setEditing(null)} onSaved={onChanged} /> : null}
+    </>
+  );
+}
+
+function ContaPagarDialog({ conta, onClose, onSaved }: { conta: ContaPagar | null; onClose: () => void; onSaved: () => void }) {
+  const [form, setForm] = useState({
+    descricao: conta?.descricao ?? "",
+    valor: conta?.valor ?? 0,
+    vencimento: conta?.vencimento ?? new Date().toISOString().slice(0,10),
+    status: conta?.status ?? "pendente",
+    categoria: conta?.categoria ?? "",
+    fornecedor: conta?.fornecedor ?? "",
+  });
+  const mut = useMutation({
+    mutationFn: async () => {
+      const payload = {
+        ...form,
+        valor: Number(form.valor),
+        categoria: form.categoria || null,
+        fornecedor: form.fornecedor || null,
+        expedicao_id: null,
+        pago_em: null,
+        observacoes: null,
+      };
+      if (conta) await updateContaPagar(conta.id, payload as Partial<ContaPagar>);
+      else await createContaPagar(payload as Omit<ContaPagar,"id">);
+    },
+    onSuccess: () => { toast.success("Conta salva"); onSaved(); onClose(); },
+    onError: (e) => toast.error((e as Error).message),
+  });
+  return (
+    <Dialog open onOpenChange={(v) => !v && onClose()}>
+      <DialogContent className="border border-[color:var(--admin-borda-strong)] bg-[color:var(--admin-carvao)] text-[color:var(--admin-cinza-1)]">
+        <DialogHeader><DialogTitle className="font-display text-2xl">{conta ? "Editar conta" : "Nova conta a pagar"}</DialogTitle></DialogHeader>
+        <div className="space-y-3">
+          <AdminField label="Descrição"><input className="admin-input" value={form.descricao} onChange={(e) => setForm({ ...form, descricao: e.target.value })} /></AdminField>
+          <div className="grid grid-cols-2 gap-3">
+            <AdminField label="Valor (R$)"><input type="number" step="0.01" className="admin-input" value={form.valor} onChange={(e) => setForm({ ...form, valor: Number(e.target.value) })} /></AdminField>
+            <AdminField label="Vencimento"><input type="date" className="admin-input" value={form.vencimento} onChange={(e) => setForm({ ...form, vencimento: e.target.value })} /></AdminField>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <AdminField label="Fornecedor"><input className="admin-input" value={form.fornecedor} onChange={(e) => setForm({ ...form, fornecedor: e.target.value })} /></AdminField>
+            <AdminField label="Status">
+              <select className="admin-input" value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
+                {STATUS_CONTA.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </AdminField>
+          </div>
+          <div className="flex justify-end gap-2 pt-2">
+            <button className="admin-btn-ghost" onClick={onClose}>Cancelar</button>
+            <button className="admin-btn-primary" onClick={() => mut.mutate()} disabled={mut.isPending}><Save className="h-4 w-4" /> Salvar</button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// ============ Tab Contas a Receber ============
+function TabContasReceber({ contas, canEdit, onChanged }: { contas: ContaReceber[]; canEdit: boolean; onChanged: () => void }) {
+  const [editing, setEditing] = useState<ContaReceber | "new" | null>(null);
+  const delMut = useMutation({
+    mutationFn: (id: string) => deleteContaReceber(id),
+    onSuccess: () => { toast.success("Conta removida"); onChanged(); },
+  });
+  return (
+    <>
+      <AdminSection
+        titulo="Contas a receber (extras)"
+        actions={canEdit ? <button className="admin-btn-primary gap-2" onClick={() => setEditing("new")}><Plus className="h-4 w-4" /> Nova conta</button> : undefined}
+      >
+        <p className="mb-3 text-[12px] text-[color:var(--admin-cinza-3)]">As reservas pagas pelo site já aparecem em <strong>Receitas</strong>. Use esta lista para outros recebimentos manuais (patrocínios, serviços avulsos, etc.).</p>
+        {contas.length === 0 ? <p className="text-sm text-[color:var(--admin-cinza-3)]">Nenhuma conta lançada.</p> : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
+                <tr><th className="py-2 font-medium">Vencimento</th><th className="py-2 font-medium">Descrição</th><th className="py-2 font-medium">Cliente</th><th className="py-2 font-medium">Valor</th><th className="py-2 font-medium">Status</th><th /></tr>
+              </thead>
+              <tbody>
+                {contas.map((c) => (
+                  <tr key={c.id} className="border-t border-[color:var(--admin-borda)]">
+                    <td className="py-3 text-[color:var(--admin-cinza-2)]">{new Date(c.vencimento).toLocaleDateString("pt-BR")}</td>
+                    <td className="py-3 text-[color:var(--admin-cinza-1)]">{c.descricao}</td>
+                    <td className="py-3 text-[color:var(--admin-cinza-3)]">{c.cliente ?? "—"}</td>
+                    <td className="py-3 text-[color:var(--admin-cinza-2)]">{fmtBRL(Number(c.valor))}</td>
+                    <td className="py-3"><StatusBadge status={c.status} /></td>
+                    <td className="py-3 text-right space-x-2">
+                      {canEdit ? <button className="admin-btn-ghost px-3 py-1" onClick={() => setEditing(c)}>Editar</button> : null}
+                      {canEdit ? <button className="admin-btn-ghost px-2 py-1" onClick={() => { if (confirm("Excluir conta?")) delMut.mutate(c.id); }}><Trash2 className="h-4 w-4" /></button> : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </AdminSection>
+      {editing ? <ContaReceberDialog conta={editing === "new" ? null : editing} onClose={() => setEditing(null)} onSaved={onChanged} /> : null}
+    </>
+  );
+}
+
+function ContaReceberDialog({ conta, onClose, onSaved }: { conta: ContaReceber | null; onClose: () => void; onSaved: () => void }) {
+  const [form, setForm] = useState({
+    descricao: conta?.descricao ?? "",
+    valor: conta?.valor ?? 0,
+    vencimento: conta?.vencimento ?? new Date().toISOString().slice(0,10),
+    status: conta?.status ?? "pendente",
+    cliente: conta?.cliente ?? "",
+  });
+  const mut = useMutation({
+    mutationFn: async () => {
+      const payload = {
+        ...form,
+        valor: Number(form.valor),
+        cliente: form.cliente || null,
+        reserva_id: null,
+        recebido_em: null,
+        observacoes: null,
+      };
+      if (conta) await updateContaReceber(conta.id, payload as Partial<ContaReceber>);
+      else await createContaReceber(payload as Omit<ContaReceber,"id">);
+    },
+    onSuccess: () => { toast.success("Conta salva"); onSaved(); onClose(); },
+    onError: (e) => toast.error((e as Error).message),
+  });
+  return (
+    <Dialog open onOpenChange={(v) => !v && onClose()}>
+      <DialogContent className="border border-[color:var(--admin-borda-strong)] bg-[color:var(--admin-carvao)] text-[color:var(--admin-cinza-1)]">
+        <DialogHeader><DialogTitle className="font-display text-2xl">{conta ? "Editar conta" : "Nova conta a receber"}</DialogTitle></DialogHeader>
+        <div className="space-y-3">
+          <AdminField label="Descrição"><input className="admin-input" value={form.descricao} onChange={(e) => setForm({ ...form, descricao: e.target.value })} /></AdminField>
+          <div className="grid grid-cols-2 gap-3">
+            <AdminField label="Valor (R$)"><input type="number" step="0.01" className="admin-input" value={form.valor} onChange={(e) => setForm({ ...form, valor: Number(e.target.value) })} /></AdminField>
+            <AdminField label="Vencimento"><input type="date" className="admin-input" value={form.vencimento} onChange={(e) => setForm({ ...form, vencimento: e.target.value })} /></AdminField>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <AdminField label="Cliente"><input className="admin-input" value={form.cliente} onChange={(e) => setForm({ ...form, cliente: e.target.value })} /></AdminField>
+            <AdminField label="Status">
+              <select className="admin-input" value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
+                {STATUS_CONTA.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </AdminField>
+          </div>
+          <div className="flex justify-end gap-2 pt-2">
+            <button className="admin-btn-ghost" onClick={onClose}>Cancelar</button>
+            <button className="admin-btn-primary" onClick={() => mut.mutate()} disabled={mut.isPending}><Save className="h-4 w-4" /> Salvar</button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// ============ Tab Fluxo ============
+function TabFluxo({ range }: { range: { from: string; to: string } }) {
+  const { data = [], isLoading } = useQuery({
+    queryKey: ["admin","fluxo", range.from, range.to],
+    queryFn: () => fluxoCaixa(range),
+  });
+  return (
+    <AdminSection titulo="Fluxo de caixa diário">
+      {isLoading ? <div className="h-40 animate-pulse rounded bg-[color:var(--admin-petroleo)]/40" /> : data.length === 0 ? (
+        <p className="text-sm text-[color:var(--admin-cinza-3)]">Sem movimento nesse período.</p>
+      ) : (
+        <div className="h-[280px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={data} margin={{ top: 8, right: 4, left: -16, bottom: 0 }}>
+              <defs>
+                <linearGradient id="gIn" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="oklch(0.7 0.14 150)" stopOpacity={0.5} />
+                  <stop offset="100%" stopColor="oklch(0.7 0.14 150)" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="gOut" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="oklch(0.65 0.16 25)" stopOpacity={0.5} />
+                  <stop offset="100%" stopColor="oklch(0.65 0.16 25)" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="dia" stroke="oklch(0.5 0.012 240)" fontSize={11} tickLine={false} axisLine={false} />
+              <YAxis stroke="oklch(0.5 0.012 240)" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} />
+              <Tooltip
+                contentStyle={{ background: "oklch(0.13 0.012 240)", border: "1px solid oklch(0.28 0.018 220 / 0.6)", borderRadius: 8, fontSize: 12, color: "oklch(0.95 0.005 240)" }}
+                formatter={(v: number) => fmtBRL(v)}
+              />
+              <Area type="monotone" dataKey="entrada" name="Entradas" stroke="oklch(0.7 0.14 150)" strokeWidth={2} fill="url(#gIn)" />
+              <Area type="monotone" dataKey="saida" name="Saídas" stroke="oklch(0.65 0.16 25)" strokeWidth={2} fill="url(#gOut)" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+    </AdminSection>
+  );
+}
+
+// ============ Tab DRE ============
+function TabDRE({ range }: { range: { from: string; to: string } }) {
+  const { data = [], isLoading } = useQuery({
+    queryKey: ["admin","dre", range.from, range.to],
+    queryFn: () => dreExpedicoes(range),
+  });
+  return (
+    <AdminSection titulo="DRE — Lucro por expedição">
+      {isLoading ? <div className="h-40 animate-pulse rounded bg-[color:var(--admin-petroleo)]/40" /> : data.length === 0 ? (
+        <p className="text-sm text-[color:var(--admin-cinza-3)]">Sem dados nesse período.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
+              <tr><th className="py-2 font-medium">Expedição</th><th className="py-2 font-medium">Receita</th><th className="py-2 font-medium">Despesa</th><th className="py-2 font-medium">Lucro</th><th className="py-2 font-medium">Margem</th></tr>
+            </thead>
+            <tbody>
+              {data.map((r) => (
+                <tr key={r.expedicao_id} className="border-t border-[color:var(--admin-borda)]">
+                  <td className="py-3 text-[color:var(--admin-cinza-1)] truncate max-w-[260px]">{r.expedicao_nome}</td>
+                  <td className="py-3 text-[color:var(--admin-cinza-2)]">{fmtBRL(r.receita)}</td>
+                  <td className="py-3 text-[color:var(--admin-cinza-2)]">{fmtBRL(r.despesa)}</td>
+                  <td className={`py-3 font-medium ${r.lucro >= 0 ? "text-[color:var(--admin-dourado)]" : "text-red-400"}`}>{fmtBRL(r.lucro)}</td>
+                  <td className="py-3 text-[color:var(--admin-cinza-2)] tabular-nums">{r.margem.toFixed(1)}%</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </AdminSection>
+  );
+}
+
+// ============ Pagamento dialog (reservas) ============
 function PagamentoDialog({ reserva, onClose, onSaved }: { reserva: ReservaRow; onClose: () => void; onSaved: () => void }) {
   const [form, setForm] = useState({
     valor_total: reserva.valor_total ?? 0,
@@ -171,3 +683,6 @@ function PagamentoDialog({ reserva, onClose, onSaved }: { reserva: ReservaRow; o
     </Dialog>
   );
 }
+
+// imports usados para evitar "unused"
+void Wallet;

@@ -95,6 +95,93 @@ export type Database = {
         }
         Relationships: []
       }
+      contas_pagar: {
+        Row: {
+          categoria: string | null
+          created_at: string
+          descricao: string
+          expedicao_id: string | null
+          fornecedor: string | null
+          id: string
+          observacoes: string | null
+          pago_em: string | null
+          status: string
+          updated_at: string
+          valor: number
+          vencimento: string
+        }
+        Insert: {
+          categoria?: string | null
+          created_at?: string
+          descricao: string
+          expedicao_id?: string | null
+          fornecedor?: string | null
+          id?: string
+          observacoes?: string | null
+          pago_em?: string | null
+          status?: string
+          updated_at?: string
+          valor: number
+          vencimento: string
+        }
+        Update: {
+          categoria?: string | null
+          created_at?: string
+          descricao?: string
+          expedicao_id?: string | null
+          fornecedor?: string | null
+          id?: string
+          observacoes?: string | null
+          pago_em?: string | null
+          status?: string
+          updated_at?: string
+          valor?: number
+          vencimento?: string
+        }
+        Relationships: []
+      }
+      contas_receber: {
+        Row: {
+          cliente: string | null
+          created_at: string
+          descricao: string
+          id: string
+          observacoes: string | null
+          recebido_em: string | null
+          reserva_id: string | null
+          status: string
+          updated_at: string
+          valor: number
+          vencimento: string
+        }
+        Insert: {
+          cliente?: string | null
+          created_at?: string
+          descricao: string
+          id?: string
+          observacoes?: string | null
+          recebido_em?: string | null
+          reserva_id?: string | null
+          status?: string
+          updated_at?: string
+          valor: number
+          vencimento: string
+        }
+        Update: {
+          cliente?: string | null
+          created_at?: string
+          descricao?: string
+          id?: string
+          observacoes?: string | null
+          recebido_em?: string | null
+          reserva_id?: string | null
+          status?: string
+          updated_at?: string
+          valor?: number
+          vencimento?: string
+        }
+        Relationships: []
+      }
       datas: {
         Row: {
           created_at: string
@@ -147,6 +234,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      despesas: {
+        Row: {
+          anexo_url: string | null
+          categoria: string
+          created_at: string
+          created_by: string | null
+          data: string
+          descricao: string
+          expedicao_id: string | null
+          fornecedor: string | null
+          id: string
+          observacoes: string | null
+          status: string
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          anexo_url?: string | null
+          categoria: string
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          descricao: string
+          expedicao_id?: string | null
+          fornecedor?: string | null
+          id?: string
+          observacoes?: string | null
+          status?: string
+          updated_at?: string
+          valor: number
+        }
+        Update: {
+          anexo_url?: string | null
+          categoria?: string
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          descricao?: string
+          expedicao_id?: string | null
+          fornecedor?: string | null
+          id?: string
+          observacoes?: string | null
+          status?: string
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: []
       }
       documentos: {
         Row: {
@@ -495,6 +630,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      page_views: {
+        Row: {
+          country: string | null
+          created_at: string
+          id: string
+          path: string
+          referrer: string | null
+          session_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          id?: string
+          path: string
+          referrer?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          id?: string
+          path?: string
+          referrer?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
       }
       participantes: {
         Row: {
