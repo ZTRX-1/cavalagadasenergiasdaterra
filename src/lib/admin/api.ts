@@ -316,6 +316,18 @@ export async function moveAsset(asset: AssetRow, direction: "up" | "down"): Prom
   await supabase.from("expedicao_assets").update({ ordem: asset.ordem } as never).eq("id", other.id);
 }
 
+/** Atualiza metadados do asset (legenda etc). */
+export async function updateAsset(
+  assetId: string,
+  patch: Partial<Pick<AssetRow, "titulo" | "ordem">>,
+): Promise<void> {
+  const { error } = await supabase
+    .from("expedicao_assets")
+    .update(patch as never)
+    .eq("id", assetId);
+  if (error) throw error;
+}
+
 // ---------- DATAS ----------
 
 export interface DataRow {
