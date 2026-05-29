@@ -15,6 +15,14 @@ import { getCanonicalExpedicaoSlug } from "@/lib/expedicao-slugs";
 
 export type { DataExpedicao, Expedicao };
 
+export interface ExpedicaoAssetLite {
+  url: string;
+  tipo: string;
+  titulo: string | null;
+  ordem: number;
+  is_capa: boolean;
+}
+
 function normalizeExpedicao(row: Record<string, unknown>): Expedicao {
   return {
     id: row.id as string,
@@ -76,7 +84,7 @@ export async function listExpedicoes(): Promise<Expedicao[]> {
 
 export async function getExpedicaoBySlug(
   input: { data: { slug: string } },
-): Promise<{ expedicao: Expedicao; datas: DataExpedicao[] } | null> {
+): Promise<{ expedicao: Expedicao; datas: DataExpedicao[]; assets: ExpedicaoAssetLite[]; capa_url: string | null } | null> {
   const canonicalSlug = getCanonicalExpedicaoSlug(input.data.slug);
   try {
     const { data: exp, error } = await supabase
@@ -87,21 +95,30 @@ export async function getExpedicaoBySlug(
       .eq("status", "publicado")
       .maybeSingle();
     if (error) throw error;
-    if (!exp) return getExpedicaoBySlugStatic(input);
+    if (!exp) {
+      const fallback = await getExpedicaoBySlugStatic(input);
+      return fallback ? { ...fallback, assets: [], capa_url: null } : null;
+    }
     const norm = normalizeExpedicao(exp as Record<string, unknown>);
-    const { data: datas } = await supabase
-      .from("datas")
-      .select("*")
-      .eq("expedicao_id", norm.id)
-      .order("data_inicio", { ascending: true });
+    const [datasRes, assetsRes] = await Promise.all([
+      supabase.from("datas").select("*").eq("expedicao_id", norm.id).order("data_inicio", { ascending: true }),
+      supabase
+        .from("expedicao_assets")
+        .select("url, tipo, titulo, ordem, is_capa")
+        .eq("expedicao_id", norm.id)
+        .order("ordem", { ascending: true }),
+    ]);
     return {
       expedicao: norm,
-      datas: (datas ?? []).map((d) =>
+      datas: (datasRes.data ?? []).map((d) =>
         normalizeData(d as Record<string, unknown>, { nome: norm.nome, slug: norm.slug, moeda: norm.moeda }),
       ),
+      assets: (assetsRes.data ?? []) as ExpedicaoAssetLite[],
+      capa_url: ((exp as Record<string, unknown>).capa_url as string | null) ?? null,
     };
   } catch {
-    return getExpedicaoBySlugStatic(input);
+    const fallback = await getExpedicaoBySlugStatic(input);
+    return fallback ? { ...fallback, assets: [], capa_url: null } : null;
   }
 }
 
