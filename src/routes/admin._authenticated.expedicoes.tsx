@@ -35,18 +35,26 @@ function ExpedicoesPage() {
   const { data: list = [], isLoading } = useQuery({ queryKey: ["admin", "expedicoes"], queryFn: listExpedicoes });
   const [confirmDel, setConfirmDel] = useState<ExpedicaoRow | null>(null);
   const [filtro, setFiltro] = useState<ExpedicaoRow["status"] | "todos">("todos");
+  const [novaOpen, setNovaOpen] = useState(false);
+  const [novaForm, setNovaForm] = useState({ nome: "", marca: "cavalgadas", pais: "brasil" });
 
   const refresh = () => qc.invalidateQueries({ queryKey: ["admin", "expedicoes"] });
 
   const novaMut = useMutation({
-    mutationFn: () => createExpedicao({ nome: "Nova expedição", status: "rascunho" }),
+    mutationFn: () =>
+      createExpedicao({
+        nome: novaForm.nome.trim() || "Nova expedição",
+        marca: novaForm.marca,
+        pais: novaForm.pais,
+        status: "rascunho",
+      }),
     onSuccess: (row) => {
-      // Pré-popula o cache do detalhe e navega ANTES de invalidar a lista,
-      // para que uma eventual falha de refetch não bloqueie a abertura.
       qc.setQueryData(["admin", "expedicao", row.id], row);
+      setNovaOpen(false);
+      setNovaForm({ nome: "", marca: "cavalgadas", pais: "brasil" });
       nav({ to: "/admin/expedicoes/$id", params: { id: row.id } });
       qc.invalidateQueries({ queryKey: ["admin", "expedicoes"] });
-      toast.success("Expedição criada — configure os dados abaixo");
+      toast.success("Expedição criada — configure os dados");
     },
     onError: (e) => toast.error((e as Error).message),
   });
@@ -87,7 +95,7 @@ function ExpedicoesPage() {
         title="Expedições"
         description="Gerencie todas as expedições, mídia, datas e publicação no site."
         actions={
-          <button className="admin-btn-primary" onClick={() => novaMut.mutate()} disabled={novaMut.isPending}>
+          <button className="admin-btn-primary" onClick={() => setNovaOpen(true)}>
             <Plus className="h-4 w-4" /> Nova expedição
           </button>
         }
@@ -122,7 +130,7 @@ function ExpedicoesPage() {
           titulo={filtro === "todos" ? "Nenhuma expedição ainda" : "Nenhuma expedição neste status"}
           descricao="Crie sua primeira expedição para começar a publicar no site."
           acao={
-            <button className="admin-btn-primary" onClick={() => novaMut.mutate()}>
+            <button className="admin-btn-primary" onClick={() => setNovaOpen(true)}>
               <Plus className="h-4 w-4" /> Criar agora
             </button>
           }
