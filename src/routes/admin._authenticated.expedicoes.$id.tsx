@@ -634,3 +634,61 @@ function ExpedicaoEdit() {
     </div>
   );
 }
+
+function CapaEditor({
+  capaUrl,
+  onUpload,
+  onRemove,
+}: {
+  capaUrl: string | null;
+  onUpload: (file: File) => Promise<void> | void;
+  onRemove?: () => Promise<void> | void;
+}) {
+  const inputId = "capa-upload-input";
+  if (capaUrl) {
+    return (
+      <div className="relative group">
+        <img src={capaUrl} alt="Capa da expedição" className="aspect-[4/3] w-full rounded-md object-cover ring-1 ring-[color:var(--admin-borda)]" />
+        <div className="absolute inset-0 flex items-end justify-between gap-2 rounded-md bg-gradient-to-t from-black/70 via-black/0 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
+          <label htmlFor={inputId} className="admin-btn-primary cursor-pointer text-[11px] px-2 py-1.5">
+            Trocar capa
+          </label>
+          {onRemove && (
+            <button className="admin-btn-ghost text-[11px] px-2 py-1.5 bg-black/40 hover:!bg-rose-500/30" onClick={() => onRemove()}>
+              Remover
+            </button>
+          )}
+        </div>
+        <input
+          id={inputId}
+          type="file"
+          accept="image/*"
+          className="sr-only"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) onUpload(f);
+            e.target.value = "";
+          }}
+        />
+      </div>
+    );
+  }
+  return (
+    <label htmlFor={inputId} className="flex aspect-[4/3] w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-md border border-dashed border-[color:var(--admin-borda-strong)] bg-[color:var(--admin-petroleo)]/40 px-4 text-center transition hover:border-[color:var(--admin-dourado)]/60 hover:bg-[color:var(--admin-petroleo)]/60">
+      <span className="text-xs font-medium text-[color:var(--admin-cinza-1)]">Clique para enviar a capa</span>
+      <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">JPG, PNG ou WebP</span>
+      <input
+        id={inputId}
+        type="file"
+        accept="image/*"
+        className="sr-only"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) onUpload(f);
+          e.target.value = "";
+        }}
+      />
+    </label>
+  );
+}
+
