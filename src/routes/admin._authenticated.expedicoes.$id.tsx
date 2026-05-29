@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { ArrowLeft, Save, Star, Trash2, ChevronUp, ChevronDown, Plus } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowLeft, Save, Star, Trash2, ChevronUp, ChevronDown, Plus, ExternalLink, CheckCircle2, Circle } from "lucide-react";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
@@ -13,6 +13,7 @@ import {
   updateExpedicao,
   listAssets,
   uploadAsset,
+  updateAsset,
   deleteAsset,
   setCapa,
   moveAsset,
@@ -39,6 +40,8 @@ export const Route = createFileRoute("/admin/_authenticated/expedicoes/$id")({
     </div>
   ),
 });
+
+type RoteiroDia = { dia: string; titulo: string; desc: string };
 
 function ExpedicaoEdit() {
   const { id } = Route.useParams();
@@ -69,6 +72,22 @@ function ExpedicaoEdit() {
     onError: (e) => toast.error((e as Error).message),
   });
 
+  const checklist = useMemo(() => {
+    if (!form) return [];
+    const imagens = assets.filter((a) => a.tipo === "imagem");
+    return [
+      { ok: !!form.nome && form.nome.trim().length > 0, label: "Nome da expedição" },
+      { ok: !!form.descricao_curta && form.descricao_curta.trim().length > 0, label: "Resumo curto (vai aparecer no card)" },
+      { ok: Number(form.preco ?? 0) > 0, label: "Preço definido" },
+      { ok: !!form.duracao && form.duracao.trim().length > 0, label: "Duração" },
+      { ok: (form.inclui?.length ?? 0) > 0, label: "Pelo menos 1 item em \"O que inclui\"" },
+      { ok: imagens.length >= 1, label: "Pelo menos 1 foto enviada" },
+      { ok: (form.roteiro?.length ?? 0) > 0, label: "Roteiro com ao menos 1 dia" },
+    ];
+  }, [form, assets]);
+
+  const pendentes = checklist.filter((i) => !i.ok).length;
+
   if (isLoading || isFetching && !exp) return <div className="admin-card h-40 animate-pulse" />;
   if (!exp) {
     return (
@@ -82,17 +101,46 @@ function ExpedicaoEdit() {
 
   const setF = (patch: Partial<ExpedicaoRow>) => setForm((f) => ({ ...(f ?? {}), ...patch }));
 
+  // ----- Roteiro helpers -----
+  const roteiro: RoteiroDia[] = form.roteiro ?? [];
+  const setRoteiro = (next: RoteiroDia[]) => setF({ roteiro: next });
+  const addDia = () => setRoteiro([...roteiro, { dia: `Dia ${roteiro.length + 1}`, titulo: "", desc: "" }]);
+  const removeDia = (idx: number) => setRoteiro(roteiro.filter((_, i) => i !== idx));
+  const moveDia = (idx: number, dir: "up" | "down") => {
+    const target = dir === "up" ? idx - 1 : idx + 1;
+    if (target < 0 || target >= roteiro.length) return;
+    const next = [...roteiro];
+    [next[idx], next[target]] = [next[target], next[idx]];
+    setRoteiro(next);
+  };
+  const updateDia = (idx: number, patch: Partial<RoteiroDia>) => {
+    const next = [...roteiro];
+    next[idx] = { ...next[idx], ...patch };
+    setRoteiro(next);
+  };
+
   return (
     <div className="space-y-6 pb-12">
       <AdminPageHeader
         eyebrow={form.status ?? "rascunho"}
         title={form.nome ?? "Expedição"}
-        description={form.subtitulo ?? "Editar dados, mídia, datas e publicação"}
+        description={form.subtitulo ?? "Edite os dados, mídia, roteiro, datas e publicação"}
         actions={
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button className="admin-btn-ghost" onClick={() => nav({ to: "/admin/expedicoes" })}>
               <ArrowLeft className="h-4 w-4" /> Voltar
             </button>
+            {form.slug && (
+              <a
+                href={`/expedicoes/${form.slug}`}
+                target="_blank"
+                rel="noreferrer"
+                className="admin-btn-ghost"
+                title="Abrir página pública em nova aba"
+              >
+                <ExternalLink className="h-4 w-4" /> Ver página pública
+              </a>
+            )}
             <button className="admin-btn-ghost" onClick={() => saveMut.mutate({ ...form, status: "rascunho" })}>
               Salvar rascunho
             </button>
@@ -103,10 +151,38 @@ function ExpedicaoEdit() {
         }
       />
 
+      {/* Checklist de publicação */}
+      <div className="admin-card">
+        <div className="mb-3 flex items-center justify-between">
+          <div>
+            <div className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)]">Checklist de publicação</div>
+            <h3 className="mt-1 font-display text-base text-[color:var(--admin-cinza-1)]">
+              {pendentes === 0 ? "Pronto para publicar" : `${pendentes} item(ns) pendente(s)`}
+            </h3>
+          </div>
+          <StatusBadge status={form.status ?? "rascunho"} />
+        </div>
+        <ul className="grid gap-2 sm:grid-cols-2">
+          {checklist.map((item) => (
+            <li key={item.label} className="flex items-center gap-2 text-[13px]">
+              {item.ok ? (
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" strokeWidth={1.8} />
+              ) : (
+                <Circle className="h-4 w-4 shrink-0 text-[color:var(--admin-cinza-3)]" strokeWidth={1.6} />
+              )}
+              <span className={item.ok ? "text-[color:var(--admin-cinza-2)]" : "text-[color:var(--admin-cinza-3)]"}>
+                {item.label}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       <Tabs defaultValue="geral">
-        <TabsList className="bg-[color:var(--admin-carvao-deep)]/60 border border-[color:var(--admin-borda)]">
+        <TabsList className="bg-[color:var(--admin-carvao-deep)]/60 border border-[color:var(--admin-borda)] flex-wrap h-auto">
           <TabsTrigger value="geral">Geral</TabsTrigger>
-          <TabsTrigger value="midia">Mídia</TabsTrigger>
+          <TabsTrigger value="roteiro">Roteiro</TabsTrigger>
+          <TabsTrigger value="midia">Mídia & narrativa</TabsTrigger>
           <TabsTrigger value="datas">Datas & Vagas</TabsTrigger>
           <TabsTrigger value="comercial">Comercial</TabsTrigger>
           <TabsTrigger value="publicacao">Publicação</TabsTrigger>
@@ -121,7 +197,7 @@ function ExpedicaoEdit() {
               <AdminField label="Subtítulo">
                 <input className="admin-input" value={form.subtitulo ?? ""} onChange={(e) => setF({ subtitulo: e.target.value })} />
               </AdminField>
-              <AdminField label="Slug">
+              <AdminField label="Slug" hint="Endereço da página pública: /expedicoes/seu-slug. Cuidado ao editar depois de publicar.">
                 <input className="admin-input font-mono text-sm" value={form.slug ?? ""} onChange={(e) => setF({ slug: slugify(e.target.value) })} />
               </AdminField>
               <div className="grid grid-cols-2 gap-3">
@@ -165,13 +241,13 @@ function ExpedicaoEdit() {
             </AdminSection>
 
             <AdminSection titulo="Descrição">
-              <AdminField label="Resumo curto">
+              <AdminField label="Resumo curto" hint="Aparece no card da expedição.">
                 <textarea className="admin-input min-h-[80px]" value={form.descricao_curta ?? ""} onChange={(e) => setF({ descricao_curta: e.target.value })} />
               </AdminField>
-              <AdminField label="Descrição completa">
+              <AdminField label="Descrição completa" hint="Aparece na página da expedição, abaixo do hero.">
                 <textarea className="admin-input min-h-[180px]" value={form.descricao_longa ?? ""} onChange={(e) => setF({ descricao_longa: e.target.value })} />
               </AdminField>
-              <AdminField label="Observações internas">
+              <AdminField label="Observações internas" hint="Só visível para a equipe.">
                 <textarea className="admin-input min-h-[60px]" value={form.observacoes ?? ""} onChange={(e) => setF({ observacoes: e.target.value ?? null })} />
               </AdminField>
             </AdminSection>
@@ -185,8 +261,8 @@ function ExpedicaoEdit() {
                   return capa ? (
                     <img src={capa} className="aspect-[4/3] w-full rounded-md object-cover ring-1 ring-[color:var(--admin-borda)]" />
                   ) : (
-                    <div className="aspect-[4/3] w-full rounded-md bg-[color:var(--admin-petroleo)] grid place-items-center text-[11px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">
-                      Envie uma imagem na aba Mídia
+                    <div className="aspect-[4/3] w-full rounded-md bg-[color:var(--admin-petroleo)] grid place-items-center text-center text-[11px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] px-4">
+                      Envie uma imagem na aba Mídia & narrativa
                     </div>
                   );
                 })()}
@@ -209,8 +285,87 @@ function ExpedicaoEdit() {
           </div>
         </TabsContent>
 
+        {/* ============== ROTEIRO ============== */}
+        <TabsContent value="roteiro" className="mt-6">
+          <AdminSection
+            titulo="Roteiro dia-a-dia"
+            descricao="Cada bloco vira um cartão na seção 'Como cada dia se desenrola' da página pública. Lembre-se de clicar em 'Salvar e publicar' no topo após editar."
+            actions={
+              <button className="admin-btn-ghost" onClick={addDia}>
+                <Plus className="h-3.5 w-3.5" /> Adicionar dia
+              </button>
+            }
+          >
+            {roteiro.length === 0 ? (
+              <div className="rounded-md border border-dashed border-[color:var(--admin-borda)] p-8 text-center text-sm text-[color:var(--admin-cinza-3)]">
+                Nenhum dia cadastrado ainda. Comece adicionando o Dia 1.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {roteiro.map((d, idx) => (
+                  <div key={idx} className="rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 p-4">
+                    <div className="mb-3 flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="grid h-7 w-7 place-items-center rounded-full bg-[color:var(--admin-petroleo)] text-[11px] font-medium text-[color:var(--admin-dourado-glow)]">
+                          {idx + 1}
+                        </span>
+                        <input
+                          className="admin-input w-32"
+                          value={d.dia}
+                          onChange={(e) => updateDia(idx, { dia: e.target.value })}
+                          placeholder="Dia 1"
+                        />
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <button className="admin-btn-ghost px-2 py-1.5" title="Subir" onClick={() => moveDia(idx, "up")} disabled={idx === 0}>
+                          <ChevronUp className="h-3.5 w-3.5" />
+                        </button>
+                        <button className="admin-btn-ghost px-2 py-1.5" title="Descer" onClick={() => moveDia(idx, "down")} disabled={idx === roteiro.length - 1}>
+                          <ChevronDown className="h-3.5 w-3.5" />
+                        </button>
+                        <button className="admin-btn-ghost px-2 py-1.5 hover:!bg-rose-500/10 hover:!text-rose-300" title="Remover" onClick={() => removeDia(idx)}>
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="grid gap-3 md:grid-cols-[1fr_2fr]">
+                      <AdminField label="Título do dia">
+                        <input
+                          className="admin-input"
+                          value={d.titulo}
+                          onChange={(e) => updateDia(idx, { titulo: e.target.value })}
+                          placeholder="Boas-vindas à travessia"
+                        />
+                      </AdminField>
+                      <AdminField label="Descrição">
+                        <textarea
+                          className="admin-input min-h-[90px]"
+                          value={d.desc}
+                          onChange={(e) => updateDia(idx, { desc: e.target.value })}
+                          placeholder="O que acontece neste dia."
+                        />
+                      </AdminField>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {roteiro.length > 0 && (
+              <div className="pt-2 text-right">
+                <button className="admin-btn-primary" onClick={() => saveMut.mutate({ roteiro })} disabled={saveMut.isPending}>
+                  <Save className="h-4 w-4" /> Salvar roteiro
+                </button>
+              </div>
+            )}
+          </AdminSection>
+        </TabsContent>
+
+        {/* ============== MÍDIA ============== */}
         <TabsContent value="midia" className="mt-6 space-y-6">
-          <AdminSection titulo="Galeria" descricao="A imagem marcada com estrela é a capa pública.">
+          <AdminSection
+            titulo="Fotos da expedição"
+            descricao="A imagem com a estrela é a capa pública. A legenda de cada foto vira o texto emocional que aparece no carrossel narrativo da página."
+          >
             <AdminUploader
               accept={{ "image/*": [".jpg", ".jpeg", ".png", ".webp"] }}
               hint="JPG, PNG ou WebP"
@@ -222,24 +377,52 @@ function ExpedicaoEdit() {
                 toast.success(`${files.length} arquivo(s) enviado(s)`);
               }}
             />
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {assets.filter((a) => a.tipo === "imagem").map((a) => (
-                <div key={a.id} className="group relative overflow-hidden rounded-lg ring-1 ring-[color:var(--admin-borda)]">
-                  <img src={a.url} className="aspect-[4/3] w-full object-cover" />
-                  {a.is_capa ? (
-                    <div className="absolute left-2 top-2 rounded-full bg-[color:var(--admin-dourado)]/95 px-2 py-0.5 text-[10px] font-medium text-[color:var(--admin-carvao-deep)]">Capa</div>
-                  ) : null}
-                  <div className="absolute inset-x-0 bottom-0 flex justify-end gap-1 bg-gradient-to-t from-black/80 to-transparent p-2 opacity-0 transition group-hover:opacity-100">
-                    <button title="Subir" className="admin-btn-ghost px-2 py-1" onClick={async () => { await moveAsset(a, "up"); qc.invalidateQueries({ queryKey: ["admin", "assets", id] }); }}>
+            <div className="space-y-3">
+              {assets.filter((a) => a.tipo === "imagem").length === 0 && (
+                <p className="text-sm text-[color:var(--admin-cinza-3)]">Nenhuma foto ainda. Envie acima.</p>
+              )}
+              {assets.filter((a) => a.tipo === "imagem").map((a, idx) => (
+                <div key={a.id} className="grid gap-3 rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 p-3 md:grid-cols-[140px_1fr_auto]">
+                  <div className="relative">
+                    <img src={a.url} className="aspect-[4/3] w-full rounded-md object-cover ring-1 ring-[color:var(--admin-borda)]" />
+                    {a.is_capa && (
+                      <div className="absolute left-1.5 top-1.5 rounded-full bg-[color:var(--admin-dourado)]/95 px-2 py-0.5 text-[10px] font-medium text-[color:var(--admin-carvao-deep)]">
+                        Capa
+                      </div>
+                    )}
+                    <div className="absolute right-1.5 top-1.5 rounded-full bg-black/70 px-2 py-0.5 text-[10px] font-medium text-white">
+                      #{idx + 1}
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <AdminField label="Legenda (texto emocional, aparece sob a foto)">
+                      <textarea
+                        className="admin-input min-h-[70px]"
+                        defaultValue={a.titulo ?? ""}
+                        onBlur={async (e) => {
+                          const value = e.target.value.trim();
+                          if (value === (a.titulo ?? "").trim()) return;
+                          try {
+                            await updateAsset(a.id, { titulo: value || null });
+                            qc.invalidateQueries({ queryKey: ["admin", "assets", id] });
+                            toast.success("Legenda salva");
+                          } catch (err) { toast.error((err as Error).message); }
+                        }}
+                        placeholder="Deixe em branco se esta foto não deve ter texto narrativo."
+                      />
+                    </AdminField>
+                  </div>
+                  <div className="flex flex-row md:flex-col items-center gap-1 justify-end">
+                    <button title="Subir" className="admin-btn-ghost px-2 py-1.5" onClick={async () => { await moveAsset(a, "up"); qc.invalidateQueries({ queryKey: ["admin", "assets", id] }); }}>
                       <ChevronUp className="h-3.5 w-3.5" />
                     </button>
-                    <button title="Descer" className="admin-btn-ghost px-2 py-1" onClick={async () => { await moveAsset(a, "down"); qc.invalidateQueries({ queryKey: ["admin", "assets", id] }); }}>
+                    <button title="Descer" className="admin-btn-ghost px-2 py-1.5" onClick={async () => { await moveAsset(a, "down"); qc.invalidateQueries({ queryKey: ["admin", "assets", id] }); }}>
                       <ChevronDown className="h-3.5 w-3.5" />
                     </button>
-                    <button title="Definir capa" className="admin-btn-ghost px-2 py-1" onClick={async () => { await setCapa(a); qc.invalidateQueries({ queryKey: ["admin"] }); toast.success("Capa atualizada"); }}>
+                    <button title="Definir como capa" className="admin-btn-ghost px-2 py-1.5" onClick={async () => { await setCapa(a); qc.invalidateQueries({ queryKey: ["admin"] }); toast.success("Capa atualizada"); }}>
                       <Star className="h-3.5 w-3.5" />
                     </button>
-                    <button title="Remover" className="admin-btn-ghost px-2 py-1 hover:!bg-rose-500/10" onClick={async () => { await deleteAsset(a); qc.invalidateQueries({ queryKey: ["admin", "assets", id] }); }}>
+                    <button title="Remover" className="admin-btn-ghost px-2 py-1.5 hover:!bg-rose-500/10" onClick={async () => { await deleteAsset(a); qc.invalidateQueries({ queryKey: ["admin", "assets", id] }); }}>
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   </div>
