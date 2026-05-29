@@ -111,6 +111,7 @@ function RootComponent() {
       {!isAdmin && <VLibras />}
       
       {!isAdmin && <AccessibilityPanel />}
+      {!isAdmin && <AnalyticsTracker />}
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );
