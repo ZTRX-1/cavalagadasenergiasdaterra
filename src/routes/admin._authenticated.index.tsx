@@ -8,7 +8,6 @@ import {
   Users,
   TrendingUp,
   ArrowUpRight,
-  BarChart3,
 } from "lucide-react";
 import {
   AreaChart,
