@@ -155,14 +155,26 @@ function ExpedicoesPage() {
                     <div className="flex items-center gap-3">
                       {(() => {
                         const capa = (e as ExpedicaoRow & { _capa?: string | null })._capa || getExpedicaoImage(e.slug);
-                        return (
+                        const inicial = (e.nome ?? "?").trim().charAt(0).toUpperCase();
+                        return capa ? (
                           <img
                             src={capa}
                             alt=""
-                            className="h-11 w-16 rounded-md object-cover ring-1 ring-[color:var(--admin-borda)]"
+                            className="h-11 w-16 rounded-md object-cover ring-1 ring-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo)]"
+                            onError={(ev) => {
+                              const img = ev.currentTarget;
+                              img.style.display = "none";
+                              img.nextElementSibling?.classList.remove("hidden");
+                            }}
                           />
-                        );
+                        ) : null;
                       })()}
+                      <div
+                        className={`${(e as ExpedicaoRow & { _capa?: string | null })._capa || getExpedicaoImage(e.slug) ? "hidden " : ""}h-11 w-16 rounded-md ring-1 ring-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo)] grid place-items-center text-[color:var(--admin-cinza-3)]`}
+                        title="Sem capa — envie uma imagem na aba Mídia"
+                      >
+                        <ImageOff className="h-4 w-4" />
+                      </div>
                       <div className="min-w-0">
                         <div className="font-medium text-[color:var(--admin-cinza-1)] truncate">{e.nome}</div>
                         <div className="text-[11px] text-[color:var(--admin-cinza-3)] truncate">{e.regiao ?? e.cidade ?? "—"}</div>
@@ -177,6 +189,25 @@ function ExpedicoesPage() {
                       <Link to="/admin/expedicoes/$id" params={{ id: e.id }} className="admin-btn-ghost px-2 py-1.5" title="Editar">
                         <Pencil className="h-3.5 w-3.5" />
                       </Link>
+                      {e.status === "publicado" ? (
+                        <a
+                          href={`/expedicoes/${e.slug}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="admin-btn-ghost px-2 py-1.5"
+                          title="Ver página pública"
+                        >
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </a>
+                      ) : (
+                        <button
+                          className="admin-btn-ghost px-2 py-1.5 opacity-40 cursor-not-allowed"
+                          title="Publique a expedição para visualizar a página pública"
+                          disabled
+                        >
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </button>
+                      )}
                       {e.status === "publicado" ? (
                         <button className="admin-btn-ghost px-2 py-1.5" title="Pausar" onClick={() => statusMut.mutate({ id: e.id, status: "pausado" })}>
                           <PauseCircle className="h-3.5 w-3.5" />
@@ -197,6 +228,7 @@ function ExpedicoesPage() {
                       </button>
                     </div>
                   </td>
+
                 </tr>
               ))}
             </tbody>
