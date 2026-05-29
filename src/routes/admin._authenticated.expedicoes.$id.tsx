@@ -189,7 +189,7 @@ function ExpedicaoEdit() {
         </TabsList>
 
         <TabsContent value="geral" className="mt-6 grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-6 order-2 lg:order-1">
             <AdminSection titulo="Identidade">
               <AdminField label="Nome">
                 <input className="admin-input" value={form.nome ?? ""} onChange={(e) => setF({ nome: e.target.value, slug: form.slug || slugify(e.target.value) })} />
@@ -200,7 +200,7 @@ function ExpedicaoEdit() {
               <AdminField label="Slug" hint="Endereço da página pública: /expedicoes/seu-slug. Cuidado ao editar depois de publicar.">
                 <input className="admin-input font-mono text-sm" value={form.slug ?? ""} onChange={(e) => setF({ slug: slugify(e.target.value) })} />
               </AdminField>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <AdminField label="Marca">
                   <select className="admin-input" value={form.marca ?? "cavalgadas"} onChange={(e) => setF({ marca: e.target.value })}>
                     <option value="cavalgadas">Cavalgadas</option>
@@ -224,7 +224,7 @@ function ExpedicaoEdit() {
             </AdminSection>
 
             <AdminSection titulo="Localização">
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <AdminField label="País">
                   <input className="admin-input" value={form.pais ?? ""} onChange={(e) => setF({ pais: e.target.value })} />
                 </AdminField>
@@ -253,25 +253,39 @@ function ExpedicaoEdit() {
             </AdminSection>
           </div>
 
-          <div className="space-y-6">
-            <AdminSection titulo="Preview">
-              <div className="space-y-3">
-                {(() => {
-                  const capa = form.capa_url || form.imagem_url || assets.find((a) => a.tipo === "imagem" && a.is_capa)?.url || assets.find((a) => a.tipo === "imagem")?.url;
-                  return capa ? (
-                    <img src={capa} className="aspect-[4/3] w-full rounded-md object-cover ring-1 ring-[color:var(--admin-borda)]" />
-                  ) : (
-                    <div className="aspect-[4/3] w-full rounded-md bg-[color:var(--admin-petroleo)] grid place-items-center text-center text-[11px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] px-4">
-                      Envie uma imagem na aba Mídia & narrativa
+          <div className="space-y-6 order-1 lg:order-2">
+            <AdminSection titulo="Capa & Preview" descricao="Esta imagem aparece no card de listagem e no topo da página pública.">
+              {(() => {
+                const capaAsset = assets.find((a) => a.tipo === "imagem" && a.is_capa) ?? assets.find((a) => a.tipo === "imagem");
+                const capa = form.capa_url || form.imagem_url || capaAsset?.url;
+                return (
+                  <div className="space-y-3">
+                    <CapaEditor
+                      capaUrl={capa ?? null}
+                      onUpload={async (file) => {
+                        try {
+                          const row = await uploadAsset(id, file, "imagem");
+                          await setCapa(row);
+                          qc.invalidateQueries({ queryKey: ["admin"] });
+                          toast.success("Capa atualizada");
+                        } catch (err) { toast.error((err as Error).message); }
+                      }}
+                      onRemove={capaAsset ? async () => {
+                        try {
+                          await deleteAsset(capaAsset);
+                          qc.invalidateQueries({ queryKey: ["admin"] });
+                          toast.success("Capa removida");
+                        } catch (err) { toast.error((err as Error).message); }
+                      } : undefined}
+                    />
+                    <div>
+                      <StatusBadge status={form.status ?? "rascunho"} />
                     </div>
-                  );
-                })()}
-                <div>
-                  <StatusBadge status={form.status ?? "rascunho"} />
-                </div>
-                <h3 className="font-display text-lg">{form.nome}</h3>
-                <p className="text-xs text-[color:var(--admin-cinza-2)]">{form.descricao_curta}</p>
-              </div>
+                    <h3 className="font-display text-lg break-words">{form.nome}</h3>
+                    <p className="text-xs text-[color:var(--admin-cinza-2)] break-words">{form.descricao_curta}</p>
+                  </div>
+                );
+              })()}
             </AdminSection>
             <AdminSection titulo="Tags">
               <AdminField label="Tags (separadas por vírgula)">
@@ -284,6 +298,7 @@ function ExpedicaoEdit() {
             </AdminSection>
           </div>
         </TabsContent>
+
 
         {/* ============== ROTEIRO ============== */}
         <TabsContent value="roteiro" className="mt-6">
