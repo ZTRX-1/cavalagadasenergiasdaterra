@@ -805,6 +805,7 @@ export async function saveConfiguracoes(patch: Partial<ConfiguracoesRow>): Promi
 // ---------- USUÁRIOS INTERNOS ----------
 
 export const CARGOS_EQUIPE = [
+  "CEO",
   "Administrador(a)",
   "Gerente Operacional",
   "Coordenador(a) de Expedições",
@@ -815,7 +816,15 @@ export const CARGOS_EQUIPE = [
   "Suporte",
 ] as const;
 
-export type AppRole = "admin" | "operador";
+export type AppRole = "superadmin" | "admin" | "ceo" | "socia" | "operador";
+
+export const ROLE_LABELS: Record<AppRole, string> = {
+  superadmin: "Super Administrador (Vexon)",
+  admin: "Administrador",
+  ceo: "CEO",
+  socia: "Sócia",
+  operador: "Operador",
+};
 
 export interface UsuarioInternoRow {
   user_id: string;
@@ -881,8 +890,8 @@ export async function alternarAtivoUsuario(user_id: string, ativo: boolean): Pro
   await callAdminUsers({ action: "set_active", user_id, ativo });
 }
 
-export async function excluirUsuarioInterno(user_id: string): Promise<void> {
-  await callAdminUsers({ action: "delete", user_id });
+export async function excluirUsuarioInterno(user_id: string, master_password?: string): Promise<void> {
+  await callAdminUsers({ action: "delete", user_id, master_password });
   await logActivity({ modulo: "usuarios", acao: "excluir", metadata: { user_id } });
 }
 

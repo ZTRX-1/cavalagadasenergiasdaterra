@@ -79,7 +79,7 @@ Deno.serve(async (req) => {
       if (!email || !password || password.length < 8) {
         return json({ error: "E-mail e senha (mínimo 8 caracteres) são obrigatórios." }, 400);
       }
-      if (!["admin", "operador"].includes(role)) {
+      if (!["admin", "operador", "ceo", "socia"].includes(role)) {
         return json({ error: "Papel inválido." }, 400);
       }
       const { data: created, error: createErr } = await admin.auth.admin.createUser({
@@ -110,7 +110,7 @@ Deno.serve(async (req) => {
       const targetId = String(body.user_id ?? "");
       const role = String(body.role ?? "");
       const cargo = (body.cargo as string | null | undefined) ?? undefined;
-      if (!targetId || !["admin", "operador"].includes(role)) {
+      if (!targetId || !["admin", "operador", "ceo", "socia"].includes(role)) {
         return json({ error: "Dados inválidos." }, 400);
       }
       await admin.from("user_roles").delete().eq("user_id", targetId);
@@ -140,8 +140,21 @@ Deno.serve(async (req) => {
 
     if (action === "delete") {
       const targetId = String(body.user_id ?? "");
+      const masterPassword = String(body.master_password ?? "");
       if (!targetId) return json({ error: "user_id obrigatório." }, 400);
       if (targetId === userData.user.id) return json({ error: "Não é possível excluir a si mesmo." }, 400);
+      // Bloqueia exclusão de superadmin sem senha-mestre
+      const { data: targetRoles } = await admin
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", targetId);
+      const isSuper = (targetRoles ?? []).some((r) => r.role === "superadmin");
+      if (isSuper) {
+        const expected = Deno.env.get("SUPERADMIN_MASTER_PASSWORD") ?? "";
+        if (!expected || masterPassword !== expected) {
+          return json({ error: "Senha-mestre incorreta. Exclusão bloqueada." }, 403);
+        }
+      }
       await admin.from("user_roles").delete().eq("user_id", targetId);
       const { error } = await admin.auth.admin.deleteUser(targetId);
       if (error) return json({ error: error.message }, 400);
