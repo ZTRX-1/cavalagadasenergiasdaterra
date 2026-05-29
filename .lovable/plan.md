@@ -1,60 +1,64 @@
+## O problema
 
-## O que será ajustado no editor de expedição
+As 8 expedições publicadas mostram no site:
+- **1 foto de capa** (no topo da página) — vinda de `SLUG_IMAGE` em `src/lib/expedicao-images.ts`.
+- **8 fotos do carrossel narrativo** com legenda emocional cada — vindas de `SLUG_NARRATIVA` no mesmo arquivo.
 
-### 1. Preview com capa editável (aba Geral, coluna direita)
+Mas no banco (`expedicoes.capa_url` + `expedicao_assets`) **todas as 8 expedições têm 0 fotos e nenhuma capa**. Por isso o painel aparece vazio — o site renderiza direto do código (curadoria estática), não do banco.
 
-Hoje o "Preview" só mostra a imagem (ou um placeholder seco quando não há capa). Vamos transformá-lo em **capa editável** ali mesmo, sem precisar ir até a aba Mídia:
+A cliente precisa enxergar essas mesmas fotos e legendas no admin para poder editar.
 
-- Quando **já existe capa**: mostra a imagem com um botão flutuante "Trocar capa" no canto + um botão discreto "Remover capa".
-- Quando **não há capa**: área pontilhada com texto claro "Clique para enviar a capa (JPG, PNG ou WebP)". Aceita clique e drag-and-drop.
-- O upload usa o mesmo `uploadAsset` da aba Mídia e marca automaticamente como `is_capa`. A foto também passa a fazer parte do carrossel (mesmo padrão atual), evitando duplicidade.
-- Texto auxiliar abaixo: "Esta imagem aparece no card de listagem e no topo da página pública."
+## A solução
 
-Resolve o relato "não sei porque tá aparecendo como se a imagem não tivesse ali".
+**Migrar a curadoria estática para o banco**, uma única vez, e a partir daí o site continua mostrando as mesmas imagens (a função `getExpedicaoImage`/`getExpedicaoGaleria`/`getExpedicaoNarrativa` já prioriza assets do banco sobre a curadoria estática — só faltava o banco ter os dados).
 
-### 2. Carrossel de fotos mais intuitivo (aba Mídia & narrativa)
+### Passo 1 — Script de seed (rodado uma vez)
 
-A estrutura atual já permite enviar, reordenar, marcar capa e legendar. Vamos tornar o fluxo dos **8 slots padrão** explícito e mais fácil:
+Criar `scripts/seed-expedicao-assets.ts` que:
 
-- Cabeçalho da seção mostra contador: **"Foto X de 8"** (verde quando ≥ 8, âmbar abaixo). Texto explicativo: "O padrão das expedições é um carrossel de 8 fotos com uma legenda emocional em cada uma. Você pode ter mais ou menos."
-- Dropzone com cópia mais clara: "Arraste até 8 fotos de uma vez ou clique para escolher".
-- Cada cartão de foto ganha:
-  - Etiquetas visíveis nos botões de ação (não só ícone): **Subir / Descer / Definir capa / Remover** (no desktop com texto pequeno; no mobile vira menu de ações).
-  - Campo de legenda com placeholder novo: "Ex.: 'O primeiro passo antes da travessia.'" e contador "0/140" — só visual, sem cortar.
-  - Cabeçalho do cartão mostra "Foto N — Capa" ou "Foto N" para deixar claro a ordem do carrossel.
-- Quando há 0 fotos: bloco de "primeiros passos" com botão grande "Enviar primeira foto" + dica "A primeira foto enviada vira automaticamente a capa".
+1. Para cada slug em `SLUG_NARRATIVA` (8 expedições):
+   - Lê os 8 arquivos `.jpg` correspondentes em `src/assets/fotos/<pasta>/`.
+   - Faz upload para o bucket público `expedicao-midia` em `<slug>/01.jpg` … `<slug>/08.jpg` usando `supabaseAdmin` (service role).
+   - Insere 8 linhas em `expedicao_assets` com:
+     - `expedicao_id` (lookup pelo slug)
+     - `tipo = 'imagem'`
+     - `url` = URL pública do bucket
+     - `titulo` = legenda da `CenaNarrativa`
+     - `ordem` = 1..8
+     - `is_capa = true` apenas para a primeira (que já é a capa em `SLUG_IMAGE`)
+   - Atualiza `expedicoes.capa_url` com a URL pública da foto 01.
 
-### 3. Aba "Datas & Vagas" com legendas e layout responsivo
+2. **Idempotente**: antes de inserir, deleta assets existentes para aquele `expedicao_id` (`DELETE FROM expedicao_assets WHERE expedicao_id = …`) e reescreve. Assim podemos rodar de novo se algo der errado.
 
-Hoje a linha é `grid-cols-12` com 6 campos numéricos sem rótulo — daí o "número 8, 3200, 3520" que a cliente não entende. E em mobile a linha estoura.
+3. Roda via `code--exec` com `bun run scripts/seed-expedicao-assets.ts`. Usa variáveis `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` já presentes no ambiente.
 
-- Adicionar **cabeçalho de colunas** uma única vez no topo da tabela (desktop): `Início · Fim · Vagas total · Vagas disponíveis · Preço Pix (R$) · Preço cartão (R$) · Ações`.
-- Cada linha vira um **cartão**:
-  - **Desktop (≥ md):** mantém layout em grid, mas com rótulo curto acima de cada input (`text-[10px] uppercase tracking-wider text-muted`).
-  - **Mobile (< md):** empilha em 2 colunas (datas lado a lado; vagas lado a lado; preços lado a lado), botão "Remover" full-width no rodapé. Sem overflow horizontal.
-- Tooltip de ajuda no título da seção: ícone "?" com explicação curta — "Vagas total é o limite da turma. Vagas disponíveis é quanto ainda pode ser vendido. Pix e Cartão são os preços que aparecem no site."
-- Botão "Adicionar data" abre a nova linha já com datas = hoje, vagas = padrão da expedição e preços herdando o `preco` geral (em vez de vir vazio).
-- Validação leve: se `vagas_disponiveis > vagas_total`, mostrar aviso âmbar inline ("Vagas disponíveis não pode passar do total").
+Depois de rodar, o admin passa a mostrar exatamente as 8 fotos com as legendas que aparecem no site, e a capa fica preenchida.
 
-### 4. Responsividade geral do editor
+### Passo 2 — Pequeno ajuste no editor (aba Geral)
 
-Varredura no arquivo para corrigir overflow em telas pequenas:
+Na seção "Capa editável", quando `capa_url` está vazia **mas existe um asset com `is_capa = true`**, usar esse asset como preview (em vez de mostrar área pontilhada vazia). Isso garante que após o seed a capa apareça corretamente mesmo se `expedicoes.capa_url` por algum motivo não foi populado.
 
-- **Header de ações** (`flex-wrap` já existe — manter, mas garantir `gap-2` consistente e botões com `text-xs` em < sm).
-- **Tabs**: `TabsList` já tem `flex-wrap h-auto`. Adicionar `gap-1` para não cortar texto em iPhone SE.
-- **Aba Geral**: grid `lg:grid-cols-3` mantida; em mobile a coluna do Preview vira primeira (`order-first lg:order-none`) — assim a cliente vê o resultado antes de rolar tudo.
-- **Aba Mídia**: cartões `md:grid-cols-[140px_1fr_auto]` viram coluna única em mobile com a foto em cima, legenda no meio e ações empilhadas — sem botões cortados.
-- **Aba Comercial**: `grid-cols-3` vira `grid-cols-2 sm:grid-cols-3` para não amassar inputs em < sm.
+Pequena melhoria no helper que monta o preview, sem mudar comportamento de upload.
 
-### Fora de escopo
+### Passo 3 — Texto explicativo no admin
 
-- Redesign visual geral do admin (mantém o padrão atual).
-- Drag-and-drop para reordenar fotos (continua com setas ↑↓).
-- Mudanças no site público.
-- Mudanças de schema do banco (todas as colunas necessárias já existem).
+Adicionar uma nota discreta no topo da aba "Mídia & narrativa":
+> "Estas são as fotos exibidas no carrossel da página pública. A primeira é também a capa que aparece no topo da página e no card de listagem. Você pode reordenar, trocar legenda ou substituir qualquer foto."
 
-### Arquivos afetados
+Assim a cliente entende a relação 1:1 entre o que ela edita aqui e o que o público vê.
 
-- **Edit:** `src/routes/admin._authenticated.expedicoes.$id.tsx` — Preview editável, melhorias do carrossel, legendas/responsividade da aba Datas, ajustes responsivos gerais.
+## O que NÃO muda
 
-Sem alterações em banco, RLS, server functions ou site público.
+- A curadoria estática em `src/lib/expedicao-images.ts` continua intacta como **fallback** (se um dia o banco zerar, o site não quebra).
+- Schema do banco: nada muda. Tabelas `expedicoes` e `expedicao_assets` já têm todas as colunas necessárias (`capa_url`, `titulo`, `ordem`, `is_capa`).
+- RLS, server functions, site público: nenhum impacto. A página `expedicoes.$slug.tsx` já lê assets do banco com fallback estático.
+- Layout/visual do editor: igual ao da última iteração aprovada.
+
+## Arquivos afetados
+
+- **Novo:** `scripts/seed-expedicao-assets.ts` — seed único (rodado via exec).
+- **Edit:** `src/routes/admin._authenticated.expedicoes.$id.tsx` — preview da capa lê de `is_capa` quando `capa_url` está vazio; nota explicativa na aba Mídia.
+
+## Risco / rollback
+
+- O script é idempotente e rodado só nos 8 slugs conhecidos. Se quiser desfazer: `DELETE FROM expedicao_assets WHERE expedicao_id IN (…)` + `UPDATE expedicoes SET capa_url = NULL`. O site volta a renderizar pela curadoria estática automaticamente.
