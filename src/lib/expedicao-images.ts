@@ -148,6 +148,16 @@ import berco06 from "@/assets/fotos/berco-do-marchador/06.jpg";
 import berco07 from "@/assets/fotos/berco-do-marchador/07.jpg";
 import berco08 from "@/assets/fotos/berco-do-marchador/08.jpg";
 
+// CAMINHO DE SANTIAGO — 8 fotos curadas (ordem narrativa da jornada)
+import sant01 from "@/assets/fotos/santiago/01.jpg";
+import sant02 from "@/assets/fotos/santiago/02.jpg";
+import sant03 from "@/assets/fotos/santiago/03.jpg";
+import sant04 from "@/assets/fotos/santiago/04.jpg";
+import sant05 from "@/assets/fotos/santiago/05.jpg";
+import sant06 from "@/assets/fotos/santiago/06.jpg";
+import sant07 from "@/assets/fotos/santiago/07.jpg";
+import sant08 from "@/assets/fotos/santiago/08.jpg";
+
 
 // ============================================================
 // MAPA DE CHAVES (compat com strings vindas do banco)
@@ -172,7 +182,7 @@ export const SLUG_IMAGE: Record<string, string> = {
   "jericoacoara": jeri01,            // cavaleira ao nascer do sol nas dunas
   "peru-vale-do-colca": peruNew01,   // cavaleiros nos cânions do Peru — capa da expedição
   "patagonia-gaucha": patNew01,      // tropa nas montanhas nevadas da Patagônia
-  "caminho-de-santiago": man19,      // cavaleiros em trilha aberta
+  "caminho-de-santiago": sant01,     // chegada à Catedral de Santiago — capa da jornada
   "canastra-elas-na-sela": elasNew01,   // edição especial feminina na Canastra
 
 };
@@ -187,7 +197,7 @@ export const SLUG_GALERIA: Record<string, string[]> = {
   "peru-vale-do-colca": [peruNew01, peruNew02, peruNew03, peruNew04, peruNew05, peruNew06, peruNew07, peruNew08],
   "patagonia-gaucha": [patNew01, patNew02, patNew03, patNew04, patNew05, patNew06, patNew07, patNew08],
   "jericoacoara": [],
-  "caminho-de-santiago": [man13, man27, man19, man03, man21, man01],
+  "caminho-de-santiago": [sant01, sant02, sant03, sant04, sant05, sant06, sant07, sant08],
   "canastra-elas-na-sela": [elasNew01, elasNew02, elasNew03, elasNew04, elasNew05, elasNew06, elasNew07, elasNew08],
 
 };
@@ -305,6 +315,16 @@ export const SLUG_NARRATIVA: Record<string, CenaNarrativa[]> = {
     { src: berco06, eyebrow: "", titulo: "Mais do que uma expedição, uma oportunidade de compartilhar momentos, histórias e a paixão pelos cavalos." },
     { src: berco07, eyebrow: "", titulo: "Patrimônio, hospitalidade e paisagens inesquecíveis se encontram em lugares que parecem ter parado no tempo." },
     { src: berco08, eyebrow: "", titulo: "Ao final da jornada, fica a certeza de que algumas experiências permanecem conosco muito depois da viagem terminar." },
+  ],
+  "caminho-de-santiago": [
+    { src: sant01, eyebrow: "", titulo: "Chegar a Santiago a cavalo é viver uma das jornadas mais marcantes do mundo, unindo história, cultura, espiritualidade e a conexão única entre cavalo e cavaleiro." },
+    { src: sant02, eyebrow: "", titulo: "Ao longo dos séculos, milhões de peregrinos percorreram estes caminhos em busca de propósito, reflexão e transformação." },
+    { src: sant03, eyebrow: "", titulo: "Pequenas aldeias preservam tradições centenárias e revelam a essência autêntica da Galícia." },
+    { src: sant04, eyebrow: "", titulo: "Bosques centenários e caminhos históricos transformam cada dia em uma descoberta." },
+    { src: sant05, eyebrow: "", titulo: "O ritmo da marcha permite apreciar paisagens, aromas e detalhes que passam despercebidos para a maioria dos viajantes." },
+    { src: sant06, eyebrow: "", titulo: "Momentos de silêncio e contemplação fazem parte da magia do Caminho de Santiago." },
+    { src: sant07, eyebrow: "", titulo: "Finisterra, o lendário “Fim do Mundo”, marca o encontro entre a terra, o oceano e a sensação de missão cumprida." },
+    { src: sant08, eyebrow: "", titulo: "Mais do que uma expedição, Santiago deixa memórias, amizades e histórias que acompanham cada participante por toda a vida." },
   ],
 
 };
