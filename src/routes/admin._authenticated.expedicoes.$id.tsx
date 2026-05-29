@@ -377,74 +377,94 @@ function ExpedicaoEdit() {
 
         {/* ============== MÍDIA ============== */}
         <TabsContent value="midia" className="mt-6 space-y-6">
-          <AdminSection
-            titulo="Fotos da expedição"
-            descricao="A imagem com a estrela é a capa pública. A legenda de cada foto vira o texto emocional que aparece no carrossel narrativo da página."
-          >
-            <AdminUploader
-              accept={{ "image/*": [".jpg", ".jpeg", ".png", ".webp"] }}
-              hint="JPG, PNG ou WebP"
-              onFiles={async (files) => {
-                for (const f of files) {
-                  try { await uploadAsset(id, f, "imagem"); } catch (e) { toast.error((e as Error).message); }
+          {(() => {
+            const imagens = assets.filter((a) => a.tipo === "imagem");
+            const ok = imagens.length >= 8;
+            return (
+              <AdminSection
+                titulo="Fotos da expedição"
+                descricao="Padrão: 8 fotos com uma legenda emocional em cada uma. Você pode ter mais ou menos. A primeira foto enviada vira automaticamente a capa."
+                actions={
+                  <span className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${ok ? "bg-emerald-500/15 text-emerald-300" : "bg-amber-500/15 text-amber-300"}`}>
+                    {imagens.length} / 8 fotos
+                  </span>
                 }
-                qc.invalidateQueries({ queryKey: ["admin", "assets", id] });
-                toast.success(`${files.length} arquivo(s) enviado(s)`);
-              }}
-            />
-            <div className="space-y-3">
-              {assets.filter((a) => a.tipo === "imagem").length === 0 && (
-                <p className="text-sm text-[color:var(--admin-cinza-3)]">Nenhuma foto ainda. Envie acima.</p>
-              )}
-              {assets.filter((a) => a.tipo === "imagem").map((a, idx) => (
-                <div key={a.id} className="grid gap-3 rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 p-3 md:grid-cols-[140px_1fr_auto]">
-                  <div className="relative">
-                    <img src={a.url} className="aspect-[4/3] w-full rounded-md object-cover ring-1 ring-[color:var(--admin-borda)]" />
-                    {a.is_capa && (
-                      <div className="absolute left-1.5 top-1.5 rounded-full bg-[color:var(--admin-dourado)]/95 px-2 py-0.5 text-[10px] font-medium text-[color:var(--admin-carvao-deep)]">
-                        Capa
-                      </div>
-                    )}
-                    <div className="absolute right-1.5 top-1.5 rounded-full bg-black/70 px-2 py-0.5 text-[10px] font-medium text-white">
-                      #{idx + 1}
+              >
+                <AdminUploader
+                  accept={{ "image/*": [".jpg", ".jpeg", ".png", ".webp"] }}
+                  hint="Arraste até 8 fotos de uma vez ou clique para escolher. JPG, PNG ou WebP."
+                  onFiles={async (files) => {
+                    for (const f of files) {
+                      try { await uploadAsset(id, f, "imagem"); } catch (e) { toast.error((e as Error).message); }
+                    }
+                    qc.invalidateQueries({ queryKey: ["admin", "assets", id] });
+                    qc.invalidateQueries({ queryKey: ["admin", "expedicao", id] });
+                    toast.success(`${files.length} foto(s) enviada(s)`);
+                  }}
+                />
+                <div className="space-y-3">
+                  {imagens.length === 0 && (
+                    <div className="rounded-md border border-dashed border-[color:var(--admin-borda)] p-6 text-center text-sm text-[color:var(--admin-cinza-3)]">
+                      Nenhuma foto ainda. Envie acima — a primeira vira a capa.
                     </div>
-                  </div>
-                  <div className="space-y-2">
-                    <AdminField label="Legenda (texto emocional, aparece sob a foto)">
-                      <textarea
-                        className="admin-input min-h-[70px]"
-                        defaultValue={a.titulo ?? ""}
-                        onBlur={async (e) => {
-                          const value = e.target.value.trim();
-                          if (value === (a.titulo ?? "").trim()) return;
-                          try {
-                            await updateAsset(a.id, { titulo: value || null });
-                            qc.invalidateQueries({ queryKey: ["admin", "assets", id] });
-                            toast.success("Legenda salva");
-                          } catch (err) { toast.error((err as Error).message); }
-                        }}
-                        placeholder="Deixe em branco se esta foto não deve ter texto narrativo."
-                      />
-                    </AdminField>
-                  </div>
-                  <div className="flex flex-row md:flex-col items-center gap-1 justify-end">
-                    <button title="Subir" className="admin-btn-ghost px-2 py-1.5" onClick={async () => { await moveAsset(a, "up"); qc.invalidateQueries({ queryKey: ["admin", "assets", id] }); }}>
-                      <ChevronUp className="h-3.5 w-3.5" />
-                    </button>
-                    <button title="Descer" className="admin-btn-ghost px-2 py-1.5" onClick={async () => { await moveAsset(a, "down"); qc.invalidateQueries({ queryKey: ["admin", "assets", id] }); }}>
-                      <ChevronDown className="h-3.5 w-3.5" />
-                    </button>
-                    <button title="Definir como capa" className="admin-btn-ghost px-2 py-1.5" onClick={async () => { await setCapa(a); qc.invalidateQueries({ queryKey: ["admin"] }); toast.success("Capa atualizada"); }}>
-                      <Star className="h-3.5 w-3.5" />
-                    </button>
-                    <button title="Remover" className="admin-btn-ghost px-2 py-1.5 hover:!bg-rose-500/10" onClick={async () => { await deleteAsset(a); qc.invalidateQueries({ queryKey: ["admin", "assets", id] }); }}>
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
+                  )}
+                  {imagens.map((a, idx) => (
+                    <div key={a.id} className="grid gap-3 rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 p-3 md:grid-cols-[160px_1fr]">
+                      <div className="relative">
+                        <img src={a.url} alt="" className="aspect-[4/3] w-full rounded-md object-cover ring-1 ring-[color:var(--admin-borda)]" />
+                        {a.is_capa && (
+                          <div className="absolute left-1.5 top-1.5 rounded-full bg-[color:var(--admin-dourado)]/95 px-2 py-0.5 text-[10px] font-medium text-[color:var(--admin-carvao-deep)]">
+                            Capa
+                          </div>
+                        )}
+                        <div className="absolute right-1.5 top-1.5 rounded-full bg-black/70 px-2 py-0.5 text-[10px] font-medium text-white">
+                          #{idx + 1}
+                        </div>
+                      </div>
+                      <div className="space-y-2 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="text-[11px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">
+                            Foto {idx + 1}{a.is_capa ? " — Capa" : ""}
+                          </div>
+                        </div>
+                        <AdminField label="Legenda (aparece sob a foto no carrossel)">
+                          <textarea
+                            className="admin-input min-h-[70px]"
+                            defaultValue={a.titulo ?? ""}
+                            onBlur={async (e) => {
+                              const value = e.target.value.trim();
+                              if (value === (a.titulo ?? "").trim()) return;
+                              try {
+                                await updateAsset(a.id, { titulo: value || null });
+                                qc.invalidateQueries({ queryKey: ["admin", "assets", id] });
+                                toast.success("Legenda salva");
+                              } catch (err) { toast.error((err as Error).message); }
+                            }}
+                            placeholder="Ex.: 'O primeiro passo antes da travessia.'"
+                          />
+                        </AdminField>
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <button className="admin-btn-ghost gap-1 px-2 py-1.5 text-[11px]" onClick={async () => { await moveAsset(a, "up"); qc.invalidateQueries({ queryKey: ["admin", "assets", id] }); }} disabled={idx === 0}>
+                            <ChevronUp className="h-3.5 w-3.5" /> Subir
+                          </button>
+                          <button className="admin-btn-ghost gap-1 px-2 py-1.5 text-[11px]" onClick={async () => { await moveAsset(a, "down"); qc.invalidateQueries({ queryKey: ["admin", "assets", id] }); }} disabled={idx === imagens.length - 1}>
+                            <ChevronDown className="h-3.5 w-3.5" /> Descer
+                          </button>
+                          <button className="admin-btn-ghost gap-1 px-2 py-1.5 text-[11px]" onClick={async () => { await setCapa(a); qc.invalidateQueries({ queryKey: ["admin"] }); toast.success("Capa atualizada"); }} disabled={a.is_capa}>
+                            <Star className="h-3.5 w-3.5" /> Definir capa
+                          </button>
+                          <button className="admin-btn-ghost gap-1 px-2 py-1.5 text-[11px] hover:!bg-rose-500/10 hover:!text-rose-300 ml-auto" onClick={async () => { if (!confirm("Remover esta foto?")) return; await deleteAsset(a); qc.invalidateQueries({ queryKey: ["admin"] }); }}>
+                            <Trash2 className="h-3.5 w-3.5" /> Remover
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </AdminSection>
+              </AdminSection>
+            );
+          })()}
+
 
           <AdminSection titulo="Vídeo">
             <AdminField label="URL do vídeo (YouTube ou Vimeo)" hint="Use embed externo — sem upload para storage.">
