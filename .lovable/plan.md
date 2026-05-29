@@ -1,64 +1,145 @@
-## O problema
+## Visão geral
 
-As 8 expedições publicadas mostram no site:
-- **1 foto de capa** (no topo da página) — vinda de `SLUG_IMAGE` em `src/lib/expedicao-images.ts`.
-- **8 fotos do carrossel narrativo** com legenda emocional cada — vindas de `SLUG_NARRATIVA` no mesmo arquivo.
+Reformulação completa do painel administrativo em 7 frentes, organizadas para entregar o que é mais crítico primeiro (permissões + analytics + financeiro), deixando ajustes finos por último. Tudo pensado para usuárias leigas: cada seção ganha um cabeçalho explicativo curto ("o que é isso", "pra que serve", "como usar") e tooltips nos campos não-óbvios.
 
-Mas no banco (`expedicoes.capa_url` + `expedicao_assets`) **todas as 8 expedições têm 0 fotos e nenhuma capa**. Por isso o painel aparece vazio — o site renderiza direto do código (curadoria estática), não do banco.
+---
 
-A cliente precisa enxergar essas mesmas fotos e legendas no admin para poder editar.
+## 1. Permissões e equipe interna (prioridade máxima)
 
-## A solução
+**Modelo de papéis (4 fixos):**
 
-**Migrar a curadoria estática para o banco**, uma única vez, e a partir daí o site continua mostrando as mesmas imagens (a função `getExpedicaoImage`/`getExpedicaoGaleria`/`getExpedicaoNarrativa` já prioriza assets do banco sobre a curadoria estática — só faltava o banco ter os dados).
+| Papel | Acesso |
+|---|---|
+| `superadmin` (Vexon Company) | Tudo. Não pode ser excluído nem ter o papel alterado sem **senha-mestre** (`Gadumaconaria33*`, guardada como hash em secret). Só 1 usuário. |
+| `ceo` | Tudo, exceto excluir/editar o superadmin. Para as duas sócias quando pagarem a 2ª fase. |
+| `socia` | **Edita** apenas Expedições. **Visualiza** Dashboard, Leads, Participantes, Financeiro, Mídia, Documentos, Configurações com banner "Em desenvolvimento — disponível na próxima fase". Não pode salvar nada fora de Expedições. |
+| `operador` | Custom — admin marca por checkbox quais módulos vê/edita. |
 
-### Passo 1 — Script de seed (rodado uma vez)
+**Implementação técnica:**
+- Migração: ampliar enum `app_role` (`superadmin`, `ceo`, `socia`, `operador`), adicionar tabela `user_permissions (user_id, modulo, pode_ver, pode_editar)` para o `operador`, adicionar coluna `is_protected boolean` em `user_roles` para o superadmin.
+- Secret `SUPERADMIN_MASTER_PASSWORD` (recebo do user via add_secret).
+- Server fn `deleteInternalUser` exige a senha-mestre quando alvo é `superadmin`.
+- Helper `useCan(modulo, acao)` no front que lê o papel + permissões e devolve `{ canView, canEdit }`. Cada página/botão consulta esse hook.
+- Sidebar oculta itens sem `canView`. Botões de salvar viram disabled + tooltip "Sem permissão" quando `!canEdit`.
+- Banner amarelo "🔒 Em desenvolvimento — você pode visualizar mas ainda não editar" no topo das páginas em modo `socia`.
 
-Criar `scripts/seed-expedicao-assets.ts` que:
+---
 
-1. Para cada slug em `SLUG_NARRATIVA` (8 expedições):
-   - Lê os 8 arquivos `.jpg` correspondentes em `src/assets/fotos/<pasta>/`.
-   - Faz upload para o bucket público `expedicao-midia` em `<slug>/01.jpg` … `<slug>/08.jpg` usando `supabaseAdmin` (service role).
-   - Insere 8 linhas em `expedicao_assets` com:
-     - `expedicao_id` (lookup pelo slug)
-     - `tipo = 'imagem'`
-     - `url` = URL pública do bucket
-     - `titulo` = legenda da `CenaNarrativa`
-     - `ordem` = 1..8
-     - `is_capa = true` apenas para a primeira (que já é a capa em `SLUG_IMAGE`)
-   - Atualiza `expedicoes.capa_url` com a URL pública da foto 01.
+## 2. Dashboard funcional (analytics próprio)
 
-2. **Idempotente**: antes de inserir, deleta assets existentes para aquele `expedicao_id` (`DELETE FROM expedicao_assets WHERE expedicao_id = …`) e reescreve. Assim podemos rodar de novo se algo der errado.
+**Tracker interno** (sem dependência externa):
 
-3. Roda via `code--exec` com `bun run scripts/seed-expedicao-assets.ts`. Usa variáveis `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` já presentes no ambiente.
+- Tabela `page_views (id, path, referrer, user_agent, country, session_id, created_at)`.
+- Server route público `/api/public/track` recebe beacon do site (1 linha JS no `__root.tsx` do site público, `navigator.sendBeacon`).
+- Tabela `traffic_sources` derivada do `referrer` (Google, Instagram, WhatsApp, direto, outros).
+- Dashboard mostra:
+  - KPIs: visitas hoje / 7d / 30d, sessões únicas, taxa de conversão (leads ÷ sessões).
+  - Top 10 páginas acessadas (com filtro de período).
+  - Origem do tráfego (donut chart).
+  - Gráfico de linha últimos 30 dias.
+- Filtro de período (hoje, 7d, 30d, custom) em todas as métricas.
+- Cabeçalho explicativo: "Aqui você vê em tempo real quantas pessoas visitaram o site, quais expedições mais atraem interesse e de onde elas vieram (Google, Instagram, WhatsApp…)."
 
-Depois de rodar, o admin passa a mostrar exatamente as 8 fotos com as legendas que aparecem no site, e a capa fica preenchida.
+---
 
-### Passo 2 — Pequeno ajuste no editor (aba Geral)
+## 3. Financeiro completo
 
-Na seção "Capa editável", quando `capa_url` está vazia **mas existe um asset com `is_capa = true`**, usar esse asset como preview (em vez de mostrar área pontilhada vazia). Isso garante que após o seed a capa apareça corretamente mesmo se `expedicoes.capa_url` por algum motivo não foi populado.
+**Novas tabelas:**
+- `despesas (id, data, categoria, descricao, valor, expedicao_id?, anexo_url?, status)` — categorias: cavalos, alimentação, equipe, logística, marketing, hospedagem, transporte, impostos, outros.
+- `contas_pagar (id, descricao, valor, vencimento, status, categoria, fornecedor)`.
+- `contas_receber` (derivado de reservas + manuais).
 
-Pequena melhoria no helper que monta o preview, sem mudar comportamento de upload.
+**Painel financeiro:**
+- Filtro de **calendário** (hoje, mês, ano, custom) global.
+- 6 KPIs no topo: Faturamento confirmado, Estimado, Pendente, **Despesas totais**, **Lucro líquido**, **Margem %**.
+- Abas: `Receitas` (reservas), `Despesas` (CRUD), `Contas a pagar`, `Contas a receber`, `Fluxo de caixa` (gráfico), `DRE por expedição` (lucro de cada uma).
+- Export CSV por período.
+- Cabeçalho: "Controle financeiro completo da empresa: o que entrou, o que saiu, o que está previsto, e quanto cada expedição realmente lucrou."
 
-### Passo 3 — Texto explicativo no admin
+---
 
-Adicionar uma nota discreta no topo da aba "Mídia & narrativa":
-> "Estas são as fotos exibidas no carrossel da página pública. A primeira é também a capa que aparece no topo da página e no card de listagem. Você pode reordenar, trocar legenda ou substituir qualquer foto."
+## 4. Leads com filtros estratégicos
 
-Assim a cliente entende a relação 1:1 entre o que ela edita aqui e o que o público vê.
+- Filtros (combo): origem (WhatsApp, site, indicação, manual), expedição de interesse, status (novo, em contato, qualificado, ganho, perdido), status de pagamento (sem reserva, reserva criada, parcial, pago), período.
+- Coluna "Conversão" visível: 🟢 pago / 🟡 reserva sem pagar / ⚪ só conversa.
+- Botão "Converter em reserva" diretamente do lead (cria reserva já vinculada).
+- Cabeçalho: "Cada pessoa que entrou em contato pelo WhatsApp ou pelo site vira um lead aqui. Use os filtros pra ver quem está perto de fechar, quem já pagou, e quem precisa de follow-up."
 
-## O que NÃO muda
+---
 
-- A curadoria estática em `src/lib/expedicao-images.ts` continua intacta como **fallback** (se um dia o banco zerar, o site não quebra).
-- Schema do banco: nada muda. Tabelas `expedicoes` e `expedicao_assets` já têm todas as colunas necessárias (`capa_url`, `titulo`, `ordem`, `is_capa`).
-- RLS, server functions, site público: nenhum impacto. A página `expedicoes.$slug.tsx` já lê assets do banco com fallback estático.
-- Layout/visual do editor: igual ao da última iteração aprovada.
+## 5. Participantes — finalidade clarificada
 
-## Arquivos afetados
+- Reposicionar como **"Lista de viajantes confirmados por data"**: agrupada por expedição → data → participantes (nome, documento, contato emergência, restrições médicas/alimentares, peso para o cavalo, experiência equestre).
+- Botão "Exportar lista para o guia" (PDF impresso com tudo que o guia precisa no campo).
+- Cabeçalho: "Aqui ficam todos os viajantes confirmados em cada expedição. Use pra montar a lista que vai pro guia, conferir restrições alimentares, peso pro cavalo certo e contatos de emergência."
 
-- **Novo:** `scripts/seed-expedicao-assets.ts` — seed único (rodado via exec).
-- **Edit:** `src/routes/admin._authenticated.expedicoes.$id.tsx` — preview da capa lê de `is_capa` quando `capa_url` está vazio; nota explicativa na aba Mídia.
+---
 
-## Risco / rollback
+## 6. Documentos — categorização real
 
-- O script é idempotente e rodado só nos 8 slugs conhecidos. Se quiser desfazer: `DELETE FROM expedicao_assets WHERE expedicao_id IN (…)` + `UPDATE expedicoes SET capa_url = NULL`. O site volta a renderizar pela curadoria estática automaticamente.
+Substituir as 5 categorias atuais (institucional/jurídico/operacional/expedição/participantes) por **tipos alinhados à operação**:
+
+| Tipo | Aparece onde |
+|---|---|
+| Contrato de prestação | anexado a cada reserva, baixável pelo cliente em "Minha Reserva" |
+| Termo de responsabilidade | obrigatório no checkout, fica na ficha do participante |
+| Política de cancelamento | público no site (rodapé) + anexado em cada reserva |
+| Ficha médica | um por participante, privado, só admin/guia |
+| Documento jurídico interno | só admin (CNPJ, contrato social, alvarás) |
+| Outro | catch-all |
+
+- Cada upload pede: tipo, vinculado a (expedição/reserva/participante/nenhum), validade opcional.
+- Cabeçalho explica onde cada tipo é usado e quem vê.
+
+---
+
+## 7. Configurações — propósito claro
+
+Reorganizar em 4 cards com explicação:
+
+- **Dados da empresa** ("usado no rodapé do site, contratos e notas") — nome, CNPJ, endereço, e-mail oficial.
+- **Canais de comunicação** ("WhatsApp que recebe os leads e Instagram exibido no site") — WhatsApp, Instagram, e-mails que recebem notificação de nova reserva.
+- **Identidade visual** ("logo e cor de destaque aplicados no painel e em e-mails transacionais") — logo, cor.
+- **Equipe interna** (movido para nova rota `/admin/equipe` com modelo de permissões da seção 1).
+
+---
+
+## 8. UX e responsividade (ajustes finais)
+
+- **Padding interno** dos cards (`AdminSection`, "Checklist de publicação", "Mídia") aumentado de `p-4` para `p-6 md:p-8` para o texto respirar.
+- **Expedições mobile**: revisar `expedicoes.index` e `expedicoes.$id` em 390px — tabela vira lista de cards, abas com scroll horizontal, botões de ação stack vertical.
+- **Cabeçalho explicativo** padronizado em toda página: componente `<AdminPageIntro>` com ícone + 2-3 linhas em texto cinza claro.
+- **Tooltips** (`?` ao lado de labels não-óbvios) com explicação curta.
+
+---
+
+## Faseamento sugerido
+
+```text
+Fase 1 (esta entrega)
+├── Permissões + superadmin protegido + senha-mestre
+├── Cabeçalhos explicativos em todas as 8 páginas
+├── Padding/responsividade (rápido)
+└── Filtros de Leads
+
+Fase 2
+├── Analytics próprio (tabela + tracker + dashboard)
+└── Financeiro completo (despesas + contas + DRE)
+
+Fase 3
+├── Documentos recategorizados
+├── Participantes redesenhado + export PDF guia
+└── Configurações reorganizadas
+```
+
+Posso executar tudo de uma vez ou ir fase a fase — me diga sua preferência ao aprovar. Se aprovar como está, começo pela Fase 1 e já solicito a senha-mestre como secret na primeira ação.
+
+---
+
+## Detalhes técnicos
+
+- Migrações: novo enum `app_role`, tabelas `user_permissions`, `page_views`, `traffic_sources`, `despesas`, `contas_pagar`. RLS: leitura por `is_internal_user`, escrita gated por `has_role` + `user_permissions`. GRANTs explícitos.
+- Server fns novas: `trackPageView` (público, rate-limited), `listDashboardMetrics`, `listDespesas`/`createDespesa`/`updateDespesa`/`deleteDespesa`, `deleteInternalUser` (com check de senha-mestre via bcrypt compare).
+- Secrets: `SUPERADMIN_MASTER_PASSWORD` (hash bcrypt).
+- Frontend: hook `useCan`, componente `<AdminPageIntro>`, `<DateRangeFilter>` reutilizável, `<EmDesenvolvimentoBanner>`.
+- Nada quebra o site público.
