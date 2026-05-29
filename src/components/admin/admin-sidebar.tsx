@@ -12,27 +12,44 @@ import {
   X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery } from "@tanstack/react-query";
-import { getMeuPerfil } from "@/lib/admin/api";
 import logoCavalgadas from "@/assets/logo-cavalgadas.jpg";
+import { useCan, type AdminModule } from "@/hooks/use-permissions";
 
 type NavItem = {
   to: string;
   label: string;
   icon: typeof LayoutDashboard;
+  modulo: AdminModule;
   exact?: boolean;
 };
 
 const nav: NavItem[] = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { to: "/admin/expedicoes", label: "Expedições", icon: Compass },
-  { to: "/admin/leads", label: "Leads", icon: Sparkles },
-  { to: "/admin/participantes", label: "Participantes", icon: Users },
-  { to: "/admin/financeiro", label: "Financeiro", icon: Wallet },
-  { to: "/admin/midia", label: "Mídia", icon: ImageIcon },
-  { to: "/admin/documentos", label: "Documentos", icon: FileText },
-  { to: "/admin/configuracoes", label: "Configurações", icon: Settings },
+  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, modulo: "dashboard", exact: true },
+  { to: "/admin/expedicoes", label: "Expedições", icon: Compass, modulo: "expedicoes" },
+  { to: "/admin/leads", label: "Leads", icon: Sparkles, modulo: "leads" },
+  { to: "/admin/participantes", label: "Participantes", icon: Users, modulo: "participantes" },
+  { to: "/admin/financeiro", label: "Financeiro", icon: Wallet, modulo: "financeiro" },
+  { to: "/admin/midia", label: "Mídia", icon: ImageIcon, modulo: "midia" },
+  { to: "/admin/documentos", label: "Documentos", icon: FileText, modulo: "documentos" },
+  { to: "/admin/configuracoes", label: "Configurações", icon: Settings, modulo: "configuracoes" },
 ];
+
+function NavLinkItem({ item, onNavigate, active }: { item: NavItem; onNavigate?: () => void; active: boolean }) {
+  const { canView } = useCan(item.modulo);
+  if (!canView) return null;
+  const Icon = item.icon;
+  return (
+    <Link
+      to={item.to as never}
+      onClick={onNavigate}
+      className="admin-nav-item"
+      data-active={active}
+    >
+      <Icon className="h-[18px] w-[18px]" strokeWidth={1.6} />
+      <span>{item.label}</span>
+    </Link>
+  );
+}
 
 function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: string | null } | null; onNavigate?: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -59,17 +76,13 @@ function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: s
       </div>
       <nav className="flex-1 overflow-y-auto px-3 py-5 space-y-0.5">
         <div className="px-3 pb-2 text-[10px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)]">Operação</div>
-        {nav.map(({ to, label, icon: Icon, exact }) => (
-          <Link
-            key={to}
-            to={to as never}
-            onClick={onNavigate}
-            className="admin-nav-item"
-            data-active={isActive(to, exact)}
-          >
-            <Icon className="h-[18px] w-[18px]" strokeWidth={1.6} />
-            <span>{label}</span>
-          </Link>
+        {nav.map((item) => (
+          <NavLinkItem
+            key={item.to}
+            item={item}
+            onNavigate={onNavigate}
+            active={isActive(item.to, item.exact)}
+          />
         ))}
       </nav>
       <div className="border-t border-[color:var(--admin-borda)] p-3">
