@@ -20,6 +20,9 @@ import {
 } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDateRange } from "@/lib/format";
+import { AdminPageIntro } from "@/components/admin/admin-page-intro";
+import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
+import { useCan } from "@/hooks/use-permissions";
 
 export const Route = createFileRoute("/admin/_authenticated/")({
   component: DashboardPage,
@@ -135,6 +138,7 @@ function DashboardPage() {
     to: new Date().toISOString().slice(0, 10),
   });
   const range = useMemo(() => rangeFor(preset, custom), [preset, custom]);
+  const { canEdit } = useCan("dashboard");
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-dashboard", range.from, range.to],
@@ -143,6 +147,10 @@ function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-[1400px] space-y-8">
+      {!canEdit ? <EmDesenvolvimentoBanner /> : null}
+      <AdminPageIntro>
+        <strong className="text-[color:var(--admin-cinza-1)]">Visão geral do negócio.</strong> Aqui você acompanha em tempo real quantos leads chegaram, expedições no ar, vagas restantes e o faturamento previsto. Use os filtros de período (Hoje, Semana, Mês, Ano) para focar no que importa agora.
+      </AdminPageIntro>
       {/* Header + filtros */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
