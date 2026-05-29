@@ -342,15 +342,43 @@ function UsuariosPanel({ usuarios, onChange }: { usuarios: UsuarioInternoRow[]; 
         </div>
       )}
 
-      <ConfirmDialog
-        open={!!confirmDel}
-        onOpenChange={(v) => !v && setConfirmDel(null)}
-        title="Excluir usuário"
-        description={`Tem certeza que deseja excluir "${confirmDel?.nome ?? confirmDel?.user_id ?? ""}"? Esta ação não pode ser desfeita.`}
-        confirmLabel="Excluir"
-        destructive
-        onConfirm={() => { if (confirmDel) delMut.mutate(confirmDel.user_id); }}
-      />
+      {confirmDel && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setConfirmDel(null)}>
+          <div className="admin-card w-full max-w-md space-y-3" onClick={(e) => e.stopPropagation()}>
+            <h3 className="font-display text-[15px] text-rose-300">Excluir usuário</h3>
+            <p className="text-[13px] text-[color:var(--admin-cinza-2)] leading-relaxed">
+              Tem certeza que deseja excluir <strong>{confirmDel.nome ?? confirmDel.user_id}</strong>? Esta ação não pode ser desfeita.
+            </p>
+            {confirmDel.role === "superadmin" && (
+              <div className="space-y-2 rounded-lg border border-amber-400/30 bg-amber-400/5 p-3">
+                <p className="text-[12px] text-amber-200">
+                  Este é o usuário <strong>Super Administrador</strong>. A exclusão exige a senha-mestre.
+                </p>
+                <input
+                  type="password"
+                  className="admin-input w-full font-mono"
+                  placeholder="Senha-mestre"
+                  value={masterPwd}
+                  onChange={(e) => setMasterPwd(e.target.value)}
+                />
+              </div>
+            )}
+            <div className="flex justify-end gap-2 pt-1">
+              <button className="admin-btn-ghost" onClick={() => setConfirmDel(null)}>Cancelar</button>
+              <button
+                className="admin-btn-primary !bg-rose-500/90 hover:!bg-rose-500"
+                disabled={delMut.isPending || (confirmDel.role === "superadmin" && masterPwd.length < 6)}
+                onClick={() => delMut.mutate({
+                  user_id: confirmDel.user_id,
+                  master_password: confirmDel.role === "superadmin" ? masterPwd : undefined,
+                })}
+              >
+                <Trash2 className="h-4 w-4" /> Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
