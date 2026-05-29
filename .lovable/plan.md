@@ -1,94 +1,74 @@
-# Plano de ajustes — UX, acessibilidade e i18n
+## Diagnóstico
 
-## 1. Ícone do WhatsApp (substituir todos os "balões" de mensagem)
+O painel admin **já tem** um editor de expedições em `/admin/expedicoes` e `/admin/expedicoes/:id` com abas Geral, Mídia, Datas & Vagas, Comercial, Publicação. Ele já permite criar, duplicar, arquivar, publicar e editar a maioria dos campos. O que falta para a dona conseguir gerenciar tudo sozinha:
 
-Criar componente `src/components/icons/whatsapp-icon.tsx` — SVG oficial do WhatsApp, monocromático (`currentColor`), traço minimalista, sem fundo (transparente). Aceita `className` para herdar tamanho/cor (branco em fundo escuro, cobre em fundo claro).
+1. **Roteiro dia-a-dia não é editável** pela interface (o campo existe no banco como `roteiro` jsonb, mas a aba não existe no editor).
+2. **A narrativa visual (carrossel com legendas emocionais)** de cada expedição está **codada à mão** em `src/lib/expedicao-images.ts`. A cliente não consegue trocar fotos, reordenar nem editar legendas sem programador.
+3. **Galeria editorial e imagem de capa** também caem no fallback hardcoded de `expedicao-images.ts` quando o banco não tem assets — então hoje, mesmo subindo foto pela aba Mídia, ela não aparece na página pública porque a página lê do arquivo estático.
+4. **Legendas por foto** não existem na aba Mídia (o campo `titulo` em `expedicao_assets` está ocioso).
+5. **Card da lista pública** (`/expedicoes`) também usa o mapeamento hardcoded em vez da capa salva no banco.
 
-Substituir **todas** as ocorrências de `MessageCircle` do `lucide-react` que se referem a contato/WhatsApp:
-- `src/components/site-header.tsx` (botão "WhatsApp" do header + drawer)
-- `src/components/data-card.tsx` ("Reservar")
-- `src/routes/expedicoes.$slug.tsx` (2 CTAs "Reservar Agora")
-- `src/routes/minha-reserva.tsx` ("Continuar pelo WhatsApp")
-- `src/routes/contato.tsx` (card de WhatsApp)
-- `src/components/whatsapp-float.tsx` já usa SVG próprio — padronizar para usar o novo componente.
+Resultado: hoje a cliente consegue editar nome/preço/inclui/datas, mas **não consegue trocar fotos, legendas nem roteiro** sem mexer em código.
 
-## 2. Ícone de acessibilidade — mais moderno e sofisticado
+## O que vamos construir
 
-O FAB hoje usa `Accessibility` (lucide), que parece símbolo institucional antigo. Trocar por um glifo customizado em SVG: figura humana estilizada com aura/círculo concêntrico sutil — universal, sem cadeira de rodas, alinhado ao "Universal Access" moderno (formato de pessoa centrada com braços abertos dentro de círculo fino).
+### 1. Nova aba "Roteiro" no editor da expedição
+Em `/admin/expedicoes/:id`, adicionar aba **Roteiro** entre "Geral" e "Mídia". Interface minimalista:
+- Lista de dias arrastáveis (Dia 1, Dia 2, …)
+- Cada dia: campo título + campo descrição (textarea)
+- Botões: **+ Adicionar dia**, subir, descer, remover
+- Salva no campo `roteiro` jsonb que já existe na tabela `expedicoes`
 
-- Criar `src/components/icons/accessibility-glyph.tsx` (SVG inline, traço fino 1.5, `currentColor`, transparente).
-- Trocar `<Accessibility />` em `accessibility-panel.tsx` pelo novo glifo.
-- Refinar visual do FAB: manter gradiente cobre, reduzir ring para `ring-1`, suavizar pulse (apenas em hover), garantir contraste WCAG do ícone branco sobre cobre.
+### 2. Mídia com legendas e narrativa editorial
+Reformular a aba **Mídia** para virar o "carrossel narrativo" editável:
+- Cada foto enviada ganha campo **legenda** (texto emocional que aparece sob a foto na página pública) — usa o campo `titulo` já existente em `expedicao_assets`.
+- Reordenação por setas (já existe) + indicador visual de ordem.
+- Marcar capa (já existe).
+- Bloco separado dentro da aba para "Imagem de capa alternativa" (opcional, URL externa) — já existe via `capa_url`.
 
-## 3. Autoplay do carrossel — mais fluido
+### 3. Página pública lê do banco
+Rewire as 3 funções de `src/lib/expedicao-images.ts` para, **quando a expedição tiver assets no banco, usar eles**:
+- `getExpedicaoImage(slug)` → capa do banco (asset `is_capa=true` ou `capa_url`), fallback estático só se não houver nada.
+- `getExpedicaoGaleria(slug)` → todos os assets `tipo='imagem'` ordenados.
+- `getExpedicaoNarrativa(slug)` → assets com `titulo` preenchido viram cenas narrativas (foto + legenda).
 
-Em `src/components/carrossel-narrativo.tsx`:
-- Reduzir `delay` de **5500ms → 4200ms**.
-- Adicionar `duration: 28` no Embla (transição entre slides um pouco mais rápida e suave).
-- Garantir que `Autoplay` rode em desktop: hoje `stopOnMouseEnter: true` pausa quando o mouse entra na seção; trocar para `stopOnMouseEnter: false` + `stopOnInteraction: false` para fluxo contínuo. Manter pausa ao usar setas/teclado por `stopOnFocusIn: true`.
-- Confirmar swipe mobile (`touch-pan-y` já presente).
+Isso significa: quando a cliente subir fotos novas pelo admin, **elas substituem automaticamente** as hardcoded na página pública. As atuais continuam funcionando como fallback enquanto ninguém editar.
 
-## 4. Tradução global do site (i18n)
+### 4. Polimento do editor para uso pela dona
+- Indicador visual no topo de **"o que falta para publicar"** (ex.: "Adicione pelo menos 1 foto", "Defina o preço", "Escreva a descrição curta") com checklist.
+- Botão **"Visualizar página pública"** já existe — mover para o header em destaque.
+- Tooltip/hint discreto em campos críticos (slug, capa).
+- Ajustar o botão "Nova expedição" para abrir um pequeno modal com **nome + marca + país** antes de criar, evitando expedições "Nova expedição" vazias na lista.
 
-**Estado atual:** apenas `src/routes/index.tsx` e header/footer consomem `useTranslation`. Todas as outras páginas públicas têm texto fixo em PT. Por isso a troca de idioma "só funciona na Home".
-
-**Escopo desta entrega — páginas públicas:**
-1. `expedicoes.tsx` (listagem)
-2. `expedicoes.$slug.tsx` (detalhe — hero, breadcrumb, blocos comerciais, FAQ, CTAs, seção carrossel, "O que está incluso", etc.)
-3. `datas.tsx` (Próximas datas)
-4. `quem-somos.tsx`
-5. `contato.tsx`
-6. `na-midia.tsx`
-7. `minha-reserva.tsx`
-8. `reserva.$slug.tsx` (labels do formulário, validações, confirmação)
-9. `marcas.canastra-a-cavalo.tsx`, `marcas.cavalgadas.tsx`, `marcas.elas-na-sela.tsx`
-10. `privacidade.tsx`, `termos.tsx`, `regras.tsx`
-11. Componentes compartilhados ainda hardcoded: `historias-editorial.tsx`, `data-card.tsx`, `expedicao-card.tsx`, `galeria-editorial.tsx`, `depoimentos-shorts.tsx`, `marca-cross-nav.tsx`, `na-midia.tsx`, `cookie-consent.tsx`, `editorial-frame.tsx`, `accessibility-panel.tsx`, `page-loader.tsx`, `site-footer.tsx` (partes que faltam).
-
-**Como será feito:**
-- Expandir os 3 JSONs `src/i18n/locales/{pt,en,es}/common.json` com namespaces por página: `expedicoes`, `expedicaoDetalhe`, `datas`, `quemSomos`, `contato`, `naMidia`, `reserva`, `minhaReserva`, `marcas`, `legal`, `a11y`, `cookies`, `common` (botões, labels recorrentes).
-- Substituir strings nas páginas/componentes por `t("namespace.chave")`.
-- Conteúdo dinâmico vindo do banco (nomes/descrições de expedições, FAQ, "o que está incluso") **permanece em PT** — esses textos vêm do admin e exigiriam tradução manual no CMS. Marcar com TODO; UI já fica internacionalizada.
-- `meta` (title/description SEO) das rotas também passa a usar i18n.
-
-**Importante sobre custo/tempo:** este item é o maior do plano — envolve tocar ~25 arquivos e dezenas de strings. Vou executar em um único passe completo e consistente.
-
-## 5. VLibras realmente funcional
-
-Hoje o componente `vlibras.tsx` já injeta o script oficial do Governo Federal e o botão de "Tradutor para Libras" no painel de acessibilidade dispara `[vw-access-button].click()`. A causa provável de "não funciona" é:
-- o widget oficial está oculto/cortado por z-index ou pelo botão do WhatsApp;
-- o `<div vw>` não está ganhando classe `enabled` antes do script carregar.
-
-Correções:
-- Refatorar `src/components/vlibras.tsx`:
-  - injetar `<div vw class="enabled">` corretamente, com `vw-plugin-top-wrapper` aninhado conforme docs oficiais;
-  - aguardar `onload` do script para chamar `new window.VLibras.Widget(...)`;
-  - aplicar CSS para posicionar o widget acima do FAB de acessibilidade e do WhatsApp (`#vlibras-plugin` z-index alto, margem inferior elevada);
-  - esconder o botão padrão do VLibras (`[vw-access-button] { display: none !important }`) — quem dispara é o nosso botão "Ativar" no painel, que mantém a estética premium.
-- Validar no preview: clicar em "Ativar" abre o intérprete real (avatar Ícaro/Hosana), com tradução funcional. Esta é a solução padrão brasileira, gratuita, leve e oficial; alternativas comerciais (Hand Talk) exigem chave paga — não recomendo.
-
-## 6. Revisão de acessibilidade real (a11y)
-
-- `aria-label` em todos os botões icon-only restantes (varredura nas páginas).
-- `aria-current="page"` nos links de navegação ativos do header.
-- Garantir `focus-visible` consistente (ring cobre) em todos os botões/links via `src/styles.css`.
-- `role="main"`/`<main>` único — já existe no `__root.tsx`.
-- Hierarquia de headings: revisar páginas para evitar pulos (h1→h3).
-- Contraste: revisar `text-areia/55`, `text-foreground/40` em fundos claros — subir para `/70` mínimo.
-- `lang` no `<html>` já é trocado pelo `i18n` ao mudar idioma — confirmar.
-- Navegação por teclado: garantir que drawer mobile (`site-header`) traveja foco e ESC fecha.
+### 5. Lista pública e cards
+- `/expedicoes` (lista) e `expedicao-card.tsx` passam a usar `capa_url` ou primeiro asset, não o mapeamento hardcoded por slug.
 
 ## Detalhes técnicos
 
-- Nenhuma mudança em lógica de negócio, banco, rotas, fluxo de reserva, preços ou datas.
-- Nenhuma dependência nova (VLibras é script externo já presente).
-- `embla-carousel-autoplay` já instalado — apenas ajuste de opções.
-- Arquivos novos: 2 ícones SVG + ampliação de 3 JSONs de locale.
-- Arquivos editados: ~25 (lista acima).
+```text
+Arquivos modificados:
+  src/routes/admin._authenticated.expedicoes.$id.tsx   ← +aba Roteiro, +legenda nos assets, +checklist publicação
+  src/routes/admin._authenticated.expedicoes.tsx       ← modal "criar nova" com nome/marca/país
+  src/lib/admin/api.ts                                  ← updateAsset({ titulo }) (adicionar se faltar)
+  src/lib/expedicao-images.ts                          ← funções viram async/aceitam assets do banco
+  src/lib/expedicoes.functions.ts                      ← getExpedicaoBySlug retorna também `assets`
+  src/routes/expedicoes.$slug.tsx                      ← consome assets do banco; fallback estático
+  src/routes/expedicoes.tsx + src/components/expedicao-card.tsx ← capa via DB
+
+Tabelas (sem migration — schema já comporta):
+  expedicoes.roteiro (jsonb) — já usado, só falta UI
+  expedicao_assets.titulo (text) — vira "legenda"
+  expedicao_assets.ordem / is_capa — já usados
+```
+
+Sem mudanças de schema, sem nova migration. Mantém o fallback estático para não quebrar nada enquanto a cliente ainda não editou.
+
+## Estética da interface admin
+
+Manter o design tecnológico/minimalista já em uso (tokens `--admin-*`, cards escuros, dourado discreto). Sem ícones extras desnecessários. Tudo dentro do mesmo padrão das outras abas do painel.
 
 ## Fora de escopo
 
-- Painel admin (não é público; permanece em PT).
-- Tradução de conteúdo dinâmico do banco (expedições, FAQ vindos do CMS).
-- Mudança da identidade visual ou layout geral.
-- Trocar VLibras por solução paga (Hand Talk).
+- Drag-and-drop "de verdade" (HTML5 DnD) para reordenar — vamos com setas ↑↓ que já são o padrão da Mídia atual. Posso adicionar DnD depois se a cliente pedir.
+- Internacionalização do conteúdo editado (PT/EN/ES por expedição) — campos hoje são single-language; entrar nisso dobra a UI e exige decisão de produto separada.
+- Editor rich-text (negrito/itálico) — descrições continuam em texto simples, como hoje.
