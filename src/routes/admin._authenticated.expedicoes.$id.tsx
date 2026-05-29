@@ -152,23 +152,28 @@ function ExpedicaoEdit() {
       />
 
       {/* Checklist de publicação */}
-      <div className="admin-card">
-        <div className="mb-3 flex items-center justify-between">
-          <div>
+      <div className="admin-card p-6 md:p-8">
+        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
             <div className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)]">Checklist de publicação</div>
-            <h3 className="mt-1 font-display text-base text-[color:var(--admin-cinza-1)]">
+            <h3 className="mt-1.5 font-display text-lg leading-tight text-[color:var(--admin-cinza-1)]">
               {pendentes === 0 ? "Pronto para publicar" : `${pendentes} item(ns) pendente(s)`}
             </h3>
+            <p className="mt-1 text-[11px] leading-relaxed text-[color:var(--admin-cinza-3)]">
+              Itens mínimos para a expedição aparecer publicamente no site.
+            </p>
           </div>
-          <StatusBadge status={form.status ?? "rascunho"} />
+          <div className="shrink-0">
+            <StatusBadge status={form.status ?? "rascunho"} />
+          </div>
         </div>
-        <ul className="grid gap-2 sm:grid-cols-2">
+        <ul className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
           {checklist.map((item) => (
-            <li key={item.label} className="flex items-center gap-2 text-[13px]">
+            <li key={item.label} className="flex items-start gap-2.5 text-[13px] leading-snug">
               {item.ok ? (
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" strokeWidth={1.8} />
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" strokeWidth={1.8} />
               ) : (
-                <Circle className="h-4 w-4 shrink-0 text-[color:var(--admin-cinza-3)]" strokeWidth={1.6} />
+                <Circle className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--admin-cinza-3)]" strokeWidth={1.6} />
               )}
               <span className={item.ok ? "text-[color:var(--admin-cinza-2)]" : "text-[color:var(--admin-cinza-3)]"}>
                 {item.label}
