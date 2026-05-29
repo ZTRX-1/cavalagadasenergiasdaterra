@@ -251,7 +251,7 @@ function TabDespesas({ despesas, canEdit, onChanged }: { despesas: Despesa[]; ca
     <>
       <AdminSection
         titulo="Despesas"
-        action={canEdit ? <button className="admin-btn-primary gap-2" onClick={() => setEditing("new")}><Plus className="h-4 w-4" /> Nova despesa</button> : undefined}
+        actions={canEdit ? <button className="admin-btn-primary gap-2" onClick={() => setEditing("new")}><Plus className="h-4 w-4" /> Nova despesa</button> : undefined}
       >
         {despesas.length === 0 ? (
           <p className="text-sm text-[color:var(--admin-cinza-3)]">Nenhuma despesa lançada nesse período.</p>
@@ -376,7 +376,7 @@ function TabContasPagar({ contas, canEdit, onChanged }: { contas: ContaPagar[]; 
     <>
       <AdminSection
         titulo="Contas a pagar"
-        action={canEdit ? <button className="admin-btn-primary gap-2" onClick={() => setEditing("new")}><Plus className="h-4 w-4" /> Nova conta</button> : undefined}
+        actions={canEdit ? <button className="admin-btn-primary gap-2" onClick={() => setEditing("new")}><Plus className="h-4 w-4" /> Nova conta</button> : undefined}
       >
         {contas.length === 0 ? <p className="text-sm text-[color:var(--admin-cinza-3)]">Nenhuma conta lançada.</p> : (
           <div className="overflow-x-auto">
@@ -473,7 +473,7 @@ function TabContasReceber({ contas, canEdit, onChanged }: { contas: ContaReceber
     <>
       <AdminSection
         titulo="Contas a receber (extras)"
-        action={canEdit ? <button className="admin-btn-primary gap-2" onClick={() => setEditing("new")}><Plus className="h-4 w-4" /> Nova conta</button> : undefined}
+        actions={canEdit ? <button className="admin-btn-primary gap-2" onClick={() => setEditing("new")}><Plus className="h-4 w-4" /> Nova conta</button> : undefined}
       >
         <p className="mb-3 text-[12px] text-[color:var(--admin-cinza-3)]">As reservas pagas pelo site já aparecem em <strong>Receitas</strong>. Use esta lista para outros recebimentos manuais (patrocínios, serviços avulsos, etc.).</p>
         {contas.length === 0 ? <p className="text-sm text-[color:var(--admin-cinza-3)]">Nenhuma conta lançada.</p> : (
