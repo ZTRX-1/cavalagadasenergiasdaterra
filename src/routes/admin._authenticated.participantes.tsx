@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { Plus, Users, Trash2 } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Plus, Users, Trash2, FileDown, Search } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminEmpty } from "@/components/admin/admin-empty";
@@ -17,6 +17,7 @@ import {
   listExpedicoes,
   type ParticipanteRow,
 } from "@/lib/admin/api";
+import { exportarFichaGuiaPDF } from "@/lib/admin/participantes-pdf";
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
 import { useCan } from "@/hooks/use-permissions";
@@ -40,6 +41,9 @@ function ParticipantesPage() {
   const [novo, setNovo] = useState(false);
   const [edit, setEdit] = useState<ParticipanteRow | null>(null);
   const [del, setDel] = useState<ParticipanteRow | null>(null);
+  const [filtroExp, setFiltroExp] = useState<string>("");
+  const [filtroStatus, setFiltroStatus] = useState<string>("");
+  const [busca, setBusca] = useState("");
   const refresh = () => qc.invalidateQueries({ queryKey: ["admin", "participantes"] });
   const { canEdit } = useCan("participantes");
 
@@ -48,60 +52,145 @@ function ParticipantesPage() {
     onSuccess: () => { toast.success("Removido"); refresh(); setDel(null); },
   });
 
+  const filtrados = useMemo(() => {
+    const q = busca.trim().toLowerCase();
+    return list.filter((p) => {
+      if (filtroExp && p.expedicao_id !== filtroExp) return false;
+      if (filtroStatus && p.status !== filtroStatus) return false;
+      if (q && !(p.nome ?? "").toLowerCase().includes(q) && !(p.email ?? "").toLowerCase().includes(q) && !(p.cpf ?? "").toLowerCase().includes(q)) return false;
+      return true;
+    });
+  }, [list, filtroExp, filtroStatus, busca]);
+
+  const exportar = () => {
+    if (!filtroExp) { toast.error("Selecione uma expedição para gerar a ficha do guia"); return; }
+    const exp = expedicoes.find((e) => e.id === filtroExp);
+    if (!exp) return;
+    const confirmados = filtrados.filter((p) => p.status === "confirmado");
+    const alvo = confirmados.length > 0 ? confirmados : filtrados;
+    if (alvo.length === 0) { toast.error("Nenhum participante para exportar"); return; }
+    exportarFichaGuiaPDF({ expedicaoNome: exp.nome, participantes: alvo });
+    toast.success("PDF gerado");
+  };
+
   return (
     <div>
       <AdminPageHeader
         eyebrow="Operação"
         title="Participantes"
         description="Ficha completa de cavaleiros e amazonas, vinculados às expedições."
-        actions={<button className="admin-btn-primary" onClick={() => setNovo(true)}><Plus className="h-4 w-4" /> Novo participante</button>}
+        actions={
+          <div className="flex flex-wrap gap-2">
+            <button className="admin-btn-ghost" onClick={exportar} title="Gerar PDF com a ficha completa dos confirmados desta expedição">
+              <FileDown className="h-4 w-4" /> Ficha do guia (PDF)
+            </button>
+            <button className="admin-btn-primary" onClick={() => setNovo(true)}><Plus className="h-4 w-4" /> Novo participante</button>
+          </div>
+        }
       />
 
       {!canEdit ? <EmDesenvolvimentoBanner /> : null}
       <AdminPageIntro>
-        <strong className="text-[color:var(--admin-cinza-1)]">Lista de viajantes confirmados.</strong> Aqui ficam todos os cavaleiros e amazonas que vão participar de cada expedição. Use para montar a lista que vai pro guia em campo, conferir restrições alimentares, peso (pra escolher o cavalo certo) e contatos de emergência.
+        <strong className="text-[color:var(--admin-cinza-1)]">Lista de viajantes confirmados.</strong> Aqui ficam todos os cavaleiros e amazonas que vão participar de cada expedição. Use para montar a lista que vai pro guia em campo, conferir restrições alimentares, peso (pra escolher o cavalo certo) e contatos de emergência. Para gerar o PDF impresso do guia, <em>filtre por expedição</em> e clique em <strong>Ficha do guia (PDF)</strong>.
       </AdminPageIntro>
 
+      {/* Filtros */}
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[color:var(--admin-cinza-3)]" />
+          <input
+            className="admin-input pl-8 w-[220px]"
+            placeholder="Buscar nome, e-mail, CPF…"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+          />
+        </div>
+        <select className="admin-input w-auto" value={filtroExp} onChange={(e) => setFiltroExp(e.target.value)}>
+          <option value="">Todas as expedições</option>
+          {expedicoes.map((e) => <option key={e.id} value={e.id}>{e.nome}</option>)}
+        </select>
+        <select className="admin-input w-auto" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
+          <option value="">Todos os status</option>
+          <option value="pendente">Pendente</option>
+          <option value="confirmado">Confirmado</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
+        <span className="text-[11px] text-[color:var(--admin-cinza-3)] ml-auto">
+          {filtrados.length} de {list.length}
+        </span>
+      </div>
 
       {isLoading ? (
         <div className="admin-card h-40 animate-pulse" />
-      ) : list.length === 0 ? (
-        <AdminEmpty icon={Users} titulo="Nenhum participante cadastrado" descricao="Cadastre cavaleiros para vincular a reservas e expedições." />
+      ) : filtrados.length === 0 ? (
+        <AdminEmpty icon={Users} titulo="Nenhum participante" descricao="Ajuste os filtros ou cadastre um novo cavaleiro." />
       ) : (
-        <div className="admin-card overflow-hidden p-0">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-[color:var(--admin-carvao-deep)]/60 text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
-              <tr>
-                <th className="px-5 py-3.5 font-medium">Nome</th>
-                <th className="px-3 py-3.5 font-medium">Idade</th>
-                <th className="px-3 py-3.5 font-medium">Experiência</th>
-                <th className="px-3 py-3.5 font-medium">Expedição</th>
-                <th className="px-3 py-3.5 font-medium">Status</th>
-                <th className="px-5 py-3.5 font-medium text-right">Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {list.map((p) => {
-                const exp = expedicoes.find((e) => e.id === p.expedicao_id);
-                return (
-                  <tr key={p.id} className="border-t border-[color:var(--admin-borda)] hover:bg-[color:var(--admin-petroleo)]/20">
-                    <td className="px-5 py-4">
-                      <button className="font-medium text-[color:var(--admin-cinza-1)] hover:text-[color:var(--admin-dourado)]" onClick={() => setEdit(p)}>{p.nome}</button>
-                      <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{p.documento ?? "—"}</div>
-                    </td>
-                    <td className="px-3 py-4 text-[color:var(--admin-cinza-2)]">{calcIdade(p.data_nascimento)}</td>
-                    <td className="px-3 py-4 text-[color:var(--admin-cinza-2)] capitalize">{p.experiencia_equestre ?? "—"}</td>
-                    <td className="px-3 py-4 text-[color:var(--admin-cinza-2)] truncate max-w-[200px]">{exp?.nome ?? "—"}</td>
-                    <td className="px-3 py-4"><StatusBadge status={p.status} /></td>
-                    <td className="px-5 py-4 text-right">
-                      <button onClick={() => setDel(p)} className="admin-btn-ghost px-2 py-1.5 hover:!bg-rose-500/10"><Trash2 className="h-3.5 w-3.5" /></button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <>
+          {/* Tabela — desktop */}
+          <div className="admin-card overflow-x-auto p-0 hidden md:block">
+            <table className="w-full text-left text-sm min-w-[720px]">
+              <thead className="bg-[color:var(--admin-carvao-deep)]/60 text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
+                <tr>
+                  <th className="px-5 py-3.5 font-medium">Nome</th>
+                  <th className="px-3 py-3.5 font-medium">Idade</th>
+                  <th className="px-3 py-3.5 font-medium">Peso</th>
+                  <th className="px-3 py-3.5 font-medium">Experiência</th>
+                  <th className="px-3 py-3.5 font-medium">Expedição</th>
+                  <th className="px-3 py-3.5 font-medium">Status</th>
+                  <th className="px-5 py-3.5 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtrados.map((p) => {
+                  const exp = expedicoes.find((e) => e.id === p.expedicao_id);
+                  return (
+                    <tr key={p.id} className="border-t border-[color:var(--admin-borda)] hover:bg-[color:var(--admin-petroleo)]/20">
+                      <td className="px-5 py-4">
+                        <button className="font-medium text-[color:var(--admin-cinza-1)] hover:text-[color:var(--admin-dourado)]" onClick={() => setEdit(p)}>{p.nome}</button>
+                        <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{p.telefone ?? p.email ?? "—"}</div>
+                      </td>
+                      <td className="px-3 py-4 text-[color:var(--admin-cinza-2)]">{calcIdade(p.data_nascimento)}</td>
+                      <td className="px-3 py-4 text-[color:var(--admin-cinza-2)]">{p.peso ? `${p.peso} kg` : "—"}</td>
+                      <td className="px-3 py-4 text-[color:var(--admin-cinza-2)] capitalize">{p.experiencia_equestre ?? "—"}</td>
+                      <td className="px-3 py-4 text-[color:var(--admin-cinza-2)] truncate max-w-[200px]">{exp?.nome ?? "—"}</td>
+                      <td className="px-3 py-4"><StatusBadge status={p.status} /></td>
+                      <td className="px-5 py-4 text-right">
+                        <button onClick={() => setDel(p)} className="admin-btn-ghost px-2 py-1.5 hover:!bg-rose-500/10"><Trash2 className="h-3.5 w-3.5" /></button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Cards — mobile */}
+          <div className="grid gap-2 md:hidden">
+            {filtrados.map((p) => {
+              const exp = expedicoes.find((e) => e.id === p.expedicao_id);
+              return (
+                <div key={p.id} className="admin-card p-4">
+                  <div className="flex items-start justify-between gap-2">
+                    <button onClick={() => setEdit(p)} className="text-left">
+                      <div className="font-medium text-[color:var(--admin-cinza-1)]">{p.nome}</div>
+                      <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{p.telefone ?? p.email ?? "—"}</div>
+                    </button>
+                    <StatusBadge status={p.status} />
+                  </div>
+                  <div className="mt-3 grid grid-cols-3 gap-2 text-[11px] text-[color:var(--admin-cinza-3)]">
+                    <div><span className="block text-[10px] uppercase tracking-wider">Idade</span><span className="text-[color:var(--admin-cinza-2)]">{calcIdade(p.data_nascimento)}</span></div>
+                    <div><span className="block text-[10px] uppercase tracking-wider">Peso</span><span className="text-[color:var(--admin-cinza-2)]">{p.peso ? `${p.peso} kg` : "—"}</span></div>
+                    <div><span className="block text-[10px] uppercase tracking-wider">Exp.</span><span className="capitalize text-[color:var(--admin-cinza-2)]">{p.experiencia_equestre ?? "—"}</span></div>
+                  </div>
+                  <div className="mt-2 flex items-center justify-between gap-2 text-[11px]">
+                    <span className="truncate text-[color:var(--admin-cinza-3)]">{exp?.nome ?? "Sem expedição"}</span>
+                    <button onClick={() => setDel(p)} className="admin-btn-ghost px-2 py-1.5 hover:!bg-rose-500/10"><Trash2 className="h-3.5 w-3.5" /></button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
       )}
 
       <ParticipanteDialog
