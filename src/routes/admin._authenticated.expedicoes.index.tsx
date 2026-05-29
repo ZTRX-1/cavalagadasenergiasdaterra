@@ -16,6 +16,7 @@ import {
   type ExpedicaoRow,
 } from "@/lib/admin/api";
 import { getExpedicaoImage } from "@/lib/expedicao-images";
+import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 
 export const Route = createFileRoute("/admin/_authenticated/expedicoes/")({
   component: ExpedicoesPage,
@@ -100,6 +101,11 @@ function ExpedicoesPage() {
           </button>
         }
       />
+
+      <AdminPageIntro>
+        <strong className="text-[color:var(--admin-cinza-1)]">Coração do site.</strong> Cada expedição aqui vira uma página pública completa: hero, carrossel de fotos, descrição, datas, valores e botão de reserva. Use os filtros abaixo para focar em rascunhos, publicadas, pausadas ou arquivadas. Clique em uma linha para editar tudo.
+      </AdminPageIntro>
+
 
       <div className="mb-4 flex flex-wrap gap-2">
         {STATUS_FILTROS.map((f) => {
