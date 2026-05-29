@@ -179,7 +179,7 @@ function ExpedicaoEdit() {
       </div>
 
       <Tabs defaultValue="geral">
-        <TabsList className="bg-[color:var(--admin-carvao-deep)]/60 border border-[color:var(--admin-borda)] flex-wrap h-auto">
+        <TabsList className="bg-[color:var(--admin-carvao-deep)]/60 border border-[color:var(--admin-borda)] flex-wrap h-auto gap-1">
           <TabsTrigger value="geral">Geral</TabsTrigger>
           <TabsTrigger value="roteiro">Roteiro</TabsTrigger>
           <TabsTrigger value="midia">Mídia & narrativa</TabsTrigger>
