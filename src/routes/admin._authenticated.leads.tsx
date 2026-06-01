@@ -286,8 +286,8 @@ function LeadKanbanCard({ lead, onDelete, onMove }: { lead: LeadRow; onDelete: (
 
 function LeadsLista({ leads, onDelete }: { leads: LeadRow[]; onDelete: (l: LeadRow) => void }) {
   return (
-    <div className="admin-card overflow-hidden p-0">
-      <table className="w-full text-sm">
+    <div className="admin-card admin-table-wrap p-0">
+      <table className="w-full text-sm min-w-[820px]">
         <thead className="border-b border-[color:var(--admin-borda)] text-left text-[11px] uppercase tracking-[0.16em] text-[color:var(--admin-cinza-3)]">
           <tr>
             <th className="px-4 py-3">Lead</th>

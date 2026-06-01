@@ -109,7 +109,7 @@ function UsuariosPage() {
         {isLoading ? (
           <p className="py-10 text-center text-sm text-[color:var(--admin-cinza-3)]">Carregando...</p>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="admin-table-wrap">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-[color:var(--admin-borda)] text-left text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">

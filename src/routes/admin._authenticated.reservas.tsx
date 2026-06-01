@@ -144,8 +144,8 @@ function ReservasPage() {
         </select>
       </div>
 
-      <div className="rounded-xl border border-[color:var(--admin-borda)] overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="admin-card admin-table-wrap p-0">
+        <table className="w-full text-sm min-w-[860px]">
           <thead className="bg-[color:var(--admin-petroleo-soft)]/40 text-[color:var(--admin-cinza-3)] text-[11px] uppercase tracking-[0.18em]">
             <tr>
               <th className="text-left px-4 py-3">Protocolo</th>

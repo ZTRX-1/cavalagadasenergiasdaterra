@@ -205,7 +205,7 @@ function TabReceitas({ reservas, onChanged }: { reservas: ReservaRow[]; onChange
   return (
     <>
       <AdminSection titulo="Reservas no período">
-        <div className="overflow-x-auto">
+        <div className="admin-table-wrap">
           <table className="w-full text-left text-sm">
             <thead className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
               <tr>
@@ -258,7 +258,7 @@ function TabDespesas({ despesas, canEdit, onChanged }: { despesas: Despesa[]; ca
         {despesas.length === 0 ? (
           <p className="text-sm text-[color:var(--admin-cinza-3)]">Nenhuma despesa lançada nesse período.</p>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="admin-table-wrap">
             <table className="w-full text-left text-sm">
               <thead className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
                 <tr>
@@ -396,7 +396,7 @@ function TabContasPagar({ contas, canEdit, onChanged }: { contas: ContaPagar[]; 
         actions={canEdit ? <button className="admin-btn-primary gap-2" onClick={() => setEditing("new")}><Plus className="h-4 w-4" /> Nova conta</button> : undefined}
       >
         {contas.length === 0 ? <p className="text-sm text-[color:var(--admin-cinza-3)]">Nenhuma conta lançada.</p> : (
-          <div className="overflow-x-auto">
+          <div className="admin-table-wrap">
             <table className="w-full text-left text-sm">
               <thead className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
                 <tr><th className="py-2 font-medium">Vencimento</th><th className="py-2 font-medium">Descrição</th><th className="py-2 font-medium">Fornecedor</th><th className="py-2 font-medium">Valor</th><th className="py-2 font-medium">Status</th><th /></tr>
@@ -494,7 +494,7 @@ function TabContasReceber({ contas, canEdit, onChanged }: { contas: ContaReceber
       >
         <p className="mb-3 text-[12px] text-[color:var(--admin-cinza-3)]">As reservas pagas pelo site já aparecem em <strong>Receitas</strong>. Use esta lista para outros recebimentos manuais (patrocínios, serviços avulsos, etc.).</p>
         {contas.length === 0 ? <p className="text-sm text-[color:var(--admin-cinza-3)]">Nenhuma conta lançada.</p> : (
-          <div className="overflow-x-auto">
+          <div className="admin-table-wrap">
             <table className="w-full text-left text-sm">
               <thead className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
                 <tr><th className="py-2 font-medium">Vencimento</th><th className="py-2 font-medium">Descrição</th><th className="py-2 font-medium">Cliente</th><th className="py-2 font-medium">Valor</th><th className="py-2 font-medium">Status</th><th /></tr>
@@ -626,7 +626,7 @@ function TabDRE({ range }: { range: { from: string; to: string } }) {
       {isLoading ? <div className="h-40 animate-pulse rounded bg-[color:var(--admin-petroleo)]/40" /> : data.length === 0 ? (
         <p className="text-sm text-[color:var(--admin-cinza-3)]">Sem dados nesse período.</p>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="admin-table-wrap">
           <table className="w-full text-left text-sm">
             <thead className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
               <tr><th className="py-2 font-medium">Expedição</th><th className="py-2 font-medium">Receita</th><th className="py-2 font-medium">Despesa</th><th className="py-2 font-medium">Lucro</th><th className="py-2 font-medium">Margem</th></tr>
