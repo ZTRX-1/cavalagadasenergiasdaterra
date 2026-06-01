@@ -53,12 +53,13 @@ function rangeFor(preset: Preset, custom: { from: string; to: string }) {
 }
 
 const TABS = [
-  { id: "receitas", label: "Receitas" },
-  { id: "despesas", label: "Despesas" },
+  { id: "expedicoes", label: "Por expedição" },
+  { id: "receitas", label: "Reservas" },
+  { id: "despesas", label: "Custos" },
   { id: "a-pagar", label: "A pagar" },
   { id: "a-receber", label: "A receber" },
   { id: "fluxo", label: "Fluxo de caixa" },
-  { id: "dre", label: "DRE por expedição" },
+  { id: "dre", label: "DRE consolidado" },
 ] as const;
 type TabId = typeof TABS[number]["id"];
 
