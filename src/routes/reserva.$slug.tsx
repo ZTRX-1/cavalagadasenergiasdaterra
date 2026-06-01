@@ -81,7 +81,7 @@ function ReservaPage() {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState<null | { protocolo: string; expedicao_nome: string; quantidade_participantes: number; nome_responsavel: string }>(null);
   const [submitting, setSubmitting] = useState(false);
-  const protocolo = useMemo(() => `CET-${new Date().getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`, []);
+  const enviarPreReserva = useServerFn(criarPreReserva);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
