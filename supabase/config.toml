@@ -2,3 +2,6 @@ project_id = "godpbnaujkwscseuwjte"
 
 [functions.admin-users]
 verify_jwt = false
+
+[functions.pre-reserva]
+verify_jwt = false
