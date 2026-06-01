@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
-import { Plus, Sparkles, Trash2, Filter, X } from "lucide-react";
+import { Plus, Sparkles, Trash2, Filter, X, LayoutGrid, List, Star, Flame } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminEmpty } from "@/components/admin/admin-empty";
@@ -17,9 +17,9 @@ import {
   createLead,
   updateLead,
   deleteLead,
-  LEAD_STATUS,
+  LEAD_ETAPAS,
   type LeadRow,
-  type LeadStatusId,
+  type LeadEtapaId,
 } from "@/lib/admin/api";
 
 export const Route = createFileRoute("/admin/_authenticated/leads")({
@@ -31,15 +31,18 @@ function LeadsPage() {
   const { data: leads = [], isLoading } = useQuery({ queryKey: ["admin", "leads"], queryFn: listLeads });
   const [novo, setNovo] = useState(false);
   const [del, setDel] = useState<LeadRow | null>(null);
+  const [view, setView] = useState<"kanban" | "lista">("kanban");
   const [fOrigem, setFOrigem] = useState<string>("todas");
   const [fExpedicao, setFExpedicao] = useState<string>("todas");
   const [fBusca, setFBusca] = useState<string>("");
+  const [fNivel, setFNivel] = useState<string>("todos");
   const { canEdit } = useCan("leads");
   const refresh = () => qc.invalidateQueries({ queryKey: ["admin", "leads"] });
 
   const moveMut = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: LeadStatusId }) => updateLead(id, { status }),
-    onSuccess: () => { toast.success("Status atualizado"); refresh(); },
+    mutationFn: ({ id, etapa }: { id: string; etapa: LeadEtapaId }) =>
+      updateLead(id, { etapa_atendimento: etapa, status: etapa }),
+    onSuccess: () => { toast.success("Etapa atualizada"); refresh(); },
     onError: (e) => toast.error((e as Error).message),
   });
 
@@ -48,7 +51,6 @@ function LeadsPage() {
     onSuccess: () => { toast.success("Excluído"); setDel(null); refresh(); },
   });
 
-  // Listas únicas para os filtros
   const origensDisponiveis = useMemo(() => {
     const set = new Set<string>();
     leads.forEach((l) => l.origem && set.add(l.origem));
@@ -65,38 +67,51 @@ function LeadsPage() {
     return leads.filter((l) => {
       if (fOrigem !== "todas" && l.origem !== fOrigem) return false;
       if (fExpedicao !== "todas" && l.expedicao_interesse !== fExpedicao) return false;
+      if (fNivel !== "todos" && String(l.nivel_interesse ?? 3) !== fNivel) return false;
       if (q) {
         const hay = `${l.nome ?? ""} ${l.email ?? ""} ${l.telefone ?? ""} ${l.protocolo ?? ""}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
     });
-  }, [leads, fOrigem, fExpedicao, fBusca]);
+  }, [leads, fOrigem, fExpedicao, fBusca, fNivel]);
 
-  const filtrosAtivos = fOrigem !== "todas" || fExpedicao !== "todas" || fBusca.trim().length > 0;
-  const limparFiltros = () => { setFOrigem("todas"); setFExpedicao("todas"); setFBusca(""); };
+  const filtrosAtivos = fOrigem !== "todas" || fExpedicao !== "todas" || fNivel !== "todos" || fBusca.trim().length > 0;
+  const limparFiltros = () => { setFOrigem("todas"); setFExpedicao("todas"); setFNivel("todos"); setFBusca(""); };
 
-  const grouped: Record<LeadStatusId, LeadRow[]> = LEAD_STATUS.reduce((acc, s) => {
-    acc[s.id] = leadsFiltrados.filter((l) => l.status === s.id);
+  const grouped: Record<LeadEtapaId, LeadRow[]> = LEAD_ETAPAS.reduce((acc, s) => {
+    acc[s.id] = leadsFiltrados.filter((l) => (l.etapa_atendimento ?? "novo") === s.id);
     return acc;
-  }, {} as Record<LeadStatusId, LeadRow[]>);
+  }, {} as Record<LeadEtapaId, LeadRow[]>);
 
   return (
     <div>
       <AdminPageHeader
         eyebrow="CRM"
         title="Leads"
-        description="Pipeline operacional dos contatos. Mude o status para acompanhar a jornada."
+        description="Cada pessoa que entra em contato vira um lead aqui. Acompanhe pelo Kanban e mova entre as etapas do atendimento."
         actions={
-          <button className="admin-btn-primary" onClick={() => setNovo(true)}>
-            <Plus className="h-4 w-4" /> Novo lead
-          </button>
+          <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/60 p-0.5">
+              <button
+                className={`flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs ${view === "kanban" ? "bg-[color:var(--admin-dourado)]/10 text-[color:var(--admin-dourado)]" : "text-[color:var(--admin-cinza-3)]"}`}
+                onClick={() => setView("kanban")}
+              ><LayoutGrid className="h-3.5 w-3.5" /> Kanban</button>
+              <button
+                className={`flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs ${view === "lista" ? "bg-[color:var(--admin-dourado)]/10 text-[color:var(--admin-dourado)]" : "text-[color:var(--admin-cinza-3)]"}`}
+                onClick={() => setView("lista")}
+              ><List className="h-3.5 w-3.5" /> Lista</button>
+            </div>
+            <button className="admin-btn-primary" onClick={() => setNovo(true)}>
+              <Plus className="h-4 w-4" /> Novo lead
+            </button>
+          </div>
         }
       />
 
       {!canEdit ? <EmDesenvolvimentoBanner /> : null}
       <AdminPageIntro>
-        <strong className="text-[color:var(--admin-cinza-1)]">Pipeline comercial.</strong> Cada contato que chega por WhatsApp, Instagram, indicação ou cadastro manual aparece aqui. Use os filtros para focar em uma origem específica, em uma expedição, ou buscar por nome/protocolo. Mude o status arrastando o card pelos botões "→" pra acompanhar a jornada até o fechamento.
+        <strong className="text-[color:var(--admin-cinza-1)]">Etapas do Atendimento.</strong> Acompanhe cada contato desde a chegada até virar reserva paga. As cores indicam o <strong>Nível de Interesse</strong> (de 1 a 5) e o <strong>Lead Score</strong> classifica automaticamente quem está mais perto de fechar.
       </AdminPageIntro>
 
       {/* Filtros */}
@@ -121,12 +136,23 @@ function LeadsPage() {
             </select>
           </div>
           <div>
-            <label className="block text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)] mb-1">Expedição de interesse</label>
-            <select className="admin-input min-w-[200px]" value={fExpedicao} onChange={(e) => setFExpedicao(e.target.value)}>
+            <label className="block text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)] mb-1">Expedição</label>
+            <select className="admin-input min-w-[180px]" value={fExpedicao} onChange={(e) => setFExpedicao(e.target.value)}>
               <option value="todas">Todas</option>
               {expedicoesDisponiveis.map((e) => (
                 <option key={e} value={e}>{e}</option>
               ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)] mb-1">Nível de Interesse</label>
+            <select className="admin-input" value={fNivel} onChange={(e) => setFNivel(e.target.value)}>
+              <option value="todos">Todos</option>
+              <option value="5">⭐⭐⭐⭐⭐ Altíssimo</option>
+              <option value="4">⭐⭐⭐⭐ Alto</option>
+              <option value="3">⭐⭐⭐ Médio</option>
+              <option value="2">⭐⭐ Baixo</option>
+              <option value="1">⭐ Muito baixo</option>
             </select>
           </div>
           {filtrosAtivos ? (
@@ -158,57 +184,32 @@ function LeadsPage() {
           descricao="Ajuste os filtros acima ou limpe para ver todos os leads novamente."
           acao={<button className="admin-btn-ghost" onClick={limparFiltros}><X className="h-4 w-4" /> Limpar filtros</button>}
         />
-      ) : (
-        <div className="grid gap-3 overflow-x-auto pb-4" style={{ gridTemplateColumns: `repeat(${LEAD_STATUS.length}, minmax(260px, 1fr))` }}>
-          {LEAD_STATUS.map((s) => (
+      ) : view === "kanban" ? (
+        <div className="grid gap-3 overflow-x-auto pb-4" style={{ gridTemplateColumns: `repeat(${LEAD_ETAPAS.length}, minmax(260px, 1fr))` }}>
+          {LEAD_ETAPAS.map((s) => (
             <div key={s.id} className="admin-card flex min-h-[400px] flex-col p-3">
               <div className="mb-3 flex items-center justify-between px-1">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-0.5">
                   <StatusBadge status={s.id} />
+                  <span className="text-[10px] text-[color:var(--admin-cinza-3)]">{s.descricao}</span>
                 </div>
                 <span className="text-xs text-[color:var(--admin-cinza-3)]">{grouped[s.id].length}</span>
               </div>
               <div className="flex-1 space-y-2 overflow-y-auto">
                 {grouped[s.id].map((l) => (
-                  <Link
+                  <LeadKanbanCard
                     key={l.id}
-                    to="/admin/leads/$id"
-                    params={{ id: l.id }}
-                    className="block rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/60 p-3 transition hover:border-[color:var(--admin-dourado)]/40"
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <span className="text-sm font-medium text-[color:var(--admin-cinza-1)] truncate">{l.nome}</span>
-                      <button
-                        onClick={(e) => { e.preventDefault(); setDel(l); }}
-                        className="text-[color:var(--admin-cinza-3)] hover:text-rose-300"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
-                    {l.expedicao_interesse ? (
-                      <p className="mt-1 text-xs text-[color:var(--admin-cinza-2)] truncate">{l.expedicao_interesse}</p>
-                    ) : null}
-                    <div className="mt-2 flex items-center justify-between text-[11px] text-[color:var(--admin-cinza-3)]">
-                      <span>{l.protocolo ?? "—"}</span>
-                      {l.valor_estimado ? <span>R$ {Number(l.valor_estimado).toLocaleString("pt-BR")}</span> : null}
-                    </div>
-                    <div className="mt-2 flex gap-1">
-                      {LEAD_STATUS.filter((x) => x.id !== l.status).slice(0, 3).map((x) => (
-                        <button
-                          key={x.id}
-                          onClick={(e) => { e.preventDefault(); moveMut.mutate({ id: l.id, status: x.id }); }}
-                          className="rounded-md border border-[color:var(--admin-borda)] px-1.5 py-0.5 text-[10px] text-[color:var(--admin-cinza-2)] hover:border-[color:var(--admin-dourado)]/50"
-                        >
-                          → {x.label}
-                        </button>
-                      ))}
-                    </div>
-                  </Link>
+                    lead={l}
+                    onDelete={() => setDel(l)}
+                    onMove={(etapa) => moveMut.mutate({ id: l.id, etapa })}
+                  />
                 ))}
               </div>
             </div>
           ))}
         </div>
+      ) : (
+        <LeadsLista leads={leadsFiltrados} onDelete={(l) => setDel(l)} />
       )}
 
       <NovoLeadDialog open={novo} onOpenChange={setNovo} onCreated={refresh} />
@@ -221,6 +222,110 @@ function LeadsPage() {
         destructive
         onConfirm={() => { if (del) delMut.mutate(del.id); }}
       />
+    </div>
+  );
+}
+
+function LeadKanbanCard({ lead, onDelete, onMove }: { lead: LeadRow; onDelete: () => void; onMove: (etapa: LeadEtapaId) => void }) {
+  const nivel = lead.nivel_interesse ?? 3;
+  const score = lead.lead_score ?? 0;
+  const proximaEtapa = useMemo(() => {
+    const idx = LEAD_ETAPAS.findIndex((e) => e.id === lead.etapa_atendimento);
+    return LEAD_ETAPAS[idx + 1];
+  }, [lead.etapa_atendimento]);
+  return (
+    <Link
+      to="/admin/leads/$id"
+      params={{ id: lead.id }}
+      className="block rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/60 p-3 transition hover:border-[color:var(--admin-dourado)]/40"
+    >
+      <div className="flex items-start justify-between gap-2">
+        <span className="text-sm font-medium text-[color:var(--admin-cinza-1)] truncate">{lead.nome}</span>
+        <button
+          onClick={(e) => { e.preventDefault(); onDelete(); }}
+          className="text-[color:var(--admin-cinza-3)] hover:text-rose-300"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </button>
+      </div>
+      {lead.expedicao_interesse ? (
+        <p className="mt-1 text-xs text-[color:var(--admin-cinza-2)] truncate">{lead.expedicao_interesse}</p>
+      ) : null}
+      <div className="mt-2 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-0.5">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Star key={i} className={`h-3 w-3 ${i < nivel ? "fill-[color:var(--admin-dourado)] text-[color:var(--admin-dourado)]" : "text-[color:var(--admin-borda)]"}`} strokeWidth={1.5} />
+          ))}
+        </div>
+        {score > 0 ? (
+          <div className="flex items-center gap-1 text-[10px] text-amber-300/90">
+            <Flame className="h-3 w-3" strokeWidth={2} /> {score}
+          </div>
+        ) : null}
+      </div>
+      <div className="mt-2 flex items-center justify-between text-[11px] text-[color:var(--admin-cinza-3)]">
+        <span>{lead.protocolo ?? "—"}</span>
+        {lead.valor_estimado ? <span>R$ {Number(lead.valor_estimado).toLocaleString("pt-BR")}</span> : null}
+      </div>
+      {lead.proxima_acao ? (
+        <p className="mt-2 rounded border border-amber-400/20 bg-amber-400/5 px-2 py-1 text-[11px] text-amber-200/90 truncate">
+          → {lead.proxima_acao}
+        </p>
+      ) : null}
+      {proximaEtapa ? (
+        <button
+          onClick={(e) => { e.preventDefault(); onMove(proximaEtapa.id); }}
+          className="mt-2 w-full rounded-md border border-[color:var(--admin-borda)] px-2 py-1 text-[11px] text-[color:var(--admin-cinza-2)] hover:border-[color:var(--admin-dourado)]/50"
+        >
+          Avançar → {proximaEtapa.label}
+        </button>
+      ) : null}
+    </Link>
+  );
+}
+
+function LeadsLista({ leads, onDelete }: { leads: LeadRow[]; onDelete: (l: LeadRow) => void }) {
+  return (
+    <div className="admin-card overflow-hidden p-0">
+      <table className="w-full text-sm">
+        <thead className="border-b border-[color:var(--admin-borda)] text-left text-[11px] uppercase tracking-[0.16em] text-[color:var(--admin-cinza-3)]">
+          <tr>
+            <th className="px-4 py-3">Lead</th>
+            <th className="px-4 py-3">Etapa</th>
+            <th className="px-4 py-3">Nível</th>
+            <th className="px-4 py-3">Score</th>
+            <th className="px-4 py-3">Expedição</th>
+            <th className="px-4 py-3">Próxima ação</th>
+            <th className="px-4 py-3 text-right"></th>
+          </tr>
+        </thead>
+        <tbody className="text-[color:var(--admin-cinza-1)]">
+          {leads.map((l) => (
+            <tr key={l.id} className="border-b border-[color:var(--admin-borda)]/50 hover:bg-[color:var(--admin-carvao-deep)]/30">
+              <td className="px-4 py-3">
+                <Link to="/admin/leads/$id" params={{ id: l.id }} className="font-medium hover:text-[color:var(--admin-dourado)]">{l.nome}</Link>
+                <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{l.protocolo ?? "—"}</div>
+              </td>
+              <td className="px-4 py-3"><StatusBadge status={l.etapa_atendimento ?? "novo"} /></td>
+              <td className="px-4 py-3">
+                <div className="flex items-center gap-0.5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className={`h-3 w-3 ${i < (l.nivel_interesse ?? 3) ? "fill-[color:var(--admin-dourado)] text-[color:var(--admin-dourado)]" : "text-[color:var(--admin-borda)]"}`} strokeWidth={1.5} />
+                  ))}
+                </div>
+              </td>
+              <td className="px-4 py-3 text-xs">{l.lead_score ?? 0}</td>
+              <td className="px-4 py-3 text-xs text-[color:var(--admin-cinza-2)]">{l.expedicao_interesse ?? "—"}</td>
+              <td className="px-4 py-3 text-xs text-amber-200/80">{l.proxima_acao ?? "—"}</td>
+              <td className="px-4 py-3 text-right">
+                <button onClick={() => onDelete(l)} className="text-[color:var(--admin-cinza-3)] hover:text-rose-300">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
@@ -244,45 +349,46 @@ function NovoLeadDialog({ open, onOpenChange, onCreated }: { open: boolean; onOp
             <AdminField label="E-mail"><input className="admin-input" value={form.email ?? ""} onChange={(e) => setForm({ ...form, email: e.target.value })} /></AdminField>
             <AdminField label="Telefone"><input className="admin-input" value={form.telefone ?? ""} onChange={(e) => setForm({ ...form, telefone: e.target.value })} /></AdminField>
           </div>
-          <div className="grid grid-cols-3 gap-3">
-            <AdminField label="CPF"><input className="admin-input" value={form.cpf ?? ""} onChange={(e) => setForm({ ...form, cpf: e.target.value })} /></AdminField>
-            <AdminField label="Data de nascimento"><input type="date" className="admin-input" value={form.data_nascimento ?? ""} onChange={(e) => setForm({ ...form, data_nascimento: e.target.value })} /></AdminField>
-            <AdminField label="Peso (kg)"><input type="number" step="0.1" className="admin-input" value={form.peso ?? ""} onChange={(e) => setForm({ ...form, peso: e.target.value ? Number(e.target.value) : null })} /></AdminField>
-          </div>
           <div className="grid grid-cols-2 gap-3">
             <AdminField label="Cidade"><input className="admin-input" value={form.cidade ?? ""} onChange={(e) => setForm({ ...form, cidade: e.target.value })} /></AdminField>
             <AdminField label="Estado"><input className="admin-input" value={form.estado ?? ""} onChange={(e) => setForm({ ...form, estado: e.target.value })} /></AdminField>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <AdminField label="Experiência equestre">
-              <select className="admin-input" value={form.experiencia_equestre ?? ""} onChange={(e) => setForm({ ...form, experiencia_equestre: e.target.value || null })}>
-                <option value="">Não informada</option>
-                <option value="iniciante">Iniciante</option>
-                <option value="intermediario">Intermediário</option>
-                <option value="avancado">Avançado</option>
+            <AdminField label="Canal de entrada (de onde veio)">
+              <select className="admin-input" value={form.canal_entrada ?? ""} onChange={(e) => setForm({ ...form, canal_entrada: e.target.value || null })}>
+                <option value="">Não informado</option>
+                <option value="site">Site</option>
+                <option value="instagram">Instagram</option>
+                <option value="google">Google</option>
+                <option value="indicacao">Indicação</option>
+                <option value="outro">Outro</option>
               </select>
             </AdminField>
-            <AdminField label="Origem do lead">
-              <select className="admin-input" value={form.origem ?? "manual"} onChange={(e) => setForm({ ...form, origem: e.target.value })}>
-                <option value="manual">Manual</option>
-                <option value="site">Site</option>
+            <AdminField label="Canal de atendimento (por onde fala)">
+              <select className="admin-input" value={form.canal_atendimento ?? ""} onChange={(e) => setForm({ ...form, canal_atendimento: e.target.value || null })}>
+                <option value="">Não informado</option>
                 <option value="whatsapp">WhatsApp</option>
-                <option value="instagram">Instagram</option>
-                <option value="indicacao">Indicação</option>
-                <option value="evento">Evento</option>
-                <option value="outro">Outro</option>
+                <option value="telefone">Telefone</option>
+                <option value="email">E-mail</option>
+                <option value="presencial">Presencial</option>
               </select>
             </AdminField>
           </div>
           <AdminField label="Expedição de interesse"><input className="admin-input" value={form.expedicao_interesse ?? ""} onChange={(e) => setForm({ ...form, expedicao_interesse: e.target.value })} /></AdminField>
           <div className="grid grid-cols-3 gap-3">
-            <AdminField label="Acompanhantes"><input type="number" className="admin-input" value={form.acompanhantes ?? 0} onChange={(e) => setForm({ ...form, acompanhantes: Number(e.target.value) })} /></AdminField>
             <AdminField label="Pessoas"><input type="number" className="admin-input" value={form.quantidade_pessoas ?? 1} onChange={(e) => setForm({ ...form, quantidade_pessoas: Number(e.target.value) })} /></AdminField>
-            <AdminField label="Valor estimado"><input type="number" className="admin-input" value={form.valor_estimado ?? ""} onChange={(e) => setForm({ ...form, valor_estimado: e.target.value ? Number(e.target.value) : null })} /></AdminField>
+            <AdminField label="Valor estimado (R$)"><input type="number" className="admin-input" value={form.valor_estimado ?? ""} onChange={(e) => setForm({ ...form, valor_estimado: e.target.value ? Number(e.target.value) : null })} /></AdminField>
+            <AdminField label="Nível de Interesse">
+              <select className="admin-input" value={form.nivel_interesse ?? 3} onChange={(e) => setForm({ ...form, nivel_interesse: Number(e.target.value) })}>
+                <option value={5}>⭐⭐⭐⭐⭐</option>
+                <option value={4}>⭐⭐⭐⭐</option>
+                <option value={3}>⭐⭐⭐</option>
+                <option value={2}>⭐⭐</option>
+                <option value={1}>⭐</option>
+              </select>
+            </AdminField>
           </div>
-          <AdminField label="Observações médicas / alergias"><textarea className="admin-input min-h-[60px]" value={form.observacoes_medicas ?? ""} onChange={(e) => setForm({ ...form, observacoes_medicas: e.target.value })} /></AdminField>
-          <AdminField label="Restrições alimentares"><textarea className="admin-input min-h-[60px]" value={form.restricoes_alimentares ?? ""} onChange={(e) => setForm({ ...form, restricoes_alimentares: e.target.value })} /></AdminField>
-          <AdminField label="Observações gerais"><textarea className="admin-input min-h-[60px]" value={form.observacoes ?? ""} onChange={(e) => setForm({ ...form, observacoes: e.target.value })} /></AdminField>
+          <AdminField label="Observações da equipe"><textarea className="admin-input min-h-[60px]" value={form.observacoes ?? ""} onChange={(e) => setForm({ ...form, observacoes: e.target.value })} /></AdminField>
           <div className="flex justify-end gap-2 pt-2">
             <button className="admin-btn-ghost" onClick={() => onOpenChange(false)}>Cancelar</button>
             <button className="admin-btn-primary" onClick={() => mut.mutate()} disabled={mut.isPending || !form.nome}>Criar lead</button>
