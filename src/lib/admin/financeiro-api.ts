@@ -288,3 +288,74 @@ export async function fluxoCaixa(range: { from: string; to: string }) {
     .sort((a, b) => a.dia.localeCompare(b.dia))
     .map((r) => ({ ...r, saldo: r.entrada - r.saida }));
 }
+
+// ----- Pagamentos por reserva
+type DB = ReturnType<typeof supabase.from> extends infer _ ? typeof supabase : never;
+const sb = supabase as unknown as DB & {
+  from: (t: string) => ReturnType<typeof supabase.from>;
+};
+
+export async function listPagamentosByReserva(reservaId: string): Promise<Pagamento[]> {
+  const { data, error } = await sb
+    .from("pagamentos")
+    .select("*")
+    .eq("reserva_id", reservaId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as unknown as Pagamento[];
+}
+
+export async function createPagamento(input: Omit<Pagamento, "id" | "created_at">) {
+  const { error } = await sb.from("pagamentos").insert(input as never);
+  if (error) throw error;
+}
+
+export async function updatePagamentoStatus(id: string, status: string) {
+  const { error } = await sb.from("pagamentos").update({ status } as never).eq("id", id);
+  if (error) throw error;
+}
+
+export async function deletePagamento(id: string) {
+  const { error } = await sb.from("pagamentos").delete().eq("id", id);
+  if (error) throw error;
+}
+
+// ----- Histórico da reserva
+export async function listReservaHistorico(reservaId: string): Promise<ReservaHistorico[]> {
+  const { data, error } = await sb
+    .from("reserva_historico")
+    .select("*")
+    .eq("reserva_id", reservaId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as unknown as ReservaHistorico[];
+}
+
+// ----- Indicadores por expedição (view)
+export async function listIndicadoresExpedicoes(): Promise<ExpedicaoIndicador[]> {
+  const { data, error } = await sb
+    .from("expedicao_indicadores")
+    .select("*")
+    .order("receita_prevista", { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map((r) => {
+    const row = r as Record<string, unknown>;
+    return {
+      expedicao_id: String(row.expedicao_id ?? ""),
+      expedicao_nome: String(row.expedicao_nome ?? ""),
+      slug: String(row.slug ?? ""),
+      vagas_totais: Number(row.vagas_totais ?? 0),
+      vagas_ocupadas: Number(row.vagas_ocupadas ?? 0),
+      vagas_disponiveis: Number(row.vagas_disponiveis ?? 0),
+      receita_prevista: Number(row.receita_prevista ?? 0),
+      receita_recebida: Number(row.receita_recebida ?? 0),
+      valor_pendente: Number(row.valor_pendente ?? 0),
+      custos_previstos: Number(row.custos_previstos ?? 0),
+      custos_realizados: Number(row.custos_realizados ?? 0),
+      lucro_estimado: Number(row.lucro_estimado ?? 0),
+      lucro_realizado: Number(row.lucro_realizado ?? 0),
+      participantes_confirmados: Number(row.participantes_confirmados ?? 0),
+      participantes_pendentes: Number(row.participantes_pendentes ?? 0),
+    };
+  });
+}
