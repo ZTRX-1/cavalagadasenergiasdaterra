@@ -27,6 +27,7 @@ import { Route as ExpedicoesSlugRouteImport } from './routes/expedicoes.$slug'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminAuthenticatedRouteImport } from './routes/admin._authenticated'
 import { Route as AdminAuthenticatedIndexRouteImport } from './routes/admin._authenticated.index'
+import { Route as AdminAuthenticatedReservasRouteImport } from './routes/admin._authenticated.reservas'
 import { Route as AdminAuthenticatedPerfilRouteImport } from './routes/admin._authenticated.perfil'
 import { Route as AdminAuthenticatedParticipantesRouteImport } from './routes/admin._authenticated.participantes'
 import { Route as AdminAuthenticatedMidiaRouteImport } from './routes/admin._authenticated.midia'
@@ -35,6 +36,7 @@ import { Route as AdminAuthenticatedFinanceiroRouteImport } from './routes/admin
 import { Route as AdminAuthenticatedDocumentosRouteImport } from './routes/admin._authenticated.documentos'
 import { Route as AdminAuthenticatedConfiguracoesRouteImport } from './routes/admin._authenticated.configuracoes'
 import { Route as AdminAuthenticatedExpedicoesIndexRouteImport } from './routes/admin._authenticated.expedicoes.index'
+import { Route as AdminAuthenticatedReservasIdRouteImport } from './routes/admin._authenticated.reservas.$id'
 import { Route as AdminAuthenticatedLeadsIdRouteImport } from './routes/admin._authenticated.leads.$id'
 import { Route as AdminAuthenticatedExpedicoesIdRouteImport } from './routes/admin._authenticated.expedicoes.$id'
 
@@ -128,6 +130,12 @@ const AdminAuthenticatedIndexRoute = AdminAuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminAuthenticatedRoute,
 } as any)
+const AdminAuthenticatedReservasRoute =
+  AdminAuthenticatedReservasRouteImport.update({
+    id: '/reservas',
+    path: '/reservas',
+    getParentRoute: () => AdminAuthenticatedRoute,
+  } as any)
 const AdminAuthenticatedPerfilRoute =
   AdminAuthenticatedPerfilRouteImport.update({
     id: '/perfil',
@@ -174,6 +182,12 @@ const AdminAuthenticatedExpedicoesIndexRoute =
     path: '/expedicoes/',
     getParentRoute: () => AdminAuthenticatedRoute,
   } as any)
+const AdminAuthenticatedReservasIdRoute =
+  AdminAuthenticatedReservasIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AdminAuthenticatedReservasRoute,
+  } as any)
 const AdminAuthenticatedLeadsIdRoute =
   AdminAuthenticatedLeadsIdRouteImport.update({
     id: '/$id',
@@ -212,9 +226,11 @@ export interface FileRoutesByFullPath {
   '/admin/midia': typeof AdminAuthenticatedMidiaRoute
   '/admin/participantes': typeof AdminAuthenticatedParticipantesRoute
   '/admin/perfil': typeof AdminAuthenticatedPerfilRoute
+  '/admin/reservas': typeof AdminAuthenticatedReservasRouteWithChildren
   '/admin/': typeof AdminAuthenticatedIndexRoute
   '/admin/expedicoes/$id': typeof AdminAuthenticatedExpedicoesIdRoute
   '/admin/leads/$id': typeof AdminAuthenticatedLeadsIdRoute
+  '/admin/reservas/$id': typeof AdminAuthenticatedReservasIdRoute
   '/admin/expedicoes/': typeof AdminAuthenticatedExpedicoesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -241,9 +257,11 @@ export interface FileRoutesByTo {
   '/admin/midia': typeof AdminAuthenticatedMidiaRoute
   '/admin/participantes': typeof AdminAuthenticatedParticipantesRoute
   '/admin/perfil': typeof AdminAuthenticatedPerfilRoute
+  '/admin/reservas': typeof AdminAuthenticatedReservasRouteWithChildren
   '/admin': typeof AdminAuthenticatedIndexRoute
   '/admin/expedicoes/$id': typeof AdminAuthenticatedExpedicoesIdRoute
   '/admin/leads/$id': typeof AdminAuthenticatedLeadsIdRoute
+  '/admin/reservas/$id': typeof AdminAuthenticatedReservasIdRoute
   '/admin/expedicoes': typeof AdminAuthenticatedExpedicoesIndexRoute
 }
 export interface FileRoutesById {
@@ -272,9 +290,11 @@ export interface FileRoutesById {
   '/admin/_authenticated/midia': typeof AdminAuthenticatedMidiaRoute
   '/admin/_authenticated/participantes': typeof AdminAuthenticatedParticipantesRoute
   '/admin/_authenticated/perfil': typeof AdminAuthenticatedPerfilRoute
+  '/admin/_authenticated/reservas': typeof AdminAuthenticatedReservasRouteWithChildren
   '/admin/_authenticated/': typeof AdminAuthenticatedIndexRoute
   '/admin/_authenticated/expedicoes/$id': typeof AdminAuthenticatedExpedicoesIdRoute
   '/admin/_authenticated/leads/$id': typeof AdminAuthenticatedLeadsIdRoute
+  '/admin/_authenticated/reservas/$id': typeof AdminAuthenticatedReservasIdRoute
   '/admin/_authenticated/expedicoes/': typeof AdminAuthenticatedExpedicoesIndexRoute
 }
 export interface FileRouteTypes {
@@ -304,9 +324,11 @@ export interface FileRouteTypes {
     | '/admin/midia'
     | '/admin/participantes'
     | '/admin/perfil'
+    | '/admin/reservas'
     | '/admin/'
     | '/admin/expedicoes/$id'
     | '/admin/leads/$id'
+    | '/admin/reservas/$id'
     | '/admin/expedicoes/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -333,9 +355,11 @@ export interface FileRouteTypes {
     | '/admin/midia'
     | '/admin/participantes'
     | '/admin/perfil'
+    | '/admin/reservas'
     | '/admin'
     | '/admin/expedicoes/$id'
     | '/admin/leads/$id'
+    | '/admin/reservas/$id'
     | '/admin/expedicoes'
   id:
     | '__root__'
@@ -363,9 +387,11 @@ export interface FileRouteTypes {
     | '/admin/_authenticated/midia'
     | '/admin/_authenticated/participantes'
     | '/admin/_authenticated/perfil'
+    | '/admin/_authenticated/reservas'
     | '/admin/_authenticated/'
     | '/admin/_authenticated/expedicoes/$id'
     | '/admin/_authenticated/leads/$id'
+    | '/admin/_authenticated/reservas/$id'
     | '/admin/_authenticated/expedicoes/'
   fileRoutesById: FileRoutesById
 }
@@ -516,6 +542,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthenticatedIndexRouteImport
       parentRoute: typeof AdminAuthenticatedRoute
     }
+    '/admin/_authenticated/reservas': {
+      id: '/admin/_authenticated/reservas'
+      path: '/reservas'
+      fullPath: '/admin/reservas'
+      preLoaderRoute: typeof AdminAuthenticatedReservasRouteImport
+      parentRoute: typeof AdminAuthenticatedRoute
+    }
     '/admin/_authenticated/perfil': {
       id: '/admin/_authenticated/perfil'
       path: '/perfil'
@@ -572,6 +605,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthenticatedExpedicoesIndexRouteImport
       parentRoute: typeof AdminAuthenticatedRoute
     }
+    '/admin/_authenticated/reservas/$id': {
+      id: '/admin/_authenticated/reservas/$id'
+      path: '/$id'
+      fullPath: '/admin/reservas/$id'
+      preLoaderRoute: typeof AdminAuthenticatedReservasIdRouteImport
+      parentRoute: typeof AdminAuthenticatedReservasRoute
+    }
     '/admin/_authenticated/leads/$id': {
       id: '/admin/_authenticated/leads/$id'
       path: '/$id'
@@ -615,6 +655,20 @@ const AdminAuthenticatedLeadsRouteWithChildren =
     AdminAuthenticatedLeadsRouteChildren,
   )
 
+interface AdminAuthenticatedReservasRouteChildren {
+  AdminAuthenticatedReservasIdRoute: typeof AdminAuthenticatedReservasIdRoute
+}
+
+const AdminAuthenticatedReservasRouteChildren: AdminAuthenticatedReservasRouteChildren =
+  {
+    AdminAuthenticatedReservasIdRoute: AdminAuthenticatedReservasIdRoute,
+  }
+
+const AdminAuthenticatedReservasRouteWithChildren =
+  AdminAuthenticatedReservasRoute._addFileChildren(
+    AdminAuthenticatedReservasRouteChildren,
+  )
+
 interface AdminAuthenticatedRouteChildren {
   AdminAuthenticatedConfiguracoesRoute: typeof AdminAuthenticatedConfiguracoesRoute
   AdminAuthenticatedDocumentosRoute: typeof AdminAuthenticatedDocumentosRoute
@@ -623,6 +677,7 @@ interface AdminAuthenticatedRouteChildren {
   AdminAuthenticatedMidiaRoute: typeof AdminAuthenticatedMidiaRoute
   AdminAuthenticatedParticipantesRoute: typeof AdminAuthenticatedParticipantesRoute
   AdminAuthenticatedPerfilRoute: typeof AdminAuthenticatedPerfilRoute
+  AdminAuthenticatedReservasRoute: typeof AdminAuthenticatedReservasRouteWithChildren
   AdminAuthenticatedIndexRoute: typeof AdminAuthenticatedIndexRoute
   AdminAuthenticatedExpedicoesIdRoute: typeof AdminAuthenticatedExpedicoesIdRoute
   AdminAuthenticatedExpedicoesIndexRoute: typeof AdminAuthenticatedExpedicoesIndexRoute
@@ -636,6 +691,7 @@ const AdminAuthenticatedRouteChildren: AdminAuthenticatedRouteChildren = {
   AdminAuthenticatedMidiaRoute: AdminAuthenticatedMidiaRoute,
   AdminAuthenticatedParticipantesRoute: AdminAuthenticatedParticipantesRoute,
   AdminAuthenticatedPerfilRoute: AdminAuthenticatedPerfilRoute,
+  AdminAuthenticatedReservasRoute: AdminAuthenticatedReservasRouteWithChildren,
   AdminAuthenticatedIndexRoute: AdminAuthenticatedIndexRoute,
   AdminAuthenticatedExpedicoesIdRoute: AdminAuthenticatedExpedicoesIdRoute,
   AdminAuthenticatedExpedicoesIndexRoute:

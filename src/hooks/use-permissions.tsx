@@ -7,6 +7,7 @@ export type AdminModule =
   | "dashboard"
   | "expedicoes"
   | "leads"
+  | "reservas"
   | "participantes"
   | "financeiro"
   | "midia"

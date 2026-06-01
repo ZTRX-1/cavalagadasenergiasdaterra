@@ -359,3 +359,221 @@ export async function listIndicadoresExpedicoes(): Promise<ExpedicaoIndicador[]>
     };
   });
 }
+
+// ----- Reservas (centro operacional)
+export type ReservaDetalhada = {
+  id: string;
+  protocolo: string;
+  expedicao_id: string | null;
+  expedicao_nome: string;
+  data_id: string | null;
+  data_label: string;
+  status: string;
+  status_financeiro: string;
+  status_operacional: string;
+  contrato_enviado: boolean;
+  contrato_assinado: boolean;
+  contrato_enviado_em: string | null;
+  contrato_assinado_em: string | null;
+  quantidade_participantes: number;
+  valor_total: number | null;
+  valor_pago: number;
+  saldo_restante: number | null;
+  cliente_nome: string | null;
+  cliente_email: string | null;
+  cliente_telefone: string | null;
+  cliente_cpf: string | null;
+  observacoes_internas: string | null;
+  responsavel_id: string | null;
+  lead_id: string | null;
+  responsavel: Record<string, unknown> | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ReservaDocumento = {
+  id: string;
+  reserva_id: string;
+  tipo: string;
+  titulo: string;
+  url: string | null;
+  status: string;
+  enviado_em: string | null;
+  assinado_em: string | null;
+  observacoes: string | null;
+  created_at: string;
+};
+
+export const TIPOS_DOCUMENTO_RESERVA = [
+  { id: "contrato", label: "Contrato" },
+  { id: "comprovante", label: "Comprovante" },
+  { id: "documento_participante", label: "Documento do participante" },
+  { id: "termo", label: "Termo / Aceite" },
+  { id: "outro", label: "Outro" },
+] as const;
+
+export async function listReservasDetalhadas(): Promise<ReservaDetalhada[]> {
+  const { data, error } = await sb
+    .from("reservas")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as unknown as ReservaDetalhada[];
+}
+
+export async function getReservaDetalhada(id: string): Promise<ReservaDetalhada | null> {
+  const { data, error } = await sb.from("reservas").select("*").eq("id", id).maybeSingle();
+  if (error) throw error;
+  return (data as unknown as ReservaDetalhada) ?? null;
+}
+
+export async function updateReservaCampo(
+  id: string,
+  patch: Partial<{
+    contrato_enviado: boolean;
+    contrato_assinado: boolean;
+    status_operacional: string;
+    status_financeiro: string;
+    observacoes_internas: string;
+    responsavel_id: string | null;
+  }>,
+) {
+  const { error } = await sb.from("reservas").update(patch as never).eq("id", id);
+  if (error) throw error;
+}
+
+export async function listReservaDocumentos(reservaId: string): Promise<ReservaDocumento[]> {
+  const { data, error } = await sb
+    .from("reserva_documentos")
+    .select("*")
+    .eq("reserva_id", reservaId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as unknown as ReservaDocumento[];
+}
+
+export async function createReservaDocumento(
+  input: Omit<ReservaDocumento, "id" | "created_at">,
+) {
+  const { error } = await sb.from("reserva_documentos").insert(input as never);
+  if (error) throw error;
+}
+
+export async function deleteReservaDocumento(id: string) {
+  const { error } = await sb.from("reserva_documentos").delete().eq("id", id);
+  if (error) throw error;
+}
+
+/**
+ * Situação visível da reserva — derivada dos status/contrato/pagamento.
+ * Valores possíveis: "confirmado" | "pagamento_pendente" | "contrato_pendente" | "em_risco" | "concluido"
+ */
+export function calcularSituacaoReserva(r: {
+  status_operacional: string;
+  status_financeiro: string;
+  contrato_enviado: boolean;
+  contrato_assinado: boolean;
+  data_label?: string | null;
+}): { id: string; label: string; tone: "ok" | "warn" | "danger" | "info" } {
+  if (r.status_operacional === "expedicao_concluida") {
+    return { id: "concluido", label: "Concluído", tone: "info" };
+  }
+  if (
+    r.status_operacional === "reserva_confirmada" &&
+    r.contrato_assinado &&
+    r.status_financeiro === "pago_integralmente"
+  ) {
+    return { id: "confirmado", label: "Confirmado", tone: "ok" };
+  }
+  if (!r.contrato_enviado || (r.contrato_enviado && !r.contrato_assinado)) {
+    if (
+      r.status_financeiro === "aguardando_pagamento" ||
+      r.status_financeiro === "parcialmente_pago"
+    ) {
+      // contrato pendente + pagamento pendente = risco
+      if (!r.contrato_enviado && r.status_financeiro === "aguardando_pagamento") {
+        return { id: "em_risco", label: "Reserva em risco", tone: "danger" };
+      }
+    }
+    return { id: "contrato_pendente", label: "Contrato pendente", tone: "warn" };
+  }
+  if (
+    r.status_financeiro === "aguardando_pagamento" ||
+    r.status_financeiro === "parcialmente_pago" ||
+    r.status_financeiro === "entrada_paga"
+  ) {
+    return { id: "pagamento_pendente", label: "Pagamento pendente", tone: "warn" };
+  }
+  return { id: "confirmado", label: "Confirmado", tone: "ok" };
+}
+
+export type TimelineItem = {
+  id: string;
+  at: string;
+  tipo: string;
+  titulo: string;
+  descricao?: string;
+  fonte: "lead" | "reserva" | "pagamento" | "documento";
+  valor?: number | null;
+};
+
+/** Timeline unificada da reserva: lead conversas + reserva_historico + pagamentos + documentos. */
+export async function buildReservaTimeline(args: {
+  reservaId: string;
+  leadId?: string | null;
+}): Promise<TimelineItem[]> {
+  const [hist, pags, docs, conv] = await Promise.all([
+    sb.from("reserva_historico").select("*").eq("reserva_id", args.reservaId),
+    sb.from("pagamentos").select("*").eq("reserva_id", args.reservaId),
+    sb.from("reserva_documentos").select("*").eq("reserva_id", args.reservaId),
+    args.leadId
+      ? sb.from("lead_conversas").select("*").eq("lead_id", args.leadId)
+      : Promise.resolve({ data: [], error: null }),
+  ]);
+
+  const items: TimelineItem[] = [];
+
+  for (const raw of (hist.data ?? []) as Array<Record<string, unknown>>) {
+    items.push({
+      id: `h-${raw.id}`,
+      at: String(raw.created_at),
+      tipo: String(raw.tipo),
+      titulo: String(raw.descricao ?? raw.tipo),
+      fonte: "reserva",
+      valor: (raw.valor as number) ?? null,
+    });
+  }
+  for (const raw of (pags.data ?? []) as Array<Record<string, unknown>>) {
+    items.push({
+      id: `p-${raw.id}`,
+      at: String(raw.created_at),
+      tipo: "pagamento",
+      titulo: `Pagamento ${raw.tipo} (${raw.forma}) — R$ ${Number(raw.valor ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+      descricao: `Status: ${raw.status}`,
+      fonte: "pagamento",
+      valor: (raw.valor as number) ?? null,
+    });
+  }
+  for (const raw of (docs.data ?? []) as Array<Record<string, unknown>>) {
+    items.push({
+      id: `d-${raw.id}`,
+      at: String(raw.created_at),
+      tipo: "documento",
+      titulo: `Documento: ${raw.titulo} (${raw.tipo})`,
+      descricao: `Status: ${raw.status}`,
+      fonte: "documento",
+    });
+  }
+  for (const raw of (conv.data ?? []) as Array<Record<string, unknown>>) {
+    items.push({
+      id: `c-${raw.id}`,
+      at: String(raw.created_at),
+      tipo: String(raw.tipo_evento ?? "lead"),
+      titulo: String(raw.conteudo ?? raw.tipo_evento ?? "Interação"),
+      fonte: "lead",
+    });
+  }
+  items.sort((a, b) => (a.at < b.at ? 1 : -1));
+  return items;
+}
+
