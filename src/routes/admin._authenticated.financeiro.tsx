@@ -20,9 +20,9 @@ import {
   listDespesas, createDespesa, updateDespesa, deleteDespesa,
   listContasPagar, createContaPagar, updateContaPagar, deleteContaPagar,
   listContasReceber, createContaReceber, updateContaReceber, deleteContaReceber,
-  dreExpedicoes, fluxoCaixa,
-  CATEGORIAS_DESPESA, STATUS_DESPESA, STATUS_CONTA,
-  type Despesa, type ContaPagar, type ContaReceber,
+  dreExpedicoes, fluxoCaixa, listIndicadoresExpedicoes,
+  CATEGORIAS_DESPESA, STATUS_DESPESA, STATUS_CONTA, TIPOS_CUSTO,
+  type Despesa, type ContaPagar, type ContaReceber, type ExpedicaoIndicador,
 } from "@/lib/admin/financeiro-api";
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
