@@ -233,7 +233,7 @@ function UsuariosPage() {
         }
         confirmLabel={toggleAlvo?.ativo ? "Desativar" : "Reativar"}
         destructive={toggleAlvo?.ativo}
-        onConfirm={() => toggleAlvo && toggleMut.mutate({ id: toggleAlvo.user_id, ativo: !toggleAlvo.ativo })}
+        onConfirm={() => { if (toggleAlvo) toggleMut.mutate({ id: toggleAlvo.user_id, ativo: !toggleAlvo.ativo }); }}
       />
     </div>
   );
