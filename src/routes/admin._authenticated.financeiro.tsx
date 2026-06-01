@@ -177,6 +177,7 @@ function FinanceiroPage() {
         ))}
       </div>
 
+      {tab === "expedicoes" && <TabExpedicoes />}
       {tab === "receitas" && <TabReceitas reservas={reservasNoPeriodo} onChanged={() => qc.invalidateQueries({ queryKey: ["admin","reservas"] })} />}
       {tab === "despesas" && <TabDespesas despesas={despesas} canEdit={canEdit} onChanged={() => qc.invalidateQueries({ queryKey: ["admin","despesas"] })} />}
       {tab === "a-pagar" && <TabContasPagar contas={contasPagar} canEdit={canEdit} onChanged={() => qc.invalidateQueries({ queryKey: ["admin","contas-pagar"] })} />}
