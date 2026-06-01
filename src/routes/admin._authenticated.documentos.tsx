@@ -233,8 +233,8 @@ function CentralDocumentosPage() {
         ) : docsFiltrados.length === 0 ? (
           <AdminEmpty
             icon={Files}
-            title="Nenhum documento encontrado"
-            description="Adicione um documento ou ajuste os filtros para visualizar os arquivos da central."
+            titulo="Nenhum documento encontrado"
+            descricao="Adicione um documento ou ajuste os filtros para visualizar os arquivos da central."
           />
         ) : (
           <div className="divide-y divide-[color:var(--admin-borda)]">
