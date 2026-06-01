@@ -44,6 +44,77 @@ export type Database = {
         }
         Relationships: []
       }
+      cargo_permissoes: {
+        Row: {
+          acao: string
+          cargo_id: string
+          created_at: string
+          id: string
+          modulo: string
+          permitido: boolean
+        }
+        Insert: {
+          acao: string
+          cargo_id: string
+          created_at?: string
+          id?: string
+          modulo: string
+          permitido?: boolean
+        }
+        Update: {
+          acao?: string
+          cargo_id?: string
+          created_at?: string
+          id?: string
+          modulo?: string
+          permitido?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cargo_permissoes_cargo_id_fkey"
+            columns: ["cargo_id"]
+            isOneToOne: false
+            referencedRelation: "cargos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cargos: {
+        Row: {
+          ativo: boolean
+          chave: string
+          cor: string | null
+          created_at: string
+          descricao: string | null
+          id: string
+          nome: string
+          protegido: boolean
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          chave: string
+          cor?: string | null
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          protegido?: boolean
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          chave?: string
+          cor?: string | null
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          protegido?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       configuracoes: {
         Row: {
           cor_destaque: string | null
@@ -1158,11 +1229,14 @@ export type Database = {
           avatar_url: string | null
           bio: string | null
           cargo: string | null
+          cargo_id: string | null
           created_at: string
+          data_entrada: string | null
           id: string
           nome: string | null
           role: string
           telefone: string | null
+          ultimo_login: string | null
           updated_at: string
           user_id: string
         }
@@ -1171,11 +1245,14 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           cargo?: string | null
+          cargo_id?: string | null
           created_at?: string
+          data_entrada?: string | null
           id?: string
           nome?: string | null
           role?: string
           telefone?: string | null
+          ultimo_login?: string | null
           updated_at?: string
           user_id: string
         }
@@ -1184,15 +1261,26 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           cargo?: string | null
+          cargo_id?: string | null
           created_at?: string
+          data_entrada?: string | null
           id?: string
           nome?: string | null
           role?: string
           telefone?: string | null
+          ultimo_login?: string | null
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_cargo_id_fkey"
+            columns: ["cargo_id"]
+            isOneToOne: false
+            referencedRelation: "cargos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       protocolo_counter: {
         Row: {
