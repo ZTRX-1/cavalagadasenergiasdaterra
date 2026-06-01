@@ -1,292 +1,78 @@
-# Reestruturação completa do painel interno
 
-Escopo enorme. Vou preservar a página de cadastro/gestão de Expedições (não mexer), reorganizar o restante do admin em torno de um fluxo CRM → Reserva → Financeiro → Documentos, e deixar tudo preparado para automações futuras (webhooks, IA, WhatsApp) sem implementá-las agora.
+# Plano: Seção "Como Chegar" nas Expedições
 
-Linguagem do painel será 100% sem jargão: "Nível de Interesse", "Etapa do Atendimento", "Aguardando Pagamento", "Saldo a Receber" etc.
+Implementação totalmente dinâmica, editável pelo painel e pronta para uso futuro por IA.
 
----
+## 1. Banco de dados (migration)
 
-## O que será entregue (faseado)
+Adicionar 5 colunas em `public.expedicoes` (todas `text`, nullable):
 
-### Fase A — Banco + CRM de Leads reformulado
+- `como_chegar_titulo` — título customizado da seção (default exibido no front: "Como Chegar")
+- `como_chegar_conteudo` — texto principal (longo)
+- `como_chegar_aeroporto` — aeroporto mais próximo
+- `como_chegar_referencia` — cidade de referência
+- `como_chegar_observacoes` — observações adicionais (longo)
 
-- Expansão da tabela `leads`: adicionar `nivel_interesse` (1-5), `etapa_atendimento` (enum: novo, em_atendimento, qualificado, interessado, pronto_reserva, encaminhado_financeiro, pago, perdido), `responsavel_id`, `resumo_atendimento`, `ultima_interacao_at`, `data_interesse`.
-- Nova tabela `lead_conversas` (registro cronológico de cada interação — WhatsApp, ligação, e-mail, nota interna).
-- Nova tabela `webhooks_eventos` (fila de eventos disparados: `lead_criado`, `lead_qualificado`, `lead_pronto_reserva`, `reserva_criada`, `pagamento_confirmado`) — apenas grava, ninguém consome ainda. Base para n8n/OpenAI/WhatsApp depois.
-- Página `/admin/leads` redesenhada como Kanban + Lista, com filtros por etapa, responsável, expedição, nível de interesse.
-- Detalhe do lead com timeline de conversas, botão "Converter em reserva".
+Não altera RLS nem grants (já cobertos pelas policies existentes da tabela).
 
-### Fase B — Reservas + Financeiro completo
+Após migration, `src/integrations/supabase/types.ts` é regenerado automaticamente.
 
-- Reservas: já existe, vou adicionar campos `contrato_enviado`, `contrato_assinado`, `saldo_pendente` (calculado), e os status pedidos (pré-reserva, aguardando pagamento, parcial, pago, confirmado, cancelado).
-- Nova página `/admin/reservas` (hoje só existe dentro de leads/financeiro de forma esparsa) com lista + filtros + criação manual vinculada a lead.
-- Financeiro: módulo já existe (Receitas/Despesas/DRE), vou apenas:
-  - Renomear rótulos para linguagem leiga ("Receita Prevista", "Receita Recebida", "Custos Previstos", "Custos Realizados", "Lucro Estimado", "Lucro Realizado").
-  - Adicionar coluna `previsto` vs `realizado` nas despesas.
+## 2. Conteúdo inicial (seed)
 
-### Fase C — Notas Fiscais & Documentos
+Via `supabase--insert` com `UPDATE` na tabela `expedicoes`, preenchendo os 7 destinos pelos slugs:
 
-- Nova tabela `notas_fiscais` (empresa, cnpj, data, valor, categoria, expedicao_id, arquivo_url, dados_extraidos jsonb — placeholder para IA futura).
-- Nova rota `/admin/notas-fiscais` com upload de PDF/XML/imagem e listagem.
-- Documentos existentes ficam como estão (já foi recategorizado em fase anterior).
+- `serra-da-canastra` → Ribeirão Preto / São Roque de Minas
+- `serra-da-mantiqueira` → Guarulhos ou Congonhas / Campos do Jordão
+- `berco-do-mangalarga-marchador` (ou slug equivalente) → Confins / Cruzília
+- `jericoacoara` → JJD / Vila de Jericoacoara
+- `vale-do-colca-peru` → Arequipa / Arequipa
+- `patagonia-argentina` → San Martín de los Andes / San Martín de los Andes
+- `caminho-de-santiago-a-cavalo` → Santiago de Compostela / Santiago de Compostela
 
-### Fase D — Configurações da IA + Histórico
+Os slugs exatos serão confirmados via `read_query` antes do UPDATE.
 
-- Nova tabela `configuracoes_ia` (horario_atendimento, mensagem_fora_horario, whatsapp_comercial, whatsapp_financeiro, perguntas_qualificacao jsonb, regras_encaminhamento jsonb) — somente armazena, IA não está ligada.
-- Nova rota `/admin/configuracoes/ia` (aba dentro de Configurações).
-- Histórico: `activity_logs` já existe. Vou adicionar triggers em `leads`, `reservas`, `despesas` que gravam automaticamente mudanças de status e valores, e uma página `/admin/historico` com timeline filtrável.
+## 3. Camada de leitura (`src/lib/expedicoes.functions.ts`)
 
----
+Estender o tipo `Expedicao` e `normalizeExpedicao` para incluir os 5 novos campos. Sem mudança nas queries (já usam `select("*")`).
 
-## O que NÃO faço
+Atualizar também `src/lib/expedicoes-static.ts` adicionando os campos opcionais ao tipo (fallback ficará vazio).
 
-- Página de cadastro/gestão de Expedições (`/admin/expedicoes/*`) fica intocada, conforme pedido.
-- Nenhuma automação real (sem chamar n8n, OpenAI ou WhatsApp). Só a estrutura de eventos e tabelas.
-- Sem mudar o site público.
+## 4. Frontend público (`src/routes/expedicoes.$slug.tsx`)
 
----
+Nova seção "Como Chegar" no fluxo da página, posicionada após o roteiro / antes de requisitos (a definir conforme layout atual). Renderiza somente se houver pelo menos um dos campos preenchidos.
 
-## Como vai funcionar a execução
+Estrutura editorial alinhada ao design existente (admin-card / tipografia display + serif do projeto):
 
-Vou rodar como **4 mensagens sequenciais** (Fase A → B → C → D), cada uma:
+- Eyebrow + título (`como_chegar_titulo` ou "Como Chegar" como fallback)
+- Dois "info-tiles" lado a lado (md+): ícone Plane + "Aeroporto mais próximo"; ícone MapPin + "Cidade de referência"
+- Texto principal (`como_chegar_conteudo`) em parágrafo editorial
+- Bloco "Observações" destacado (se preenchido), com ícone Info
 
-1. Migration do banco (você aprova).
-2. Código da UI + APIs (server functions).
-3. Verificação visual.
+Ícones via `lucide-react` (já em uso no projeto). Sem cores hardcoded — usar tokens do design system.
 
-Cada fase fica funcional sozinha — se quiser pausar entre elas, o sistema continua usável.
+## 5. Painel administrativo (`src/routes/admin._authenticated.expedicoes.$id.tsx`)
 
----
+Adicionar nova aba **"Como Chegar"** ao `Tabs` existente da edição de expedição.
 
-## Decisões que preciso confirmar antes de começar
+Conteúdo da aba (usando `AdminSection` + `AdminField` já existentes):
 
-1. **Fluxo de execução**: começo agora pela **Fase A (CRM de Leads)** e sigo automaticamente para B, C, D em mensagens separadas? Ou prefere aprovar fase a fase?
-2. **Kanban vs Lista** na tela de Leads: faço Kanban como visão padrão (mais visual, "premium") com toggle para Lista? Ou só Lista com filtros?
-3. **WhatsApp**: as conversas em `lead_conversas` serão por enquanto **registradas manualmente** pela equipe (nota interna, "liguei", "mandei mensagem"). A sincronização automática com WhatsApp fica para a fase de integração. OK?
+- **Título da seção** (Input) — hint: "Personalize o título exibido no site. Deixe em branco para usar 'Como Chegar'."
+- **Aeroporto mais próximo** (Input) — hint: "Informe o aeroporto normalmente utilizado pelos participantes."
+- **Cidade de referência** (Input) — hint: "Informe a principal cidade utilizada como ponto de chegada."
+- **Texto principal** (Textarea) — hint: "Descreva como os participantes costumam chegar ao destino."
+- **Observações adicionais** (Textarea) — hint: "Detalhes extras: transfer, distâncias, dicas logísticas."
 
-Responda essas 3 e eu começo pela Fase A já com a migration do banco.
+Os 5 campos entram no payload de save junto com os demais (mesma função update já usada).
 
-&nbsp;
+## 6. Validação final
 
-**APROVAÇÃO DO PLANO COM AJUSTES ESTRATÉGICOS**
+- Migration aplicada, types regenerados.
+- Página pública de cada expedição renderiza a nova seção quando preenchida.
+- Aba do admin salva e recarrega corretamente os 5 campos.
+- Sem overflow / sem texto hardcoded no front.
 
-O plano proposto está alinhado com a direção do projeto e pode seguir em execução por fases.
+## Detalhes técnicos
 
-Aprovado:
-
-- Fase A — CRM de Leads
-- Fase B — Reservas e Financeiro
-- Fase C — Notas Fiscais e Documentos
-- Fase D — Configurações da IA e Histórico
-
-Manter a página de Expedições completamente intacta, conforme definido anteriormente.
-
-Quero apenas realizar alguns ajustes estruturais antes da execução para garantir compatibilidade futura com:
-
-- OpenAI
-- WhatsApp
-- n8n
-- Automações
-- CRM inteligente
-- Memória conversacional
-- Lead Scoring
-
-&nbsp;
-
-**AJUSTES NA FASE A**
-
-**1. LEAD SCORE**
-
-Adicionar campo:
-
-lead_score
-
-Tipo:  
-inteiro de 0 a 100
-
-Objetivo:
-
-Preparar o sistema para classificação automática de leads no futuro.
-
-Exemplo:
-
-- Interesse em datas
-- Interesse em preços
-- Interesse em disponibilidade
-- Pedido de reserva
-
-Esses eventos poderão aumentar automaticamente a pontuação do lead.
-
-&nbsp;
-
-**2. CAMPOS DE ORIGEM DE TRÁFEGO**
-
-Além do campo origem, adicionar:
-
-- utm_source
-- utm_medium
-- utm_campaign
-
-Objetivo:
-
-Permitir rastreamento completo das campanhas e canais de aquisição.
-
-&nbsp;
-
-**3. RESUMO HUMANO E RESUMO IA**
-
-Separar os campos:
-
-- resumo_atendimento
-- resumo_ia
-
-Objetivo:
-
-Permitir que a IA gere resumos automáticos enquanto a equipe mantém observações próprias.
-
-&nbsp;
-
-**4. PRÓXIMA AÇÃO**
-
-Adicionar campo:
-
-proxima_acao
-
-Exemplos:
-
-- Aguardar retorno
-- Enviar contrato
-- Enviar link de pagamento
-- Confirmar vaga
-- Entrar em contato amanhã
-
-Objetivo:
-
-Facilitar a gestão operacional da equipe.
-
-&nbsp;
-
-**5. CANAIS**
-
-Adicionar:
-
-- canal_entrada
-- canal_atendimento
-
-Exemplos:
-
-Canal de entrada:
-
-- Site
-- Instagram
-- Google
-- Indicação
-
-Canal de atendimento:
-
-- WhatsApp
-- Telefone
-- Presencial
-- E-mail
-
-Objetivo:
-
-Melhor rastreabilidade da jornada do cliente.
-
-&nbsp;
-
-**6. LEAD_CONVERSAS**
-
-Adicionar campo:
-
-tipo_evento
-
-Valores:
-
-- mensagem_ia
-- mensagem_humana
-- ligacao
-- pagamento
-- contrato
-- alteracao_status
-- observacao_interna
-
-Objetivo:
-
-Criar histórico completo e auditável.
-
-&nbsp;
-
-**7. MEMÓRIA PREPARADA PARA IA**
-
-Criar tabela:
-
-lead_memoria
-
-Campos:
-
-- lead_id
-- perfil
-- objetivos
-- interesses
-- restricoes
-- expedicoes_favoritas
-- orcamento
-- dados_extraidos
-- ultima_atualizacao
-
-Objetivo:
-
-Preparar o sistema para memória conversacional futura sem necessidade de reestruturação do banco.
-
-&nbsp;
-
-**KANBAN**
-
-A visualização principal do CRM deve ser:
-
-KANBAN
-
-Com opção secundária de visualização em lista.
-
-Etapas:
-
-- Novo
-- Em Atendimento
-- Qualificado
-- Interessado
-- Pronto para Reserva
-- Encaminhado ao Financeiro
-- Pago
-- Perdido
-
-Motivo:
-
-Usuárias não técnicas terão melhor entendimento visual do fluxo.
-
-&nbsp;
-
-**WHATSAPP**
-
-Neste momento, as conversas permanecerão registradas manualmente.
-
-Não implementar integração automática ainda.
-
-Apenas garantir que toda a estrutura esteja preparada para integração futura com:
-
-- WhatsApp
-- OpenAI
-- n8n
-- Chatwoot
-
-&nbsp;
-
-**EXECUÇÃO**
-
-Pode iniciar pela Fase A.
-
-Após concluir a Fase A, apresentar a migration do banco, APIs e interface para validação antes de avançar para a Fase B.
-
-Objetivo final:
-
-Construir um sistema operacional completo para a Cavalgadas Energias da Terra, preparado para CRM inteligente, automações, atendimento por IA, reservas, financeiro e crescimento futuro sem necessidade de refatorações estruturais.
+- Nenhum novo componente compartilhado é necessário; reusamos `AdminSection`, `AdminField`, `Input`, `Textarea`, tokens `--admin-*` e classes `admin-card`.
+- Fallback estático (`expedicoes-static.ts`) recebe os tipos opcionais mas não conteúdo — a seção simplesmente não renderiza se o DB estiver indisponível.
+- Estrutura dos campos é plana (5 colunas text) — fácil de consumir por agente IA futuro via simples `select` na tabela `expedicoes`.

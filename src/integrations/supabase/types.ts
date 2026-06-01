@@ -583,6 +583,11 @@ export type Database = {
           ativo: boolean
           capa_url: string | null
           cidade: string | null
+          como_chegar_aeroporto: string | null
+          como_chegar_conteudo: string | null
+          como_chegar_observacoes: string | null
+          como_chegar_referencia: string | null
+          como_chegar_titulo: string | null
           created_at: string
           descricao_curta: string
           descricao_longa: string
@@ -617,6 +622,11 @@ export type Database = {
           ativo?: boolean
           capa_url?: string | null
           cidade?: string | null
+          como_chegar_aeroporto?: string | null
+          como_chegar_conteudo?: string | null
+          como_chegar_observacoes?: string | null
+          como_chegar_referencia?: string | null
+          como_chegar_titulo?: string | null
           created_at?: string
           descricao_curta: string
           descricao_longa: string
@@ -651,6 +661,11 @@ export type Database = {
           ativo?: boolean
           capa_url?: string | null
           cidade?: string | null
+          como_chegar_aeroporto?: string | null
+          como_chegar_conteudo?: string | null
+          como_chegar_observacoes?: string | null
+          como_chegar_referencia?: string | null
+          como_chegar_titulo?: string | null
           created_at?: string
           descricao_curta?: string
           descricao_longa?: string
