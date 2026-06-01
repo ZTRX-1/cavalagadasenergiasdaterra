@@ -44,6 +44,11 @@ function normalizeExpedicao(row: Record<string, unknown>): Expedicao {
     roteiro: Array.isArray(row.roteiro)
       ? (row.roteiro as { dia: string; titulo: string; desc: string }[])
       : [],
+    como_chegar_titulo: (row.como_chegar_titulo as string | null) ?? null,
+    como_chegar_conteudo: (row.como_chegar_conteudo as string | null) ?? null,
+    como_chegar_aeroporto: (row.como_chegar_aeroporto as string | null) ?? null,
+    como_chegar_referencia: (row.como_chegar_referencia as string | null) ?? null,
+    como_chegar_observacoes: (row.como_chegar_observacoes as string | null) ?? null,
   };
 }
 

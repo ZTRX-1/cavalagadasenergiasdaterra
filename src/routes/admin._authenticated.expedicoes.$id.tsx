@@ -187,11 +187,78 @@ function ExpedicaoEdit() {
         <TabsList className="bg-[color:var(--admin-carvao-deep)]/60 border border-[color:var(--admin-borda)] flex-wrap h-auto gap-1">
           <TabsTrigger value="geral">Geral</TabsTrigger>
           <TabsTrigger value="roteiro">Roteiro</TabsTrigger>
+          <TabsTrigger value="como-chegar">Como chegar</TabsTrigger>
           <TabsTrigger value="midia">Mídia & narrativa</TabsTrigger>
           <TabsTrigger value="datas">Datas & Vagas</TabsTrigger>
           <TabsTrigger value="comercial">Comercial</TabsTrigger>
           <TabsTrigger value="publicacao">Publicação</TabsTrigger>
         </TabsList>
+
+        {/* ============== COMO CHEGAR ============== */}
+        <TabsContent value="como-chegar" className="mt-6">
+          <AdminSection
+            titulo="Como chegar"
+            descricao="Informações de logística exibidas em uma seção dedicada na página pública da expedição. Tudo é opcional — a seção só aparece no site quando há ao menos um campo preenchido."
+          >
+            <AdminField
+              label="Título da seção"
+              hint="Personalize o título exibido no site. Deixe em branco para usar 'Como Chegar'."
+            >
+              <input
+                className="admin-input"
+                value={form.como_chegar_titulo ?? ""}
+                onChange={(e) => setF({ como_chegar_titulo: e.target.value || null })}
+                placeholder="Como Chegar"
+              />
+            </AdminField>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <AdminField
+                label="Aeroporto mais próximo"
+                hint="Informe o aeroporto normalmente utilizado pelos participantes."
+              >
+                <input
+                  className="admin-input"
+                  value={form.como_chegar_aeroporto ?? ""}
+                  onChange={(e) => setF({ como_chegar_aeroporto: e.target.value || null })}
+                  placeholder="Ex.: Belo Horizonte (Confins)"
+                />
+              </AdminField>
+              <AdminField
+                label="Cidade de referência"
+                hint="Informe a principal cidade utilizada como ponto de chegada."
+              >
+                <input
+                  className="admin-input"
+                  value={form.como_chegar_referencia ?? ""}
+                  onChange={(e) => setF({ como_chegar_referencia: e.target.value || null })}
+                  placeholder="Ex.: Cruzília (MG)"
+                />
+              </AdminField>
+            </div>
+            <AdminField
+              label="Texto principal"
+              hint="Descreva, em alguns parágrafos, como os participantes costumam chegar ao destino."
+            >
+              <textarea
+                className="admin-input min-h-[140px]"
+                value={form.como_chegar_conteudo ?? ""}
+                onChange={(e) => setF({ como_chegar_conteudo: e.target.value || null })}
+                placeholder="A expedição acontece na região de..."
+              />
+            </AdminField>
+            <AdminField
+              label="Observações adicionais"
+              hint="Detalhes extras: transfer, distâncias, recomendações de horário, dicas logísticas."
+            >
+              <textarea
+                className="admin-input min-h-[100px]"
+                value={form.como_chegar_observacoes ?? ""}
+                onChange={(e) => setF({ como_chegar_observacoes: e.target.value || null })}
+                placeholder="Recomendamos chegar no dia anterior..."
+              />
+            </AdminField>
+          </AdminSection>
+        </TabsContent>
 
         <TabsContent value="geral" className="mt-6 grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6 order-2 lg:order-1">

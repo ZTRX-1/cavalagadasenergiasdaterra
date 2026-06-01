@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Plane, MapPin, Info } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
