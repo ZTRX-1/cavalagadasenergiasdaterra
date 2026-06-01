@@ -6,14 +6,28 @@ const TOKENS: Record<string, { bg: string; fg: string; ring: string; label?: str
   publicado: { bg: "bg-emerald-500/15", fg: "text-emerald-300", ring: "ring-emerald-500/30", label: "Publicado" },
   pausado: { bg: "bg-amber-500/15", fg: "text-amber-300", ring: "ring-amber-500/30", label: "Pausado" },
   arquivado: { bg: "bg-zinc-700/30", fg: "text-zinc-400", ring: "ring-zinc-600/40", label: "Arquivado" },
-  // leads
+  // leads — etapas do atendimento
   novo: { bg: "bg-sky-500/15", fg: "text-sky-300", ring: "ring-sky-500/30", label: "Novo" },
-  contato_realizado: { bg: "bg-indigo-500/15", fg: "text-indigo-300", ring: "ring-indigo-500/30", label: "Contato" },
-  negociacao: { bg: "bg-violet-500/15", fg: "text-violet-300", ring: "ring-violet-500/30", label: "Negociação" },
-  pagamento_pendente: { bg: "bg-amber-500/15", fg: "text-amber-300", ring: "ring-amber-500/30", label: "Pgto pendente" },
+  em_atendimento: { bg: "bg-indigo-500/15", fg: "text-indigo-300", ring: "ring-indigo-500/30", label: "Em Atendimento" },
+  qualificado: { bg: "bg-violet-500/15", fg: "text-violet-300", ring: "ring-violet-500/30", label: "Qualificado" },
+  interessado: { bg: "bg-fuchsia-500/15", fg: "text-fuchsia-300", ring: "ring-fuchsia-500/30", label: "Interessado" },
+  pronto_reserva: { bg: "bg-amber-500/15", fg: "text-amber-300", ring: "ring-amber-500/30", label: "Pronto pra Reserva" },
+  encaminhado_financeiro: { bg: "bg-orange-500/15", fg: "text-orange-300", ring: "ring-orange-500/30", label: "No Financeiro" },
+  pago: { bg: "bg-emerald-500/15", fg: "text-emerald-300", ring: "ring-emerald-500/30", label: "Pago" },
+  perdido: { bg: "bg-rose-500/15", fg: "text-rose-300", ring: "ring-rose-500/30", label: "Perdido" },
+  // legados
   confirmado: { bg: "bg-emerald-500/15", fg: "text-emerald-300", ring: "ring-emerald-500/30", label: "Confirmado" },
   cancelado: { bg: "bg-rose-500/15", fg: "text-rose-300", ring: "ring-rose-500/30", label: "Cancelado" },
-  pos_venda: { bg: "bg-teal-500/15", fg: "text-teal-300", ring: "ring-teal-500/30", label: "Pós-venda" },
+  // conversa
+  observacao_interna: { bg: "bg-slate-500/15", fg: "text-slate-300", ring: "ring-slate-500/30", label: "Observação" },
+  mensagem_humana: { bg: "bg-sky-500/15", fg: "text-sky-300", ring: "ring-sky-500/30", label: "Mensagem" },
+  mensagem_ia: { bg: "bg-violet-500/15", fg: "text-violet-300", ring: "ring-violet-500/30", label: "IA" },
+  ligacao: { bg: "bg-indigo-500/15", fg: "text-indigo-300", ring: "ring-indigo-500/30", label: "Ligação" },
+  email: { bg: "bg-cyan-500/15", fg: "text-cyan-300", ring: "ring-cyan-500/30", label: "E-mail" },
+  contrato: { bg: "bg-amber-500/15", fg: "text-amber-300", ring: "ring-amber-500/30", label: "Contrato" },
+  pagamento: { bg: "bg-emerald-500/15", fg: "text-emerald-300", ring: "ring-emerald-500/30", label: "Pagamento" },
+  alteracao_status: { bg: "bg-zinc-500/15", fg: "text-zinc-300", ring: "ring-zinc-500/30", label: "Status" },
+  sistema: { bg: "bg-zinc-700/30", fg: "text-zinc-400", ring: "ring-zinc-600/40", label: "Sistema" },
   // pagamentos
   pendente: { bg: "bg-amber-500/15", fg: "text-amber-300", ring: "ring-amber-500/30", label: "Pendente" },
   parcial: { bg: "bg-blue-500/15", fg: "text-blue-300", ring: "ring-blue-500/30", label: "Parcial" },
