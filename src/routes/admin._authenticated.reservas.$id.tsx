@@ -15,6 +15,7 @@ import {
   TIPOS_DOCUMENTO_RESERVA,
   type TimelineItem,
 } from "@/lib/admin/financeiro-api";
+import { ReservaPagamentos } from "@/components/admin/reserva-pagamentos";
 import { StatusBadge } from "@/components/admin/admin-status-badge";
 import { cn } from "@/lib/utils";
 import {
