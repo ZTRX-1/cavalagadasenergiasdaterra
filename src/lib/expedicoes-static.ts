@@ -18,6 +18,11 @@ export interface Expedicao {
   inclui: string[];
   requisitos: string[];
   roteiro: { dia: string; titulo: string; desc: string }[];
+  como_chegar_titulo?: string | null;
+  como_chegar_conteudo?: string | null;
+  como_chegar_aeroporto?: string | null;
+  como_chegar_referencia?: string | null;
+  como_chegar_observacoes?: string | null;
 }
 
 export interface DataExpedicao {

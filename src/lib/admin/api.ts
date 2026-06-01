@@ -75,6 +75,11 @@ export interface ExpedicaoRow {
   status: ExpedicaoStatus;
   ativo: boolean;
   ordem: number;
+  como_chegar_titulo: string | null;
+  como_chegar_conteudo: string | null;
+  como_chegar_aeroporto: string | null;
+  como_chegar_referencia: string | null;
+  como_chegar_observacoes: string | null;
   created_at: string;
   updated_at: string;
 }

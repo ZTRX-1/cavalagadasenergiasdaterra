@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Plane, MapPin, Info } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
@@ -191,6 +191,76 @@ function DetalhesExpedicao() {
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{d.desc}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+
+
+      {/* Como Chegar */}
+      {(expedicao.como_chegar_aeroporto ||
+        expedicao.como_chegar_referencia ||
+        expedicao.como_chegar_conteudo ||
+        expedicao.como_chegar_observacoes) && (
+        <section className="bg-background py-20 md:py-24">
+          <div className="container-tight">
+            <div className="max-w-2xl">
+              <div className="eyebrow">Logística</div>
+              <h2 className="mt-4 font-display text-3xl md:text-4xl">
+                {expedicao.como_chegar_titulo?.trim() || "Como chegar"}
+              </h2>
+            </div>
+
+            <div className="mt-12 grid gap-10 md:grid-cols-12">
+              <div className="md:col-span-7 space-y-6">
+                {(expedicao.como_chegar_aeroporto || expedicao.como_chegar_referencia) && (
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {expedicao.como_chegar_aeroporto && (
+                      <div className="rounded-sm border border-border bg-card p-6 shadow-card">
+                        <div className="flex items-center gap-2 text-cobre">
+                          <Plane className="h-4 w-4" strokeWidth={1.6} />
+                          <span className="eyebrow !mt-0">Aeroporto mais próximo</span>
+                        </div>
+                        <p className="mt-3 font-display text-xl leading-snug text-foreground">
+                          {expedicao.como_chegar_aeroporto}
+                        </p>
+                      </div>
+                    )}
+                    {expedicao.como_chegar_referencia && (
+                      <div className="rounded-sm border border-border bg-card p-6 shadow-card">
+                        <div className="flex items-center gap-2 text-cobre">
+                          <MapPin className="h-4 w-4" strokeWidth={1.6} />
+                          <span className="eyebrow !mt-0">Cidade de referência</span>
+                        </div>
+                        <p className="mt-3 font-display text-xl leading-snug text-foreground">
+                          {expedicao.como_chegar_referencia}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {expedicao.como_chegar_conteudo && (
+                  <p className="whitespace-pre-line text-lg leading-relaxed text-foreground/80 text-pretty">
+                    {expedicao.como_chegar_conteudo}
+                  </p>
+                )}
+              </div>
+
+              {expedicao.como_chegar_observacoes && (
+                <aside className="md:col-span-5">
+                  <div className="rounded-sm border border-border bg-secondary/40 p-7">
+                    <div className="flex items-center gap-2 text-cobre">
+                      <Info className="h-4 w-4" strokeWidth={1.6} />
+                      <span className="eyebrow !mt-0">Observações</span>
+                    </div>
+                    <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-foreground/80">
+                      {expedicao.como_chegar_observacoes}
+                    </p>
+                  </div>
+                </aside>
+              )}
             </div>
           </div>
         </section>
