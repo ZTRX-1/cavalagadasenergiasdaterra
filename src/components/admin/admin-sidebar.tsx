@@ -105,13 +105,12 @@ function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: s
       </div>
       <nav className="flex-1 overflow-y-auto px-3 py-5 space-y-0.5">
         <div className="px-3 pb-2 text-[10px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)]">Operação</div>
-        {nav.map((item) => (
-          <NavLinkItem
-            key={item.to}
-            item={item}
-            onNavigate={onNavigate}
-            active={isActive(item.to, item.exact)}
-          />
+        {nav.filter((i) => i.group === "operacao").map((item) => (
+          <NavLinkItem key={item.to} item={item} onNavigate={onNavigate} active={isActive(item.to, item.exact)} />
+        ))}
+        <div className="px-3 pt-4 pb-2 text-[10px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)]">Governança</div>
+        {nav.filter((i) => i.group === "governanca").map((item) => (
+          <NavLinkItem key={item.to} item={item} onNavigate={onNavigate} active={isActive(item.to, item.exact)} />
         ))}
       </nav>
       <div className="border-t border-[color:var(--admin-borda)] p-3">
