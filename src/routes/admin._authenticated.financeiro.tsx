@@ -688,3 +688,100 @@ function PagamentoDialog({ reserva, onClose, onSaved }: { reserva: ReservaRow; o
 
 // imports usados para evitar "unused"
 void Wallet;
+
+// ============ Tab Expedições — visão consolidada =============
+function TabExpedicoes() {
+  const { data = [], isLoading } = useQuery({
+    queryKey: ["admin", "indicadores-expedicoes"],
+    queryFn: () => listIndicadoresExpedicoes(),
+  });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-32 animate-pulse rounded-xl bg-[color:var(--admin-petroleo)]/40" />
+        ))}
+      </div>
+    );
+  }
+
+  const ativos = data.filter((d) => d.vagas_totais > 0 || d.receita_prevista > 0);
+  if (ativos.length === 0) {
+    return (
+      <AdminSection titulo="Expedições">
+        <p className="text-sm text-[color:var(--admin-cinza-3)]">Nenhuma expedição com vagas ou reservas ainda.</p>
+      </AdminSection>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <AdminPageIntro>
+        <strong className="text-[color:var(--admin-cinza-1)]">Visão financeira por expedição.</strong> Veja para cada saída quanto você <em>vai receber</em>, quanto <em>já entrou</em>, quanto <em>falta</em>, custos e <strong>lucro real</strong>. As vagas mostram lotação por data.
+      </AdminPageIntro>
+      {ativos.map((e) => (
+        <CardExpedicao key={e.expedicao_id} ind={e} />
+      ))}
+    </div>
+  );
+}
+
+function CardExpedicao({ ind }: { ind: ExpedicaoIndicador }) {
+  const lucroOk = ind.lucro_realizado >= 0;
+  const ocup = ind.vagas_totais > 0 ? (ind.vagas_ocupadas / ind.vagas_totais) * 100 : 0;
+  return (
+    <div className="admin-card p-5 md:p-6">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <div className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">Expedição</div>
+          <h3 className="mt-1 font-display text-xl md:text-2xl text-[color:var(--admin-cinza-1)]">{ind.expedicao_nome}</h3>
+        </div>
+        <div className="text-right">
+          <div className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">Lucro realizado</div>
+          <div className={`mt-1 font-display text-xl md:text-2xl ${lucroOk ? "text-[color:var(--admin-dourado)]" : "text-red-400"}`}>
+            {fmtBRL(ind.lucro_realizado)}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+        <Mini label="Receita prevista" value={fmtBRL(ind.receita_prevista)} />
+        <Mini label="Receita recebida" value={fmtBRL(ind.receita_recebida)} accent />
+        <Mini label="A receber" value={fmtBRL(ind.valor_pendente)} />
+        <Mini label="Lucro estimado" value={fmtBRL(ind.lucro_estimado)} />
+        <Mini label="Custos previstos" value={fmtBRL(ind.custos_previstos)} />
+        <Mini label="Custos realizados" value={fmtBRL(ind.custos_realizados)} />
+        <Mini label="Participantes confirmados" value={String(ind.participantes_confirmados)} />
+        <Mini label="Participantes pendentes" value={String(ind.participantes_pendentes)} />
+      </div>
+
+      <div className="mt-5 rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo-soft)]/30 p-4">
+        <div className="flex items-center justify-between text-[12px] text-[color:var(--admin-cinza-2)]">
+          <span>
+            <strong className="text-[color:var(--admin-cinza-1)]">{ind.vagas_ocupadas}</strong>
+            <span className="text-[color:var(--admin-cinza-3)]"> / {ind.vagas_totais} vagas ocupadas</span>
+          </span>
+          <span className="text-[color:var(--admin-cinza-3)]">{ind.vagas_disponiveis} disponíveis · {ocup.toFixed(0)}% lotação</span>
+        </div>
+        <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-[color:var(--admin-borda)]">
+          <div
+            className="h-full bg-[color:var(--admin-dourado)] transition-all"
+            style={{ width: `${Math.min(ocup, 100)}%` }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Mini({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+  return (
+    <div className="rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo-soft)]/20 p-3">
+      <div className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">{label}</div>
+      <div className={`mt-1 font-medium tabular-nums text-[14px] ${accent ? "text-[color:var(--admin-dourado)]" : "text-[color:var(--admin-cinza-1)]"}`}>
+        {value}
+      </div>
+    </div>
+  );
+}
