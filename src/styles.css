@@ -579,4 +579,100 @@
 html, body { overflow-x: hidden; max-width: 100vw; }
 body { overscroll-behavior-y: none; }
 
+/* ============================================================
+ * ADMIN — Guard-rails responsivos globais (causa-raiz)
+ * Resolve overflow, grids apertados e ações estouradas
+ * sem precisar editar cada página.
+ * ============================================================ */
+
+/* Qualquer descendente do painel administrativo deve poder encolher
+   dentro do seu container flex/grid. Sem isso, conteúdos com texto
+   longo (e-mails, IDs) forçam scroll horizontal. */
+.admin-surface,
+.admin-surface * { min-width: 0; }
+.admin-surface .truncate { min-width: 0; }
+
+/* Tabelas: nunca renderizar tabela "nua" no admin — sempre dentro de
+   .admin-table-wrap. Mas, como fallback, neutralizamos overflow. */
+.admin-surface table { max-width: 100%; }
+
+/* Formulários: grids de campos colapsam automaticamente em telas
+   estreitas. Usa :has() para identificar grids que contêm inputs
+   sem precisar de classes responsivas em cada ocorrência. */
+@media (max-width: 640px) {
+  .admin-surface .grid:has(> label > .admin-input),
+  .admin-surface .grid:has(> label > input),
+  .admin-surface .grid:has(> label > select),
+  .admin-surface .grid:has(> label > textarea),
+  .admin-surface .grid:has(> .admin-input),
+  [role="dialog"][data-state="open"] .grid:has(> label > .admin-input),
+  [role="dialog"][data-state="open"] .grid:has(> label > input),
+  [role="dialog"][data-state="open"] .grid:has(> label > select),
+  [role="dialog"][data-state="open"] .grid:has(> label > textarea) {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+}
+
+/* Ações no header de seção/página: sempre permitem quebra de linha
+   no mobile para não estourar o card. */
+@media (max-width: 640px) {
+  .admin-surface header > div:last-child,
+  .admin-surface .flex.items-center.gap-2,
+  .admin-surface .flex.items-center.gap-3 {
+    flex-wrap: wrap;
+  }
+}
+
+/* Tabs (Radix): no mobile, scroll horizontal suave em vez de
+   comprimir todos os triggers. Aplica-se a qualquer TabsList. */
+@media (max-width: 640px) {
+  .admin-surface [role="tablist"] {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+  }
+  .admin-surface [role="tablist"]::-webkit-scrollbar { display: none; }
+  .admin-surface [role="tablist"] [role="tab"] {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+
+/* Cards do admin no mobile: padding mais enxuto, sem perder respiro.
+   Padroniza espaçamento entre páginas (HubSpot/Linear). */
+@media (max-width: 640px) {
+  .admin-card { padding: 1.125rem !important; border-radius: 10px; }
+  .admin-card > header { margin-bottom: 1rem; }
+}
+
+/* Botões em rows de ação: encolhem por padrão em telas estreitas
+   para evitar overflow horizontal. */
+@media (max-width: 480px) {
+  .admin-surface .admin-btn-primary,
+  .admin-surface .admin-btn-ghost {
+    flex: 1 1 auto;
+    min-width: 0;
+    justify-content: center;
+  }
+}
+
+/* DialogContent: padding interno consistente e seguro em qualquer
+   altura/largura. Modais nunca devem precisar de scroll horizontal. */
+[role="dialog"][data-state="open"] {
+  padding: 1.25rem !important;
+}
+@media (min-width: 640px) {
+  [role="dialog"][data-state="open"] {
+    padding: 1.5rem !important;
+  }
+}
+
+/* Topbar sticky pode causar layout shift se main não tiver scroll
+   próprio. Garantimos contexto correto. */
+.admin-surface main { contain: layout paint; }
+
+
 
