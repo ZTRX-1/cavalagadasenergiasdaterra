@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { buildReservaWhatsappUrl } from "@/lib/whatsapp";
-import { consultarReservaPorProtocolo } from "@/lib/pre-reserva.functions";
+import { consultarReservaPorProtocolo } from "@/lib/pre-reserva";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/minha-reserva")({
@@ -30,7 +29,6 @@ type Reserva = {
 function MinhaReserva() {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
-  const consultar = useServerFn(consultarReservaPorProtocolo);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<Reserva | null>(null);
   const [searched, setSearched] = useState(false);
@@ -61,7 +59,7 @@ function MinhaReserva() {
     setLoading(true);
     setSearched(true);
     try {
-      const remote = await consultar({ data: { protocolo: value } });
+      const remote = await consultarReservaPorProtocolo(value);
       if (remote) {
         setResult({
           protocolo: remote.protocolo,
