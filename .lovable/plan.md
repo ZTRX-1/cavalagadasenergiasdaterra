@@ -1,51 +1,50 @@
-## Plano
+## Diagnóstico
 
-Vou manter a página `/reserva/$slug` existente, oculta da navegação pública, mas vou fazer o fluxo dela gravar corretamente no CRM.
+- O backend está saudável, mas `leads`, `reservas` e `webhooks_eventos` estão vazios: o teste que você fez não chegou no banco.
+- O preview quebrou por erro no navegador: `AsyncLocalStorage is not a constructor` vindo de `@tanstack/react-start` no bundle client.
+- A causa provável é que a página pública de pré-reserva passou a importar `useServerFn` / `createServerFn`, e isso colocou código de servidor no pacote do navegador nesta configuração atual do projeto.
+- Também vi que os triggers de `lead_criado` e `reserva_criada` não existem no banco, apesar das funções estarem definidas. Então mesmo que inserisse, os eventos internos de automação não seriam criados automaticamente hoje.
 
-### 1. Protocolo seguro e não sequencial
-- Substituir qualquer lógica fraca/visível tipo `CET-2026-001` ou protocolo gerado no navegador.
-- Gerar o protocolo exclusivamente no backend/banco, com formato não sequencial e difícil de adivinhar, por exemplo `CET-2026-K7M9QX`.
-- Garantir unicidade real com validação contra a tabela `reservas` antes de aceitar o protocolo.
-- Atualizar textos/placeholder da consulta para não sugerirem protocolo sequencial.
+## Plano de correção
 
-### 2. Pré-reserva vira registro real no CRM
-- Conectar o submit do formulário multi-etapa de `/reserva/$slug` a uma função segura de backend.
-- Ao enviar, criar uma linha em `reservas` com:
-  - protocolo gerado no backend
-  - expedição, data, responsável, participantes, adicionais e aceites
-  - status inicial `pre_reserva_enviada` / `pre_reserva`
-  - valores calculados e forma de pagamento
-- Criar também um lead em `leads`, para aparecer no CRM de Leads, com origem `pre_reserva_site` e etapa adequada, provavelmente `pronto_reserva`.
-- Vincular `reservas.lead_id` ao lead criado.
+### 1. Destravar o preview e o site
+- Remover o uso de `@tanstack/react-start` do lado do navegador na pré-reserva e em “Minha Reserva”.
+- Trocar esse caminho por rotas HTTP internas em `/api/public/...`, que são próprias para chamadas públicas de formulário.
+- Assim o formulário volta a carregar sem quebrar a tela branca.
 
-### 3. Eventos para automação/CRM interno
-- Garantir que a criação gere os eventos internos já esperados:
-  - `lead_criado`
-  - `reserva_criada`
-- Incluir no payload dos eventos os dados úteis para automação: protocolo, nome, telefone, email, expedição, data, quantidade de participantes, forma de pagamento e origem.
+### 2. Criar endpoints públicos controlados para pré-reserva
+- Criar um endpoint para envio da pré-reserva, por exemplo `/api/public/pre-reserva`.
+- Criar um endpoint para consulta por protocolo, por exemplo `/api/public/reserva-status`.
+- Ambos terão validação forte dos campos com Zod.
+- O endpoint de envio usará o backend com permissão segura de servidor para gravar em `leads` e `reservas`, sem abrir permissão pública direta nas tabelas.
 
-### 4. Consulta “Minha Reserva” deixa de depender só do aparelho
-- Manter compatibilidade com `localStorage` como fallback local.
-- Adicionar consulta segura por protocolo no backend para buscar a reserva real no banco.
-- Retornar apenas dados mínimos ao visitante, sem abrir dados sensíveis de outras pessoas além do necessário.
-- Isso resolve o problema de a reserva só existir no celular/computador onde o formulário foi preenchido.
+### 3. Fazer a pré-reserva virar lead e reserva real
+- No envio do formulário `/reserva/$slug`, gravar:
+  - um registro em `leads` com `origem = pre_reserva_site`, `status = pronto_reserva`, `etapa_atendimento = pronto_reserva`, `lead_score = 80`;
+  - um registro em `reservas` vinculado ao lead, com `status = pre_reserva_enviada`, `status_operacional = pre_reserva`, `status_financeiro = aguardando_pagamento`.
+- Manter a página oculta da navegação pública. Não vou criar botão/link público para ela.
 
-### 5. Página continua oculta ao público
-- Não vou recolocar links públicos para `/reserva/$slug`.
-- Os CTAs públicos continuam apontando para WhatsApp como está hoje.
-- A página segue acessível apenas por link direto para seus testes e para reativação futura.
+### 4. Corrigir protocolo seguro
+- Manter o protocolo no banco como `CET-ANO-TOKEN`, com token aleatório sem caracteres ambíguos.
+- Garantir unicidade contra `reservas` antes de salvar.
+- Não usar sequência tipo `001`, `002`, etc.
 
-### 6. Validação depois da implementação
-- Conferir se uma pré-reserva enviada pelo formulário aparece em:
-  - `/admin/leads`
-  - `/admin/reservas`
-- Conferir se o protocolo gerado não é sequencial nem previsível.
-- Conferir se o WhatsApp continua abrindo após o envio com o protocolo correto.
+### 5. Reativar eventos internos de automação
+- Criar os triggers que chamam as funções existentes:
+  - ao criar lead: gerar evento `lead_criado` em `webhooks_eventos`;
+  - ao criar reserva: gerar histórico e evento `reserva_criada` em `webhooks_eventos`.
+- Isso deixa a automação futura consumindo os eventos certos.
 
-## Detalhes técnicos
+### 6. Ajustar o painel interno se necessário
+- Conferir se `/admin/leads` lista o lead criado.
+- Conferir se `/admin/reservas` lista a reserva criada.
+- Se houver filtro/etapa escondendo `pronto_reserva`, ajustar a visualização para mostrar esse lead claramente.
 
-- Criar/ajustar uma função pública controlada para envio de pré-reserva usando `createServerFn`.
-- Usar `supabaseAdmin` apenas no servidor para criar lead e reserva, já que visitante anônimo não deve ter permissão direta de escrita nas tabelas sensíveis.
-- Não expor leitura pública ampla em `leads` ou `reservas`.
-- Se necessário, ajustar a função `public.gerar_protocolo()` no banco para usar token aleatório não sequencial e garantir unicidade.
-- Não mexer na visibilidade pública da rota nem nos CTAs principais do site.
+### 7. Validar com um teste real
+- Fazer uma submissão de pré-reserva com dados fictícios realistas.
+- Confirmar no banco que criou:
+  - `leads`;
+  - `reservas`;
+  - `webhooks_eventos`.
+- Confirmar que o protocolo gerado não é sequencial.
+- Confirmar que a consulta em `/minha-reserva` busca pelo banco, não só pelo `localStorage`.
