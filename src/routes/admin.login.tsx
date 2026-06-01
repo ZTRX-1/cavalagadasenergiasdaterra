@@ -108,23 +108,27 @@ function AdminLoginPage() {
           </p>
 
           {/* Pilares — escondidos no mobile para não competir com o form */}
-          <ul className="mt-10 hidden space-y-4 lg:block">
+          <ul className="mt-10 hidden space-y-3 lg:block">
             {[
               { n: "01", t: "Expedições selecionadas", d: "Curadoria fina, do Pampa ao Cerrado." },
               { n: "02", t: "Operação consolidada", d: "Reservas, pagamentos e participantes em um só lugar." },
               { n: "03", t: "Painel da equipe", d: "Acesso restrito, segregado por cargo e responsabilidade." },
             ].map((p) => (
-              <li key={p.n} className="flex items-start gap-4 border-l border-[color:var(--admin-borda-strong)] pl-4">
+              <li
+                key={p.n}
+                className="flex items-start gap-4 rounded-md border-l border-[color:var(--admin-borda-strong)] bg-[color:var(--admin-carvao)]/55 px-4 py-3 backdrop-blur-sm"
+              >
                 <span className="font-display text-[18px] text-[color:var(--admin-dourado-glow)]">{p.n}</span>
-                <div>
+                <div className="min-w-0">
                   <div className="text-[13px] font-medium uppercase tracking-[0.16em] text-[color:var(--admin-cinza-1)]">
                     {p.t}
                   </div>
-                  <div className="mt-1 text-[12.5px] text-[color:var(--admin-cinza-3)]">{p.d}</div>
+                  <div className="mt-1 text-[12.5px] text-[color:var(--admin-cinza-2)]">{p.d}</div>
                 </div>
               </li>
             ))}
           </ul>
+
         </div>
       </aside>
 
