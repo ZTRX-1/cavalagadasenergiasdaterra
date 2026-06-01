@@ -7,6 +7,7 @@ import {
   Wallet,
   Image as ImageIcon,
   FileText,
+  BookOpen,
   Settings,
   LogOut,
   X,
