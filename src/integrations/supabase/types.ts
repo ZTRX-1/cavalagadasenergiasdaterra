@@ -518,77 +518,200 @@ export type Database = {
           },
         ]
       }
+      lead_conversas: {
+        Row: {
+          autor_id: string | null
+          autor_nome: string | null
+          canal: string | null
+          conteudo: string | null
+          created_at: string
+          direcao: string | null
+          id: string
+          lead_id: string
+          metadata: Json
+          tipo_evento: string
+        }
+        Insert: {
+          autor_id?: string | null
+          autor_nome?: string | null
+          canal?: string | null
+          conteudo?: string | null
+          created_at?: string
+          direcao?: string | null
+          id?: string
+          lead_id: string
+          metadata?: Json
+          tipo_evento?: string
+        }
+        Update: {
+          autor_id?: string | null
+          autor_nome?: string | null
+          canal?: string | null
+          conteudo?: string | null
+          created_at?: string
+          direcao?: string | null
+          id?: string
+          lead_id?: string
+          metadata?: Json
+          tipo_evento?: string
+        }
+        Relationships: []
+      }
+      lead_memoria: {
+        Row: {
+          created_at: string
+          dados_extraidos: Json
+          expedicoes_favoritas: Json
+          id: string
+          interesses: string | null
+          lead_id: string
+          objetivos: string | null
+          orcamento: number | null
+          perfil: string | null
+          restricoes: string | null
+          ultima_atualizacao: string
+        }
+        Insert: {
+          created_at?: string
+          dados_extraidos?: Json
+          expedicoes_favoritas?: Json
+          id?: string
+          interesses?: string | null
+          lead_id: string
+          objetivos?: string | null
+          orcamento?: number | null
+          perfil?: string | null
+          restricoes?: string | null
+          ultima_atualizacao?: string
+        }
+        Update: {
+          created_at?: string
+          dados_extraidos?: Json
+          expedicoes_favoritas?: Json
+          id?: string
+          interesses?: string | null
+          lead_id?: string
+          objetivos?: string | null
+          orcamento?: number | null
+          perfil?: string | null
+          restricoes?: string | null
+          ultima_atualizacao?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           acompanhantes: number
+          canal_atendimento: string | null
+          canal_entrada: string | null
           cidade: string | null
           cpf: string | null
           created_at: string
+          data_interesse: string | null
           data_nascimento: string | null
           email: string | null
           estado: string | null
+          etapa_atendimento: string
           expedicao_interesse: string | null
           experiencia_equestre: string | null
           id: string
+          lead_score: number
+          nivel_interesse: number
           nome: string
           observacoes: string | null
           observacoes_medicas: string | null
           origem: string | null
           peso: number | null
           protocolo: string | null
+          proxima_acao: string | null
           quantidade_pessoas: number
+          responsavel_id: string | null
           restricoes_alimentares: string | null
+          resumo_atendimento: string | null
+          resumo_ia: string | null
           status: string
           telefone: string | null
+          ultima_interacao_at: string | null
           updated_at: string
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
           valor_estimado: number | null
         }
         Insert: {
           acompanhantes?: number
+          canal_atendimento?: string | null
+          canal_entrada?: string | null
           cidade?: string | null
           cpf?: string | null
           created_at?: string
+          data_interesse?: string | null
           data_nascimento?: string | null
           email?: string | null
           estado?: string | null
+          etapa_atendimento?: string
           expedicao_interesse?: string | null
           experiencia_equestre?: string | null
           id?: string
+          lead_score?: number
+          nivel_interesse?: number
           nome: string
           observacoes?: string | null
           observacoes_medicas?: string | null
           origem?: string | null
           peso?: number | null
           protocolo?: string | null
+          proxima_acao?: string | null
           quantidade_pessoas?: number
+          responsavel_id?: string | null
           restricoes_alimentares?: string | null
+          resumo_atendimento?: string | null
+          resumo_ia?: string | null
           status?: string
           telefone?: string | null
+          ultima_interacao_at?: string | null
           updated_at?: string
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
           valor_estimado?: number | null
         }
         Update: {
           acompanhantes?: number
+          canal_atendimento?: string | null
+          canal_entrada?: string | null
           cidade?: string | null
           cpf?: string | null
           created_at?: string
+          data_interesse?: string | null
           data_nascimento?: string | null
           email?: string | null
           estado?: string | null
+          etapa_atendimento?: string
           expedicao_interesse?: string | null
           experiencia_equestre?: string | null
           id?: string
+          lead_score?: number
+          nivel_interesse?: number
           nome?: string
           observacoes?: string | null
           observacoes_medicas?: string | null
           origem?: string | null
           peso?: number | null
           protocolo?: string | null
+          proxima_acao?: string | null
           quantidade_pessoas?: number
+          responsavel_id?: string | null
           restricoes_alimentares?: string | null
+          resumo_atendimento?: string | null
+          resumo_ia?: string | null
           status?: string
           telefone?: string | null
+          ultima_interacao_at?: string | null
           updated_at?: string
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
           valor_estimado?: number | null
         }
         Relationships: []
@@ -963,6 +1086,45 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      webhooks_eventos: {
+        Row: {
+          created_at: string
+          entidade: string
+          entidade_id: string | null
+          evento: string
+          id: string
+          payload: Json
+          processado_em: string | null
+          status: string
+          tentativas: number
+          ultimo_erro: string | null
+        }
+        Insert: {
+          created_at?: string
+          entidade: string
+          entidade_id?: string | null
+          evento: string
+          id?: string
+          payload?: Json
+          processado_em?: string | null
+          status?: string
+          tentativas?: number
+          ultimo_erro?: string | null
+        }
+        Update: {
+          created_at?: string
+          entidade?: string
+          entidade_id?: string | null
+          evento?: string
+          id?: string
+          payload?: Json
+          processado_em?: string | null
+          status?: string
+          tentativas?: number
+          ultimo_erro?: string | null
         }
         Relationships: []
       }
