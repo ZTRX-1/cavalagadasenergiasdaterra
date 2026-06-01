@@ -1055,6 +1055,10 @@ export interface MeuPerfil {
   telefone: string | null;
   avatar_url: string | null;
   role: AppRole | null;
+  cargo_id: string | null;
+  cargo_nome: string | null;
+  ultimo_login: string | null;
+  data_entrada: string | null;
 }
 
 export async function getMeuPerfil(): Promise<MeuPerfil | null> {
@@ -1062,7 +1066,7 @@ export async function getMeuPerfil(): Promise<MeuPerfil | null> {
   if (!u.user) return null;
   const { data: profile } = await supabase
     .from("profiles")
-    .select("user_id, nome, cargo, avatar_url, bio, telefone")
+    .select("user_id, nome, cargo, avatar_url, bio, telefone, cargo_id, ultimo_login, data_entrada")
     .eq("user_id", u.user.id)
     .maybeSingle();
   const { data: role } = await supabase
@@ -1070,15 +1074,29 @@ export async function getMeuPerfil(): Promise<MeuPerfil | null> {
     .select("role")
     .eq("user_id", u.user.id)
     .maybeSingle();
+  const p = profile as (Record<string, unknown> & { cargo_id?: string | null; ultimo_login?: string | null; data_entrada?: string | null; bio?: string | null; telefone?: string | null }) | null;
+  let cargo_nome: string | null = null;
+  if (p?.cargo_id) {
+    const { data: cargo } = await supabase
+      .from("cargos")
+      .select("nome")
+      .eq("id", p.cargo_id)
+      .maybeSingle();
+    cargo_nome = (cargo as { nome?: string } | null)?.nome ?? null;
+  }
   return {
     user_id: u.user.id,
     email: u.user.email ?? null,
     nome: profile?.nome ?? null,
     cargo: profile?.cargo ?? null,
-    bio: (profile as { bio?: string | null } | null)?.bio ?? null,
-    telefone: (profile as { telefone?: string | null } | null)?.telefone ?? null,
+    bio: (p?.bio as string | null) ?? null,
+    telefone: (p?.telefone as string | null) ?? null,
     avatar_url: profile?.avatar_url ?? null,
     role: (role?.role as AppRole | undefined) ?? null,
+    cargo_id: p?.cargo_id ?? null,
+    cargo_nome,
+    ultimo_login: p?.ultimo_login ?? null,
+    data_entrada: p?.data_entrada ?? null,
   };
 }
 
@@ -1091,6 +1109,12 @@ export async function atualizarMeuPerfil(patch: {
     .from("profiles")
     .update(patch as never)
     .eq("user_id", u.user.id);
+  if (error) throw new Error(error.message);
+}
+
+export async function alterarMinhaSenha(novaSenha: string): Promise<void> {
+  if (!novaSenha || novaSenha.length < 8) throw new Error("A senha deve ter ao menos 8 caracteres.");
+  const { error } = await supabase.auth.updateUser({ password: novaSenha });
   if (error) throw new Error(error.message);
 }
 
