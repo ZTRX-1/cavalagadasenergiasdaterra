@@ -84,15 +84,16 @@ function AdminLoginPage() {
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover opacity-90"
         />
-        {/* Overlays — escurece para garantir contraste e funde com o lado direito */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--admin-carvao)] via-[color:var(--admin-carvao)]/55 to-[color:var(--admin-carvao)]/15 lg:bg-gradient-to-r lg:from-[color:var(--admin-carvao)]/15 lg:via-[color:var(--admin-carvao)]/35 lg:to-[color:var(--admin-carvao)]" />
+        {/* Overlays — escurece na base e funde com o lado direito (desktop) */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--admin-carvao)] via-[color:var(--admin-carvao)]/30 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-[color:var(--admin-carvao)]/35 lg:to-[color:var(--admin-carvao)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_transparent_55%,_color-mix(in_oklab,var(--admin-carvao)_75%,transparent)_100%)]" />
 
         {/* Conteúdo institucional */}
-        <div className="relative z-10 mx-auto w-full max-w-[520px] px-6 pb-8 pt-12 text-center lg:px-12 lg:py-16 lg:text-left">
+        <div className="relative z-10 mx-auto w-full max-w-[520px] px-6 pb-7 pt-10 text-center lg:px-12 lg:py-16 lg:text-left">
           <div className="mb-6 inline-flex items-center gap-3">
             <span className="inline-block h-px w-8 bg-[color:var(--admin-dourado)] opacity-80" />
             <span className="text-[10px] uppercase tracking-[0.34em] text-[color:var(--admin-dourado-glow)]">
+
               Cavalgadas Energias da Terra
             </span>
           </div>
