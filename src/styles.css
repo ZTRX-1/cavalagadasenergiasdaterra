@@ -496,6 +496,18 @@
     border-radius: 0 2px 2px 0;
     box-shadow: 0 0 8px var(--admin-dourado-glow);
   }
+
+  /* Tabelas e wrappers responsivos */
+  .admin-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+  }
+  .admin-table-wrap > table { min-width: 640px; }
+
+  /* Garante que descendentes flex/grid possam encolher dentro do main */
+  .admin-surface main, .admin-surface main * { min-width: 0; }
 }
 
 /* Conforto de leitura no mobile */
@@ -503,4 +515,11 @@
   body { line-height: 1.65; font-size: 16px; }
   p { line-height: 1.7; }
   h1, h2, h3 { line-height: 1.08; }
+
+  /* Padding interno suave em containers admin no mobile */
+  .admin-card { border-radius: 10px; }
 }
+
+/* Previne overflow horizontal global */
+html, body { overflow-x: hidden; }
+
