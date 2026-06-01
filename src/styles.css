@@ -552,16 +552,10 @@
 
 /* Conforto de leitura no mobile */
 @media (max-width: 640px) {
-  body { line-height: 1.65; font-size: 16px; }
-  p { line-height: 1.7; }
-  h1, h2, h3 { line-height: 1.08; }
-
-  /* Padding interno suave em containers admin no mobile */
-  .admin-card { border-radius: 10px; }
-
-  /* Em telas estreitas, reduzimos min-width das tabelas */
+  /* Em telas estreitas, reduzimos min-width das tabelas para evitar scroll excessivo */
   .admin-table-wrap > table { min-width: 560px; }
 }
+
 
 /* Safe areas (notch / Dynamic Island / barra inferior) */
 @supports (padding: max(0px)) {
