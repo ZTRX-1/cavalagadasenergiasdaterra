@@ -1,78 +1,51 @@
+## Plano
 
-# Plano: Seção "Como Chegar" nas Expedições
+Vou manter a página `/reserva/$slug` existente, oculta da navegação pública, mas vou fazer o fluxo dela gravar corretamente no CRM.
 
-Implementação totalmente dinâmica, editável pelo painel e pronta para uso futuro por IA.
+### 1. Protocolo seguro e não sequencial
+- Substituir qualquer lógica fraca/visível tipo `CET-2026-001` ou protocolo gerado no navegador.
+- Gerar o protocolo exclusivamente no backend/banco, com formato não sequencial e difícil de adivinhar, por exemplo `CET-2026-K7M9QX`.
+- Garantir unicidade real com validação contra a tabela `reservas` antes de aceitar o protocolo.
+- Atualizar textos/placeholder da consulta para não sugerirem protocolo sequencial.
 
-## 1. Banco de dados (migration)
+### 2. Pré-reserva vira registro real no CRM
+- Conectar o submit do formulário multi-etapa de `/reserva/$slug` a uma função segura de backend.
+- Ao enviar, criar uma linha em `reservas` com:
+  - protocolo gerado no backend
+  - expedição, data, responsável, participantes, adicionais e aceites
+  - status inicial `pre_reserva_enviada` / `pre_reserva`
+  - valores calculados e forma de pagamento
+- Criar também um lead em `leads`, para aparecer no CRM de Leads, com origem `pre_reserva_site` e etapa adequada, provavelmente `pronto_reserva`.
+- Vincular `reservas.lead_id` ao lead criado.
 
-Adicionar 5 colunas em `public.expedicoes` (todas `text`, nullable):
+### 3. Eventos para automação/CRM interno
+- Garantir que a criação gere os eventos internos já esperados:
+  - `lead_criado`
+  - `reserva_criada`
+- Incluir no payload dos eventos os dados úteis para automação: protocolo, nome, telefone, email, expedição, data, quantidade de participantes, forma de pagamento e origem.
 
-- `como_chegar_titulo` — título customizado da seção (default exibido no front: "Como Chegar")
-- `como_chegar_conteudo` — texto principal (longo)
-- `como_chegar_aeroporto` — aeroporto mais próximo
-- `como_chegar_referencia` — cidade de referência
-- `como_chegar_observacoes` — observações adicionais (longo)
+### 4. Consulta “Minha Reserva” deixa de depender só do aparelho
+- Manter compatibilidade com `localStorage` como fallback local.
+- Adicionar consulta segura por protocolo no backend para buscar a reserva real no banco.
+- Retornar apenas dados mínimos ao visitante, sem abrir dados sensíveis de outras pessoas além do necessário.
+- Isso resolve o problema de a reserva só existir no celular/computador onde o formulário foi preenchido.
 
-Não altera RLS nem grants (já cobertos pelas policies existentes da tabela).
+### 5. Página continua oculta ao público
+- Não vou recolocar links públicos para `/reserva/$slug`.
+- Os CTAs públicos continuam apontando para WhatsApp como está hoje.
+- A página segue acessível apenas por link direto para seus testes e para reativação futura.
 
-Após migration, `src/integrations/supabase/types.ts` é regenerado automaticamente.
-
-## 2. Conteúdo inicial (seed)
-
-Via `supabase--insert` com `UPDATE` na tabela `expedicoes`, preenchendo os 7 destinos pelos slugs:
-
-- `serra-da-canastra` → Ribeirão Preto / São Roque de Minas
-- `serra-da-mantiqueira` → Guarulhos ou Congonhas / Campos do Jordão
-- `berco-do-mangalarga-marchador` (ou slug equivalente) → Confins / Cruzília
-- `jericoacoara` → JJD / Vila de Jericoacoara
-- `vale-do-colca-peru` → Arequipa / Arequipa
-- `patagonia-argentina` → San Martín de los Andes / San Martín de los Andes
-- `caminho-de-santiago-a-cavalo` → Santiago de Compostela / Santiago de Compostela
-
-Os slugs exatos serão confirmados via `read_query` antes do UPDATE.
-
-## 3. Camada de leitura (`src/lib/expedicoes.functions.ts`)
-
-Estender o tipo `Expedicao` e `normalizeExpedicao` para incluir os 5 novos campos. Sem mudança nas queries (já usam `select("*")`).
-
-Atualizar também `src/lib/expedicoes-static.ts` adicionando os campos opcionais ao tipo (fallback ficará vazio).
-
-## 4. Frontend público (`src/routes/expedicoes.$slug.tsx`)
-
-Nova seção "Como Chegar" no fluxo da página, posicionada após o roteiro / antes de requisitos (a definir conforme layout atual). Renderiza somente se houver pelo menos um dos campos preenchidos.
-
-Estrutura editorial alinhada ao design existente (admin-card / tipografia display + serif do projeto):
-
-- Eyebrow + título (`como_chegar_titulo` ou "Como Chegar" como fallback)
-- Dois "info-tiles" lado a lado (md+): ícone Plane + "Aeroporto mais próximo"; ícone MapPin + "Cidade de referência"
-- Texto principal (`como_chegar_conteudo`) em parágrafo editorial
-- Bloco "Observações" destacado (se preenchido), com ícone Info
-
-Ícones via `lucide-react` (já em uso no projeto). Sem cores hardcoded — usar tokens do design system.
-
-## 5. Painel administrativo (`src/routes/admin._authenticated.expedicoes.$id.tsx`)
-
-Adicionar nova aba **"Como Chegar"** ao `Tabs` existente da edição de expedição.
-
-Conteúdo da aba (usando `AdminSection` + `AdminField` já existentes):
-
-- **Título da seção** (Input) — hint: "Personalize o título exibido no site. Deixe em branco para usar 'Como Chegar'."
-- **Aeroporto mais próximo** (Input) — hint: "Informe o aeroporto normalmente utilizado pelos participantes."
-- **Cidade de referência** (Input) — hint: "Informe a principal cidade utilizada como ponto de chegada."
-- **Texto principal** (Textarea) — hint: "Descreva como os participantes costumam chegar ao destino."
-- **Observações adicionais** (Textarea) — hint: "Detalhes extras: transfer, distâncias, dicas logísticas."
-
-Os 5 campos entram no payload de save junto com os demais (mesma função update já usada).
-
-## 6. Validação final
-
-- Migration aplicada, types regenerados.
-- Página pública de cada expedição renderiza a nova seção quando preenchida.
-- Aba do admin salva e recarrega corretamente os 5 campos.
-- Sem overflow / sem texto hardcoded no front.
+### 6. Validação depois da implementação
+- Conferir se uma pré-reserva enviada pelo formulário aparece em:
+  - `/admin/leads`
+  - `/admin/reservas`
+- Conferir se o protocolo gerado não é sequencial nem previsível.
+- Conferir se o WhatsApp continua abrindo após o envio com o protocolo correto.
 
 ## Detalhes técnicos
 
-- Nenhum novo componente compartilhado é necessário; reusamos `AdminSection`, `AdminField`, `Input`, `Textarea`, tokens `--admin-*` e classes `admin-card`.
-- Fallback estático (`expedicoes-static.ts`) recebe os tipos opcionais mas não conteúdo — a seção simplesmente não renderiza se o DB estiver indisponível.
-- Estrutura dos campos é plana (5 colunas text) — fácil de consumir por agente IA futuro via simples `select` na tabela `expedicoes`.
+- Criar/ajustar uma função pública controlada para envio de pré-reserva usando `createServerFn`.
+- Usar `supabaseAdmin` apenas no servidor para criar lead e reserva, já que visitante anônimo não deve ter permissão direta de escrita nas tabelas sensíveis.
+- Não expor leitura pública ampla em `leads` ou `reservas`.
+- Se necessário, ajustar a função `public.gerar_protocolo()` no banco para usar token aleatório não sequencial e garantir unicidade.
+- Não mexer na visibilidade pública da rota nem nos CTAs principais do site.
