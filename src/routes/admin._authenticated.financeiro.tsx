@@ -74,7 +74,7 @@ function FinanceiroPage() {
     from: new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0,10),
     to: new Date().toISOString().slice(0,10),
   });
-  const [tab, setTab] = useState<TabId>("receitas");
+  const [tab, setTab] = useState<TabId>("expedicoes");
   const range = useMemo(() => rangeFor(preset, custom), [preset, custom]);
   const rangeDate = useMemo(() => ({ from: range.from.slice(0,10), to: range.to.slice(0,10) }), [range]);
 
