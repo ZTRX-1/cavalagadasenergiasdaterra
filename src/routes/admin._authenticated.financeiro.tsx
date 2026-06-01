@@ -307,6 +307,8 @@ function DespesaDialog({ despesa, onClose, onSaved }: { despesa: Despesa | null;
     fornecedor: despesa?.fornecedor ?? "",
     status: despesa?.status ?? "pago",
     observacoes: despesa?.observacoes ?? "",
+    previsto: (despesa as Despesa & { previsto?: boolean } | null)?.previsto ?? false,
+    tipo_custo: (despesa as Despesa & { tipo_custo?: string } | null)?.tipo_custo ?? "variavel",
   });
   const mut = useMutation({
     mutationFn: async () => {
