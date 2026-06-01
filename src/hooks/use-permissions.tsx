@@ -1,7 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-export type AppRole = "superadmin" | "admin" | "ceo" | "socia" | "operador";
+export type AppRole =
+  | "desenvolvedor"
+  | "superadmin"
+  | "admin"
+  | "ceo"
+  | "ceo_preview"
+  | "socia"
+  | "operador";
 
 export type AdminModule =
   | "dashboard"
@@ -13,7 +20,11 @@ export type AdminModule =
   | "midia"
   | "documentos"
   | "configuracoes"
-  | "equipe";
+  | "equipe"
+  | "ia"
+  | "automacoes"
+  | "historico"
+  | "integracoes";
 
 export interface MyPermissions {
   role: AppRole | null;
@@ -54,10 +65,14 @@ export function useMyPermissions() {
   });
 }
 
+const CEO_PREVIEW_MODULES: AdminModule[] = ["dashboard", "expedicoes"];
+
 /**
- * Decide se o usuário corrente pode visualizar ou editar um módulo.
+ * Decide se o usuário corrente pode visualizar, editar ou se o módulo aparece bloqueado.
  * Regras:
+ *  - desenvolvedor: tudo, e não pode ser removido por outros (protegido no banco)
  *  - superadmin / admin / ceo: tudo
+ *  - ceo_preview: vê e edita Dashboard e Expedições. Demais módulos visíveis porém bloqueados.
  *  - socia: vê tudo, mas só edita "expedicoes"
  *  - operador: usa user_module_permissions (default = só vê dashboard)
  */
@@ -66,17 +81,29 @@ export function useCan(modulo: AdminModule) {
   const role = data?.role ?? null;
 
   if (isLoading || !role) {
-    return { canView: false, canEdit: false, role, isLoading };
+    return { canView: false, canEdit: false, locked: false, role, isLoading };
   }
 
-  if (role === "superadmin" || role === "admin" || role === "ceo") {
-    return { canView: true, canEdit: true, role, isLoading: false };
+  if (role === "desenvolvedor" || role === "superadmin" || role === "admin" || role === "ceo") {
+    return { canView: true, canEdit: true, locked: false, role, isLoading: false };
+  }
+
+  if (role === "ceo_preview") {
+    const liberado = CEO_PREVIEW_MODULES.includes(modulo);
+    return {
+      canView: true,
+      canEdit: liberado,
+      locked: !liberado,
+      role,
+      isLoading: false,
+    };
   }
 
   if (role === "socia") {
     return {
       canView: true,
       canEdit: modulo === "expedicoes",
+      locked: false,
       role,
       isLoading: false,
     };
@@ -87,6 +114,7 @@ export function useCan(modulo: AdminModule) {
   return {
     canView: perm?.pode_ver ?? modulo === "dashboard",
     canEdit: perm?.pode_editar ?? false,
+    locked: false,
     role,
     isLoading: false,
   };

@@ -32,9 +32,13 @@ import { Route as AdminAuthenticatedPerfilRouteImport } from './routes/admin._au
 import { Route as AdminAuthenticatedParticipantesRouteImport } from './routes/admin._authenticated.participantes'
 import { Route as AdminAuthenticatedMidiaRouteImport } from './routes/admin._authenticated.midia'
 import { Route as AdminAuthenticatedLeadsRouteImport } from './routes/admin._authenticated.leads'
+import { Route as AdminAuthenticatedIntegracoesRouteImport } from './routes/admin._authenticated.integracoes'
+import { Route as AdminAuthenticatedIaRouteImport } from './routes/admin._authenticated.ia'
+import { Route as AdminAuthenticatedHistoricoRouteImport } from './routes/admin._authenticated.historico'
 import { Route as AdminAuthenticatedFinanceiroRouteImport } from './routes/admin._authenticated.financeiro'
 import { Route as AdminAuthenticatedDocumentosRouteImport } from './routes/admin._authenticated.documentos'
 import { Route as AdminAuthenticatedConfiguracoesRouteImport } from './routes/admin._authenticated.configuracoes'
+import { Route as AdminAuthenticatedAutomacoesRouteImport } from './routes/admin._authenticated.automacoes'
 import { Route as AdminAuthenticatedExpedicoesIndexRouteImport } from './routes/admin._authenticated.expedicoes.index'
 import { Route as AdminAuthenticatedReservasIdRouteImport } from './routes/admin._authenticated.reservas.$id'
 import { Route as AdminAuthenticatedLeadsIdRouteImport } from './routes/admin._authenticated.leads.$id'
@@ -158,6 +162,23 @@ const AdminAuthenticatedLeadsRoute = AdminAuthenticatedLeadsRouteImport.update({
   path: '/leads',
   getParentRoute: () => AdminAuthenticatedRoute,
 } as any)
+const AdminAuthenticatedIntegracoesRoute =
+  AdminAuthenticatedIntegracoesRouteImport.update({
+    id: '/integracoes',
+    path: '/integracoes',
+    getParentRoute: () => AdminAuthenticatedRoute,
+  } as any)
+const AdminAuthenticatedIaRoute = AdminAuthenticatedIaRouteImport.update({
+  id: '/ia',
+  path: '/ia',
+  getParentRoute: () => AdminAuthenticatedRoute,
+} as any)
+const AdminAuthenticatedHistoricoRoute =
+  AdminAuthenticatedHistoricoRouteImport.update({
+    id: '/historico',
+    path: '/historico',
+    getParentRoute: () => AdminAuthenticatedRoute,
+  } as any)
 const AdminAuthenticatedFinanceiroRoute =
   AdminAuthenticatedFinanceiroRouteImport.update({
     id: '/financeiro',
@@ -174,6 +195,12 @@ const AdminAuthenticatedConfiguracoesRoute =
   AdminAuthenticatedConfiguracoesRouteImport.update({
     id: '/configuracoes',
     path: '/configuracoes',
+    getParentRoute: () => AdminAuthenticatedRoute,
+  } as any)
+const AdminAuthenticatedAutomacoesRoute =
+  AdminAuthenticatedAutomacoesRouteImport.update({
+    id: '/automacoes',
+    path: '/automacoes',
     getParentRoute: () => AdminAuthenticatedRoute,
   } as any)
 const AdminAuthenticatedExpedicoesIndexRoute =
@@ -219,9 +246,13 @@ export interface FileRoutesByFullPath {
   '/marcas/cavalgadas': typeof MarcasCavalgadasRoute
   '/marcas/elas-na-sela': typeof MarcasElasNaSelaRoute
   '/reserva/$slug': typeof ReservaSlugRoute
+  '/admin/automacoes': typeof AdminAuthenticatedAutomacoesRoute
   '/admin/configuracoes': typeof AdminAuthenticatedConfiguracoesRoute
   '/admin/documentos': typeof AdminAuthenticatedDocumentosRoute
   '/admin/financeiro': typeof AdminAuthenticatedFinanceiroRoute
+  '/admin/historico': typeof AdminAuthenticatedHistoricoRoute
+  '/admin/ia': typeof AdminAuthenticatedIaRoute
+  '/admin/integracoes': typeof AdminAuthenticatedIntegracoesRoute
   '/admin/leads': typeof AdminAuthenticatedLeadsRouteWithChildren
   '/admin/midia': typeof AdminAuthenticatedMidiaRoute
   '/admin/participantes': typeof AdminAuthenticatedParticipantesRoute
@@ -250,9 +281,13 @@ export interface FileRoutesByTo {
   '/marcas/cavalgadas': typeof MarcasCavalgadasRoute
   '/marcas/elas-na-sela': typeof MarcasElasNaSelaRoute
   '/reserva/$slug': typeof ReservaSlugRoute
+  '/admin/automacoes': typeof AdminAuthenticatedAutomacoesRoute
   '/admin/configuracoes': typeof AdminAuthenticatedConfiguracoesRoute
   '/admin/documentos': typeof AdminAuthenticatedDocumentosRoute
   '/admin/financeiro': typeof AdminAuthenticatedFinanceiroRoute
+  '/admin/historico': typeof AdminAuthenticatedHistoricoRoute
+  '/admin/ia': typeof AdminAuthenticatedIaRoute
+  '/admin/integracoes': typeof AdminAuthenticatedIntegracoesRoute
   '/admin/leads': typeof AdminAuthenticatedLeadsRouteWithChildren
   '/admin/midia': typeof AdminAuthenticatedMidiaRoute
   '/admin/participantes': typeof AdminAuthenticatedParticipantesRoute
@@ -283,9 +318,13 @@ export interface FileRoutesById {
   '/marcas/cavalgadas': typeof MarcasCavalgadasRoute
   '/marcas/elas-na-sela': typeof MarcasElasNaSelaRoute
   '/reserva/$slug': typeof ReservaSlugRoute
+  '/admin/_authenticated/automacoes': typeof AdminAuthenticatedAutomacoesRoute
   '/admin/_authenticated/configuracoes': typeof AdminAuthenticatedConfiguracoesRoute
   '/admin/_authenticated/documentos': typeof AdminAuthenticatedDocumentosRoute
   '/admin/_authenticated/financeiro': typeof AdminAuthenticatedFinanceiroRoute
+  '/admin/_authenticated/historico': typeof AdminAuthenticatedHistoricoRoute
+  '/admin/_authenticated/ia': typeof AdminAuthenticatedIaRoute
+  '/admin/_authenticated/integracoes': typeof AdminAuthenticatedIntegracoesRoute
   '/admin/_authenticated/leads': typeof AdminAuthenticatedLeadsRouteWithChildren
   '/admin/_authenticated/midia': typeof AdminAuthenticatedMidiaRoute
   '/admin/_authenticated/participantes': typeof AdminAuthenticatedParticipantesRoute
@@ -317,9 +356,13 @@ export interface FileRouteTypes {
     | '/marcas/cavalgadas'
     | '/marcas/elas-na-sela'
     | '/reserva/$slug'
+    | '/admin/automacoes'
     | '/admin/configuracoes'
     | '/admin/documentos'
     | '/admin/financeiro'
+    | '/admin/historico'
+    | '/admin/ia'
+    | '/admin/integracoes'
     | '/admin/leads'
     | '/admin/midia'
     | '/admin/participantes'
@@ -348,9 +391,13 @@ export interface FileRouteTypes {
     | '/marcas/cavalgadas'
     | '/marcas/elas-na-sela'
     | '/reserva/$slug'
+    | '/admin/automacoes'
     | '/admin/configuracoes'
     | '/admin/documentos'
     | '/admin/financeiro'
+    | '/admin/historico'
+    | '/admin/ia'
+    | '/admin/integracoes'
     | '/admin/leads'
     | '/admin/midia'
     | '/admin/participantes'
@@ -380,9 +427,13 @@ export interface FileRouteTypes {
     | '/marcas/cavalgadas'
     | '/marcas/elas-na-sela'
     | '/reserva/$slug'
+    | '/admin/_authenticated/automacoes'
     | '/admin/_authenticated/configuracoes'
     | '/admin/_authenticated/documentos'
     | '/admin/_authenticated/financeiro'
+    | '/admin/_authenticated/historico'
+    | '/admin/_authenticated/ia'
+    | '/admin/_authenticated/integracoes'
     | '/admin/_authenticated/leads'
     | '/admin/_authenticated/midia'
     | '/admin/_authenticated/participantes'
@@ -577,6 +628,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthenticatedLeadsRouteImport
       parentRoute: typeof AdminAuthenticatedRoute
     }
+    '/admin/_authenticated/integracoes': {
+      id: '/admin/_authenticated/integracoes'
+      path: '/integracoes'
+      fullPath: '/admin/integracoes'
+      preLoaderRoute: typeof AdminAuthenticatedIntegracoesRouteImport
+      parentRoute: typeof AdminAuthenticatedRoute
+    }
+    '/admin/_authenticated/ia': {
+      id: '/admin/_authenticated/ia'
+      path: '/ia'
+      fullPath: '/admin/ia'
+      preLoaderRoute: typeof AdminAuthenticatedIaRouteImport
+      parentRoute: typeof AdminAuthenticatedRoute
+    }
+    '/admin/_authenticated/historico': {
+      id: '/admin/_authenticated/historico'
+      path: '/historico'
+      fullPath: '/admin/historico'
+      preLoaderRoute: typeof AdminAuthenticatedHistoricoRouteImport
+      parentRoute: typeof AdminAuthenticatedRoute
+    }
     '/admin/_authenticated/financeiro': {
       id: '/admin/_authenticated/financeiro'
       path: '/financeiro'
@@ -596,6 +668,13 @@ declare module '@tanstack/react-router' {
       path: '/configuracoes'
       fullPath: '/admin/configuracoes'
       preLoaderRoute: typeof AdminAuthenticatedConfiguracoesRouteImport
+      parentRoute: typeof AdminAuthenticatedRoute
+    }
+    '/admin/_authenticated/automacoes': {
+      id: '/admin/_authenticated/automacoes'
+      path: '/automacoes'
+      fullPath: '/admin/automacoes'
+      preLoaderRoute: typeof AdminAuthenticatedAutomacoesRouteImport
       parentRoute: typeof AdminAuthenticatedRoute
     }
     '/admin/_authenticated/expedicoes/': {
@@ -670,9 +749,13 @@ const AdminAuthenticatedReservasRouteWithChildren =
   )
 
 interface AdminAuthenticatedRouteChildren {
+  AdminAuthenticatedAutomacoesRoute: typeof AdminAuthenticatedAutomacoesRoute
   AdminAuthenticatedConfiguracoesRoute: typeof AdminAuthenticatedConfiguracoesRoute
   AdminAuthenticatedDocumentosRoute: typeof AdminAuthenticatedDocumentosRoute
   AdminAuthenticatedFinanceiroRoute: typeof AdminAuthenticatedFinanceiroRoute
+  AdminAuthenticatedHistoricoRoute: typeof AdminAuthenticatedHistoricoRoute
+  AdminAuthenticatedIaRoute: typeof AdminAuthenticatedIaRoute
+  AdminAuthenticatedIntegracoesRoute: typeof AdminAuthenticatedIntegracoesRoute
   AdminAuthenticatedLeadsRoute: typeof AdminAuthenticatedLeadsRouteWithChildren
   AdminAuthenticatedMidiaRoute: typeof AdminAuthenticatedMidiaRoute
   AdminAuthenticatedParticipantesRoute: typeof AdminAuthenticatedParticipantesRoute
@@ -684,9 +767,13 @@ interface AdminAuthenticatedRouteChildren {
 }
 
 const AdminAuthenticatedRouteChildren: AdminAuthenticatedRouteChildren = {
+  AdminAuthenticatedAutomacoesRoute: AdminAuthenticatedAutomacoesRoute,
   AdminAuthenticatedConfiguracoesRoute: AdminAuthenticatedConfiguracoesRoute,
   AdminAuthenticatedDocumentosRoute: AdminAuthenticatedDocumentosRoute,
   AdminAuthenticatedFinanceiroRoute: AdminAuthenticatedFinanceiroRoute,
+  AdminAuthenticatedHistoricoRoute: AdminAuthenticatedHistoricoRoute,
+  AdminAuthenticatedIaRoute: AdminAuthenticatedIaRoute,
+  AdminAuthenticatedIntegracoesRoute: AdminAuthenticatedIntegracoesRoute,
   AdminAuthenticatedLeadsRoute: AdminAuthenticatedLeadsRouteWithChildren,
   AdminAuthenticatedMidiaRoute: AdminAuthenticatedMidiaRoute,
   AdminAuthenticatedParticipantesRoute: AdminAuthenticatedParticipantesRoute,
