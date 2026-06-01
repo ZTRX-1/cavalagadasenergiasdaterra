@@ -21,6 +21,8 @@ export type AdminModule =
   | "documentos"
   | "configuracoes"
   | "equipe"
+  | "usuarios"
+  | "cargos"
   | "ia"
   | "automacoes"
   | "historico"
