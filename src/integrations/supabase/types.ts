@@ -612,6 +612,93 @@ export type Database = {
         }
         Relationships: []
       }
+      ia_configuracoes: {
+        Row: {
+          ativa: boolean
+          dias_atendimento: string[]
+          horario_fim: string | null
+          horario_inicio: string | null
+          id: boolean
+          mensagem_fora_horario: string | null
+          perguntas_qualificacao: Json
+          regras_encaminhamento: Json
+          singleton: boolean
+          tom_ia: string | null
+          updated_at: string
+          whatsapp_comercial: string | null
+          whatsapp_financeiro: string | null
+        }
+        Insert: {
+          ativa?: boolean
+          dias_atendimento?: string[]
+          horario_fim?: string | null
+          horario_inicio?: string | null
+          id?: boolean
+          mensagem_fora_horario?: string | null
+          perguntas_qualificacao?: Json
+          regras_encaminhamento?: Json
+          singleton?: boolean
+          tom_ia?: string | null
+          updated_at?: string
+          whatsapp_comercial?: string | null
+          whatsapp_financeiro?: string | null
+        }
+        Update: {
+          ativa?: boolean
+          dias_atendimento?: string[]
+          horario_fim?: string | null
+          horario_inicio?: string | null
+          id?: boolean
+          mensagem_fora_horario?: string | null
+          perguntas_qualificacao?: Json
+          regras_encaminhamento?: Json
+          singleton?: boolean
+          tom_ia?: string | null
+          updated_at?: string
+          whatsapp_comercial?: string | null
+          whatsapp_financeiro?: string | null
+        }
+        Relationships: []
+      }
+      integracoes_status: {
+        Row: {
+          categoria: string
+          chave: string
+          configuracao: Json
+          created_at: string
+          descricao: string | null
+          id: string
+          nome: string
+          status: string
+          ultimo_evento_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          categoria?: string
+          chave: string
+          configuracao?: Json
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          status?: string
+          ultimo_evento_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          categoria?: string
+          chave?: string
+          configuracao?: Json
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          status?: string
+          ultimo_evento_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       lead_atividades: {
         Row: {
           autor_id: string | null
