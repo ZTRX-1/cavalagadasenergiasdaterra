@@ -21,7 +21,7 @@ import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { AdminEmpty } from "@/components/admin/admin-empty";
 import { AdminUploader } from "@/components/admin/admin-uploader";
-import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
+import { StatusBadge } from "@/components/admin/admin-status-badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
