@@ -1408,6 +1408,7 @@ export type Database = {
         Returns: boolean
       }
       is_internal_user: { Args: { _user_id: string }; Returns: boolean }
+      scan_parcelas_vencimento: { Args: never; Returns: undefined }
       slugify_unique_expedicao: { Args: { base: string }; Returns: string }
     }
     Enums: {
