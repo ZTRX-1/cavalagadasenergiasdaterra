@@ -225,6 +225,16 @@ function ReservaDetalhePage() {
         </section>
       </div>
 
+      <ReservaPagamentos
+        reservaId={id}
+        expedicaoId={reserva.expedicao_id ?? null}
+        pagamentos={pagamentosQ.data ?? []}
+        onChanged={() => {
+          pagamentosQ.refetch();
+          timelineQ.refetch();
+        }}
+      />
+
       <Documentos reservaId={id} docs={docsQ.data ?? []} onChange={() => docsQ.refetch()} />
 
       <Timeline items={timelineQ.data ?? []} />
