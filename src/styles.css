@@ -547,8 +547,8 @@
   }
 }
 
-/* Popovers/Dropdowns/Selects nunca causam overflow horizontal */
-[data-radix-popper-content-wrapper] { max-width: calc(100vw - 1rem) !important; }
+/* Popovers/Dropdowns/Selects do admin não causam overflow horizontal */
+.admin-surface [data-radix-popper-content-wrapper] { max-width: min(calc(100vw - 1rem), 32rem); }
 
 /* Conforto de leitura no mobile */
 @media (max-width: 640px) {
