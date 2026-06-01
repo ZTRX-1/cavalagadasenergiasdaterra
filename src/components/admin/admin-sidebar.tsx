@@ -128,16 +128,49 @@ function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: s
         ))}
       </nav>
       <div className="border-t border-[color:var(--admin-borda)] p-3">
-        <div className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-[color:var(--admin-petroleo-soft)]/40 transition-colors">
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[color:var(--admin-petroleo)] text-sm font-medium text-[color:var(--admin-dourado-glow)] ring-1 ring-[color:var(--admin-borda-strong)]">{inicial}</div>
-          <div className="flex-1 min-w-0">
-            <div className="truncate text-[13px] font-medium text-[color:var(--admin-cinza-1)]">{user?.nome || user?.email?.split("@")[0] || "Operador"}</div>
-            <div className="truncate text-[11px] text-[color:var(--admin-cinza-3)]">{user?.email}</div>
-          </div>
-          <button onClick={handleLogout} title="Sair" className="grid h-8 w-8 place-items-center rounded-md text-[color:var(--admin-cinza-2)] hover:bg-[color:var(--admin-carvao-deep)] hover:text-[color:var(--admin-dourado)] transition-colors">
-            <LogOut className="h-4 w-4" strokeWidth={1.6} />
-          </button>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-[color:var(--admin-petroleo-soft)]/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--admin-dourado)]/40"
+              aria-label="Menu da conta"
+            >
+              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[color:var(--admin-petroleo)] text-sm font-medium text-[color:var(--admin-dourado-glow)] ring-1 ring-[color:var(--admin-borda-strong)]">{inicial}</div>
+              <div className="flex-1 min-w-0">
+                <div className="truncate text-[13px] font-medium text-[color:var(--admin-cinza-1)]">{user?.nome || user?.email?.split("@")[0] || "Operador"}</div>
+                <div className="truncate text-[11px] text-[color:var(--admin-cinza-3)]">{user?.email}</div>
+              </div>
+              <ChevronUp className="h-4 w-4 shrink-0 text-[color:var(--admin-cinza-3)]" strokeWidth={1.6} />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            side="top"
+            align="start"
+            sideOffset={8}
+            className="w-[230px] bg-[color:var(--admin-carvao-deep)] border-[color:var(--admin-borda)] text-[color:var(--admin-cinza-1)]"
+          >
+            <DropdownMenuLabel className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)] font-normal">
+              Conta
+            </DropdownMenuLabel>
+            <DropdownMenuItem asChild>
+              <Link to="/admin/perfil" onClick={onNavigate} className="cursor-pointer">
+                <UserIcon className="mr-2 h-4 w-4" /> Meu perfil
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/admin/configuracoes" onClick={onNavigate} className="cursor-pointer">
+                <Settings className="mr-2 h-4 w-4" /> Configurações
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator className="bg-[color:var(--admin-borda)]" />
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="cursor-pointer text-[color:var(--admin-cinza-1)] focus:bg-[color:var(--admin-petroleo)]/60"
+            >
+              <LogOut className="mr-2 h-4 w-4" /> Sair
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </>
   );
