@@ -28,6 +28,7 @@ const nav: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, modulo: "dashboard", exact: true },
   { to: "/admin/expedicoes", label: "Expedições", icon: Compass, modulo: "expedicoes" },
   { to: "/admin/leads", label: "Leads", icon: Sparkles, modulo: "leads" },
+  { to: "/admin/reservas", label: "Reservas", icon: BookOpen, modulo: "reservas" },
   { to: "/admin/participantes", label: "Participantes", icon: Users, modulo: "participantes" },
   { to: "/admin/financeiro", label: "Financeiro", icon: Wallet, modulo: "financeiro" },
   { to: "/admin/midia", label: "Mídia", icon: ImageIcon, modulo: "midia" },
