@@ -224,7 +224,7 @@
     "title": "My Reservation",
     "intro": "Enter the protocol you received after your pre-reservation. E.g.:",
     "consultar": "Check",
-    "placeholderProtocolo": "CET-2026-001",
+    "placeholderProtocolo": "CET-2026-K7M9QX",
     "statusAtual": "Current status",
     "cancelada": "Cancelled",
     "naoEncontrado": "Protocol not found. Please check it was typed correctly.",

@@ -95,7 +95,7 @@ function MinhaReserva() {
         <h1 className="mt-4 font-display text-5xl text-balance md:text-6xl">{t("minhaReserva.title")}</h1>
         <p className="mt-4 text-muted-foreground text-pretty">
           {t("minhaReserva.intro")}{" "}
-          <code className="font-mono text-foreground">CET-2026-001</code>
+          <code className="font-mono text-foreground">CET-2026-K7M9QX</code>
         </p>
 
         <form onSubmit={handleSubmit} className="mt-10 flex flex-col gap-3 sm:flex-row">
