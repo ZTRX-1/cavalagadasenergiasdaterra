@@ -956,12 +956,21 @@ export const CARGOS_EQUIPE = [
   "Suporte",
 ] as const;
 
-export type AppRole = "superadmin" | "admin" | "ceo" | "socia" | "operador";
+export type AppRole =
+  | "desenvolvedor"
+  | "superadmin"
+  | "admin"
+  | "ceo"
+  | "ceo_preview"
+  | "socia"
+  | "operador";
 
 export const ROLE_LABELS: Record<AppRole, string> = {
+  desenvolvedor: "Desenvolvedor (protegido)",
   superadmin: "Super Administrador (Vexon)",
   admin: "Administrador",
   ceo: "CEO",
+  ceo_preview: "CEO Preview",
   socia: "Sócia",
   operador: "Operador",
 };
