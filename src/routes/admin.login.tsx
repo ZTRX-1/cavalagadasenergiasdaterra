@@ -82,7 +82,7 @@ function AdminLoginPage() {
           src={loginHero}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover object-[center_70%] opacity-95 lg:object-center"
+          className="absolute inset-0 h-full w-full object-cover object-[center_58%] opacity-100 lg:object-[center_55%]"
         />
 
         {/* Overlays — escurece na base e funde com o lado direito (desktop) */}
