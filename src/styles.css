@@ -579,46 +579,9 @@
    sem mexer em html (preserva sticky/fixed em ancestrais). */
 body { overflow-x: clip; overscroll-behavior-y: none; }
 
-/* ============================================================
- * ADMIN — Guard-rails responsivos (escopo restrito)
- * ============================================================ */
-
-/* Tabelas dentro do admin nunca renderizam "nuas" — fallback. */
+/* Admin table fallback — evita tabela "nua" extrapolar viewport. */
 .admin-surface table { max-width: 100%; }
 
-/* Formulários: sugestão de colapso em telas estreitas SEM !important,
-   para que páginas possam sobrescrever quando precisarem manter 2 col. */
-@media (max-width: 640px) {
-  .admin-surface .grid:has(> label > .admin-input),
-  .admin-surface .grid:has(> label > input),
-  .admin-surface .grid:has(> label > select),
-  .admin-surface .grid:has(> label > textarea) {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-}
-
-/* Tabs (Radix): no mobile, scroll horizontal suave. */
-@media (max-width: 640px) {
-  .admin-surface [role="tablist"] {
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    flex-wrap: nowrap;
-  }
-  .admin-surface [role="tablist"]::-webkit-scrollbar { display: none; }
-  .admin-surface [role="tablist"] [role="tab"] {
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
-}
-
-/* Cards do admin no mobile: padding mais enxuto. */
-@media (max-width: 640px) {
-  .admin-card { padding: 1.125rem; border-radius: 10px; }
-  .admin-card > header { margin-bottom: 1rem; }
-}
 
 
 
