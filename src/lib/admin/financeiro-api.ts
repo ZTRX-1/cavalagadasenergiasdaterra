@@ -53,6 +53,75 @@ export const CATEGORIAS_DESPESA = [
 
 export const STATUS_DESPESA = ["pago", "pendente", "atrasado"] as const;
 export const STATUS_CONTA = ["pendente", "pago", "atrasado", "cancelado"] as const;
+export const TIPOS_CUSTO = ["fixo", "variavel", "comissao"] as const;
+
+export const STATUS_FINANCEIRO = [
+  { id: "aguardando_pagamento", label: "Aguardando pagamento" },
+  { id: "entrada_paga", label: "Entrada paga" },
+  { id: "parcialmente_pago", label: "Parcialmente pago" },
+  { id: "pago_integralmente", label: "Pago integralmente" },
+  { id: "reembolsado", label: "Reembolsado" },
+  { id: "cancelado", label: "Cancelado" },
+] as const;
+
+export const STATUS_OPERACIONAL = [
+  { id: "pre_reserva", label: "Pré-reserva" },
+  { id: "reserva_confirmada", label: "Reserva confirmada" },
+  { id: "participante_confirmado", label: "Participante confirmado" },
+  { id: "participante_embarcado", label: "Participante embarcado" },
+  { id: "expedicao_concluida", label: "Expedição concluída" },
+] as const;
+
+export const TIPOS_PAGAMENTO = ["entrada", "parcela", "final", "reembolso", "ajuste"] as const;
+export const FORMAS_PAGAMENTO = ["pix", "cartao", "transferencia", "dinheiro", "boleto"] as const;
+export const STATUS_PAGAMENTO_NOVO = ["previsto", "confirmado", "estornado", "cancelado"] as const;
+
+export type Pagamento = {
+  id: string;
+  reserva_id: string;
+  expedicao_id: string | null;
+  cliente_nome: string | null;
+  tipo: string;
+  forma: string;
+  valor: number;
+  parcela_atual: number | null;
+  parcela_total: number | null;
+  status: string;
+  data_prevista: string | null;
+  data_pagamento: string | null;
+  comprovante_url: string | null;
+  observacoes: string | null;
+  created_at: string;
+};
+
+export type ReservaHistorico = {
+  id: string;
+  reserva_id: string;
+  tipo: string;
+  descricao: string;
+  valor: number | null;
+  autor_nome: string | null;
+  metadata: Record<string, unknown>;
+  created_at: string;
+};
+
+export type ExpedicaoIndicador = {
+  expedicao_id: string;
+  expedicao_nome: string;
+  slug: string;
+  vagas_totais: number;
+  vagas_ocupadas: number;
+  vagas_disponiveis: number;
+  receita_prevista: number;
+  receita_recebida: number;
+  valor_pendente: number;
+  custos_previstos: number;
+  custos_realizados: number;
+  lucro_estimado: number;
+  lucro_realizado: number;
+  participantes_confirmados: number;
+  participantes_pendentes: number;
+};
 
 // ----- Despesas
 export async function listDespesas(range?: { from: string; to: string }): Promise<Despesa[]> {
@@ -218,4 +287,75 @@ export async function fluxoCaixa(range: { from: string; to: string }) {
   return Array.from(map.values())
     .sort((a, b) => a.dia.localeCompare(b.dia))
     .map((r) => ({ ...r, saldo: r.entrada - r.saida }));
+}
+
+// ----- Pagamentos por reserva
+type DB = ReturnType<typeof supabase.from> extends infer _ ? typeof supabase : never;
+const sb = supabase as unknown as DB & {
+  from: (t: string) => ReturnType<typeof supabase.from>;
+};
+
+export async function listPagamentosByReserva(reservaId: string): Promise<Pagamento[]> {
+  const { data, error } = await sb
+    .from("pagamentos")
+    .select("*")
+    .eq("reserva_id", reservaId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as unknown as Pagamento[];
+}
+
+export async function createPagamento(input: Omit<Pagamento, "id" | "created_at">) {
+  const { error } = await sb.from("pagamentos").insert(input as never);
+  if (error) throw error;
+}
+
+export async function updatePagamentoStatus(id: string, status: string) {
+  const { error } = await sb.from("pagamentos").update({ status } as never).eq("id", id);
+  if (error) throw error;
+}
+
+export async function deletePagamento(id: string) {
+  const { error } = await sb.from("pagamentos").delete().eq("id", id);
+  if (error) throw error;
+}
+
+// ----- Histórico da reserva
+export async function listReservaHistorico(reservaId: string): Promise<ReservaHistorico[]> {
+  const { data, error } = await sb
+    .from("reserva_historico")
+    .select("*")
+    .eq("reserva_id", reservaId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as unknown as ReservaHistorico[];
+}
+
+// ----- Indicadores por expedição (view)
+export async function listIndicadoresExpedicoes(): Promise<ExpedicaoIndicador[]> {
+  const { data, error } = await sb
+    .from("expedicao_indicadores")
+    .select("*")
+    .order("receita_prevista", { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map((r) => {
+    const row = r as Record<string, unknown>;
+    return {
+      expedicao_id: String(row.expedicao_id ?? ""),
+      expedicao_nome: String(row.expedicao_nome ?? ""),
+      slug: String(row.slug ?? ""),
+      vagas_totais: Number(row.vagas_totais ?? 0),
+      vagas_ocupadas: Number(row.vagas_ocupadas ?? 0),
+      vagas_disponiveis: Number(row.vagas_disponiveis ?? 0),
+      receita_prevista: Number(row.receita_prevista ?? 0),
+      receita_recebida: Number(row.receita_recebida ?? 0),
+      valor_pendente: Number(row.valor_pendente ?? 0),
+      custos_previstos: Number(row.custos_previstos ?? 0),
+      custos_realizados: Number(row.custos_realizados ?? 0),
+      lucro_estimado: Number(row.lucro_estimado ?? 0),
+      lucro_realizado: Number(row.lucro_realizado ?? 0),
+      participantes_confirmados: Number(row.participantes_confirmados ?? 0),
+      participantes_pendentes: Number(row.participantes_pendentes ?? 0),
+    };
+  });
 }

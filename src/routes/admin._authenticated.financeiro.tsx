@@ -20,9 +20,9 @@ import {
   listDespesas, createDespesa, updateDespesa, deleteDespesa,
   listContasPagar, createContaPagar, updateContaPagar, deleteContaPagar,
   listContasReceber, createContaReceber, updateContaReceber, deleteContaReceber,
-  dreExpedicoes, fluxoCaixa,
-  CATEGORIAS_DESPESA, STATUS_DESPESA, STATUS_CONTA,
-  type Despesa, type ContaPagar, type ContaReceber,
+  dreExpedicoes, fluxoCaixa, listIndicadoresExpedicoes,
+  CATEGORIAS_DESPESA, STATUS_DESPESA, STATUS_CONTA, TIPOS_CUSTO,
+  type Despesa, type ContaPagar, type ContaReceber, type ExpedicaoIndicador,
 } from "@/lib/admin/financeiro-api";
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
@@ -53,12 +53,13 @@ function rangeFor(preset: Preset, custom: { from: string; to: string }) {
 }
 
 const TABS = [
-  { id: "receitas", label: "Receitas" },
-  { id: "despesas", label: "Despesas" },
+  { id: "expedicoes", label: "Por expedição" },
+  { id: "receitas", label: "Reservas" },
+  { id: "despesas", label: "Custos" },
   { id: "a-pagar", label: "A pagar" },
   { id: "a-receber", label: "A receber" },
   { id: "fluxo", label: "Fluxo de caixa" },
-  { id: "dre", label: "DRE por expedição" },
+  { id: "dre", label: "DRE consolidado" },
 ] as const;
 type TabId = typeof TABS[number]["id"];
 
@@ -73,7 +74,7 @@ function FinanceiroPage() {
     from: new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0,10),
     to: new Date().toISOString().slice(0,10),
   });
-  const [tab, setTab] = useState<TabId>("receitas");
+  const [tab, setTab] = useState<TabId>("expedicoes");
   const range = useMemo(() => rangeFor(preset, custom), [preset, custom]);
   const rangeDate = useMemo(() => ({ from: range.from.slice(0,10), to: range.to.slice(0,10) }), [range]);
 
@@ -176,6 +177,7 @@ function FinanceiroPage() {
         ))}
       </div>
 
+      {tab === "expedicoes" && <TabExpedicoes />}
       {tab === "receitas" && <TabReceitas reservas={reservasNoPeriodo} onChanged={() => qc.invalidateQueries({ queryKey: ["admin","reservas"] })} />}
       {tab === "despesas" && <TabDespesas despesas={despesas} canEdit={canEdit} onChanged={() => qc.invalidateQueries({ queryKey: ["admin","despesas"] })} />}
       {tab === "a-pagar" && <TabContasPagar contas={contasPagar} canEdit={canEdit} onChanged={() => qc.invalidateQueries({ queryKey: ["admin","contas-pagar"] })} />}
@@ -305,6 +307,8 @@ function DespesaDialog({ despesa, onClose, onSaved }: { despesa: Despesa | null;
     fornecedor: despesa?.fornecedor ?? "",
     status: despesa?.status ?? "pago",
     observacoes: despesa?.observacoes ?? "",
+    previsto: (despesa as Despesa & { previsto?: boolean } | null)?.previsto ?? false,
+    tipo_custo: (despesa as Despesa & { tipo_custo?: string } | null)?.tipo_custo ?? "variavel",
   });
   const mut = useMutation({
     mutationFn: async () => {
@@ -353,6 +357,19 @@ function DespesaDialog({ despesa, onClose, onSaved }: { despesa: Despesa | null;
               </select>
             </AdminField>
             <AdminField label="Fornecedor"><input className="admin-input" value={form.fornecedor} onChange={(e) => setForm({ ...form, fornecedor: e.target.value })} /></AdminField>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <AdminField label="Tipo de custo">
+              <select className="admin-input" value={form.tipo_custo} onChange={(e) => setForm({ ...form, tipo_custo: e.target.value })}>
+                {TIPOS_CUSTO.map((t) => <option key={t} value={t} className="capitalize">{t}</option>)}
+              </select>
+            </AdminField>
+            <AdminField label="Natureza">
+              <select className="admin-input" value={form.previsto ? "previsto" : "realizado"} onChange={(e) => setForm({ ...form, previsto: e.target.value === "previsto" })}>
+                <option value="realizado">Já realizado</option>
+                <option value="previsto">Previsto (ainda não pago)</option>
+              </select>
+            </AdminField>
           </div>
           <AdminField label="Observações"><textarea className="admin-input min-h-[60px]" value={form.observacoes} onChange={(e) => setForm({ ...form, observacoes: e.target.value })} /></AdminField>
           <div className="flex justify-end gap-2 pt-2">
@@ -686,3 +703,100 @@ function PagamentoDialog({ reserva, onClose, onSaved }: { reserva: ReservaRow; o
 
 // imports usados para evitar "unused"
 void Wallet;
+
+// ============ Tab Expedições — visão consolidada =============
+function TabExpedicoes() {
+  const { data = [], isLoading } = useQuery({
+    queryKey: ["admin", "indicadores-expedicoes"],
+    queryFn: () => listIndicadoresExpedicoes(),
+  });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-32 animate-pulse rounded-xl bg-[color:var(--admin-petroleo)]/40" />
+        ))}
+      </div>
+    );
+  }
+
+  const ativos = data.filter((d) => d.vagas_totais > 0 || d.receita_prevista > 0);
+  if (ativos.length === 0) {
+    return (
+      <AdminSection titulo="Expedições">
+        <p className="text-sm text-[color:var(--admin-cinza-3)]">Nenhuma expedição com vagas ou reservas ainda.</p>
+      </AdminSection>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <AdminPageIntro>
+        <strong className="text-[color:var(--admin-cinza-1)]">Visão financeira por expedição.</strong> Veja para cada saída quanto você <em>vai receber</em>, quanto <em>já entrou</em>, quanto <em>falta</em>, custos e <strong>lucro real</strong>. As vagas mostram lotação por data.
+      </AdminPageIntro>
+      {ativos.map((e) => (
+        <CardExpedicao key={e.expedicao_id} ind={e} />
+      ))}
+    </div>
+  );
+}
+
+function CardExpedicao({ ind }: { ind: ExpedicaoIndicador }) {
+  const lucroOk = ind.lucro_realizado >= 0;
+  const ocup = ind.vagas_totais > 0 ? (ind.vagas_ocupadas / ind.vagas_totais) * 100 : 0;
+  return (
+    <div className="admin-card p-5 md:p-6">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <div className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">Expedição</div>
+          <h3 className="mt-1 font-display text-xl md:text-2xl text-[color:var(--admin-cinza-1)]">{ind.expedicao_nome}</h3>
+        </div>
+        <div className="text-right">
+          <div className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">Lucro realizado</div>
+          <div className={`mt-1 font-display text-xl md:text-2xl ${lucroOk ? "text-[color:var(--admin-dourado)]" : "text-red-400"}`}>
+            {fmtBRL(ind.lucro_realizado)}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+        <Mini label="Receita prevista" value={fmtBRL(ind.receita_prevista)} />
+        <Mini label="Receita recebida" value={fmtBRL(ind.receita_recebida)} accent />
+        <Mini label="A receber" value={fmtBRL(ind.valor_pendente)} />
+        <Mini label="Lucro estimado" value={fmtBRL(ind.lucro_estimado)} />
+        <Mini label="Custos previstos" value={fmtBRL(ind.custos_previstos)} />
+        <Mini label="Custos realizados" value={fmtBRL(ind.custos_realizados)} />
+        <Mini label="Participantes confirmados" value={String(ind.participantes_confirmados)} />
+        <Mini label="Participantes pendentes" value={String(ind.participantes_pendentes)} />
+      </div>
+
+      <div className="mt-5 rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo-soft)]/30 p-4">
+        <div className="flex items-center justify-between text-[12px] text-[color:var(--admin-cinza-2)]">
+          <span>
+            <strong className="text-[color:var(--admin-cinza-1)]">{ind.vagas_ocupadas}</strong>
+            <span className="text-[color:var(--admin-cinza-3)]"> / {ind.vagas_totais} vagas ocupadas</span>
+          </span>
+          <span className="text-[color:var(--admin-cinza-3)]">{ind.vagas_disponiveis} disponíveis · {ocup.toFixed(0)}% lotação</span>
+        </div>
+        <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-[color:var(--admin-borda)]">
+          <div
+            className="h-full bg-[color:var(--admin-dourado)] transition-all"
+            style={{ width: `${Math.min(ocup, 100)}%` }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Mini({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+  return (
+    <div className="rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo-soft)]/20 p-3">
+      <div className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">{label}</div>
+      <div className={`mt-1 font-medium tabular-nums text-[14px] ${accent ? "text-[color:var(--admin-dourado)]" : "text-[color:var(--admin-cinza-1)]"}`}>
+        {value}
+      </div>
+    </div>
+  );
+}
