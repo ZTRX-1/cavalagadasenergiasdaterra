@@ -300,7 +300,7 @@ export async function listPagamentosByReserva(reservaId: string): Promise<Pagame
     .from("pagamentos")
     .select("*")
     .eq("reserva_id", reservaId)
-    .order("created_at", { ascending: false });
+    .order("data_prevista", { ascending: true, nullsFirst: false });
   if (error) throw error;
   return (data ?? []) as unknown as Pagamento[];
 }
@@ -310,14 +310,56 @@ export async function createPagamento(input: Omit<Pagamento, "id" | "created_at"
   if (error) throw error;
 }
 
+export async function updatePagamento(id: string, patch: Partial<Pagamento>) {
+  const { error } = await sb.from("pagamentos").update(patch as never).eq("id", id);
+  if (error) throw error;
+}
+
 export async function updatePagamentoStatus(id: string, status: string) {
   const { error } = await sb.from("pagamentos").update({ status } as never).eq("id", id);
+  if (error) throw error;
+}
+
+/** Confirma um pagamento previsto, marcando data de recebimento. */
+export async function confirmarPagamento(id: string, dataPagamento?: string) {
+  const { error } = await sb
+    .from("pagamentos")
+    .update({
+      status: "confirmado",
+      data_pagamento: dataPagamento ?? new Date().toISOString().slice(0, 10),
+    } as never)
+    .eq("id", id);
   if (error) throw error;
 }
 
 export async function deletePagamento(id: string) {
   const { error } = await sb.from("pagamentos").delete().eq("id", id);
   if (error) throw error;
+}
+
+/**
+ * Situação visível de UMA parcela/pagamento:
+ *  - "pago" (confirmado)
+ *  - "atrasado" (previsto + data_prevista < hoje)
+ *  - "vencendo" (previsto + data_prevista <= hoje+5d)
+ *  - "em_dia" (previsto + data_prevista > hoje+5d)
+ *  - "estornado" / "cancelado"
+ */
+export function situacaoPagamento(p: Pick<Pagamento, "status" | "data_prevista">): {
+  id: "pago" | "atrasado" | "vencendo" | "em_dia" | "estornado" | "cancelado" | "previsto";
+  label: string;
+  tone: "ok" | "warn" | "danger" | "info" | "muted";
+} {
+  if (p.status === "confirmado") return { id: "pago", label: "Pago", tone: "ok" };
+  if (p.status === "estornado") return { id: "estornado", label: "Estornado", tone: "muted" };
+  if (p.status === "cancelado") return { id: "cancelado", label: "Cancelado", tone: "muted" };
+  if (!p.data_prevista) return { id: "previsto", label: "Previsto", tone: "info" };
+  const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+  const venc = new Date(p.data_prevista + "T00:00:00");
+  const diffDias = Math.round((venc.getTime() - hoje.getTime()) / 86400000);
+  if (diffDias < 0) return { id: "atrasado", label: "Atrasado", tone: "danger" };
+  if (diffDias <= 5) return { id: "vencendo", label: "Vencendo", tone: "warn" };
+  return { id: "em_dia", label: "Em dia", tone: "ok" };
 }
 
 // ----- Histórico da reserva

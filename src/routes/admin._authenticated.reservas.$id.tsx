@@ -15,6 +15,7 @@ import {
   TIPOS_DOCUMENTO_RESERVA,
   type TimelineItem,
 } from "@/lib/admin/financeiro-api";
+import { ReservaPagamentos } from "@/components/admin/reserva-pagamentos";
 import { StatusBadge } from "@/components/admin/admin-status-badge";
 import { cn } from "@/lib/utils";
 import {
@@ -223,6 +224,16 @@ function ReservaDetalhePage() {
           </div>
         </section>
       </div>
+
+      <ReservaPagamentos
+        reservaId={id}
+        expedicaoId={reserva.expedicao_id ?? null}
+        pagamentos={pagamentosQ.data ?? []}
+        onChanged={() => {
+          pagamentosQ.refetch();
+          timelineQ.refetch();
+        }}
+      />
 
       <Documentos reservaId={id} docs={docsQ.data ?? []} onChange={() => docsQ.refetch()} />
 
