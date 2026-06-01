@@ -230,6 +230,13 @@ export type Database = {
             foreignKeyName: "datas_expedicao_id_fkey"
             columns: ["expedicao_id"]
             isOneToOne: false
+            referencedRelation: "expedicao_indicadores"
+            referencedColumns: ["expedicao_id"]
+          },
+          {
+            foreignKeyName: "datas_expedicao_id_fkey"
+            columns: ["expedicao_id"]
+            isOneToOne: false
             referencedRelation: "expedicoes"
             referencedColumns: ["id"]
           },
@@ -247,7 +254,9 @@ export type Database = {
           fornecedor: string | null
           id: string
           observacoes: string | null
+          previsto: boolean
           status: string
+          tipo_custo: string
           updated_at: string
           valor: number
         }
@@ -262,7 +271,9 @@ export type Database = {
           fornecedor?: string | null
           id?: string
           observacoes?: string | null
+          previsto?: boolean
           status?: string
+          tipo_custo?: string
           updated_at?: string
           valor: number
         }
@@ -277,7 +288,9 @@ export type Database = {
           fornecedor?: string | null
           id?: string
           observacoes?: string | null
+          previsto?: boolean
           status?: string
+          tipo_custo?: string
           updated_at?: string
           valor?: number
         }
@@ -321,6 +334,13 @@ export type Database = {
           url?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "documentos_expedicao_id_fkey"
+            columns: ["expedicao_id"]
+            isOneToOne: false
+            referencedRelation: "expedicao_indicadores"
+            referencedColumns: ["expedicao_id"]
+          },
           {
             foreignKeyName: "documentos_expedicao_id_fkey"
             columns: ["expedicao_id"]
@@ -369,6 +389,13 @@ export type Database = {
           url?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "expedicao_assets_expedicao_id_fkey"
+            columns: ["expedicao_id"]
+            isOneToOne: false
+            referencedRelation: "expedicao_indicadores"
+            referencedColumns: ["expedicao_id"]
+          },
           {
             foreignKeyName: "expedicao_assets_expedicao_id_fkey"
             columns: ["expedicao_id"]
@@ -749,7 +776,82 @@ export type Database = {
             foreignKeyName: "midia_expedicao_id_fkey"
             columns: ["expedicao_id"]
             isOneToOne: false
+            referencedRelation: "expedicao_indicadores"
+            referencedColumns: ["expedicao_id"]
+          },
+          {
+            foreignKeyName: "midia_expedicao_id_fkey"
+            columns: ["expedicao_id"]
+            isOneToOne: false
             referencedRelation: "expedicoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pagamentos: {
+        Row: {
+          cliente_nome: string | null
+          comprovante_url: string | null
+          created_at: string
+          data_pagamento: string | null
+          data_prevista: string | null
+          expedicao_id: string | null
+          forma: string
+          id: string
+          observacoes: string | null
+          parcela_atual: number | null
+          parcela_total: number | null
+          registrado_por: string | null
+          reserva_id: string
+          status: string
+          tipo: string
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          cliente_nome?: string | null
+          comprovante_url?: string | null
+          created_at?: string
+          data_pagamento?: string | null
+          data_prevista?: string | null
+          expedicao_id?: string | null
+          forma?: string
+          id?: string
+          observacoes?: string | null
+          parcela_atual?: number | null
+          parcela_total?: number | null
+          registrado_por?: string | null
+          reserva_id: string
+          status?: string
+          tipo?: string
+          updated_at?: string
+          valor: number
+        }
+        Update: {
+          cliente_nome?: string | null
+          comprovante_url?: string | null
+          created_at?: string
+          data_pagamento?: string | null
+          data_prevista?: string | null
+          expedicao_id?: string | null
+          forma?: string
+          id?: string
+          observacoes?: string | null
+          parcela_atual?: number | null
+          parcela_total?: number | null
+          registrado_por?: string | null
+          reserva_id?: string
+          status?: string
+          tipo?: string
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pagamentos_reserva_id_fkey"
+            columns: ["reserva_id"]
+            isOneToOne: false
+            referencedRelation: "reservas"
             referencedColumns: ["id"]
           },
         ]
@@ -933,10 +1035,112 @@ export type Database = {
         }
         Relationships: []
       }
+      reserva_documentos: {
+        Row: {
+          assinado_em: string | null
+          created_at: string
+          enviado_em: string | null
+          id: string
+          observacoes: string | null
+          reserva_id: string
+          status: string
+          tipo: string
+          titulo: string
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          assinado_em?: string | null
+          created_at?: string
+          enviado_em?: string | null
+          id?: string
+          observacoes?: string | null
+          reserva_id: string
+          status?: string
+          tipo?: string
+          titulo: string
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          assinado_em?: string | null
+          created_at?: string
+          enviado_em?: string | null
+          id?: string
+          observacoes?: string | null
+          reserva_id?: string
+          status?: string
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reserva_documentos_reserva_id_fkey"
+            columns: ["reserva_id"]
+            isOneToOne: false
+            referencedRelation: "reservas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reserva_historico: {
+        Row: {
+          autor_id: string | null
+          autor_nome: string | null
+          created_at: string
+          descricao: string
+          id: string
+          metadata: Json
+          reserva_id: string
+          tipo: string
+          valor: number | null
+        }
+        Insert: {
+          autor_id?: string | null
+          autor_nome?: string | null
+          created_at?: string
+          descricao: string
+          id?: string
+          metadata?: Json
+          reserva_id: string
+          tipo: string
+          valor?: number | null
+        }
+        Update: {
+          autor_id?: string | null
+          autor_nome?: string | null
+          created_at?: string
+          descricao?: string
+          id?: string
+          metadata?: Json
+          reserva_id?: string
+          tipo?: string
+          valor?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reserva_historico_reserva_id_fkey"
+            columns: ["reserva_id"]
+            isOneToOne: false
+            referencedRelation: "reservas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reservas: {
         Row: {
           aceites: Json
           adicionais: Json
+          cliente_cpf: string | null
+          cliente_email: string | null
+          cliente_nome: string | null
+          cliente_telefone: string | null
+          contrato_assinado: boolean
+          contrato_assinado_em: string | null
+          contrato_enviado: boolean
+          contrato_enviado_em: string | null
           created_at: string
           data_id: string | null
           data_label: string
@@ -945,21 +1149,35 @@ export type Database = {
           forma_pagamento: string | null
           grupo_nome: string | null
           id: string
+          lead_id: string | null
+          observacoes_internas: string | null
           parcelas: number
           participantes: Json
           protocolo: string
           quantidade_participantes: number
           responsavel: Json
+          responsavel_id: string | null
           saldo_restante: number | null
           status: string
+          status_financeiro: string
+          status_operacional: string
           status_pagamento: string
           updated_at: string
+          valor_entrada: number | null
           valor_pago: number
           valor_total: number | null
         }
         Insert: {
           aceites?: Json
           adicionais?: Json
+          cliente_cpf?: string | null
+          cliente_email?: string | null
+          cliente_nome?: string | null
+          cliente_telefone?: string | null
+          contrato_assinado?: boolean
+          contrato_assinado_em?: string | null
+          contrato_enviado?: boolean
+          contrato_enviado_em?: string | null
           created_at?: string
           data_id?: string | null
           data_label: string
@@ -968,21 +1186,35 @@ export type Database = {
           forma_pagamento?: string | null
           grupo_nome?: string | null
           id?: string
+          lead_id?: string | null
+          observacoes_internas?: string | null
           parcelas?: number
           participantes?: Json
           protocolo: string
           quantidade_participantes?: number
           responsavel: Json
+          responsavel_id?: string | null
           saldo_restante?: number | null
           status?: string
+          status_financeiro?: string
+          status_operacional?: string
           status_pagamento?: string
           updated_at?: string
+          valor_entrada?: number | null
           valor_pago?: number
           valor_total?: number | null
         }
         Update: {
           aceites?: Json
           adicionais?: Json
+          cliente_cpf?: string | null
+          cliente_email?: string | null
+          cliente_nome?: string | null
+          cliente_telefone?: string | null
+          contrato_assinado?: boolean
+          contrato_assinado_em?: string | null
+          contrato_enviado?: boolean
+          contrato_enviado_em?: string | null
           created_at?: string
           data_id?: string | null
           data_label?: string
@@ -991,15 +1223,21 @@ export type Database = {
           forma_pagamento?: string | null
           grupo_nome?: string | null
           id?: string
+          lead_id?: string | null
+          observacoes_internas?: string | null
           parcelas?: number
           participantes?: Json
           protocolo?: string
           quantidade_participantes?: number
           responsavel?: Json
+          responsavel_id?: string | null
           saldo_restante?: number | null
           status?: string
+          status_financeiro?: string
+          status_operacional?: string
           status_pagamento?: string
           updated_at?: string
+          valor_entrada?: number | null
           valor_pago?: number
           valor_total?: number | null
         }
@@ -1010,6 +1248,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "datas"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reservas_expedicao_id_fkey"
+            columns: ["expedicao_id"]
+            isOneToOne: false
+            referencedRelation: "expedicao_indicadores"
+            referencedColumns: ["expedicao_id"]
           },
           {
             foreignKeyName: "reservas_expedicao_id_fkey"
@@ -1130,7 +1375,26 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      expedicao_indicadores: {
+        Row: {
+          custos_previstos: number | null
+          custos_realizados: number | null
+          expedicao_id: string | null
+          expedicao_nome: string | null
+          lucro_estimado: number | null
+          lucro_realizado: number | null
+          participantes_confirmados: number | null
+          participantes_pendentes: number | null
+          receita_prevista: number | null
+          receita_recebida: number | null
+          slug: string | null
+          vagas_disponiveis: number | null
+          vagas_ocupadas: number | null
+          vagas_totais: number | null
+          valor_pendente: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       gerar_protocolo: { Args: never; Returns: string }
