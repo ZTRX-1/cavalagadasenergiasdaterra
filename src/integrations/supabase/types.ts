@@ -1048,6 +1048,38 @@ export type Database = {
           },
         ]
       }
+      notificacoes_lidas: {
+        Row: {
+          created_at: string
+          id: string
+          lida_em: string
+          user_id: string
+          webhook_evento_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lida_em?: string
+          user_id: string
+          webhook_evento_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lida_em?: string
+          user_id?: string
+          webhook_evento_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notificacoes_lidas_webhook_evento_id_fkey"
+            columns: ["webhook_evento_id"]
+            isOneToOne: false
+            referencedRelation: "webhooks_eventos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pagamentos: {
         Row: {
           cliente_nome: string | null

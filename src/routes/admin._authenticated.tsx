@@ -48,13 +48,15 @@ function AdminLayout() {
   }, []);
 
   return (
-    <div className="admin-surface flex min-h-screen">
+    <div className="admin-surface flex min-h-screen w-full overflow-x-hidden">
       <AdminSidebar user={user} />
       <AdminSidebarDrawer user={user} open={menuOpen} onClose={() => setMenuOpen(false)} />
       <div className="flex flex-1 flex-col min-w-0">
         <AdminTopbar onOpenMenu={() => setMenuOpen(true)} />
-        <main className="flex-1 overflow-y-auto px-4 py-6 md:px-10 md:py-8">
-          <Outlet />
+        <main className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-6 md:px-8 lg:px-10 md:py-8">
+          <div className="mx-auto w-full max-w-[1400px] min-w-0">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>
