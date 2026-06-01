@@ -41,6 +41,11 @@ function AdminLoginPage() {
       setLoading(false);
       return;
     }
+    // Registra último acesso
+    try {
+      const { registrarUltimoLogin } = await import("@/lib/admin/cargos-api");
+      await registrarUltimoLogin();
+    } catch {}
     if (!remember) {
       // session persists by default; if user opts out we sign out on browser close via storage clear
       try { sessionStorage.setItem("admin_session_only", "1"); } catch {}

@@ -27,6 +27,7 @@ import { Route as ExpedicoesSlugRouteImport } from './routes/expedicoes.$slug'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminAuthenticatedRouteImport } from './routes/admin._authenticated'
 import { Route as AdminAuthenticatedIndexRouteImport } from './routes/admin._authenticated.index'
+import { Route as AdminAuthenticatedUsuariosRouteImport } from './routes/admin._authenticated.usuarios'
 import { Route as AdminAuthenticatedReservasRouteImport } from './routes/admin._authenticated.reservas'
 import { Route as AdminAuthenticatedPerfilRouteImport } from './routes/admin._authenticated.perfil'
 import { Route as AdminAuthenticatedParticipantesRouteImport } from './routes/admin._authenticated.participantes'
@@ -38,6 +39,7 @@ import { Route as AdminAuthenticatedHistoricoRouteImport } from './routes/admin.
 import { Route as AdminAuthenticatedFinanceiroRouteImport } from './routes/admin._authenticated.financeiro'
 import { Route as AdminAuthenticatedDocumentosRouteImport } from './routes/admin._authenticated.documentos'
 import { Route as AdminAuthenticatedConfiguracoesRouteImport } from './routes/admin._authenticated.configuracoes'
+import { Route as AdminAuthenticatedCargosRouteImport } from './routes/admin._authenticated.cargos'
 import { Route as AdminAuthenticatedAutomacoesRouteImport } from './routes/admin._authenticated.automacoes'
 import { Route as AdminAuthenticatedExpedicoesIndexRouteImport } from './routes/admin._authenticated.expedicoes.index'
 import { Route as AdminAuthenticatedReservasIdRouteImport } from './routes/admin._authenticated.reservas.$id'
@@ -134,6 +136,12 @@ const AdminAuthenticatedIndexRoute = AdminAuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminAuthenticatedRoute,
 } as any)
+const AdminAuthenticatedUsuariosRoute =
+  AdminAuthenticatedUsuariosRouteImport.update({
+    id: '/usuarios',
+    path: '/usuarios',
+    getParentRoute: () => AdminAuthenticatedRoute,
+  } as any)
 const AdminAuthenticatedReservasRoute =
   AdminAuthenticatedReservasRouteImport.update({
     id: '/reservas',
@@ -197,6 +205,12 @@ const AdminAuthenticatedConfiguracoesRoute =
     path: '/configuracoes',
     getParentRoute: () => AdminAuthenticatedRoute,
   } as any)
+const AdminAuthenticatedCargosRoute =
+  AdminAuthenticatedCargosRouteImport.update({
+    id: '/cargos',
+    path: '/cargos',
+    getParentRoute: () => AdminAuthenticatedRoute,
+  } as any)
 const AdminAuthenticatedAutomacoesRoute =
   AdminAuthenticatedAutomacoesRouteImport.update({
     id: '/automacoes',
@@ -247,6 +261,7 @@ export interface FileRoutesByFullPath {
   '/marcas/elas-na-sela': typeof MarcasElasNaSelaRoute
   '/reserva/$slug': typeof ReservaSlugRoute
   '/admin/automacoes': typeof AdminAuthenticatedAutomacoesRoute
+  '/admin/cargos': typeof AdminAuthenticatedCargosRoute
   '/admin/configuracoes': typeof AdminAuthenticatedConfiguracoesRoute
   '/admin/documentos': typeof AdminAuthenticatedDocumentosRoute
   '/admin/financeiro': typeof AdminAuthenticatedFinanceiroRoute
@@ -258,6 +273,7 @@ export interface FileRoutesByFullPath {
   '/admin/participantes': typeof AdminAuthenticatedParticipantesRoute
   '/admin/perfil': typeof AdminAuthenticatedPerfilRoute
   '/admin/reservas': typeof AdminAuthenticatedReservasRouteWithChildren
+  '/admin/usuarios': typeof AdminAuthenticatedUsuariosRoute
   '/admin/': typeof AdminAuthenticatedIndexRoute
   '/admin/expedicoes/$id': typeof AdminAuthenticatedExpedicoesIdRoute
   '/admin/leads/$id': typeof AdminAuthenticatedLeadsIdRoute
@@ -282,6 +298,7 @@ export interface FileRoutesByTo {
   '/marcas/elas-na-sela': typeof MarcasElasNaSelaRoute
   '/reserva/$slug': typeof ReservaSlugRoute
   '/admin/automacoes': typeof AdminAuthenticatedAutomacoesRoute
+  '/admin/cargos': typeof AdminAuthenticatedCargosRoute
   '/admin/configuracoes': typeof AdminAuthenticatedConfiguracoesRoute
   '/admin/documentos': typeof AdminAuthenticatedDocumentosRoute
   '/admin/financeiro': typeof AdminAuthenticatedFinanceiroRoute
@@ -293,6 +310,7 @@ export interface FileRoutesByTo {
   '/admin/participantes': typeof AdminAuthenticatedParticipantesRoute
   '/admin/perfil': typeof AdminAuthenticatedPerfilRoute
   '/admin/reservas': typeof AdminAuthenticatedReservasRouteWithChildren
+  '/admin/usuarios': typeof AdminAuthenticatedUsuariosRoute
   '/admin': typeof AdminAuthenticatedIndexRoute
   '/admin/expedicoes/$id': typeof AdminAuthenticatedExpedicoesIdRoute
   '/admin/leads/$id': typeof AdminAuthenticatedLeadsIdRoute
@@ -319,6 +337,7 @@ export interface FileRoutesById {
   '/marcas/elas-na-sela': typeof MarcasElasNaSelaRoute
   '/reserva/$slug': typeof ReservaSlugRoute
   '/admin/_authenticated/automacoes': typeof AdminAuthenticatedAutomacoesRoute
+  '/admin/_authenticated/cargos': typeof AdminAuthenticatedCargosRoute
   '/admin/_authenticated/configuracoes': typeof AdminAuthenticatedConfiguracoesRoute
   '/admin/_authenticated/documentos': typeof AdminAuthenticatedDocumentosRoute
   '/admin/_authenticated/financeiro': typeof AdminAuthenticatedFinanceiroRoute
@@ -330,6 +349,7 @@ export interface FileRoutesById {
   '/admin/_authenticated/participantes': typeof AdminAuthenticatedParticipantesRoute
   '/admin/_authenticated/perfil': typeof AdminAuthenticatedPerfilRoute
   '/admin/_authenticated/reservas': typeof AdminAuthenticatedReservasRouteWithChildren
+  '/admin/_authenticated/usuarios': typeof AdminAuthenticatedUsuariosRoute
   '/admin/_authenticated/': typeof AdminAuthenticatedIndexRoute
   '/admin/_authenticated/expedicoes/$id': typeof AdminAuthenticatedExpedicoesIdRoute
   '/admin/_authenticated/leads/$id': typeof AdminAuthenticatedLeadsIdRoute
@@ -357,6 +377,7 @@ export interface FileRouteTypes {
     | '/marcas/elas-na-sela'
     | '/reserva/$slug'
     | '/admin/automacoes'
+    | '/admin/cargos'
     | '/admin/configuracoes'
     | '/admin/documentos'
     | '/admin/financeiro'
@@ -368,6 +389,7 @@ export interface FileRouteTypes {
     | '/admin/participantes'
     | '/admin/perfil'
     | '/admin/reservas'
+    | '/admin/usuarios'
     | '/admin/'
     | '/admin/expedicoes/$id'
     | '/admin/leads/$id'
@@ -392,6 +414,7 @@ export interface FileRouteTypes {
     | '/marcas/elas-na-sela'
     | '/reserva/$slug'
     | '/admin/automacoes'
+    | '/admin/cargos'
     | '/admin/configuracoes'
     | '/admin/documentos'
     | '/admin/financeiro'
@@ -403,6 +426,7 @@ export interface FileRouteTypes {
     | '/admin/participantes'
     | '/admin/perfil'
     | '/admin/reservas'
+    | '/admin/usuarios'
     | '/admin'
     | '/admin/expedicoes/$id'
     | '/admin/leads/$id'
@@ -428,6 +452,7 @@ export interface FileRouteTypes {
     | '/marcas/elas-na-sela'
     | '/reserva/$slug'
     | '/admin/_authenticated/automacoes'
+    | '/admin/_authenticated/cargos'
     | '/admin/_authenticated/configuracoes'
     | '/admin/_authenticated/documentos'
     | '/admin/_authenticated/financeiro'
@@ -439,6 +464,7 @@ export interface FileRouteTypes {
     | '/admin/_authenticated/participantes'
     | '/admin/_authenticated/perfil'
     | '/admin/_authenticated/reservas'
+    | '/admin/_authenticated/usuarios'
     | '/admin/_authenticated/'
     | '/admin/_authenticated/expedicoes/$id'
     | '/admin/_authenticated/leads/$id'
@@ -593,6 +619,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthenticatedIndexRouteImport
       parentRoute: typeof AdminAuthenticatedRoute
     }
+    '/admin/_authenticated/usuarios': {
+      id: '/admin/_authenticated/usuarios'
+      path: '/usuarios'
+      fullPath: '/admin/usuarios'
+      preLoaderRoute: typeof AdminAuthenticatedUsuariosRouteImport
+      parentRoute: typeof AdminAuthenticatedRoute
+    }
     '/admin/_authenticated/reservas': {
       id: '/admin/_authenticated/reservas'
       path: '/reservas'
@@ -668,6 +701,13 @@ declare module '@tanstack/react-router' {
       path: '/configuracoes'
       fullPath: '/admin/configuracoes'
       preLoaderRoute: typeof AdminAuthenticatedConfiguracoesRouteImport
+      parentRoute: typeof AdminAuthenticatedRoute
+    }
+    '/admin/_authenticated/cargos': {
+      id: '/admin/_authenticated/cargos'
+      path: '/cargos'
+      fullPath: '/admin/cargos'
+      preLoaderRoute: typeof AdminAuthenticatedCargosRouteImport
       parentRoute: typeof AdminAuthenticatedRoute
     }
     '/admin/_authenticated/automacoes': {
@@ -750,6 +790,7 @@ const AdminAuthenticatedReservasRouteWithChildren =
 
 interface AdminAuthenticatedRouteChildren {
   AdminAuthenticatedAutomacoesRoute: typeof AdminAuthenticatedAutomacoesRoute
+  AdminAuthenticatedCargosRoute: typeof AdminAuthenticatedCargosRoute
   AdminAuthenticatedConfiguracoesRoute: typeof AdminAuthenticatedConfiguracoesRoute
   AdminAuthenticatedDocumentosRoute: typeof AdminAuthenticatedDocumentosRoute
   AdminAuthenticatedFinanceiroRoute: typeof AdminAuthenticatedFinanceiroRoute
@@ -761,6 +802,7 @@ interface AdminAuthenticatedRouteChildren {
   AdminAuthenticatedParticipantesRoute: typeof AdminAuthenticatedParticipantesRoute
   AdminAuthenticatedPerfilRoute: typeof AdminAuthenticatedPerfilRoute
   AdminAuthenticatedReservasRoute: typeof AdminAuthenticatedReservasRouteWithChildren
+  AdminAuthenticatedUsuariosRoute: typeof AdminAuthenticatedUsuariosRoute
   AdminAuthenticatedIndexRoute: typeof AdminAuthenticatedIndexRoute
   AdminAuthenticatedExpedicoesIdRoute: typeof AdminAuthenticatedExpedicoesIdRoute
   AdminAuthenticatedExpedicoesIndexRoute: typeof AdminAuthenticatedExpedicoesIndexRoute
@@ -768,6 +810,7 @@ interface AdminAuthenticatedRouteChildren {
 
 const AdminAuthenticatedRouteChildren: AdminAuthenticatedRouteChildren = {
   AdminAuthenticatedAutomacoesRoute: AdminAuthenticatedAutomacoesRoute,
+  AdminAuthenticatedCargosRoute: AdminAuthenticatedCargosRoute,
   AdminAuthenticatedConfiguracoesRoute: AdminAuthenticatedConfiguracoesRoute,
   AdminAuthenticatedDocumentosRoute: AdminAuthenticatedDocumentosRoute,
   AdminAuthenticatedFinanceiroRoute: AdminAuthenticatedFinanceiroRoute,
@@ -779,6 +822,7 @@ const AdminAuthenticatedRouteChildren: AdminAuthenticatedRouteChildren = {
   AdminAuthenticatedParticipantesRoute: AdminAuthenticatedParticipantesRoute,
   AdminAuthenticatedPerfilRoute: AdminAuthenticatedPerfilRoute,
   AdminAuthenticatedReservasRoute: AdminAuthenticatedReservasRouteWithChildren,
+  AdminAuthenticatedUsuariosRoute: AdminAuthenticatedUsuariosRoute,
   AdminAuthenticatedIndexRoute: AdminAuthenticatedIndexRoute,
   AdminAuthenticatedExpedicoesIdRoute: AdminAuthenticatedExpedicoesIdRoute,
   AdminAuthenticatedExpedicoesIndexRoute:

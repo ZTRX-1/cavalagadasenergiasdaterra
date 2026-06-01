@@ -16,6 +16,8 @@ import {
   History,
   Plug,
   Lock,
+  UserCog,
+  ShieldCheck,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logoCavalgadas from "@/assets/logo-cavalgadas.jpg";
@@ -43,6 +45,8 @@ const nav: NavItem[] = [
   { to: "/admin/automacoes", label: "Automações", icon: Workflow, modulo: "automacoes", group: "governanca" },
   { to: "/admin/historico", label: "Histórico", icon: History, modulo: "historico", group: "governanca" },
   { to: "/admin/integracoes", label: "Integrações", icon: Plug, modulo: "integracoes", group: "governanca" },
+  { to: "/admin/usuarios", label: "Usuários", icon: UserCog, modulo: "usuarios", group: "governanca" },
+  { to: "/admin/cargos", label: "Cargos", icon: ShieldCheck, modulo: "cargos", group: "governanca" },
   { to: "/admin/configuracoes", label: "Configurações", icon: Settings, modulo: "configuracoes", group: "governanca" },
 ];
 

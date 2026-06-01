@@ -21,6 +21,8 @@ export type AdminModule =
   | "documentos"
   | "configuracoes"
   | "equipe"
+  | "usuarios"
+  | "cargos"
   | "ia"
   | "automacoes"
   | "historico"
@@ -84,7 +86,16 @@ export function useCan(modulo: AdminModule) {
     return { canView: false, canEdit: false, locked: false, role, isLoading };
   }
 
-  if (role === "desenvolvedor" || role === "superadmin" || role === "admin" || role === "ceo") {
+  if (role === "desenvolvedor" || role === "superadmin" || role === "admin") {
+    return { canView: true, canEdit: true, locked: false, role, isLoading: false };
+  }
+
+  // CEO: módulos operacionais completos; sem acesso a Usuários/Cargos/Integrações/Configurações
+  if (role === "ceo") {
+    const bloqueado: AdminModule[] = ["usuarios", "cargos", "integracoes", "configuracoes"];
+    if (bloqueado.includes(modulo)) {
+      return { canView: false, canEdit: false, locked: false, role, isLoading: false };
+    }
     return { canView: true, canEdit: true, locked: false, role, isLoading: false };
   }
 
