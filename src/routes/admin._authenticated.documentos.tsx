@@ -321,7 +321,7 @@ function CentralDocumentosPage() {
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         expedicoes={expedicoes.map((e) => ({ id: e.id, nome: e.nome }))}
-        reservas={reservas.map((r) => ({ id: r.id, label: `${r.protocolo} — ${r.cliente_nome ?? "—"}` }))}
+        reservas={reservas.map((r) => ({ id: r.id, label: `${r.protocolo} — ${(r.responsavel as { nome?: string } | null)?.nome ?? r.grupo_nome ?? "—"}` }))}
         leads={leads.map((l) => ({ id: l.id, nome: l.nome }))}
         onSaved={() => qc.invalidateQueries({ queryKey: ["admin", "central-docs"] })}
       />
