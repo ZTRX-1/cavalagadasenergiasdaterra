@@ -372,18 +372,24 @@ export async function deleteData(id: string): Promise<void> {
   if (error) throw error;
 }
 
-// ---------- LEADS ----------
+// ---------- LEADS (CRM) ----------
 
-export const LEAD_STATUS = [
-  { id: "novo", label: "Novo lead" },
-  { id: "contato_realizado", label: "Contato realizado" },
-  { id: "negociacao", label: "Em negociação" },
-  { id: "pagamento_pendente", label: "Pagamento pendente" },
-  { id: "confirmado", label: "Confirmado" },
-  { id: "cancelado", label: "Cancelado" },
-  { id: "pos_venda", label: "Pós-venda" },
+/** Etapas do Atendimento — coluna do Kanban e progresso do lead. */
+export const LEAD_ETAPAS = [
+  { id: "novo", label: "Novo", descricao: "Acabou de chegar" },
+  { id: "em_atendimento", label: "Em Atendimento", descricao: "Conversando com a equipe" },
+  { id: "qualificado", label: "Qualificado", descricao: "Tem perfil para a viagem" },
+  { id: "interessado", label: "Interessado", descricao: "Mostrou interesse real" },
+  { id: "pronto_reserva", label: "Pronto pra Reserva", descricao: "Quer fechar" },
+  { id: "encaminhado_financeiro", label: "No Financeiro", descricao: "Aguardando pagamento" },
+  { id: "pago", label: "Pago", descricao: "Reserva confirmada" },
+  { id: "perdido", label: "Perdido", descricao: "Não fechou" },
 ] as const;
-export type LeadStatusId = (typeof LEAD_STATUS)[number]["id"];
+export type LeadEtapaId = (typeof LEAD_ETAPAS)[number]["id"];
+
+// Compat
+export const LEAD_STATUS = LEAD_ETAPAS.map((e) => ({ id: e.id, label: e.label }));
+export type LeadStatusId = LeadEtapaId;
 
 export interface LeadRow {
   id: string;
@@ -397,7 +403,21 @@ export interface LeadRow {
   estado: string | null;
   expedicao_interesse: string | null;
   origem: string | null;
-  status: LeadStatusId;
+  status: string;
+  etapa_atendimento: LeadEtapaId;
+  nivel_interesse: number;
+  lead_score: number;
+  responsavel_id: string | null;
+  resumo_atendimento: string | null;
+  resumo_ia: string | null;
+  proxima_acao: string | null;
+  ultima_interacao_at: string | null;
+  data_interesse: string | null;
+  canal_entrada: string | null;
+  canal_atendimento: string | null;
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
   experiencia_equestre: string | null;
   observacoes_medicas: string | null;
   restricoes_alimentares: string | null;
@@ -428,6 +448,7 @@ export async function createLead(input: Partial<LeadRow>): Promise<LeadRow> {
     const { data: p } = await supabase.rpc("gerar_protocolo_lead");
     protocolo = (p as string | null) ?? null;
   }
+  const etapa = (input.etapa_atendimento ?? "novo") as LeadEtapaId;
   const payload = {
     nome: input.nome ?? "Sem nome",
     email: input.email ?? null,
@@ -439,7 +460,19 @@ export async function createLead(input: Partial<LeadRow>): Promise<LeadRow> {
     estado: input.estado ?? null,
     expedicao_interesse: input.expedicao_interesse ?? null,
     origem: input.origem ?? "manual",
-    status: input.status ?? "novo",
+    status: input.status ?? etapa,
+    etapa_atendimento: etapa,
+    nivel_interesse: input.nivel_interesse ?? 3,
+    lead_score: input.lead_score ?? 0,
+    responsavel_id: input.responsavel_id ?? null,
+    resumo_atendimento: input.resumo_atendimento ?? null,
+    proxima_acao: input.proxima_acao ?? null,
+    data_interesse: input.data_interesse ?? null,
+    canal_entrada: input.canal_entrada ?? null,
+    canal_atendimento: input.canal_atendimento ?? null,
+    utm_source: input.utm_source ?? null,
+    utm_medium: input.utm_medium ?? null,
+    utm_campaign: input.utm_campaign ?? null,
     experiencia_equestre: input.experiencia_equestre ?? null,
     observacoes_medicas: input.observacoes_medicas ?? null,
     restricoes_alimentares: input.restricoes_alimentares ?? null,
@@ -452,13 +485,11 @@ export async function createLead(input: Partial<LeadRow>): Promise<LeadRow> {
   const { data, error } = await supabase.from("leads").insert(payload as never).select().maybeSingle();
   if (error) throw new Error(error.message);
   if (!data) throw new Error("Lead criado mas não retornado (verifique permissões).");
-  await addLeadActivity(data.id, "criacao", `Lead criado · ${data.nome}`);
   await logActivity({ modulo: "leads", acao: "criar", descricao: data.nome });
   return data as unknown as LeadRow;
 }
 
 export async function updateLead(id: string, patch: Partial<LeadRow>): Promise<LeadRow> {
-  const before = await getLead(id);
   const { data, error } = await supabase
     .from("leads")
     .update(patch as never)
@@ -467,22 +498,131 @@ export async function updateLead(id: string, patch: Partial<LeadRow>): Promise<L
     .maybeSingle();
   if (error) throw new Error(error.message);
   if (!data) throw new Error("Lead não encontrado.");
-  if (before && patch.status && before.status !== patch.status) {
-    const labelDe = LEAD_STATUS.find((s) => s.id === before.status)?.label ?? before.status;
-    const labelPara = LEAD_STATUS.find((s) => s.id === patch.status)?.label ?? patch.status;
-    await addLeadActivity(id, "mudanca_status", `${labelDe} → ${labelPara}`);
-  }
   await logActivity({ modulo: "leads", acao: "atualizar", descricao: data.nome });
   return data as unknown as LeadRow;
 }
 
 export async function deleteLead(id: string): Promise<void> {
   await supabase.from("lead_atividades").delete().eq("lead_id", id);
+  await supabase.from("lead_conversas").delete().eq("lead_id", id);
+  await supabase.from("lead_memoria").delete().eq("lead_id", id);
   const { error } = await supabase.from("leads").delete().eq("id", id);
   if (error) throw error;
   await logActivity({ modulo: "leads", acao: "excluir", metadata: { id } });
 }
 
+// ---------- LEAD CONVERSAS (timeline auditável) ----------
+
+export type LeadConversaTipo =
+  | "mensagem_ia"
+  | "mensagem_humana"
+  | "ligacao"
+  | "pagamento"
+  | "contrato"
+  | "alteracao_status"
+  | "observacao_interna"
+  | "email"
+  | "sistema";
+
+export const CONVERSA_TIPOS: Array<{ id: LeadConversaTipo; label: string }> = [
+  { id: "observacao_interna", label: "Observação interna" },
+  { id: "mensagem_humana", label: "Mensagem (humana)" },
+  { id: "ligacao", label: "Ligação" },
+  { id: "email", label: "E-mail" },
+  { id: "contrato", label: "Contrato" },
+  { id: "pagamento", label: "Pagamento" },
+  { id: "mensagem_ia", label: "Mensagem (IA)" },
+];
+
+export interface LeadConversaRow {
+  id: string;
+  lead_id: string;
+  tipo_evento: LeadConversaTipo;
+  conteudo: string | null;
+  metadata: Record<string, unknown>;
+  autor_id: string | null;
+  autor_nome: string | null;
+  direcao: string | null;
+  canal: string | null;
+  created_at: string;
+}
+
+export async function listLeadConversas(leadId: string): Promise<LeadConversaRow[]> {
+  const { data, error } = await supabase
+    .from("lead_conversas")
+    .select("*")
+    .eq("lead_id", leadId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as unknown as LeadConversaRow[];
+}
+
+export async function addLeadConversa(input: {
+  leadId: string;
+  tipo: LeadConversaTipo;
+  conteudo: string;
+  canal?: string | null;
+  direcao?: "entrada" | "saida" | null;
+  metadata?: Record<string, unknown>;
+}): Promise<void> {
+  const autor = await currentUserId();
+  const { error } = await supabase.from("lead_conversas").insert({
+    lead_id: input.leadId,
+    tipo_evento: input.tipo,
+    conteudo: input.conteudo,
+    canal: input.canal ?? null,
+    direcao: input.direcao ?? null,
+    metadata: (input.metadata ?? {}) as never,
+    autor_id: autor,
+  } as never);
+  if (error) throw new Error(error.message);
+}
+
+// ---------- LEAD MEMÓRIA (pronto para IA conversacional) ----------
+
+export interface LeadMemoriaRow {
+  lead_id: string;
+  perfil: string | null;
+  objetivos: string | null;
+  interesses: string | null;
+  restricoes: string | null;
+  expedicoes_favoritas: string[];
+  orcamento: number | null;
+  dados_extraidos: Record<string, unknown>;
+  ultima_atualizacao: string;
+}
+
+export async function getLeadMemoria(leadId: string): Promise<LeadMemoriaRow | null> {
+  const { data, error } = await supabase
+    .from("lead_memoria")
+    .select("*")
+    .eq("lead_id", leadId)
+    .maybeSingle();
+  if (error) throw error;
+  return (data as unknown as LeadMemoriaRow) ?? null;
+}
+
+export async function upsertLeadMemoria(leadId: string, patch: Partial<LeadMemoriaRow>): Promise<void> {
+  const { error } = await supabase
+    .from("lead_memoria")
+    .upsert(
+      {
+        lead_id: leadId,
+        perfil: patch.perfil ?? null,
+        objetivos: patch.objetivos ?? null,
+        interesses: patch.interesses ?? null,
+        restricoes: patch.restricoes ?? null,
+        expedicoes_favoritas: (patch.expedicoes_favoritas ?? []) as never,
+        orcamento: patch.orcamento ?? null,
+        dados_extraidos: (patch.dados_extraidos ?? {}) as never,
+        ultima_atualizacao: new Date().toISOString(),
+      } as never,
+      { onConflict: "lead_id" },
+    );
+  if (error) throw new Error(error.message);
+}
+
+// ---- compat antigo (LeadAtividade) ----
 export interface LeadAtividade {
   id: string;
   lead_id: string;
