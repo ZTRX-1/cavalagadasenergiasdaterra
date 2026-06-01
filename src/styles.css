@@ -500,15 +500,55 @@
   /* Tabelas e wrappers responsivos */
   .admin-table-wrap {
     width: 100%;
+    max-width: 100%;
     overflow-x: auto;
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     border-radius: 12px;
+    overscroll-behavior-x: contain;
   }
   .admin-table-wrap > table { min-width: 640px; }
 
+  /* Scrollbar discreta dentro dos wrappers de tabela */
+  .admin-table-wrap::-webkit-scrollbar { height: 8px; }
+  .admin-table-wrap::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--admin-dourado) 35%, transparent);
+    border-radius: 999px;
+  }
+  .admin-table-wrap::-webkit-scrollbar-track { background: transparent; }
+
   /* Garante que descendentes flex/grid possam encolher dentro do main */
   .admin-surface main, .admin-surface main * { min-width: 0; }
+
+  /* Inputs/selects/textareas nunca extrapolam o container */
+  .admin-surface input,
+  .admin-surface select,
+  .admin-surface textarea {
+    max-width: 100%;
+  }
+
+  /* Imagens/mídia responsivas por padrão dentro do painel */
+  .admin-surface img, .admin-surface video, .admin-surface svg {
+    max-width: 100%;
+    height: auto;
+  }
 }
+
+/* ====== Modais (Radix Dialog) sempre dentro da viewport ====== */
+[role="dialog"][data-state="open"] {
+  max-width: calc(100vw - 1.5rem) !important;
+  max-height: calc(100dvh - 2rem) !important;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+@media (min-width: 640px) {
+  [role="dialog"][data-state="open"] {
+    max-width: min(calc(100vw - 2rem), 42rem) !important;
+  }
+}
+
+/* Popovers/Dropdowns/Selects nunca causam overflow horizontal */
+[data-radix-popper-content-wrapper] { max-width: calc(100vw - 1rem) !important; }
 
 /* Conforto de leitura no mobile */
 @media (max-width: 640px) {
@@ -518,8 +558,25 @@
 
   /* Padding interno suave em containers admin no mobile */
   .admin-card { border-radius: 10px; }
+
+  /* Em telas estreitas, reduzimos min-width das tabelas */
+  .admin-table-wrap > table { min-width: 560px; }
+}
+
+/* Safe areas (notch / Dynamic Island / barra inferior) */
+@supports (padding: max(0px)) {
+  .admin-surface > aside,
+  .admin-surface main {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+  .admin-surface main {
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  }
 }
 
 /* Previne overflow horizontal global */
-html, body { overflow-x: hidden; }
+html, body { overflow-x: hidden; max-width: 100vw; }
+body { overscroll-behavior-y: none; }
+
 
