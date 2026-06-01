@@ -357,6 +357,108 @@ export type Database = {
           },
         ]
       }
+      documentos_central: {
+        Row: {
+          aprovado_em: string | null
+          aprovado_por: string | null
+          arquivo_mime: string | null
+          arquivo_nome: string | null
+          arquivo_tamanho: number | null
+          arquivo_url: string | null
+          categoria: string
+          cliente_email: string | null
+          cliente_nome: string | null
+          created_at: string
+          dados_extraidos: Json
+          descricao: string | null
+          enviado_por: string | null
+          enviado_por_nome: string | null
+          expedicao_id: string | null
+          id: string
+          lead_id: string | null
+          nf_cnpj: string | null
+          nf_data: string | null
+          nf_empresa: string | null
+          nf_numero: string | null
+          nf_valor: number | null
+          observacoes_internas: string | null
+          participante_id: string | null
+          reserva_id: string | null
+          status: string
+          status_processamento: string
+          tags: string[]
+          texto_extraido: string | null
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          aprovado_em?: string | null
+          aprovado_por?: string | null
+          arquivo_mime?: string | null
+          arquivo_nome?: string | null
+          arquivo_tamanho?: number | null
+          arquivo_url?: string | null
+          categoria?: string
+          cliente_email?: string | null
+          cliente_nome?: string | null
+          created_at?: string
+          dados_extraidos?: Json
+          descricao?: string | null
+          enviado_por?: string | null
+          enviado_por_nome?: string | null
+          expedicao_id?: string | null
+          id?: string
+          lead_id?: string | null
+          nf_cnpj?: string | null
+          nf_data?: string | null
+          nf_empresa?: string | null
+          nf_numero?: string | null
+          nf_valor?: number | null
+          observacoes_internas?: string | null
+          participante_id?: string | null
+          reserva_id?: string | null
+          status?: string
+          status_processamento?: string
+          tags?: string[]
+          texto_extraido?: string | null
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          aprovado_em?: string | null
+          aprovado_por?: string | null
+          arquivo_mime?: string | null
+          arquivo_nome?: string | null
+          arquivo_tamanho?: number | null
+          arquivo_url?: string | null
+          categoria?: string
+          cliente_email?: string | null
+          cliente_nome?: string | null
+          created_at?: string
+          dados_extraidos?: Json
+          descricao?: string | null
+          enviado_por?: string | null
+          enviado_por_nome?: string | null
+          expedicao_id?: string | null
+          id?: string
+          lead_id?: string | null
+          nf_cnpj?: string | null
+          nf_data?: string | null
+          nf_empresa?: string | null
+          nf_numero?: string | null
+          nf_valor?: number | null
+          observacoes_internas?: string | null
+          participante_id?: string | null
+          reserva_id?: string | null
+          status?: string
+          status_processamento?: string
+          tags?: string[]
+          texto_extraido?: string | null
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       expedicao_assets: {
         Row: {
           created_at: string
