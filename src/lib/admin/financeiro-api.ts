@@ -53,6 +53,75 @@ export const CATEGORIAS_DESPESA = [
 
 export const STATUS_DESPESA = ["pago", "pendente", "atrasado"] as const;
 export const STATUS_CONTA = ["pendente", "pago", "atrasado", "cancelado"] as const;
+export const TIPOS_CUSTO = ["fixo", "variavel", "comissao"] as const;
+
+export const STATUS_FINANCEIRO = [
+  { id: "aguardando_pagamento", label: "Aguardando pagamento" },
+  { id: "entrada_paga", label: "Entrada paga" },
+  { id: "parcialmente_pago", label: "Parcialmente pago" },
+  { id: "pago_integralmente", label: "Pago integralmente" },
+  { id: "reembolsado", label: "Reembolsado" },
+  { id: "cancelado", label: "Cancelado" },
+] as const;
+
+export const STATUS_OPERACIONAL = [
+  { id: "pre_reserva", label: "Pré-reserva" },
+  { id: "reserva_confirmada", label: "Reserva confirmada" },
+  { id: "participante_confirmado", label: "Participante confirmado" },
+  { id: "participante_embarcado", label: "Participante embarcado" },
+  { id: "expedicao_concluida", label: "Expedição concluída" },
+] as const;
+
+export const TIPOS_PAGAMENTO = ["entrada", "parcela", "final", "reembolso", "ajuste"] as const;
+export const FORMAS_PAGAMENTO = ["pix", "cartao", "transferencia", "dinheiro", "boleto"] as const;
+export const STATUS_PAGAMENTO_NOVO = ["previsto", "confirmado", "estornado", "cancelado"] as const;
+
+export type Pagamento = {
+  id: string;
+  reserva_id: string;
+  expedicao_id: string | null;
+  cliente_nome: string | null;
+  tipo: string;
+  forma: string;
+  valor: number;
+  parcela_atual: number | null;
+  parcela_total: number | null;
+  status: string;
+  data_prevista: string | null;
+  data_pagamento: string | null;
+  comprovante_url: string | null;
+  observacoes: string | null;
+  created_at: string;
+};
+
+export type ReservaHistorico = {
+  id: string;
+  reserva_id: string;
+  tipo: string;
+  descricao: string;
+  valor: number | null;
+  autor_nome: string | null;
+  metadata: Record<string, unknown>;
+  created_at: string;
+};
+
+export type ExpedicaoIndicador = {
+  expedicao_id: string;
+  expedicao_nome: string;
+  slug: string;
+  vagas_totais: number;
+  vagas_ocupadas: number;
+  vagas_disponiveis: number;
+  receita_prevista: number;
+  receita_recebida: number;
+  valor_pendente: number;
+  custos_previstos: number;
+  custos_realizados: number;
+  lucro_estimado: number;
+  lucro_realizado: number;
+  participantes_confirmados: number;
+  participantes_pendentes: number;
+};
 
 // ----- Despesas
 export async function listDespesas(range?: { from: string; to: string }): Promise<Despesa[]> {
