@@ -54,7 +54,7 @@ import {
   type DocumentoCentral,
 } from "@/lib/admin/central-docs-api";
 import { listExpedicoes, listReservas, listLeads } from "@/lib/admin/api";
-import { fmtDate } from "@/lib/format";
+const fmtDate = (iso: string) => new Date(iso).toLocaleDateString("pt-BR");
 
 export const Route = createFileRoute("/admin/_authenticated/documentos")({
   component: CentralDocumentosPage,
