@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { buildReservaWhatsappUrl } from "@/lib/whatsapp";
+import { consultarReservaPorProtocolo } from "@/lib/pre-reserva.functions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/minha-reserva")({
@@ -28,6 +30,7 @@ type Reserva = {
 function MinhaReserva() {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
+  const consultar = useServerFn(consultarReservaPorProtocolo);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<Reserva | null>(null);
   const [searched, setSearched] = useState(false);
@@ -51,17 +54,35 @@ function MinhaReserva() {
     }
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const value = (inputRef.current?.value ?? "").trim().toUpperCase();
     if (!value) return;
     setLoading(true);
     setSearched(true);
     try {
-      const stored = localStorage.getItem(`cet.reserva.${value}`);
-      setResult(stored ? (JSON.parse(stored) as Reserva) : null);
+      const remote = await consultar({ data: { protocolo: value } });
+      if (remote) {
+        setResult({
+          protocolo: remote.protocolo,
+          expedicao_nome: remote.expedicao_nome,
+          data_label: remote.data_label,
+          quantidade_participantes: remote.quantidade_participantes,
+          nome_responsavel: remote.nome_responsavel,
+          status: remote.status,
+        });
+      } else {
+        // fallback: reserva apenas local (offline / cache)
+        const stored = localStorage.getItem(`cet.reserva.${value}`);
+        setResult(stored ? (JSON.parse(stored) as Reserva) : null);
+      }
     } catch {
-      setResult(null);
+      try {
+        const stored = localStorage.getItem(`cet.reserva.${value}`);
+        setResult(stored ? (JSON.parse(stored) as Reserva) : null);
+      } catch {
+        setResult(null);
+      }
     } finally {
       setLoading(false);
     }
@@ -74,7 +95,7 @@ function MinhaReserva() {
         <h1 className="mt-4 font-display text-5xl text-balance md:text-6xl">{t("minhaReserva.title")}</h1>
         <p className="mt-4 text-muted-foreground text-pretty">
           {t("minhaReserva.intro")}{" "}
-          <code className="font-mono text-foreground">CET-2026-001</code>
+          <code className="font-mono text-foreground">CET-2026-K7M9QX</code>
         </p>
 
         <form onSubmit={handleSubmit} className="mt-10 flex flex-col gap-3 sm:flex-row">
