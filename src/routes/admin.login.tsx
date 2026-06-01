@@ -82,8 +82,9 @@ function AdminLoginPage() {
           src={loginHero}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover opacity-90"
+          className="absolute inset-0 h-full w-full object-cover object-[center_70%] opacity-95 lg:object-center"
         />
+
         {/* Overlays — escurece na base e funde com o lado direito (desktop) */}
         <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--admin-carvao)] via-[color:var(--admin-carvao)]/30 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-[color:var(--admin-carvao)]/35 lg:to-[color:var(--admin-carvao)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_transparent_55%,_color-mix(in_oklab,var(--admin-carvao)_75%,transparent)_100%)]" />
