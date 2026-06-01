@@ -205,10 +205,11 @@ function AdminLoginPage() {
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)] transition-colors hover:text-[color:var(--admin-dourado-glow)]"
+                  className="shrink-0 text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)] transition-colors hover:text-[color:var(--admin-dourado-glow)]"
                 >
-                  Esqueci
+                  Esqueci a senha
                 </button>
+
               </div>
               <input
                 id="login-password"
