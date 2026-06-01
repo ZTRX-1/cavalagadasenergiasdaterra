@@ -30,6 +30,7 @@ type Reserva = {
 function MinhaReserva() {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
+  const consultar = useServerFn(consultarReservaPorProtocolo);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<Reserva | null>(null);
   const [searched, setSearched] = useState(false);
@@ -53,17 +54,35 @@ function MinhaReserva() {
     }
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const value = (inputRef.current?.value ?? "").trim().toUpperCase();
     if (!value) return;
     setLoading(true);
     setSearched(true);
     try {
-      const stored = localStorage.getItem(`cet.reserva.${value}`);
-      setResult(stored ? (JSON.parse(stored) as Reserva) : null);
+      const remote = await consultar({ data: { protocolo: value } });
+      if (remote) {
+        setResult({
+          protocolo: remote.protocolo,
+          expedicao_nome: remote.expedicao_nome,
+          data_label: remote.data_label,
+          quantidade_participantes: remote.quantidade_participantes,
+          nome_responsavel: remote.nome_responsavel,
+          status: remote.status,
+        });
+      } else {
+        // fallback: reserva apenas local (offline / cache)
+        const stored = localStorage.getItem(`cet.reserva.${value}`);
+        setResult(stored ? (JSON.parse(stored) as Reserva) : null);
+      }
     } catch {
-      setResult(null);
+      try {
+        const stored = localStorage.getItem(`cet.reserva.${value}`);
+        setResult(stored ? (JSON.parse(stored) as Reserva) : null);
+      } catch {
+        setResult(null);
+      }
     } finally {
       setLoading(false);
     }
