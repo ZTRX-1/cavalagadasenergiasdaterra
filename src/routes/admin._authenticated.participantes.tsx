@@ -127,7 +127,7 @@ function ParticipantesPage() {
       ) : (
         <>
           {/* Tabela — desktop */}
-          <div className="admin-card overflow-x-auto p-0 hidden md:block">
+          <div className="admin-card admin-table-wrap p-0 hidden md:block">
             <table className="w-full text-left text-sm min-w-[720px]">
               <thead className="bg-[color:var(--admin-carvao-deep)]/60 text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
                 <tr>
