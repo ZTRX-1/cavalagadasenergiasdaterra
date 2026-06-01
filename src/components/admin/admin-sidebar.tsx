@@ -18,10 +18,20 @@ import {
   Lock,
   UserCog,
   ShieldCheck,
+  User as UserIcon,
+  ChevronUp,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logoCavalgadas from "@/assets/logo-cavalgadas.jpg";
 import { useCan, type AdminModule } from "@/hooks/use-permissions";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type NavItem = {
   to: string;
