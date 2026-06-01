@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { buildReservaWhatsappUrl } from "@/lib/whatsapp";
+import { consultarReservaPorProtocolo } from "@/lib/pre-reserva.functions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/minha-reserva")({
