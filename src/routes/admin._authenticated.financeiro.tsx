@@ -358,6 +358,19 @@ function DespesaDialog({ despesa, onClose, onSaved }: { despesa: Despesa | null;
             </AdminField>
             <AdminField label="Fornecedor"><input className="admin-input" value={form.fornecedor} onChange={(e) => setForm({ ...form, fornecedor: e.target.value })} /></AdminField>
           </div>
+          <div className="grid grid-cols-2 gap-3">
+            <AdminField label="Tipo de custo">
+              <select className="admin-input" value={form.tipo_custo} onChange={(e) => setForm({ ...form, tipo_custo: e.target.value })}>
+                {TIPOS_CUSTO.map((t) => <option key={t} value={t} className="capitalize">{t}</option>)}
+              </select>
+            </AdminField>
+            <AdminField label="Natureza">
+              <select className="admin-input" value={form.previsto ? "previsto" : "realizado"} onChange={(e) => setForm({ ...form, previsto: e.target.value === "previsto" })}>
+                <option value="realizado">Já realizado</option>
+                <option value="previsto">Previsto (ainda não pago)</option>
+              </select>
+            </AdminField>
+          </div>
           <AdminField label="Observações"><textarea className="admin-input min-h-[60px]" value={form.observacoes} onChange={(e) => setForm({ ...form, observacoes: e.target.value })} /></AdminField>
           <div className="flex justify-end gap-2 pt-2">
             <button className="admin-btn-ghost" onClick={onClose}>Cancelar</button>
