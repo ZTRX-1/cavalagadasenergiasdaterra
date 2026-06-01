@@ -256,7 +256,7 @@ function CargoEditor({
             </p>
           </div>
         </div>
-        <div className="overflow-x-auto">
+        <div className="admin-table-wrap">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[color:var(--admin-borda)] text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">
