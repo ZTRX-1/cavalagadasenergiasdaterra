@@ -169,16 +169,39 @@ function ReservaPage() {
   const onSubmit = form.handleSubmit(async (values) => {
     setSubmitting(true);
     try {
+      const dt = datas.find((d) => d.id === values.data_id);
+      const dataLabel = dt ? formatDateRange(dt.data_inicio, dt.data_fim) : "";
+
+      const resp = await enviarPreReserva({
+        data: {
+          expedicao_id: expedicao.id,
+          expedicao_nome: expedicao.nome,
+          data_id: values.data_id,
+          data_label: dataLabel,
+          data_inicio: dt?.data_inicio,
+          data_fim: dt?.data_fim,
+          preco_unitario: expedicao.preco,
+          moeda: expedicao.moeda,
+          responsavel: values.responsavel,
+          participantes: values.participantes,
+          adicionais: values.adicionais,
+          aceites: values.aceites,
+        },
+      });
+
       const res = {
-        protocolo,
+        protocolo: resp.protocolo,
         expedicao_nome: expedicao.nome,
         quantidade_participantes: values.participantes.length,
         nome_responsavel: values.responsavel.nome,
       };
-      localStorage.setItem(`cet.reserva.${protocolo}`, JSON.stringify({ ...res, data_label: datas.find((d) => d.id === values.data_id) ? formatDateRange(datas.find((d) => d.id === values.data_id)!.data_inicio, datas.find((d) => d.id === values.data_id)!.data_fim) : "", status: "pre_reserva_enviada", created_at: new Date().toISOString() }));
+      try {
+        localStorage.setItem(
+          `cet.reserva.${resp.protocolo}`,
+          JSON.stringify({ ...res, data_label: dataLabel, status: "pre_reserva_enviada", created_at: new Date().toISOString() }),
+        );
+      } catch { /* noop */ }
       setSubmitted(res);
-      const dt = datas.find((d) => d.id === values.data_id);
-      const dataLabel = dt ? formatDateRange(dt.data_inicio, dt.data_fim) : "";
       const waUrl = buildReservaWhatsappUrl({
         nomeResponsavel: res.nome_responsavel,
         expedicaoNome: res.expedicao_nome,
