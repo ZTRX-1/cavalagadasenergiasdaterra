@@ -253,7 +253,7 @@ function CentralDocumentosPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="font-medium text-[color:var(--admin-cinza-1)] truncate">{d.titulo}</span>
-                        {statusInfo && <AdminStatusBadge tone={statusInfo.tone}>{statusInfo.label}</AdminStatusBadge>}
+                        {statusInfo && <StatusBadge status={statusInfo.id} />}
                         {d.status_processamento !== "pendente" && (
                           <span className="inline-flex items-center gap-1 rounded-full bg-[color:var(--admin-petroleo)]/40 px-2 py-0.5 text-[10px] text-[color:var(--admin-cinza-2)]">
                             <Sparkles className="h-3 w-3" /> IA: {d.status_processamento}
