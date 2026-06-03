@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Save, Star, Trash2, ChevronUp, ChevronDown, Plus, ExternalLink, CheckCircle2, Circle } from "lucide-react";
+import { ArrowLeft, Save, Star, Trash2, ChevronUp, ChevronDown, Plus, ExternalLink, CheckCircle2, Circle, CalendarDays } from "lucide-react";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
@@ -734,27 +734,31 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
   const [local, setLocal] = useState({
     data_inicio: data.data_inicio ?? "",
     data_fim: data.data_fim ?? "",
-    vagas_total: data.vagas_total?.toString() ?? "0",
-    vagas_disponiveis: data.vagas_disponiveis?.toString() ?? "0",
+    vagas_total: data.vagas_total != null ? String(data.vagas_total) : "",
+    vagas_disponiveis: data.vagas_disponiveis != null ? String(data.vagas_disponiveis) : "",
     preco_pix: data.preco_pix != null ? String(data.preco_pix) : "",
     preco_cartao: data.preco_cartao != null ? String(data.preco_cartao) : "",
   });
+  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
+    if (editing) return;
     setLocal({
       data_inicio: data.data_inicio ?? "",
       data_fim: data.data_fim ?? "",
-      vagas_total: data.vagas_total?.toString() ?? "0",
-      vagas_disponiveis: data.vagas_disponiveis?.toString() ?? "0",
+      vagas_total: data.vagas_total != null ? String(data.vagas_total) : "",
+      vagas_disponiveis: data.vagas_disponiveis != null ? String(data.vagas_disponiveis) : "",
       preco_pix: data.preco_pix != null ? String(data.preco_pix) : "",
       preco_cartao: data.preco_cartao != null ? String(data.preco_cartao) : "",
     });
-  }, [data.id, data.data_inicio, data.data_fim, data.vagas_total, data.vagas_disponiveis, data.preco_pix, data.preco_cartao]);
+  }, [editing, data.id, data.data_inicio, data.data_fim, data.vagas_total, data.vagas_disponiveis, data.preco_pix, data.preco_cartao]);
 
-  const commit = (patch: Partial<DataRowRecord>) => { void onSave(patch); };
+  const commit = (patch: Partial<DataRowRecord>) => { setEditing(false); void onSave(patch); };
   const total = Number(local.vagas_total) || 0;
   const disp = Number(local.vagas_disponiveis) || 0;
   const dispOver = disp > total;
+  const onlyDigits = (value: string) => value.replace(/\D/g, "");
+  const moneyValue = (value: string) => value.replace(/[^0-9,\.]/g, "").replace(/,/g, ".").replace(/(\..*)\./g, "$1");
 
   const Lbl = ({ children }: { children: React.ReactNode }) => (
     <span className="block text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] mb-1">{children}</span>
@@ -765,22 +769,18 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
         <div>
           <Lbl>Início</Lbl>
-          <input
-            type="date"
-            className="admin-input admin-input-date w-full"
+          <DateField
             value={local.data_inicio}
-            onChange={(e) => setLocal((s) => ({ ...s, data_inicio: e.target.value }))}
-            onBlur={(e) => { if (e.target.value && e.target.value !== data.data_inicio) commit({ data_inicio: e.target.value }); }}
+            onChange={(value) => { setEditing(true); setLocal((s) => ({ ...s, data_inicio: value })); }}
+            onCommit={(value) => { if (value && value !== data.data_inicio) commit({ data_inicio: value }); else setEditing(false); }}
           />
         </div>
         <div>
           <Lbl>Fim</Lbl>
-          <input
-            type="date"
-            className="admin-input admin-input-date w-full"
+          <DateField
             value={local.data_fim}
-            onChange={(e) => setLocal((s) => ({ ...s, data_fim: e.target.value }))}
-            onBlur={(e) => { if (e.target.value && e.target.value !== data.data_fim) commit({ data_fim: e.target.value }); }}
+            onChange={(value) => { setEditing(true); setLocal((s) => ({ ...s, data_fim: value })); }}
+            onCommit={(value) => { if (value && value !== data.data_fim) commit({ data_fim: value }); else setEditing(false); }}
           />
         </div>
         <div>
@@ -791,8 +791,10 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
             pattern="[0-9]*"
             className="admin-input w-full"
             value={local.vagas_total}
-            onChange={(e) => setLocal((s) => ({ ...s, vagas_total: e.target.value.replace(/[^0-9]/g, "") }))}
+            onFocus={() => setEditing(true)}
+            onChange={(e) => setLocal((s) => ({ ...s, vagas_total: onlyDigits(e.target.value) }))}
             onBlur={(e) => {
+              setEditing(false);
               const v = e.target.value === "" ? 0 : Number(e.target.value);
               if (v !== data.vagas_total) commit({ vagas_total: v });
             }}
@@ -806,8 +808,10 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
             pattern="[0-9]*"
             className={`admin-input w-full ${dispOver ? "ring-1 ring-amber-400/60" : ""}`}
             value={local.vagas_disponiveis}
-            onChange={(e) => setLocal((s) => ({ ...s, vagas_disponiveis: e.target.value.replace(/[^0-9]/g, "") }))}
+            onFocus={() => setEditing(true)}
+            onChange={(e) => setLocal((s) => ({ ...s, vagas_disponiveis: onlyDigits(e.target.value) }))}
             onBlur={(e) => {
+              setEditing(false);
               const v = e.target.value === "" ? 0 : Number(e.target.value);
               if (v !== data.vagas_disponiveis) commit({ vagas_disponiveis: v });
             }}
@@ -820,8 +824,10 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
             inputMode="decimal"
             className="admin-input w-full"
             value={local.preco_pix}
-            onChange={(e) => setLocal((s) => ({ ...s, preco_pix: e.target.value.replace(/[^0-9.,]/g, "").replace(",", ".") }))}
+            onFocus={() => setEditing(true)}
+            onChange={(e) => setLocal((s) => ({ ...s, preco_pix: moneyValue(e.target.value) }))}
             onBlur={(e) => {
+              setEditing(false);
               const v = e.target.value === "" ? null : Number(e.target.value);
               if (v !== data.preco_pix) commit({ preco_pix: v });
             }}
@@ -834,8 +840,10 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
             inputMode="decimal"
             className="admin-input w-full"
             value={local.preco_cartao}
-            onChange={(e) => setLocal((s) => ({ ...s, preco_cartao: e.target.value.replace(/[^0-9.,]/g, "").replace(",", ".") }))}
+            onFocus={() => setEditing(true)}
+            onChange={(e) => setLocal((s) => ({ ...s, preco_cartao: moneyValue(e.target.value) }))}
             onBlur={(e) => {
+              setEditing(false);
               const v = e.target.value === "" ? null : Number(e.target.value);
               if (v !== data.preco_cartao) commit({ preco_cartao: v });
             }}
@@ -850,6 +858,22 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
           <Trash2 className="h-3.5 w-3.5" /> Remover data
         </button>
       </div>
+    </div>
+  );
+}
+
+function DateField({ value, onChange, onCommit }: { value: string; onChange: (value: string) => void; onCommit: (value: string) => void }) {
+  return (
+    <div className="relative">
+      <input
+        type="date"
+        className="admin-input admin-input-date w-full pr-10"
+        value={value}
+        onFocus={() => onChange(value)}
+        onChange={(e) => onChange(e.target.value)}
+        onBlur={(e) => onCommit(e.target.value)}
+      />
+      <CalendarDays className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--admin-dourado-glow)]" strokeWidth={1.7} />
     </div>
   );
 }
