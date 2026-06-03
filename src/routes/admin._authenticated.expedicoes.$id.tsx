@@ -732,8 +732,8 @@ type DataRowRecord = Awaited<ReturnType<typeof listDatas>>[number];
 
 function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (patch: Partial<DataRowRecord>) => Promise<unknown>; onDelete: () => void | Promise<void> }) {
   const [local, setLocal] = useState({
-    data_inicio: data.data_inicio ?? "",
-    data_fim: data.data_fim ?? "",
+    data_inicio: isoToBrDate(data.data_inicio),
+    data_fim: isoToBrDate(data.data_fim),
     vagas_total: data.vagas_total != null ? String(data.vagas_total) : "",
     vagas_disponiveis: data.vagas_disponiveis != null ? String(data.vagas_disponiveis) : "",
     preco_pix: data.preco_pix != null ? String(data.preco_pix) : "",
@@ -744,8 +744,8 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
   useEffect(() => {
     if (editing) return;
     setLocal({
-      data_inicio: data.data_inicio ?? "",
-      data_fim: data.data_fim ?? "",
+      data_inicio: isoToBrDate(data.data_inicio),
+      data_fim: isoToBrDate(data.data_fim),
       vagas_total: data.vagas_total != null ? String(data.vagas_total) : "",
       vagas_disponiveis: data.vagas_disponiveis != null ? String(data.vagas_disponiveis) : "",
       preco_pix: data.preco_pix != null ? String(data.preco_pix) : "",
@@ -772,7 +772,10 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
           <DateField
             value={local.data_inicio}
             onChange={(value) => { setEditing(true); setLocal((s) => ({ ...s, data_inicio: value })); }}
-            onCommit={(value) => { if (value && value !== data.data_inicio) commit({ data_inicio: value }); else setEditing(false); }}
+            onCommit={(value) => {
+              const iso = brToIsoDate(value);
+              if (iso && iso !== data.data_inicio) commit({ data_inicio: iso }); else setEditing(false);
+            }}
           />
         </div>
         <div>
@@ -780,7 +783,10 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
           <DateField
             value={local.data_fim}
             onChange={(value) => { setEditing(true); setLocal((s) => ({ ...s, data_fim: value })); }}
-            onCommit={(value) => { if (value && value !== data.data_fim) commit({ data_fim: value }); else setEditing(false); }}
+            onCommit={(value) => {
+              const iso = brToIsoDate(value);
+              if (iso && iso !== data.data_fim) commit({ data_fim: iso }); else setEditing(false);
+            }}
           />
         </div>
         <div>
