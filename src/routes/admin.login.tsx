@@ -82,54 +82,31 @@ function AdminLoginPage() {
           src={loginHero}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover object-[center_58%] opacity-100 lg:object-[center_55%]"
+          className="absolute inset-0 h-full w-full object-cover object-[center_72%] opacity-100 lg:object-[center_70%]"
         />
 
         {/* Overlays — escurece na base e funde com o lado direito (desktop) */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--admin-carvao)] via-[color:var(--admin-carvao)]/30 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-[color:var(--admin-carvao)]/35 lg:to-[color:var(--admin-carvao)]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--admin-carvao)] via-[color:var(--admin-carvao)]/45 to-[color:var(--admin-carvao)]/20 lg:bg-gradient-to-r lg:from-transparent lg:via-[color:var(--admin-carvao)]/40 lg:to-[color:var(--admin-carvao)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_transparent_55%,_color-mix(in_oklab,var(--admin-carvao)_75%,transparent)_100%)]" />
 
-        {/* Conteúdo institucional */}
+        {/* Marca tipográfica discreta — sem revelar a natureza do sistema */}
         <div className="relative z-10 mx-auto w-full max-w-[520px] px-6 pb-7 pt-10 text-center lg:px-12 lg:py-16 lg:text-left">
           <div className="mb-6 inline-flex items-center gap-3">
             <span className="inline-block h-px w-8 bg-[color:var(--admin-dourado)] opacity-80" />
             <span className="text-[10px] uppercase tracking-[0.34em] text-[color:var(--admin-dourado-glow)]">
-
-              Cavalgadas Energias da Terra
+              Sistema interno
             </span>
           </div>
 
-          <h1 className="font-display text-[40px] leading-[1.02] text-[color:var(--admin-cinza-1)] lg:text-[58px] xl:text-[64px]">
-            <em className="italic text-[color:var(--admin-dourado-glow)]">Energias</em> da Terra
+          <h1 className="font-display text-[34px] leading-[1.05] text-[color:var(--admin-cinza-1)] lg:text-[46px] xl:text-[52px]">
+            Cavalgadas <em className="italic text-[color:var(--admin-dourado-glow)]">Energias da Terra</em>
           </h1>
 
-          <p className="mt-5 max-w-md text-[14px] leading-relaxed text-[color:var(--admin-cinza-2)] lg:text-[15px] mx-auto lg:mx-0">
-            Painel operacional das expedições — onde a equipe orquestra reservas,
-            participantes, contratos e a logística por trás de cada cavalgada.
-          </p>
-
-          {/* Pilares — escondidos no mobile para não competir com o form */}
-          <ul className="mt-10 hidden space-y-3 lg:block">
-            {[
-              { n: "01", t: "Expedições selecionadas", d: "Curadoria fina, do Pampa ao Cerrado." },
-              { n: "02", t: "Operação consolidada", d: "Reservas, pagamentos e participantes em um só lugar." },
-              { n: "03", t: "Painel da equipe", d: "Acesso restrito, segregado por cargo e responsabilidade." },
-            ].map((p) => (
-              <li
-                key={p.n}
-                className="flex items-start gap-4 rounded-md border-l border-[color:var(--admin-borda-strong)] bg-[color:var(--admin-carvao)]/55 px-4 py-3 backdrop-blur-sm"
-              >
-                <span className="font-display text-[18px] text-[color:var(--admin-dourado-glow)]">{p.n}</span>
-                <div className="min-w-0">
-                  <div className="text-[13px] font-medium uppercase tracking-[0.16em] text-[color:var(--admin-cinza-1)]">
-                    {p.t}
-                  </div>
-                  <div className="mt-1 text-[12.5px] text-[color:var(--admin-cinza-2)]">{p.d}</div>
-                </div>
-              </li>
-            ))}
-          </ul>
-
+          <div className="mt-6 inline-flex items-center gap-3 text-[10.5px] uppercase tracking-[0.28em] text-[color:var(--admin-cinza-3)]">
+            <span>Ambiente restrito</span>
+            <span className="opacity-40">·</span>
+            <span>Acesso autorizado</span>
+          </div>
         </div>
       </aside>
 
@@ -168,7 +145,7 @@ function AdminLoginPage() {
               Acesso ao painel
             </h2>
             <p className="mt-2 text-[13.5px] leading-relaxed text-[color:var(--admin-cinza-3)]">
-              Bem-vindo de volta. Insira suas credenciais para gerenciar as experiências da operação.
+              Insira suas credenciais para acessar o sistema interno.
             </p>
           </header>
 
@@ -274,7 +251,7 @@ function AdminLoginPage() {
 
           <footer className="mt-10 border-t border-[color:var(--admin-borda)] pt-5">
             <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[9.5px] uppercase tracking-[0.26em] text-[color:var(--admin-cinza-3)]">
-              <span>Criptografia 256-bit</span>
+              <span>Sistema altamente criptografado</span>
               <span className="hidden opacity-30 sm:inline">·</span>
               <span>Acesso monitorado</span>
               <span className="hidden opacity-30 sm:inline">·</span>
