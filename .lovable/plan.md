@@ -1,50 +1,53 @@
-## Diagnóstico
+## Refinar tela de login (`/admin/login`) — sofisticação e sigilo
 
-- O backend está saudável, mas `leads`, `reservas` e `webhooks_eventos` estão vazios: o teste que você fez não chegou no banco.
-- O preview quebrou por erro no navegador: `AsyncLocalStorage is not a constructor` vindo de `@tanstack/react-start` no bundle client.
-- A causa provável é que a página pública de pré-reserva passou a importar `useServerFn` / `createServerFn`, e isso colocou código de servidor no pacote do navegador nesta configuração atual do projeto.
-- Também vi que os triggers de `lead_criado` e `reserva_criada` não existem no banco, apesar das funções estarem definidas. Então mesmo que inserisse, os eventos internos de automação não seriam criados automaticamente hoje.
+Atualizar **somente** `src/routes/admin.login.tsx`. Sem mudanças em backend, rotas ou outros arquivos.
 
-## Plano de correção
+### 1. Lado esquerdo (institucional) — remover qualquer pista do que é o sistema
 
-### 1. Destravar o preview e o site
-- Remover o uso de `@tanstack/react-start` do lado do navegador na pré-reserva e em “Minha Reserva”.
-- Trocar esse caminho por rotas HTTP internas em `/api/public/...`, que são próprias para chamadas públicas de formulário.
-- Assim o formulário volta a carregar sem quebrar a tela branca.
+- Remover o eyebrow `CAVALGADAS ENERGIAS DA TERRA`.
+- Remover o título `Energias da Terra`.
+- Remover o parágrafo `Painel operacional das expedições — onde a equipe orquestra reservas, participantes, contratos e a logística por trás de cada cavalgada.`
+- Remover a lista dos 3 pilares (`Expedições selecionadas`, `Operação consolidada`, `Painel da equipe`).
+- Substituir por uma marca tipográfica discreta e sofisticada, sem revelar o produto:
+  - Eyebrow fino: `SISTEMA INTERNO` (dourado, tracking alto).
+  - Marca: `Cavalgadas Energias da Terra` em display serif (apenas o nome da casa, sem descrever função).
+  - Linha sutil de assinatura: `Ambiente restrito · Acesso autorizado`.
+- Manter a foto de fundo (`loginHero`) e os overlays atuais.
 
-### 2. Criar endpoints públicos controlados para pré-reserva
-- Criar um endpoint para envio da pré-reserva, por exemplo `/api/public/pre-reserva`.
-- Criar um endpoint para consulta por protocolo, por exemplo `/api/public/reserva-status`.
-- Ambos terão validação forte dos campos com Zod.
-- O endpoint de envio usará o backend com permissão segura de servidor para gravar em `leads` e `reservas`, sem abrir permissão pública direta nas tabelas.
+### 2. Posição do cavalo na imagem de fundo
 
-### 3. Fazer a pré-reserva virar lead e reserva real
-- No envio do formulário `/reserva/$slug`, gravar:
-  - um registro em `leads` com `origem = pre_reserva_site`, `status = pronto_reserva`, `etapa_atendimento = pronto_reserva`, `lead_score = 80`;
-  - um registro em `reservas` vinculado ao lead, com `status = pre_reserva_enviada`, `status_operacional = pre_reserva`, `status_financeiro = aguardando_pagamento`.
-- Manter a página oculta da navegação pública. Não vou criar botão/link público para ela.
+- Hoje a imagem usa `object-[center_58%]` (mobile) e `object-[center_55%]` (desktop), o que empurra o cavalo para baixo do viewport.
+- Ajustar para `object-[center_72%]` / `lg:object-[center_70%]` (subir o enquadramento) para que a silhueta do cavalo e o horizonte fiquem visíveis e centralizados verticalmente no painel.
+- Reforçar levemente o gradiente inferior para manter a legibilidade da marca tipográfica acima.
 
-### 4. Corrigir protocolo seguro
-- Manter o protocolo no banco como `CET-ANO-TOKEN`, com token aleatório sem caracteres ambíguos.
-- Garantir unicidade contra `reservas` antes de salvar.
-- Não usar sequência tipo `001`, `002`, etc.
+### 3. Lado direito (formulário) — copy mais sóbrio
 
-### 5. Reativar eventos internos de automação
-- Criar os triggers que chamam as funções existentes:
-  - ao criar lead: gerar evento `lead_criado` em `webhooks_eventos`;
-  - ao criar reserva: gerar histórico e evento `reserva_criada` em `webhooks_eventos`.
-- Isso deixa a automação futura consumindo os eventos certos.
+- Manter o bloco de logo + “Painel interno / Cavalgadas”.
+- Título: manter `Acesso ao painel`.
+- Subtítulo: trocar
+  - de: `Bem-vindo de volta. Insira suas credenciais para gerenciar as experiências da operação.`
+  - para: `Insira suas credenciais para acessar o sistema interno.`
+- Labels, inputs, checkbox `Manter conectado nesta sessão` e botão `Entrar no sistema` permanecem.
 
-### 6. Ajustar o painel interno se necessário
-- Conferir se `/admin/leads` lista o lead criado.
-- Conferir se `/admin/reservas` lista a reserva criada.
-- Se houver filtro/etapa escondendo `pronto_reserva`, ajustar a visualização para mostrar esse lead claramente.
+### 4. Rodapé do formulário — selos institucionais
 
-### 7. Validar com um teste real
-- Fazer uma submissão de pré-reserva com dados fictícios realistas.
-- Confirmar no banco que criou:
-  - `leads`;
-  - `reservas`;
-  - `webhooks_eventos`.
-- Confirmar que o protocolo gerado não é sequencial.
-- Confirmar que a consulta em `/minha-reserva` busca pelo banco, não só pelo `localStorage`.
+Substituir os 3 selos:
+- `Criptografia 256-bit` → `Sistema altamente criptografado`
+- `Acesso monitorado` → mantém `Acesso monitorado`
+- `Suporte interno` → mantém `Suporte interno`
+
+(Mesmo estilo tipográfico atual: uppercase, tracking largo, cinza discreto.)
+
+### 5. Validações
+
+- Desktop (split 50/50): cavalo visível, sem textos descritivos, marca tipográfica centralizada à esquerda.
+- Mobile (imagem no topo, form abaixo): cavalo aparece no enquadramento superior, marca discreta sobreposta, form intacto.
+- Nenhuma alteração de lógica de auth, i18n, rotas ou tokens de design.
+
+### Resumo técnico
+
+Arquivo único: `src/routes/admin.login.tsx`
+- Remoção do `<ul>` de pilares e dos textos descritivos no `<aside>`.
+- Substituição do bloco de conteúdo institucional por marca tipográfica neutra.
+- Ajuste das classes `object-position` no `<img>` de fundo.
+- Atualização de 2 strings de copy (subtítulo + 1 selo do rodapé).
