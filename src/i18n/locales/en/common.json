@@ -150,7 +150,8 @@
       { "q": "What is the lodging like?", "a": "We work with carefully selected inns, hotels and local accommodations chosen according to the itinerary and region, ensuring comfort, authenticity and quality in every experience." },
       { "q": "Can I book a private expedition?", "a": "Yes. We design private, personalized experiences developed around the interests, pace and profile of each group." },
       { "q": "Who can join the expeditions?", "a": "Anyone in good health and within each expedition's requirements (age and weight). We have itineraries for every level." },
-      { "q": "Are the horses trained?", "a": "Yes. All horses are trained, rested between expeditions and accompanied by a professional team." }
+      { "q": "Are the horses trained?", "a": "Yes. All horses are trained, rested between expeditions and accompanied by a professional team." },
+      { "q": "Is there a minimum age to join the expeditions?", "a": "Yes. The recommended minimum age is 8 years old, provided the child is accompanied by a responsible adult and meets the specific requirements of each expedition. If you have any doubts, our team can advise on the most suitable experience." }
     ]
   },
   "ctaFinal": {
