@@ -44,11 +44,11 @@ export function AdminTopbar({ onOpenMenu }: { onOpenMenu?: () => void }) {
 
       <div className="ml-auto flex shrink-0 items-center gap-2 md:gap-3">
         <div className="relative hidden lg:block">
-          <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[color:var(--admin-cinza-3)]" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--admin-cinza-3)]" />
           <input
             type="search"
             placeholder="Buscar reservas, leads, expedições…"
-            className="admin-input h-9 w-[280px] xl:w-[320px] pl-10 pr-3 text-[13px]"
+            className="admin-input h-9 w-[280px] xl:w-[320px] pl-11 pr-3 text-[13px] leading-none placeholder:text-[12px] placeholder:leading-none"
           />
         </div>
         <NotificationsCenter />
