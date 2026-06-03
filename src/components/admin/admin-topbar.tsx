@@ -48,7 +48,7 @@ export function AdminTopbar({ onOpenMenu }: { onOpenMenu?: () => void }) {
           <input
             type="search"
             placeholder="Buscar reservas, leads, expedições…"
-            className="admin-input h-9 w-[280px] xl:w-[320px] pl-11 pr-3 text-[13px] leading-none placeholder:text-[12px] placeholder:leading-none"
+            className="admin-input admin-search-input h-9 w-[280px] xl:w-[320px] text-[13px] placeholder:text-[12px]"
           />
         </div>
         <NotificationsCenter />
