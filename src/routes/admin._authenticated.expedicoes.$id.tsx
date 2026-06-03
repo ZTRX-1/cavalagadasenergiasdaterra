@@ -144,6 +144,14 @@ function ExpedicaoEdit() {
                 <ExternalLink className="h-4 w-4" /> Ver página pública
               </a>
             )}
+            <button
+              type="button"
+              className="admin-btn-ghost lg:hidden"
+              onClick={() => setPreviewOpen(true)}
+              title="Ver preview ao vivo"
+            >
+              <Eye className="h-4 w-4" /> Preview
+            </button>
             <button className="admin-btn-ghost" onClick={() => saveMut.mutate({ ...form, status: "rascunho" })}>
               Salvar rascunho
             </button>
