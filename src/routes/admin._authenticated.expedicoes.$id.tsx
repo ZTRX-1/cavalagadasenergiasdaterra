@@ -727,3 +727,129 @@ function CapaEditor({
   );
 }
 
+
+type DataRowRecord = Awaited<ReturnType<typeof listDatas>>[number];
+
+function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (patch: Partial<DataRowRecord>) => Promise<unknown>; onDelete: () => void | Promise<void> }) {
+  const [local, setLocal] = useState({
+    data_inicio: data.data_inicio ?? "",
+    data_fim: data.data_fim ?? "",
+    vagas_total: data.vagas_total?.toString() ?? "0",
+    vagas_disponiveis: data.vagas_disponiveis?.toString() ?? "0",
+    preco_pix: data.preco_pix != null ? String(data.preco_pix) : "",
+    preco_cartao: data.preco_cartao != null ? String(data.preco_cartao) : "",
+  });
+
+  useEffect(() => {
+    setLocal({
+      data_inicio: data.data_inicio ?? "",
+      data_fim: data.data_fim ?? "",
+      vagas_total: data.vagas_total?.toString() ?? "0",
+      vagas_disponiveis: data.vagas_disponiveis?.toString() ?? "0",
+      preco_pix: data.preco_pix != null ? String(data.preco_pix) : "",
+      preco_cartao: data.preco_cartao != null ? String(data.preco_cartao) : "",
+    });
+  }, [data.id, data.data_inicio, data.data_fim, data.vagas_total, data.vagas_disponiveis, data.preco_pix, data.preco_cartao]);
+
+  const commit = (patch: Partial<DataRowRecord>) => { void onSave(patch); };
+  const total = Number(local.vagas_total) || 0;
+  const disp = Number(local.vagas_disponiveis) || 0;
+  const dispOver = disp > total;
+
+  const Lbl = ({ children }: { children: React.ReactNode }) => (
+    <span className="block text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] mb-1">{children}</span>
+  );
+
+  return (
+    <div className="rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 p-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+        <div>
+          <Lbl>Início</Lbl>
+          <input
+            type="date"
+            className="admin-input admin-input-date w-full"
+            value={local.data_inicio}
+            onChange={(e) => setLocal((s) => ({ ...s, data_inicio: e.target.value }))}
+            onBlur={(e) => { if (e.target.value && e.target.value !== data.data_inicio) commit({ data_inicio: e.target.value }); }}
+          />
+        </div>
+        <div>
+          <Lbl>Fim</Lbl>
+          <input
+            type="date"
+            className="admin-input admin-input-date w-full"
+            value={local.data_fim}
+            onChange={(e) => setLocal((s) => ({ ...s, data_fim: e.target.value }))}
+            onBlur={(e) => { if (e.target.value && e.target.value !== data.data_fim) commit({ data_fim: e.target.value }); }}
+          />
+        </div>
+        <div>
+          <Lbl>Vagas total</Lbl>
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className="admin-input w-full"
+            value={local.vagas_total}
+            onChange={(e) => setLocal((s) => ({ ...s, vagas_total: e.target.value.replace(/[^0-9]/g, "") }))}
+            onBlur={(e) => {
+              const v = e.target.value === "" ? 0 : Number(e.target.value);
+              if (v !== data.vagas_total) commit({ vagas_total: v });
+            }}
+          />
+        </div>
+        <div>
+          <Lbl>Vagas disponíveis</Lbl>
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className={`admin-input w-full ${dispOver ? "ring-1 ring-amber-400/60" : ""}`}
+            value={local.vagas_disponiveis}
+            onChange={(e) => setLocal((s) => ({ ...s, vagas_disponiveis: e.target.value.replace(/[^0-9]/g, "") }))}
+            onBlur={(e) => {
+              const v = e.target.value === "" ? 0 : Number(e.target.value);
+              if (v !== data.vagas_disponiveis) commit({ vagas_disponiveis: v });
+            }}
+          />
+        </div>
+        <div>
+          <Lbl>Preço Pix (R$)</Lbl>
+          <input
+            type="text"
+            inputMode="decimal"
+            className="admin-input w-full"
+            value={local.preco_pix}
+            onChange={(e) => setLocal((s) => ({ ...s, preco_pix: e.target.value.replace(/[^0-9.,]/g, "").replace(",", ".") }))}
+            onBlur={(e) => {
+              const v = e.target.value === "" ? null : Number(e.target.value);
+              if (v !== data.preco_pix) commit({ preco_pix: v });
+            }}
+          />
+        </div>
+        <div>
+          <Lbl>Preço cartão (R$)</Lbl>
+          <input
+            type="text"
+            inputMode="decimal"
+            className="admin-input w-full"
+            value={local.preco_cartao}
+            onChange={(e) => setLocal((s) => ({ ...s, preco_cartao: e.target.value.replace(/[^0-9.,]/g, "").replace(",", ".") }))}
+            onBlur={(e) => {
+              const v = e.target.value === "" ? null : Number(e.target.value);
+              if (v !== data.preco_cartao) commit({ preco_cartao: v });
+            }}
+          />
+        </div>
+      </div>
+      {dispOver && (
+        <p className="mt-2 text-[11px] text-amber-300">Vagas disponíveis não pode passar do total da turma.</p>
+      )}
+      <div className="mt-3 flex justify-end">
+        <button className="admin-btn-ghost gap-1 text-[12px] hover:!bg-rose-500/10 hover:!text-rose-300" onClick={() => onDelete()}>
+          <Trash2 className="h-3.5 w-3.5" /> Remover data
+        </button>
+      </div>
+    </div>
+  );
+}
