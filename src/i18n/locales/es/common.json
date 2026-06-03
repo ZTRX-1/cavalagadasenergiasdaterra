@@ -150,7 +150,8 @@
       { "q": "¿Cómo es el alojamiento?", "a": "Trabajamos con posadas, hoteles y alojamientos locales cuidadosamente seleccionados según el itinerario y la región, garantizando comodidad, autenticidad y calidad en cada experiencia." },
       { "q": "¿Puedo hacer una expedición privada?", "a": "Sí. Creamos experiencias privadas y personalizadas, desarrolladas según los intereses, ritmo y perfil de cada grupo." },
       { "q": "¿Quién puede participar de las expediciones?", "a": "Cualquier persona en buenas condiciones de salud y dentro de los requisitos de cada expedición (edad y peso). Tenemos itinerarios para todos los niveles." },
-      { "q": "¿Los caballos están entrenados?", "a": "Sí. Todos los caballos están entrenados, descansados entre expediciones y acompañados por un equipo profesional." }
+      { "q": "¿Los caballos están entrenados?", "a": "Sí. Todos los caballos están entrenados, descansados entre expediciones y acompañados por un equipo profesional." },
+      { "q": "¿Existe una edad mínima para participar de las expediciones?", "a": "Sí. La edad mínima recomendada es de 8 años, siempre que el niño esté acompañado por un responsable y cumpla con los requisitos específicos de cada expedición. Ante cualquier duda, nuestro equipo podrá orientarte sobre la experiencia más adecuada." }
     ]
   },
   "ctaFinal": {
