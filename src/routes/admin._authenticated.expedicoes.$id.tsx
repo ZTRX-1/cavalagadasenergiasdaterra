@@ -892,6 +892,12 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
 function DateField({ value, onChange, onCommit }: { value: string; onChange: (value: string) => void; onCommit: (value: string) => void }) {
   const pickerRef = useRef<HTMLInputElement>(null);
   const pickerValue = brToIsoDate(value) ?? "";
+  const openPicker = () => {
+    const picker = pickerRef.current;
+    if (!picker) return;
+    if (typeof picker.showPicker === "function") picker.showPicker();
+    else picker.click();
+  };
 
   return (
     <div className="relative">
@@ -899,7 +905,7 @@ function DateField({ value, onChange, onCommit }: { value: string; onChange: (va
         type="text"
         inputMode="numeric"
         placeholder="dd/mm/aaaa"
-        className="admin-input w-full pr-10"
+        className="admin-input admin-date-text-input w-full"
         value={value}
         onChange={(e) => onChange(formatBrDateInput(e.target.value))}
         onBlur={(e) => onCommit(e.target.value)}
@@ -909,7 +915,7 @@ function DateField({ value, onChange, onCommit }: { value: string; onChange: (va
         className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-md text-[color:var(--admin-dourado-glow)] transition hover:bg-[color:var(--admin-dourado)]/10"
         aria-label="Abrir calendário"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => pickerRef.current?.showPicker?.()}
+        onClick={openPicker}
       >
         <CalendarDays className="h-4 w-4" strokeWidth={1.7} />
       </button>
