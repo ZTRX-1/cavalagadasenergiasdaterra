@@ -442,11 +442,16 @@
     box-shadow: 0 0 0 3px color-mix(in oklab, var(--admin-dourado) 18%, transparent);
     background: color-mix(in oklab, var(--admin-carvao-deep) 85%, transparent);
   }
+  .admin-search-input { padding-left: 2.75rem; padding-right: 0.85rem; padding-top: 0; padding-bottom: 0; line-height: 1; }
+  .admin-date-text-input { padding-right: 2.75rem; }
+  .admin-input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
+  .admin-input[type="number"]::-webkit-outer-spin-button,
+  .admin-input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   .admin-input[type="date"]::-webkit-calendar-picker-indicator,
   .admin-input-date::-webkit-calendar-picker-indicator {
-    filter: invert(1) brightness(1.4) sepia(0.4) hue-rotate(10deg) saturate(2);
+    filter: brightness(0) saturate(100%) invert(82%) sepia(40%) saturate(445%) hue-rotate(3deg) brightness(105%) contrast(92%);
     cursor: pointer;
-    opacity: 0.85;
+    opacity: 1;
   }
   .admin-input[type="date"]::-webkit-calendar-picker-indicator:hover,
   .admin-input-date::-webkit-calendar-picker-indicator:hover { opacity: 1; }
