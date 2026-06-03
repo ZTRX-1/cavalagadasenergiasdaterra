@@ -74,7 +74,7 @@ function AdminLoginPage() {
     <div className="admin-surface flex min-h-[100dvh] w-full flex-col lg:flex-row overflow-hidden">
       {/* ===================== Painel institucional (esquerda / topo) ===================== */}
       <aside
-        className="relative flex h-[36vh] min-h-[260px] w-full items-end overflow-hidden border-b border-[color:var(--admin-borda)] lg:h-auto lg:min-h-screen lg:w-1/2 lg:items-center lg:justify-center lg:border-b-0 lg:border-r"
+        className="relative flex flex-col h-[42vh] min-h-[320px] w-full overflow-hidden border-b border-[color:var(--admin-borda)] lg:h-auto lg:min-h-screen lg:w-1/2 lg:border-b-0 lg:border-r"
         aria-label="Apresentação da plataforma"
       >
         {/* Foto editorial — ancorada na base, com o cavalo sempre visível */}
