@@ -145,7 +145,7 @@ function AdminLoginPage() {
               Acesso ao painel
             </h2>
             <p className="mt-2 text-[13.5px] leading-relaxed text-[color:var(--admin-cinza-3)]">
-              Bem-vindo de volta. Insira suas credenciais para gerenciar as experiências da operação.
+              Insira suas credenciais para acessar o sistema interno.
             </p>
           </header>
 
