@@ -680,6 +680,38 @@ function ExpedicaoEdit() {
           </p>
         </TabsContent>
       </Tabs>
+        </div>
+
+        {/* Preview ao vivo — desktop (sticky) */}
+        <aside className="hidden lg:block">
+          <div className="sticky top-4">
+            <div className="admin-card p-4">
+              <ExpedicaoPreview form={form} assets={assets} datas={datas} />
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      {/* Preview ao vivo — drawer mobile/tablet */}
+      {previewOpen && (
+        <div className="fixed inset-0 z-[80] flex lg:hidden">
+          <div className="absolute inset-0 bg-black/70" onClick={() => setPreviewOpen(false)} />
+          <div className="relative ml-auto h-full w-full max-w-[640px] overflow-y-auto bg-[color:var(--admin-carvao-deep)] p-4 shadow-2xl">
+            <div className="mb-3 flex items-center justify-between">
+              <div className="font-display text-base text-[color:var(--admin-cinza-1)]">Preview ao vivo</div>
+              <button
+                type="button"
+                className="admin-btn-ghost"
+                onClick={() => setPreviewOpen(false)}
+                aria-label="Fechar preview"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <ExpedicaoPreview form={form} assets={assets} datas={datas} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
