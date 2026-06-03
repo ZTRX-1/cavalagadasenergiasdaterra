@@ -77,17 +77,17 @@ function AdminLoginPage() {
         className="relative flex h-[36vh] min-h-[260px] w-full items-end overflow-hidden border-b border-[color:var(--admin-borda)] lg:h-auto lg:min-h-screen lg:w-1/2 lg:items-center lg:justify-center lg:border-b-0 lg:border-r"
         aria-label="Apresentação da plataforma"
       >
-        {/* Foto editorial */}
+        {/* Foto editorial — ancorada na base para preservar o cavalo em qualquer largura */}
         <img
           src={loginHero}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover object-[center_72%] opacity-100 lg:object-[center_70%]"
+          className="absolute inset-0 h-full w-full object-cover object-[center_bottom] opacity-100"
         />
 
-        {/* Overlays — escurece na base e funde com o lado direito (desktop) */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--admin-carvao)] via-[color:var(--admin-carvao)]/45 to-[color:var(--admin-carvao)]/20 lg:bg-gradient-to-r lg:from-transparent lg:via-[color:var(--admin-carvao)]/40 lg:to-[color:var(--admin-carvao)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_transparent_55%,_color-mix(in_oklab,var(--admin-carvao)_75%,transparent)_100%)]" />
+        {/* Overlays — escurece base e topo, funde com o painel direito (desktop) */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--admin-carvao)] via-[color:var(--admin-carvao)]/55 to-[color:var(--admin-carvao)]/30 lg:bg-gradient-to-r lg:from-[color:var(--admin-carvao)]/20 lg:via-[color:var(--admin-carvao)]/45 lg:to-[color:var(--admin-carvao)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_transparent_50%,_color-mix(in_oklab,var(--admin-carvao)_80%,transparent)_100%)]" />
 
         {/* Marca tipográfica discreta — sem revelar a natureza do sistema */}
         <div className="relative z-10 mx-auto w-full max-w-[520px] px-6 pb-7 pt-10 text-center lg:px-12 lg:py-16 lg:text-left">
@@ -102,11 +102,9 @@ function AdminLoginPage() {
             Cavalgadas <em className="italic text-[color:var(--admin-dourado-glow)]">Energias da Terra</em>
           </h1>
 
-          <div className="mt-6 inline-flex items-center gap-3 text-[10.5px] uppercase tracking-[0.28em] text-[color:var(--admin-cinza-3)]">
-            <span>Ambiente restrito</span>
-            <span className="opacity-40">·</span>
-            <span>Acesso autorizado</span>
-          </div>
+          <p className="mt-6 max-w-sm text-[13px] leading-relaxed text-[color:var(--admin-cinza-1)]/90 mx-auto lg:mx-0 lg:text-[14px]">
+            Plataforma confidencial de gestão. Acesso permitido apenas a membros autorizados da equipe.
+          </p>
         </div>
       </aside>
 
