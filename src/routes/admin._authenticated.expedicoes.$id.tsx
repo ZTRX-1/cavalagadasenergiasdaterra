@@ -121,7 +121,8 @@ function ExpedicaoEdit() {
     setRoteiro(next);
   };
 
-  const [previewOpen, setPreviewOpen] = useState(false);
+
+
 
   return (
     <div className="space-y-6 pb-12">
