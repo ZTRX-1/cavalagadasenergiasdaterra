@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Save, Star, Trash2, ChevronUp, ChevronDown, Plus, ExternalLink, CheckCircle2, Circle, CalendarDays } from "lucide-react";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -730,6 +730,31 @@ function CapaEditor({
 
 type DataRowRecord = Awaited<ReturnType<typeof listDatas>>[number];
 
+function isoToBrDate(value?: string | null) {
+  if (!value) return "";
+  const [year, month, day] = value.slice(0, 10).split("-");
+  return year && month && day ? `${day}/${month}/${year}` : "";
+}
+
+function brToIsoDate(value: string) {
+  const digits = value.replace(/\D/g, "");
+  if (digits.length !== 8) return null;
+  const day = digits.slice(0, 2);
+  const month = digits.slice(2, 4);
+  const year = digits.slice(4, 8);
+  const date = new Date(`${year}-${month}-${day}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return null;
+  if (date.getFullYear() !== Number(year) || date.getMonth() + 1 !== Number(month) || date.getDate() !== Number(day)) return null;
+  return `${year}-${month}-${day}`;
+}
+
+function formatBrDateInput(value: string) {
+  const digits = value.replace(/\D/g, "").slice(0, 8);
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+  return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+}
+
 function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (patch: Partial<DataRowRecord>) => Promise<unknown>; onDelete: () => void | Promise<void> }) {
   const [local, setLocal] = useState({
     data_inicio: isoToBrDate(data.data_inicio),
@@ -865,17 +890,42 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
 }
 
 function DateField({ value, onChange, onCommit }: { value: string; onChange: (value: string) => void; onCommit: (value: string) => void }) {
+  const pickerRef = useRef<HTMLInputElement>(null);
+  const pickerValue = brToIsoDate(value) ?? "";
+
   return (
     <div className="relative">
       <input
-        type="date"
-        className="admin-input admin-input-date w-full pr-10"
+        type="text"
+        inputMode="numeric"
+        placeholder="dd/mm/aaaa"
+        className="admin-input w-full pr-10"
         value={value}
-        onFocus={() => onChange(value)}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onChange(formatBrDateInput(e.target.value))}
         onBlur={(e) => onCommit(e.target.value)}
       />
-      <CalendarDays className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--admin-dourado-glow)]" strokeWidth={1.7} />
+      <button
+        type="button"
+        className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-md text-[color:var(--admin-dourado-glow)] transition hover:bg-[color:var(--admin-dourado)]/10"
+        aria-label="Abrir calendário"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={() => pickerRef.current?.showPicker?.()}
+      >
+        <CalendarDays className="h-4 w-4" strokeWidth={1.7} />
+      </button>
+      <input
+        ref={pickerRef}
+        type="date"
+        tabIndex={-1}
+        aria-hidden="true"
+        className="admin-input-date pointer-events-none absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 opacity-0"
+        value={pickerValue}
+        onChange={(e) => {
+          const next = isoToBrDate(e.target.value);
+          onChange(next);
+          onCommit(next);
+        }}
+      />
     </div>
   );
 }
