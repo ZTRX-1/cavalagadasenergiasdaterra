@@ -74,37 +74,45 @@ function AdminLoginPage() {
     <div className="admin-surface flex min-h-[100dvh] w-full flex-col lg:flex-row overflow-hidden">
       {/* ===================== Painel institucional (esquerda / topo) ===================== */}
       <aside
-        className="relative flex h-[36vh] min-h-[260px] w-full items-end overflow-hidden border-b border-[color:var(--admin-borda)] lg:h-auto lg:min-h-screen lg:w-1/2 lg:items-center lg:justify-center lg:border-b-0 lg:border-r"
+        className="relative flex flex-col h-[42vh] min-h-[320px] w-full overflow-hidden border-b border-[color:var(--admin-borda)] lg:h-auto lg:min-h-screen lg:w-1/2 lg:border-b-0 lg:border-r"
         aria-label="Apresentação da plataforma"
       >
-        {/* Foto editorial — ancorada na base para preservar o cavalo em qualquer largura */}
+        {/* Foto editorial — ancorada na base, com o cavalo sempre visível */}
         <img
           src={loginHero}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover object-[center_bottom] opacity-100"
+          className="absolute inset-0 h-full w-full object-cover object-bottom opacity-100"
         />
 
-        {/* Overlays — escurece base e topo, funde com o painel direito (desktop) */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--admin-carvao)] via-[color:var(--admin-carvao)]/55 to-[color:var(--admin-carvao)]/30 lg:bg-gradient-to-r lg:from-[color:var(--admin-carvao)]/20 lg:via-[color:var(--admin-carvao)]/45 lg:to-[color:var(--admin-carvao)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_transparent_50%,_color-mix(in_oklab,var(--admin-carvao)_80%,transparent)_100%)]" />
+        {/* Overlay base — escurece o pé da imagem para dar contraste ao texto sem cobrir o cavalo */}
+        <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-[color:var(--admin-carvao)] via-[color:var(--admin-carvao)]/70 to-transparent" />
+        {/* Fusão lateral com o painel direito (desktop) */}
+        <div className="absolute inset-0 hidden lg:block bg-gradient-to-r from-transparent via-transparent to-[color:var(--admin-carvao)]" />
 
-        {/* Marca tipográfica discreta — sem revelar a natureza do sistema */}
-        <div className="relative z-10 mx-auto w-full max-w-[520px] px-6 pb-7 pt-10 text-center lg:px-12 lg:py-16 lg:text-left">
-          <div className="mb-6 inline-flex items-center gap-3">
-            <span className="inline-block h-px w-8 bg-[color:var(--admin-dourado)] opacity-80" />
-            <span className="text-[10px] uppercase tracking-[0.34em] text-[color:var(--admin-dourado-glow)]">
-              Sistema interno
-            </span>
+        {/* Marca tipográfica — posicionada sobre o overlay inferior, sempre legível */}
+        <div className="relative z-10 mt-auto w-full px-6 pb-10 pt-10 text-center sm:px-10 lg:px-14 lg:pb-16 lg:text-left">
+          <div className="mx-auto max-w-[520px] lg:mx-0">
+            <div className="mb-5 inline-flex items-center gap-3">
+              <span className="inline-block h-px w-8 bg-[color:var(--admin-dourado)]" />
+              <span className="text-[10px] font-medium uppercase tracking-[0.34em] text-[color:var(--admin-dourado-glow)]">
+                Central operacional
+              </span>
+            </div>
+
+            <h1 className="font-display text-[30px] leading-[1.08] text-white sm:text-[36px] lg:text-[42px] xl:text-[48px]">
+              Cavalgadas <em className="italic text-[color:var(--admin-dourado-glow)]">Energias da Terra</em>
+            </h1>
+
+            <p className="mt-5 max-w-md text-[13.5px] leading-relaxed text-white/85 mx-auto lg:mx-0 lg:text-[14.5px]">
+              Painel interno desenvolvido para coordenar reservas, expedições,
+              participantes e processos estratégicos da operação.
+            </p>
+
+            <p className="mt-4 max-w-md text-[12px] uppercase tracking-[0.18em] text-white/55 mx-auto lg:mx-0">
+              Área confidencial · Acesso exclusivo para colaboradores autorizados
+            </p>
           </div>
-
-          <h1 className="font-display text-[34px] leading-[1.05] text-[color:var(--admin-cinza-1)] lg:text-[46px] xl:text-[52px]">
-            Cavalgadas <em className="italic text-[color:var(--admin-dourado-glow)]">Energias da Terra</em>
-          </h1>
-
-          <p className="mt-6 max-w-sm text-[13px] leading-relaxed text-[color:var(--admin-cinza-1)]/90 mx-auto lg:mx-0 lg:text-[14px]">
-            Plataforma confidencial de gestão. Acesso permitido apenas a membros autorizados da equipe.
-          </p>
         </div>
       </aside>
 
