@@ -600,51 +600,14 @@ function ExpedicaoEdit() {
               </div>
             ) : (
               <div className="space-y-3">
-                {datas.map((d) => {
-                  const dispOver = (d.vagas_disponiveis ?? 0) > (d.vagas_total ?? 0);
-                  const upd = (patch: Partial<typeof d>) => updateData(d.id, patch).then(() => qc.invalidateQueries({ queryKey: ["admin", "datas", id] }));
-                  const Lbl = ({ children }: { children: React.ReactNode }) => (
-                    <span className="block text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] mb-1">{children}</span>
-                  );
-                  return (
-                    <div key={d.id} className="rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 p-3">
-                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
-                        <div>
-                          <Lbl>Início</Lbl>
-                          <input type="date" className="admin-input w-full" value={d.data_inicio} onChange={(e) => upd({ data_inicio: e.target.value })} />
-                        </div>
-                        <div>
-                          <Lbl>Fim</Lbl>
-                          <input type="date" className="admin-input w-full" value={d.data_fim} onChange={(e) => upd({ data_fim: e.target.value })} />
-                        </div>
-                        <div>
-                          <Lbl>Vagas total</Lbl>
-                          <input type="number" min={0} className="admin-input w-full" value={d.vagas_total} onChange={(e) => upd({ vagas_total: Number(e.target.value) })} />
-                        </div>
-                        <div>
-                          <Lbl>Vagas disponíveis</Lbl>
-                          <input type="number" min={0} className={`admin-input w-full ${dispOver ? "ring-1 ring-amber-400/60" : ""}`} value={d.vagas_disponiveis} onChange={(e) => upd({ vagas_disponiveis: Number(e.target.value) })} />
-                        </div>
-                        <div>
-                          <Lbl>Preço Pix (R$)</Lbl>
-                          <input type="number" min={0} className="admin-input w-full" value={d.preco_pix ?? ""} onChange={(e) => upd({ preco_pix: e.target.value ? Number(e.target.value) : null })} />
-                        </div>
-                        <div>
-                          <Lbl>Preço cartão (R$)</Lbl>
-                          <input type="number" min={0} className="admin-input w-full" value={d.preco_cartao ?? ""} onChange={(e) => upd({ preco_cartao: e.target.value ? Number(e.target.value) : null })} />
-                        </div>
-                      </div>
-                      {dispOver && (
-                        <p className="mt-2 text-[11px] text-amber-300">Vagas disponíveis não pode passar do total da turma.</p>
-                      )}
-                      <div className="mt-3 flex justify-end">
-                        <button className="admin-btn-ghost gap-1 text-[12px] hover:!bg-rose-500/10 hover:!text-rose-300" onClick={async () => { if (!confirm("Remover esta data?")) return; await deleteData(d.id); qc.invalidateQueries({ queryKey: ["admin", "datas", id] }); }}>
-                          <Trash2 className="h-3.5 w-3.5" /> Remover data
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
+                {datas.map((d) => (
+                  <DataRow
+                    key={d.id}
+                    data={d}
+                    onSave={(patch) => updateData(d.id, patch).then(() => qc.invalidateQueries({ queryKey: ["admin", "datas", id] }))}
+                    onDelete={async () => { if (!confirm("Remover esta data?")) return; await deleteData(d.id); qc.invalidateQueries({ queryKey: ["admin", "datas", id] }); }}
+                  />
+                ))}
               </div>
             )}
           </AdminSection>
