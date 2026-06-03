@@ -1,53 +1,65 @@
-## Refinar tela de login (`/admin/login`) — sofisticação e sigilo
+# Preview ao vivo e dicas de contexto na edição de expedição
 
-Atualizar **somente** `src/routes/admin.login.tsx`. Sem mudanças em backend, rotas ou outros arquivos.
+Objetivo: enquanto você edita uma expedição no painel interno, ver em tempo real como cada alteração aparece na página pública — e, em cada campo, uma legenda dizendo "isso aparece em tal lugar do site".
 
-### 1. Lado esquerdo (institucional) — remover qualquer pista do que é o sistema
+## O que muda na tela de edição
 
-- Remover o eyebrow `CAVALGADAS ENERGIAS DA TERRA`.
-- Remover o título `Energias da Terra`.
-- Remover o parágrafo `Painel operacional das expedições — onde a equipe orquestra reservas, participantes, contratos e a logística por trás de cada cavalgada.`
-- Remover a lista dos 3 pilares (`Expedições selecionadas`, `Operação consolidada`, `Painel da equipe`).
-- Substituir por uma marca tipográfica discreta e sofisticada, sem revelar o produto:
-  - Eyebrow fino: `SISTEMA INTERNO` (dourado, tracking alto).
-  - Marca: `Cavalgadas Energias da Terra` em display serif (apenas o nome da casa, sem descrever função).
-  - Linha sutil de assinatura: `Ambiente restrito · Acesso autorizado`.
-- Manter a foto de fundo (`loginHero`) e os overlays atuais.
+Arquivo: `src/routes/admin._authenticated.expedicoes.$id.tsx`
 
-### 2. Posição do cavalo na imagem de fundo
+### 1. Layout em duas colunas (desktop)
 
-- Hoje a imagem usa `object-[center_58%]` (mobile) e `object-[center_55%]` (desktop), o que empurra o cavalo para baixo do viewport.
-- Ajustar para `object-[center_72%]` / `lg:object-[center_70%]` (subir o enquadramento) para que a silhueta do cavalo e o horizonte fiquem visíveis e centralizados verticalmente no painel.
-- Reforçar levemente o gradiente inferior para manter a legibilidade da marca tipográfica acima.
+No desktop (≥1280px) a tela passa a ter:
 
-### 3. Lado direito (formulário) — copy mais sóbrio
+```text
+┌──────────────────────────────┬──────────────────────────┐
+│  Abas + formulário (60%)     │  Preview ao vivo (40%)   │
+│  Geral / Roteiro / Mídia...  │  (sticky, rola junto)    │
+└──────────────────────────────┴──────────────────────────┘
+```
 
-- Manter o bloco de logo + “Painel interno / Cavalgadas”.
-- Título: manter `Acesso ao painel`.
-- Subtítulo: trocar
-  - de: `Bem-vindo de volta. Insira suas credenciais para gerenciar as experiências da operação.`
-  - para: `Insira suas credenciais para acessar o sistema interno.`
-- Labels, inputs, checkbox `Manter conectado nesta sessão` e botão `Entrar no sistema` permanecem.
+- No mobile/tablet o preview vira um botão "Ver preview" que abre um drawer lateral, para não atrapalhar a edição num espaço pequeno.
+- Toggle no topo: `Preview: Desktop | Mobile` para ver as duas larguras.
+- Toggle "Abrir em nova aba" para checar a página real publicada (rascunho continua só no preview interno).
 
-### 4. Rodapé do formulário — selos institucionais
+### 2. Preview ao vivo
 
-Substituir os 3 selos:
-- `Criptografia 256-bit` → `Sistema altamente criptografado`
-- `Acesso monitorado` → mantém `Acesso monitorado`
-- `Suporte interno` → mantém `Suporte interno`
+Novo componente `src/components/admin/expedicao-preview.tsx`:
 
-(Mesmo estilo tipográfico atual: uppercase, tracking largo, cinza discreto.)
+- Recebe o estado atual do formulário (mesmo objeto que já é editado em memória, **antes de salvar**) e renderiza uma versão enxuta da página `expedicoes/$slug` com: capa, nome, descrição curta/longa, duração, nível, preço, roteiro, "como chegar", próximas datas, galeria.
+- Reusa os mesmos componentes visuais da página pública sempre que possível, dentro de um container `iframe`-like (na verdade um `<div>` escalado) para simular largura de 1280px ou 390px.
+- Atualiza a cada tecla digitada (estado local já existe), sem precisar salvar.
+- Mostra um badge "Pré-visualização — alterações não salvas" enquanto há diff em relação ao banco.
 
-### 5. Validações
+### 3. Dicas contextuais em cada campo
 
-- Desktop (split 50/50): cavalo visível, sem textos descritivos, marca tipográfica centralizada à esquerda.
-- Mobile (imagem no topo, form abaixo): cavalo aparece no enquadramento superior, marca discreta sobreposta, form intacto.
-- Nenhuma alteração de lógica de auth, i18n, rotas ou tokens de design.
+Novo helper em `src/components/admin/admin-section.tsx`:
 
-### Resumo técnico
+- Estende `AdminField` com uma prop opcional `ondeAparece` (texto curto) e `previewTarget` (id da seção no preview).
+- Abaixo do label aparece uma linha discreta: *"Aparece em: capa da expedição (título principal)"*, *"Aparece em: bloco 'O que está incluído' na página pública"*, etc.
+- Ao focar o campo, a seção correspondente no preview ganha um realce dourado por ~1.5s (scroll suave até ela), para você ver exatamente onde mexeu.
 
-Arquivo único: `src/routes/admin.login.tsx`
-- Remoção do `<ul>` de pilares e dos textos descritivos no `<aside>`.
-- Substituição do bloco de conteúdo institucional por marca tipográfica neutra.
-- Ajuste das classes `object-position` no `<img>` de fundo.
-- Atualização de 2 strings de copy (subtítulo + 1 selo do rodapé).
+Mapa de campos → onde aparece (preenchido por aba):
+
+- **Geral**: nome → capa/H1 e card nas listagens; descrição curta → subtítulo da capa e card; duração/nível → faixa de meta-dados; marca/país/região → breadcrumbs e filtros.
+- **Roteiro**: cada dia → bloco "Roteiro dia a dia".
+- **Como chegar**: título/conteúdo/aeroporto/referência/observações → seção "Como chegar".
+- **Mídia & narrativa**: capa → topo da página e og:image; galeria → carrossel editorial.
+- **Datas & Vagas**: linhas → bloco "Próximas datas" da página e listagem `/datas`.
+- **Comercial**: preço/moeda/inclui/requisitos → caixa de reserva + listas "Inclui" e "Requisitos".
+- **Publicação**: status/ordem → controla se aparece publicamente; descrição SEO → `<title>`/`<meta description>` na busca do Google.
+
+### 4. Detalhes técnicos
+
+- Nenhuma mudança de backend, schema ou regras de negócio.
+- Reaproveita o estado já controlado no `admin._authenticated.expedicoes.$id.tsx`; o preview é só uma view derivada.
+- Sem nova rota — tudo dentro da tela existente.
+- Animação de realce com Motion (já no projeto), respeitando `prefers-reduced-motion`.
+- Sem alterações em `src/routes/expedicoes.$slug.tsx` (a página pública); o preview espelha o visual, mas vive em um componente próprio para podermos passar dados não salvos.
+
+## Fora de escopo
+
+- Salvar versões / histórico de rascunhos.
+- Preview de outras telas (reservas, leads, etc.) — só expedições por enquanto.
+- Editar diretamente clicando no preview (só leitura).
+
+Se topar, sigo por aqui. Quer que o preview comece **fechado** (botão "Mostrar preview") ou **aberto** por padrão no desktop?
