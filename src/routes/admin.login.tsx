@@ -251,7 +251,7 @@ function AdminLoginPage() {
 
           <footer className="mt-10 border-t border-[color:var(--admin-borda)] pt-5">
             <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[9.5px] uppercase tracking-[0.26em] text-[color:var(--admin-cinza-3)]">
-              <span>Criptografia 256-bit</span>
+              <span>Sistema altamente criptografado</span>
               <span className="hidden opacity-30 sm:inline">·</span>
               <span>Acesso monitorado</span>
               <span className="hidden opacity-30 sm:inline">·</span>
