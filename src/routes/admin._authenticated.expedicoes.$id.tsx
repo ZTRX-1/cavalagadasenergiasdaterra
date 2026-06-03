@@ -65,6 +65,7 @@ function ExpedicaoEdit() {
   });
 
   const [form, setForm] = useState<Partial<ExpedicaoRow> | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
   useEffect(() => { if (exp) setForm(exp); }, [exp]);
 
   const saveMut = useMutation({
@@ -120,7 +121,8 @@ function ExpedicaoEdit() {
     setRoteiro(next);
   };
 
-  const [previewOpen, setPreviewOpen] = useState(false);
+
+
 
   return (
     <div className="space-y-6 pb-12">
