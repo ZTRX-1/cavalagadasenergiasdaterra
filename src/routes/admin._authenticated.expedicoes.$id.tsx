@@ -216,6 +216,8 @@ function ExpedicaoEdit() {
           >
             <AdminField
               label="Título da seção"
+              previewTarget="como-chegar"
+              ondeAparece="Título da seção 'Como chegar' na página pública"
               hint="Personalize o título exibido no site. Deixe em branco para usar 'Como Chegar'."
             >
               <input
@@ -228,6 +230,8 @@ function ExpedicaoEdit() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <AdminField
                 label="Aeroporto mais próximo"
+                previewTarget="como-chegar"
+                ondeAparece="Card 'Aeroporto' na seção Como chegar"
                 hint="Informe o aeroporto normalmente utilizado pelos participantes."
               >
                 <input
@@ -239,6 +243,8 @@ function ExpedicaoEdit() {
               </AdminField>
               <AdminField
                 label="Cidade de referência"
+                previewTarget="como-chegar"
+                ondeAparece="Card 'Cidade' na seção Como chegar"
                 hint="Informe a principal cidade utilizada como ponto de chegada."
               >
                 <input
@@ -251,6 +257,8 @@ function ExpedicaoEdit() {
             </div>
             <AdminField
               label="Texto principal"
+              previewTarget="como-chegar"
+              ondeAparece="Texto da seção Como chegar"
               hint="Descreva, em alguns parágrafos, como os participantes costumam chegar ao destino."
             >
               <textarea
@@ -262,6 +270,8 @@ function ExpedicaoEdit() {
             </AdminField>
             <AdminField
               label="Observações adicionais"
+              previewTarget="como-chegar"
+              ondeAparece="Caixa lateral 'Observações' na seção Como chegar"
               hint="Detalhes extras: transfer, distâncias, recomendações de horário, dicas logísticas."
             >
               <textarea
@@ -277,24 +287,24 @@ function ExpedicaoEdit() {
         <TabsContent value="geral" className="mt-6 grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6 order-2 lg:order-1">
             <AdminSection titulo="Identidade">
-              <AdminField label="Nome">
+              <AdminField label="Nome" previewTarget="hero" ondeAparece="Título principal (H1) e card nas listagens">
                 <input className="admin-input" value={form.nome ?? ""} onChange={(e) => setF({ nome: e.target.value, slug: form.slug || slugify(e.target.value) })} />
               </AdminField>
-              <AdminField label="Subtítulo">
+              <AdminField label="Subtítulo" previewTarget="hero" ondeAparece="Linha de apoio sob o título (uso interno + SEO)">
                 <input className="admin-input" value={form.subtitulo ?? ""} onChange={(e) => setF({ subtitulo: e.target.value })} />
               </AdminField>
-              <AdminField label="Slug" hint="Endereço da página pública: /expedicoes/seu-slug. Cuidado ao editar depois de publicar.">
+              <AdminField label="Slug" previewTarget="publicacao" ondeAparece="URL pública: /expedicoes/seu-slug" hint="Endereço da página pública: /expedicoes/seu-slug. Cuidado ao editar depois de publicar.">
                 <input className="admin-input font-mono text-sm" value={form.slug ?? ""} onChange={(e) => setF({ slug: slugify(e.target.value) })} />
               </AdminField>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <AdminField label="Marca">
+                <AdminField label="Marca" previewTarget="card" ondeAparece="Filtro de marca e card nas listagens">
                   <select className="admin-input" value={form.marca ?? "cavalgadas"} onChange={(e) => setF({ marca: e.target.value })}>
                     <option value="cavalgadas">Cavalgadas</option>
                     <option value="canastra-a-cavalo">Canastra a Cavalo</option>
                     <option value="elas-na-sela">Elas na Sela</option>
                   </select>
                 </AdminField>
-                <AdminField label="Dificuldade">
+                <AdminField label="Dificuldade" previewTarget="meta" ondeAparece="Faixa de meta-dados no topo da página">
                   <select className="admin-input" value={form.nivel ?? "Iniciante"} onChange={(e) => setF({ nivel: e.target.value })}>
                     <option>Iniciante</option>
                     <option>Iniciante a intermediário</option>
@@ -304,36 +314,36 @@ function ExpedicaoEdit() {
                   </select>
                 </AdminField>
               </div>
-              <AdminField label="Duração">
+              <AdminField label="Duração" previewTarget="meta" ondeAparece="Faixa de meta-dados no topo da página">
                 <input className="admin-input" value={form.duracao ?? ""} onChange={(e) => setF({ duracao: e.target.value })} placeholder="4 dias / 3 noites" />
               </AdminField>
             </AdminSection>
 
             <AdminSection titulo="Localização">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <AdminField label="País">
+                <AdminField label="País" previewTarget="card" ondeAparece="Etiqueta de localização no card">
                   <input className="admin-input" value={form.pais ?? ""} onChange={(e) => setF({ pais: e.target.value })} />
                 </AdminField>
-                <AdminField label="Estado">
+                <AdminField label="Estado" previewTarget="card" ondeAparece="Etiqueta de localização no card">
                   <input className="admin-input" value={form.estado ?? ""} onChange={(e) => setF({ estado: e.target.value ?? null })} />
                 </AdminField>
-                <AdminField label="Cidade">
+                <AdminField label="Cidade" previewTarget="card" ondeAparece="Etiqueta de localização no card">
                   <input className="admin-input" value={form.cidade ?? ""} onChange={(e) => setF({ cidade: e.target.value ?? null })} />
                 </AdminField>
               </div>
-              <AdminField label="Região (rótulo público)">
+              <AdminField label="Região (rótulo público)" previewTarget="card" ondeAparece="Etiqueta de região exibida no card">
                 <input className="admin-input" value={form.regiao ?? ""} onChange={(e) => setF({ regiao: e.target.value ?? null })} />
               </AdminField>
             </AdminSection>
 
             <AdminSection titulo="Descrição">
-              <AdminField label="Resumo curto" hint="Aparece no card da expedição.">
+              <AdminField label="Resumo curto" previewTarget="hero" ondeAparece="Subtítulo do topo da página e texto do card" hint="Mantenha curto: 1 ou 2 linhas.">
                 <textarea className="admin-input min-h-[80px]" value={form.descricao_curta ?? ""} onChange={(e) => setF({ descricao_curta: e.target.value })} />
               </AdminField>
-              <AdminField label="Descrição completa" hint="Aparece na página da expedição, abaixo do hero.">
+              <AdminField label="Descrição completa" previewTarget="descricao" ondeAparece="Bloco 'Sobre a expedição'" hint="Aparece logo abaixo do hero.">
                 <textarea className="admin-input min-h-[180px]" value={form.descricao_longa ?? ""} onChange={(e) => setF({ descricao_longa: e.target.value })} />
               </AdminField>
-              <AdminField label="Observações internas" hint="Só visível para a equipe.">
+              <AdminField label="Observações internas" hint="Só visível para a equipe — não aparece no site.">
                 <textarea className="admin-input min-h-[60px]" value={form.observacoes ?? ""} onChange={(e) => setF({ observacoes: e.target.value ?? null })} />
               </AdminField>
             </AdminSection>
@@ -374,7 +384,7 @@ function ExpedicaoEdit() {
               })()}
             </AdminSection>
             <AdminSection titulo="Tags">
-              <AdminField label="Tags (separadas por vírgula)">
+              <AdminField label="Tags (separadas por vírgula)" ondeAparece="Uso interno (filtros e busca no painel)">
                 <input
                   className="admin-input"
                   value={(form.tags ?? []).join(", ")}
@@ -430,7 +440,7 @@ function ExpedicaoEdit() {
                       </div>
                     </div>
                     <div className="grid gap-3 md:grid-cols-[1fr_2fr]">
-                      <AdminField label="Título do dia">
+                      <AdminField label="Título do dia" previewTarget="roteiro" ondeAparece="Título do cartão deste dia no roteiro">
                         <input
                           className="admin-input"
                           value={d.titulo}
@@ -438,7 +448,7 @@ function ExpedicaoEdit() {
                           placeholder="Boas-vindas à travessia"
                         />
                       </AdminField>
-                      <AdminField label="Descrição">
+                      <AdminField label="Descrição" previewTarget="roteiro" ondeAparece="Texto do cartão deste dia no roteiro">
                         <textarea
                           className="admin-input min-h-[90px]"
                           value={d.desc}
@@ -513,7 +523,7 @@ function ExpedicaoEdit() {
                             Foto {idx + 1}{a.is_capa ? " — Capa" : ""}
                           </div>
                         </div>
-                        <AdminField label="Legenda (aparece sob a foto no carrossel)">
+                        <AdminField label="Legenda (aparece sob a foto no carrossel)" previewTarget="galeria" ondeAparece="Texto sob a foto na galeria/carrossel">
                           <textarea
                             className="admin-input min-h-[70px]"
                             defaultValue={a.titulo ?? ""}
@@ -553,7 +563,7 @@ function ExpedicaoEdit() {
 
 
           <AdminSection titulo="Vídeo">
-            <AdminField label="URL do vídeo (YouTube ou Vimeo)" hint="Use embed externo — sem upload para storage.">
+            <AdminField label="URL do vídeo (YouTube ou Vimeo)" previewTarget="descricao" ondeAparece="Bloco de vídeo na página pública (quando disponível)" hint="Use embed externo — sem upload para storage.">
               <input className="admin-input" value={form.video_url ?? ""} onChange={(e) => setF({ video_url: e.target.value ?? null })} />
             </AdminField>
           </AdminSection>
@@ -629,7 +639,7 @@ function ExpedicaoEdit() {
         <TabsContent value="comercial" className="mt-6 space-y-6">
           <AdminSection titulo="Preço & parcelamento">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <AdminField label="Moeda">
+              <AdminField label="Moeda" previewTarget="preco" ondeAparece="Caixa 'Condições de pagamento'">
 
                 <select className="admin-input" value={form.moeda ?? "BRL"} onChange={(e) => setF({ moeda: e.target.value })}>
                   <option value="BRL">BRL</option>
@@ -637,10 +647,10 @@ function ExpedicaoEdit() {
                   <option value="EUR">EUR</option>
                 </select>
               </AdminField>
-              <AdminField label="Preço cheio">
+              <AdminField label="Preço cheio" previewTarget="preco" ondeAparece="'A partir de…' no topo e na caixa de pagamento">
                 <input type="number" className="admin-input" value={form.preco ?? 0} onChange={(e) => setF({ preco: Number(e.target.value) })} />
               </AdminField>
-              <AdminField label="Máximo parcelas">
+              <AdminField label="Máximo parcelas" previewTarget="preco" ondeAparece="Caixa 'Condições de pagamento'">
                 <input type="number" className="admin-input" value={form.parcelamento_max ?? 1} onChange={(e) => setF({ parcelamento_max: Number(e.target.value) })} />
               </AdminField>
             </div>
@@ -656,7 +666,7 @@ function ExpedicaoEdit() {
         <TabsContent value="publicacao" className="mt-6 space-y-6">
           <AdminSection titulo="Status & visibilidade">
             <div className="grid grid-cols-2 gap-3">
-              <AdminField label="Status">
+              <AdminField label="Status" previewTarget="publicacao" ondeAparece="Controla se a expedição aparece publicamente">
                 <select className="admin-input" value={form.status ?? "rascunho"} onChange={(e) => setF({ status: e.target.value as ExpedicaoRow["status"] })}>
                   <option value="rascunho">Rascunho</option>
                   <option value="publicado">Publicado</option>
@@ -664,7 +674,7 @@ function ExpedicaoEdit() {
                   <option value="arquivado">Arquivado</option>
                 </select>
               </AdminField>
-              <AdminField label="Ordem (menor aparece primeiro)">
+              <AdminField label="Ordem (menor aparece primeiro)" ondeAparece="Ordem nas listagens públicas">
                 <input type="number" className="admin-input" value={form.ordem ?? 0} onChange={(e) => setF({ ordem: Number(e.target.value) })} />
               </AdminField>
             </div>
