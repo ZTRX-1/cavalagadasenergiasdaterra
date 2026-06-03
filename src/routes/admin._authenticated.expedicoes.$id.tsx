@@ -753,7 +753,7 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
     });
   }, [editing, data.id, data.data_inicio, data.data_fim, data.vagas_total, data.vagas_disponiveis, data.preco_pix, data.preco_cartao]);
 
-  const commit = (patch: Partial<DataRowRecord>) => { setEditing(false); void onSave(patch); };
+  const commit = (patch: Partial<DataRowRecord>) => { void onSave(patch).finally(() => setEditing(false)); };
   const total = Number(local.vagas_total) || 0;
   const disp = Number(local.vagas_disponiveis) || 0;
   const dispOver = disp > total;
@@ -794,9 +794,8 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
             onFocus={() => setEditing(true)}
             onChange={(e) => setLocal((s) => ({ ...s, vagas_total: onlyDigits(e.target.value) }))}
             onBlur={(e) => {
-              setEditing(false);
               const v = e.target.value === "" ? 0 : Number(e.target.value);
-              if (v !== data.vagas_total) commit({ vagas_total: v });
+              if (v !== data.vagas_total) commit({ vagas_total: v }); else setEditing(false);
             }}
           />
         </div>
@@ -811,9 +810,8 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
             onFocus={() => setEditing(true)}
             onChange={(e) => setLocal((s) => ({ ...s, vagas_disponiveis: onlyDigits(e.target.value) }))}
             onBlur={(e) => {
-              setEditing(false);
               const v = e.target.value === "" ? 0 : Number(e.target.value);
-              if (v !== data.vagas_disponiveis) commit({ vagas_disponiveis: v });
+              if (v !== data.vagas_disponiveis) commit({ vagas_disponiveis: v }); else setEditing(false);
             }}
           />
         </div>
@@ -827,9 +825,8 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
             onFocus={() => setEditing(true)}
             onChange={(e) => setLocal((s) => ({ ...s, preco_pix: moneyValue(e.target.value) }))}
             onBlur={(e) => {
-              setEditing(false);
               const v = e.target.value === "" ? null : Number(e.target.value);
-              if (v !== data.preco_pix) commit({ preco_pix: v });
+              if (v !== data.preco_pix) commit({ preco_pix: v }); else setEditing(false);
             }}
           />
         </div>
@@ -843,9 +840,8 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
             onFocus={() => setEditing(true)}
             onChange={(e) => setLocal((s) => ({ ...s, preco_cartao: moneyValue(e.target.value) }))}
             onBlur={(e) => {
-              setEditing(false);
               const v = e.target.value === "" ? null : Number(e.target.value);
-              if (v !== data.preco_cartao) commit({ preco_cartao: v });
+              if (v !== data.preco_cartao) commit({ preco_cartao: v }); else setEditing(false);
             }}
           />
         </div>
