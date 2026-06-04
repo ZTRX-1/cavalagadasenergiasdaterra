@@ -1,65 +1,105 @@
-# Preview ao vivo e dicas de contexto na edição de expedição
+# Fase 1 — Núcleo conectado: Lead → Reserva → Participante
 
-Objetivo: enquanto você edita uma expedição no painel interno, ver em tempo real como cada alteração aparece na página pública — e, em cada campo, uma legenda dizendo "isso aparece em tal lugar do site".
+Foco: o caminho mais curto pra você operar sem retrabalho. Financeiro avançado, docs por participante e IA ficam pra Fases 2 e 3.
 
-## O que muda na tela de edição
+## 1. Limpeza do banco (leads de teste)
 
-Arquivo: `src/routes/admin._authenticated.expedicoes.$id.tsx`
+- Apago todos os leads existentes (você confirmou que é tudo teste).
+- Apago também: reservas, participantes, pagamentos, documentos vinculados, histórico e conversas órfãs. Expedições, datas, usuários e configurações ficam intactos.
+- Roda uma vez via migration de dados, com confirmação antes de executar.
 
-### 1. Layout em duas colunas (desktop)
+## 2. Etapas de Lead simplificadas (8 → 6)
 
-No desktop (≥1280px) a tela passa a ter:
+Novas etapas: **Novo · Atendimento · Qualificado · Pronto pra Reserva · Convertido · Perdido**.
+
+- Atualizo `LEAD_ETAPAS` em `src/lib/admin/api.ts`.
+- Kanban e filtros em `admin._authenticated.leads.tsx` passam a ler as 6.
+- Ficha do lead (`leads.$id.tsx`) ganha botão único de avançar etapa, com descrição clara do que cada uma significa (linguagem simples, sem jargão).
+- Como o banco vai começar limpo, não precisa migração de dados antigos.
+
+## 3. Automação Lead → Reserva (com confirmação)
+
+Quando o operador move um lead para **Pronto pra Reserva**:
+
+- Abre um modal "Converter em reserva?" com:
+  - Expedição (pré-preenchida se o lead tem `expedicao_interesse`)
+  - Data (select das datas disponíveis daquela expedição)
+  - Quantidade de participantes (pré-preenchida)
+  - Valor unitário (puxado da data selecionada)
+- Ao confirmar: cria a **reserva** vinculada ao lead, cria **1 registro de participante** pra cada vaga (com nome do responsável no primeiro, demais em branco pra preencher depois) e gera entrada na **timeline**.
+- Lead vai automaticamente pra etapa **Convertido**, com link clicável pra reserva criada.
+- Tudo numa única transação — se falhar, nada é gravado.
+
+## 4. Ficha de Reserva consolidada
+
+A ficha (`/admin/reservas/$id`) já existe e o botão "Abrir" já leva pra ela. Vou:
+
+- Verificar e corrigir qualquer bug que esteja impedindo a abertura (você relatou "não abre nada" — testo e arrumo).
+- Reorganizar em 4 blocos visuais claros, na mesma tela, sem abas escondidas:
+  1. **Resumo** — cliente, expedição, data, valor total, valor recebido, saldo restante, situação.
+  2. **Participantes** — lista editável (nome, CPF, idade, peso, experiência), botão pra adicionar/remover.
+  3. **Timeline** — histórico cronológico automático (lead criado, qualificado, reserva criada, contrato enviado, pagamento recebido, etc.).
+  4. **Pagamentos e Documentos** — o que já existe hoje, só reorganizado.
+- Linguagem em português direto, sem termos técnicos.
+
+## 5. Timeline automática
+
+Já existe `reserva_historico` no banco com triggers. Vou:
+
+- Estender o trigger pra registrar também: criação do lead, mudanças de etapa do lead, conversão em reserva.
+- Renderizar a timeline na ficha da reserva (componente novo `reserva-timeline.tsx`) puxando de `reserva_historico` + `lead_conversas` do lead vinculado.
+
+## 6. Participantes — vista agrupada por Expedição+Data
+
+Refaço `/admin/participantes` pra mostrar:
 
 ```text
-┌──────────────────────────────┬──────────────────────────┐
-│  Abas + formulário (60%)     │  Preview ao vivo (40%)   │
-│  Geral / Roteiro / Mídia...  │  (sticky, rola junto)    │
-└──────────────────────────────┴──────────────────────────┘
+SERRA DA CANASTRA — 10 a 13/Out
+├─ Vagas: 12 · Confirmados: 8 · Pendentes: 2 · Disponíveis: 2
+├─ Receita prevista: R$ 58.800 · Recebida: R$ 42.000 · A receber: R$ 16.800
+└─ [lista de participantes com link pra reserva de cada um]
 ```
 
-- No mobile/tablet o preview vira um botão "Ver preview" que abre um drawer lateral, para não atrapalhar a edição num espaço pequeno.
-- Toggle no topo: `Preview: Desktop | Mobile` para ver as duas larguras.
-- Toggle "Abrir em nova aba" para checar a página real publicada (rascunho continua só no preview interno).
+- Agrupamento por `expedicao_id + data_id`.
+- Cada linha de participante mostra status de pagamento (puxado da reserva) e link "Ver reserva".
+- Filtros: por expedição, por data, por status.
 
-### 2. Preview ao vivo
+## 7. Dashboard com KPIs reais
 
-Novo componente `src/components/admin/expedicao-preview.tsx`:
+Atualizo `/admin` (index) com cards conectados:
 
-- Recebe o estado atual do formulário (mesmo objeto que já é editado em memória, **antes de salvar**) e renderiza uma versão enxuta da página `expedicoes/$slug` com: capa, nome, descrição curta/longa, duração, nível, preço, roteiro, "como chegar", próximas datas, galeria.
-- Reusa os mesmos componentes visuais da página pública sempre que possível, dentro de um container `iframe`-like (na verdade um `<div>` escalado) para simular largura de 1280px ou 390px.
-- Atualiza a cada tecla digitada (estado local já existe), sem precisar salvar.
-- Mostra um badge "Pré-visualização — alterações não salvas" enquanto há diff em relação ao banco.
+- Leads recebidos (mês) · Leads qualificados · Reservas criadas · Reservas confirmadas
+- Receita prevista · Receita recebida · Receita pendente
+- Participantes confirmados · Próximas expedições (3 mais próximas com contagem de vagas)
 
-### 3. Dicas contextuais em cada campo
+Tudo lendo de queries existentes — sem inventar tabela nova.
 
-Novo helper em `src/components/admin/admin-section.tsx`:
+## Fora desta fase (próximas)
 
-- Estende `AdminField` com uma prop opcional `ondeAparece` (texto curto) e `previewTarget` (id da seção no preview).
-- Abaixo do label aparece uma linha discreta: *"Aparece em: capa da expedição (título principal)"*, *"Aparece em: bloco 'O que está incluído' na página pública"*, etc.
-- Ao focar o campo, a seção correspondente no preview ganha um realce dourado por ~1.5s (scroll suave até ela), para você ver exatamente onde mexeu.
+- **Fase 2**: financeiro reativo (pagamento → atualiza tudo automático), documentos vinculados ao participante (Maria → contrato, RG, comprovante).
+- **Fase 3**: dashboard analítico avançado, IA movendo o funil sozinha.
 
-Mapa de campos → onde aparece (preenchido por aba):
+---
 
-- **Geral**: nome → capa/H1 e card nas listagens; descrição curta → subtítulo da capa e card; duração/nível → faixa de meta-dados; marca/país/região → breadcrumbs e filtros.
-- **Roteiro**: cada dia → bloco "Roteiro dia a dia".
-- **Como chegar**: título/conteúdo/aeroporto/referência/observações → seção "Como chegar".
-- **Mídia & narrativa**: capa → topo da página e og:image; galeria → carrossel editorial.
-- **Datas & Vagas**: linhas → bloco "Próximas datas" da página e listagem `/datas`.
-- **Comercial**: preço/moeda/inclui/requisitos → caixa de reserva + listas "Inclui" e "Requisitos".
-- **Publicação**: status/ordem → controla se aparece publicamente; descrição SEO → `<title>`/`<meta description>` na busca do Google.
+## Detalhes técnicos
 
-### 4. Detalhes técnicos
+**Arquivos editados:**
+- `src/lib/admin/api.ts` — `LEAD_ETAPAS` reduzido pra 6, função nova `converterLeadEmReserva(leadId, payload)`.
+- `src/routes/admin._authenticated.leads.tsx` — Kanban com 6 colunas, modal de conversão.
+- `src/routes/admin._authenticated.leads.$id.tsx` — botão "Avançar etapa" e CTA "Converter em reserva".
+- `src/routes/admin._authenticated.reservas.$id.tsx` — reorganização em 4 blocos, integração com timeline.
+- `src/routes/admin._authenticated.participantes.tsx` — refeito com vista agrupada.
+- `src/routes/admin._authenticated.index.tsx` — KPIs novos.
+- `src/components/admin/reserva-timeline.tsx` (novo).
+- `src/components/admin/converter-lead-modal.tsx` (novo).
 
-- Nenhuma mudança de backend, schema ou regras de negócio.
-- Reaproveita o estado já controlado no `admin._authenticated.expedicoes.$id.tsx`; o preview é só uma view derivada.
-- Sem nova rota — tudo dentro da tela existente.
-- Animação de realce com Motion (já no projeto), respeitando `prefers-reduced-motion`.
-- Sem alterações em `src/routes/expedicoes.$slug.tsx` (a página pública); o preview espelha o visual, mas vive em um componente próprio para podermos passar dados não salvos.
+**Banco (migrations):**
+1. Limpeza de dados de teste (leads, reservas, participantes, pagamentos, docs, históricos).
+2. Trigger `lead_etapa_changed` estendido pra registrar conversão Lead→Reserva em `reserva_historico` quando aplicável.
+3. (sem mudança de schema — só dados e função trigger)
 
-## Fora de escopo
+**Sem mudanças em:** expedições, datas, usuários, cargos, config, IA, integrações, área pública do site.
 
-- Salvar versões / histórico de rascunhos.
-- Preview de outras telas (reservas, leads, etc.) — só expedições por enquanto.
-- Editar diretamente clicando no preview (só leitura).
+**Risco:** baixo. Mudanças são aditivas exceto pela limpeza de dados (que você confirmou) e pela redução de etapas (banco começa limpo). Botão "Abrir" da reserva: investigo o motivo de não funcionar antes de refatorar — pode ser só um bug pontual.
 
-Se topar, sigo por aqui. Quer que o preview comece **fechado** (botão "Mostrar preview") ou **aberto** por padrão no desktop?
+Topa essa Fase 1? Se sim, posso começar pela limpeza + etapas novas + modal de conversão (que é o coração da mudança).
