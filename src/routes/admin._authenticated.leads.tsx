@@ -238,13 +238,14 @@ function LeadsPage() {
   );
 }
 
-function LeadKanbanCard({ lead, onDelete, onMove }: { lead: LeadRow; onDelete: () => void; onMove: (etapa: LeadEtapaId) => void }) {
+function LeadKanbanCard({ lead, onDelete, onMove, onConverter }: { lead: LeadRow; onDelete: () => void; onMove: (etapa: LeadEtapaId) => void; onConverter: () => void }) {
   const nivel = lead.nivel_interesse ?? 3;
   const score = lead.lead_score ?? 0;
   const proximaEtapa = useMemo(() => {
     const idx = LEAD_ETAPAS.findIndex((e) => e.id === lead.etapa_atendimento);
     return LEAD_ETAPAS[idx + 1];
   }, [lead.etapa_atendimento]);
+  const ehProntoReserva = lead.etapa_atendimento === "pronto_reserva";
   return (
     <Link
       to="/admin/leads/$id"
@@ -284,7 +285,14 @@ function LeadKanbanCard({ lead, onDelete, onMove }: { lead: LeadRow; onDelete: (
           → {lead.proxima_acao}
         </p>
       ) : null}
-      {proximaEtapa ? (
+      {ehProntoReserva ? (
+        <button
+          onClick={(e) => { e.preventDefault(); onConverter(); }}
+          className="mt-2 w-full rounded-md border border-[color:var(--admin-dourado)]/40 bg-[color:var(--admin-dourado)]/10 px-2 py-1.5 text-[11px] text-[color:var(--admin-dourado)] hover:bg-[color:var(--admin-dourado)]/15 flex items-center justify-center gap-1"
+        >
+          <ArrowRight className="h-3 w-3" /> Converter em reserva
+        </button>
+      ) : proximaEtapa ? (
         <button
           onClick={(e) => { e.preventDefault(); onMove(proximaEtapa.id); }}
           className="mt-2 w-full rounded-md border border-[color:var(--admin-borda)] px-2 py-1 text-[11px] text-[color:var(--admin-cinza-2)] hover:border-[color:var(--admin-dourado)]/50"
@@ -296,7 +304,7 @@ function LeadKanbanCard({ lead, onDelete, onMove }: { lead: LeadRow; onDelete: (
   );
 }
 
-function LeadsLista({ leads, onDelete }: { leads: LeadRow[]; onDelete: (l: LeadRow) => void }) {
+function LeadsLista({ leads, onDelete, onConverter }: { leads: LeadRow[]; onDelete: (l: LeadRow) => void; onConverter: (l: LeadRow) => void }) {
   return (
     <div className="admin-card admin-table-wrap p-0">
       <table className="w-full text-sm min-w-[820px]">
@@ -330,9 +338,19 @@ function LeadsLista({ leads, onDelete }: { leads: LeadRow[]; onDelete: (l: LeadR
               <td className="px-4 py-3 text-xs text-[color:var(--admin-cinza-2)]">{l.expedicao_interesse ?? "—"}</td>
               <td className="px-4 py-3 text-xs text-amber-200/80">{l.proxima_acao ?? "—"}</td>
               <td className="px-4 py-3 text-right">
-                <button onClick={() => onDelete(l)} className="text-[color:var(--admin-cinza-3)] hover:text-rose-300">
-                  <Trash2 className="h-4 w-4" />
-                </button>
+                <div className="inline-flex items-center gap-2">
+                  {l.etapa_atendimento === "pronto_reserva" ? (
+                    <button
+                      onClick={() => onConverter(l)}
+                      className="text-[11px] text-[color:var(--admin-dourado)] hover:underline inline-flex items-center gap-1"
+                    >
+                      <ArrowRight className="h-3 w-3" /> Converter
+                    </button>
+                  ) : null}
+                  <button onClick={() => onDelete(l)} className="text-[color:var(--admin-cinza-3)] hover:text-rose-300">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
