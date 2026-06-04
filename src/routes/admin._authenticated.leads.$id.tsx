@@ -256,6 +256,18 @@ function LeadEdit() {
           </AdminSection>
         </div>
       </div>
+
+      {converter ? (
+        <ConverterLeadModal
+          open={converter}
+          onOpenChange={setConverter}
+          lead={lead as LeadRow}
+          onConverted={() => {
+            qc.invalidateQueries({ queryKey: ["admin", "lead", id] });
+            qc.invalidateQueries({ queryKey: ["admin", "reserva-do-lead", id] });
+          }}
+        />
+      ) : null}
     </div>
   );
 }
