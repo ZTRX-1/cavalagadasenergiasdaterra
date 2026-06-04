@@ -904,6 +904,17 @@ export async function getDocumentoSignedUrl(doc: DocumentoRow): Promise<string> 
   return data.signedUrl;
 }
 
+export async function listDocumentosByParticipante(participanteId: string): Promise<DocumentoRow[]> {
+  const { data, error } = await supabase
+    .from("documentos")
+    .select("*")
+    .eq("participante_id", participanteId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as unknown as DocumentoRow[];
+}
+
+
 
 // ---------- CONFIGURAÇÕES ----------
 
