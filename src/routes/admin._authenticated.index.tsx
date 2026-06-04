@@ -209,16 +209,26 @@ function DashboardPage() {
         </div>
       </div>
 
-      {/* KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KPI label="Leads no período" value={isLoading ? "—" : String(data?.leads ?? 0)} icon={Sparkles} />
-        <KPI label="Pré-reservas" value={isLoading ? "—" : String(data?.preReservas ?? 0)} icon={CalendarCheck} />
-        <KPI label="Expedições ativas" value={isLoading ? "—" : String(data?.expedicoesAtivas ?? 0)} icon={Compass} />
-        <KPI
-          label="Vagas restantes"
-          value={isLoading ? "—" : `${data?.vagasRestantes ?? 0} / ${data?.vagasTotais ?? 0}`}
-          icon={Users}
-        />
+      {/* KPIs operacionais — funil de vendas */}
+      <div>
+        <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">Funil no período</p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <KPI label="Leads recebidos" value={isLoading ? "—" : String(data?.leadsTotal ?? 0)} icon={Sparkles} />
+          <KPI label="Leads qualificados" value={isLoading ? "—" : String(data?.leadsQualificados ?? 0)} icon={Users} />
+          <KPI label="Reservas criadas" value={isLoading ? "—" : String(data?.reservasCriadas ?? 0)} icon={CalendarCheck} />
+          <KPI label="Reservas confirmadas" value={isLoading ? "—" : String(data?.reservasConfirmadas ?? 0)} icon={Compass} />
+        </div>
+      </div>
+
+      {/* KPIs receita */}
+      <div>
+        <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">Receita no período</p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <KPI label="Receita prevista" value={isLoading ? "—" : formatBRL(data?.receitaPrevista ?? 0)} icon={TrendingUp} />
+          <KPI label="Receita recebida" value={isLoading ? "—" : formatBRL(data?.receitaRecebida ?? 0)} icon={TrendingUp} />
+          <KPI label="Receita pendente" value={isLoading ? "—" : formatBRL(data?.receitaPendente ?? 0)} icon={TrendingUp} />
+          <KPI label="Participantes confirmados" value={isLoading ? "—" : String(data?.participantesConfirmados ?? 0)} icon={Users} />
+        </div>
       </div>
 
       {/* Faturamento + próximas */}
@@ -226,17 +236,17 @@ function DashboardPage() {
         <div className="admin-card p-6 lg:col-span-2">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)]">Faturamento estimado</p>
+              <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)]">Potencial das vagas em aberto</p>
               <h3 className="mt-1 font-display text-[26px] text-[color:var(--admin-cinza-1)]">
-                {isLoading ? "—" : formatBRL(data?.faturamentoEstimado ?? 0)}
+                {isLoading ? "—" : formatBRL(data?.faturamentoEstimadoVagas ?? 0)}
               </h3>
-              <p className="mt-1 text-[12px] text-[color:var(--admin-cinza-3)]">Metade Pix + metade Cartão por vaga restante</p>
+              <p className="mt-1 text-[12px] text-[color:var(--admin-cinza-3)]">Soma estimada das vagas restantes (50% Pix + 50% Cartão)</p>
               <p className="mt-1 text-[12px] text-[color:var(--admin-cinza-2)]">
-                Confirmado no período: <span className="text-[color:var(--admin-dourado)]">{isLoading ? "—" : formatBRL(data?.faturamentoConfirmado ?? 0)}</span>
+                Vagas em aberto: <span className="text-[color:var(--admin-dourado)]">{isLoading ? "—" : `${data?.vagasRestantes ?? 0} / ${data?.vagasTotais ?? 0}`}</span>
               </p>
             </div>
             <span className="inline-flex items-center gap-1 rounded-full border border-[color:var(--admin-borda)] px-2.5 py-1 text-[11px] text-[color:var(--admin-cinza-2)]">
-              <TrendingUp className="h-3 w-3" strokeWidth={2} /> últimos 7 meses
+              <TrendingUp className="h-3 w-3" strokeWidth={2} /> tendência ilustrativa
             </span>
           </div>
           <div className="mt-4 h-[220px]">
