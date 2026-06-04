@@ -1,17 +1,19 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Save, Send, Star, Flame, Brain } from "lucide-react";
+import { ArrowLeft, Save, Send, Star, Flame, Brain, ArrowRight, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminSection, AdminField } from "@/components/admin/admin-section";
 import { StatusBadge } from "@/components/admin/admin-status-badge";
+import { ConverterLeadModal } from "@/components/admin/converter-lead-modal";
 import {
   getLead, updateLead, LEAD_ETAPAS, CONVERSA_TIPOS,
   listLeadConversas, addLeadConversa,
   getLeadMemoria, upsertLeadMemoria,
   type LeadRow, type LeadEtapaId, type LeadConversaTipo, type LeadMemoriaRow,
 } from "@/lib/admin/api";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin/_authenticated/leads/$id")({
   component: LeadEdit,
