@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
-import { Plus, Sparkles, Trash2, Filter, X, LayoutGrid, List, Star, Flame } from "lucide-react";
+import { Plus, Sparkles, Trash2, Filter, X, LayoutGrid, List, Star, Flame, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminEmpty } from "@/components/admin/admin-empty";
@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { AdminField } from "@/components/admin/admin-section";
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
+import { ConverterLeadModal } from "@/components/admin/converter-lead-modal";
 import { useCan } from "@/hooks/use-permissions";
 import {
   listLeads,
