@@ -32,6 +32,7 @@ function LeadsPage() {
   const { data: leads = [], isLoading } = useQuery({ queryKey: ["admin", "leads"], queryFn: listLeads });
   const [novo, setNovo] = useState(false);
   const [del, setDel] = useState<LeadRow | null>(null);
+  const [converter, setConverter] = useState<LeadRow | null>(null);
   const [view, setView] = useState<"kanban" | "lista">("kanban");
   const [fOrigem, setFOrigem] = useState<string>("todas");
   const [fExpedicao, setFExpedicao] = useState<string>("todas");
