@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
-import { Plus, Users, Trash2, FileDown, Search } from "lucide-react";
+import { Plus, Users, Trash2, FileDown, Search, LayoutGrid, List, Calendar, Wallet, UserCheck, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminEmpty } from "@/components/admin/admin-empty";
@@ -21,6 +21,7 @@ import { exportarFichaGuiaPDF } from "@/lib/admin/participantes-pdf";
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
 import { useCan } from "@/hooks/use-permissions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin/_authenticated/participantes")({
   component: ParticipantesPage,
@@ -34,13 +35,72 @@ function calcIdade(nasc: string | null): string {
   return `${age} anos`;
 }
 
+function fmtBRL(v: number) {
+  return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+// ----------------- Tipos auxiliares para vista agrupada -----------------
+
+type ReservaSlim = {
+  id: string;
+  data_id: string | null;
+  expedicao_id: string | null;
+  data_label: string;
+  expedicao_nome: string;
+  valor_total: number | null;
+  valor_pago: number;
+  status_operacional: string;
+};
+type DataSlim = {
+  id: string;
+  expedicao_id: string;
+  data_inicio: string;
+  data_fim: string;
+  vagas_total: number;
+  vagas_disponiveis: number;
+  preco_pix: number | null;
+  preco_cartao: number | null;
+};
+
+async function fetchReservasSlim(): Promise<ReservaSlim[]> {
+  const { data, error } = await supabase
+    .from("reservas")
+    .select("id, data_id, expedicao_id, data_label, expedicao_nome, valor_total, valor_pago, status_operacional");
+  if (error) throw error;
+  return (data ?? []) as unknown as ReservaSlim[];
+}
+async function fetchDatasSlim(): Promise<DataSlim[]> {
+  const { data, error } = await supabase
+    .from("datas")
+    .select("id, expedicao_id, data_inicio, data_fim, vagas_total, vagas_disponiveis, preco_pix, preco_cartao")
+    .order("data_inicio", { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as unknown as DataSlim[];
+}
+
+function fmtDateRange(inicio: string, fim: string) {
+  try {
+    const a = new Date(inicio + "T00:00:00");
+    const b = new Date(fim + "T00:00:00");
+    return `${a.toLocaleDateString("pt-BR")} → ${b.toLocaleDateString("pt-BR")}`;
+  } catch {
+    return `${inicio} → ${fim}`;
+  }
+}
+
+// ----------------- Página -----------------
+
 function ParticipantesPage() {
   const qc = useQueryClient();
   const { data: list = [], isLoading } = useQuery({ queryKey: ["admin", "participantes"], queryFn: listParticipantes });
   const { data: expedicoes = [] } = useQuery({ queryKey: ["admin", "expedicoes"], queryFn: listExpedicoes });
+  const { data: reservas = [] } = useQuery({ queryKey: ["admin", "reservas-slim"], queryFn: fetchReservasSlim });
+  const { data: datas = [] } = useQuery({ queryKey: ["admin", "datas-slim"], queryFn: fetchDatasSlim });
+
   const [novo, setNovo] = useState(false);
   const [edit, setEdit] = useState<ParticipanteRow | null>(null);
   const [del, setDel] = useState<ParticipanteRow | null>(null);
+  const [view, setView] = useState<"agrupado" | "lista">("agrupado");
   const [filtroExp, setFiltroExp] = useState<string>("");
   const [filtroStatus, setFiltroStatus] = useState<string>("");
   const [busca, setBusca] = useState("");
@@ -78,10 +138,20 @@ function ParticipantesPage() {
       <AdminPageHeader
         eyebrow="Operação"
         title="Participantes"
-        description="Ficha completa de cavaleiros e amazonas, vinculados às expedições."
+        description="Cavaleiros e amazonas agrupados por expedição e data, com receita e ocupação em tempo real."
         actions={
-          <div className="flex flex-wrap gap-2">
-            <button className="admin-btn-ghost" onClick={exportar} title="Gerar PDF com a ficha completa dos confirmados desta expedição">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="hidden md:flex items-center rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/60 p-0.5">
+              <button
+                className={`flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs ${view === "agrupado" ? "bg-[color:var(--admin-dourado)]/10 text-[color:var(--admin-dourado)]" : "text-[color:var(--admin-cinza-3)]"}`}
+                onClick={() => setView("agrupado")}
+              ><LayoutGrid className="h-3.5 w-3.5" /> Por expedição</button>
+              <button
+                className={`flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs ${view === "lista" ? "bg-[color:var(--admin-dourado)]/10 text-[color:var(--admin-dourado)]" : "text-[color:var(--admin-cinza-3)]"}`}
+                onClick={() => setView("lista")}
+              ><List className="h-3.5 w-3.5" /> Lista</button>
+            </div>
+            <button className="admin-btn-ghost" onClick={exportar} title="Gerar PDF com a ficha completa">
               <FileDown className="h-4 w-4" /> Ficha do guia (PDF)
             </button>
             <button className="admin-btn-primary" onClick={() => setNovo(true)}><Plus className="h-4 w-4" /> Novo participante</button>
@@ -91,10 +161,9 @@ function ParticipantesPage() {
 
       {!canEdit ? <EmDesenvolvimentoBanner /> : null}
       <AdminPageIntro>
-        <strong className="text-[color:var(--admin-cinza-1)]">Lista de viajantes confirmados.</strong> Aqui ficam todos os cavaleiros e amazonas que vão participar de cada expedição. Use para montar a lista que vai pro guia em campo, conferir restrições alimentares, peso (pra escolher o cavalo certo) e contatos de emergência. Para gerar o PDF impresso do guia, <em>filtre por expedição</em> e clique em <strong>Ficha do guia (PDF)</strong>.
+        <strong className="text-[color:var(--admin-cinza-1)]">Quem vai pra cada expedição.</strong> A visão <em>Por expedição</em> mostra vagas, confirmados, pendentes e receita prevista/recebida de cada data. Participantes nascem automaticamente quando o lead vira reserva — você só precisa completar os dados (peso, CPF, restrições).
       </AdminPageIntro>
 
-      {/* Filtros */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <div className="relative">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[color:var(--admin-cinza-3)]" />
@@ -122,75 +191,31 @@ function ParticipantesPage() {
 
       {isLoading ? (
         <div className="admin-card h-40 animate-pulse" />
+      ) : filtrados.length === 0 && list.length === 0 ? (
+        <AdminEmpty
+          icon={Users}
+          titulo="Nenhum participante ainda"
+          descricao="Os participantes aparecem aqui automaticamente quando um lead vira reserva. Você também pode cadastrar manualmente."
+          acao={<button className="admin-btn-primary" onClick={() => setNovo(true)}><Plus className="h-4 w-4" /> Cadastrar manualmente</button>}
+        />
       ) : filtrados.length === 0 ? (
-        <AdminEmpty icon={Users} titulo="Nenhum participante" descricao="Ajuste os filtros ou cadastre um novo cavaleiro." />
+        <AdminEmpty icon={Users} titulo="Nenhum participante corresponde aos filtros" descricao="Ajuste os filtros acima ou limpe para ver todos." />
+      ) : view === "agrupado" ? (
+        <VistaAgrupada
+          participantes={filtrados}
+          reservas={reservas}
+          datas={datas}
+          expedicoes={expedicoes}
+          onEdit={(p) => setEdit(p)}
+          onDelete={(p) => setDel(p)}
+        />
       ) : (
-        <>
-          {/* Tabela — desktop */}
-          <div className="admin-card admin-table-wrap p-0 hidden md:block">
-            <table className="w-full text-left text-sm min-w-[720px]">
-              <thead className="bg-[color:var(--admin-carvao-deep)]/60 text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
-                <tr>
-                  <th className="px-5 py-3.5 font-medium">Nome</th>
-                  <th className="px-3 py-3.5 font-medium">Idade</th>
-                  <th className="px-3 py-3.5 font-medium">Peso</th>
-                  <th className="px-3 py-3.5 font-medium">Experiência</th>
-                  <th className="px-3 py-3.5 font-medium">Expedição</th>
-                  <th className="px-3 py-3.5 font-medium">Status</th>
-                  <th className="px-5 py-3.5 font-medium text-right">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtrados.map((p) => {
-                  const exp = expedicoes.find((e) => e.id === p.expedicao_id);
-                  return (
-                    <tr key={p.id} className="border-t border-[color:var(--admin-borda)] hover:bg-[color:var(--admin-petroleo)]/20">
-                      <td className="px-5 py-4">
-                        <button className="font-medium text-[color:var(--admin-cinza-1)] hover:text-[color:var(--admin-dourado)]" onClick={() => setEdit(p)}>{p.nome}</button>
-                        <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{p.telefone ?? p.email ?? "—"}</div>
-                      </td>
-                      <td className="px-3 py-4 text-[color:var(--admin-cinza-2)]">{calcIdade(p.data_nascimento)}</td>
-                      <td className="px-3 py-4 text-[color:var(--admin-cinza-2)]">{p.peso ? `${p.peso} kg` : "—"}</td>
-                      <td className="px-3 py-4 text-[color:var(--admin-cinza-2)] capitalize">{p.experiencia_equestre ?? "—"}</td>
-                      <td className="px-3 py-4 text-[color:var(--admin-cinza-2)] truncate max-w-[200px]">{exp?.nome ?? "—"}</td>
-                      <td className="px-3 py-4"><StatusBadge status={p.status} /></td>
-                      <td className="px-5 py-4 text-right">
-                        <button onClick={() => setDel(p)} className="admin-btn-ghost px-2 py-1.5 hover:!bg-rose-500/10"><Trash2 className="h-3.5 w-3.5" /></button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Cards — mobile */}
-          <div className="grid gap-2 md:hidden">
-            {filtrados.map((p) => {
-              const exp = expedicoes.find((e) => e.id === p.expedicao_id);
-              return (
-                <div key={p.id} className="admin-card p-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <button onClick={() => setEdit(p)} className="text-left">
-                      <div className="font-medium text-[color:var(--admin-cinza-1)]">{p.nome}</div>
-                      <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{p.telefone ?? p.email ?? "—"}</div>
-                    </button>
-                    <StatusBadge status={p.status} />
-                  </div>
-                  <div className="mt-3 grid grid-cols-3 gap-2 text-[11px] text-[color:var(--admin-cinza-3)]">
-                    <div><span className="block text-[10px] uppercase tracking-wider">Idade</span><span className="text-[color:var(--admin-cinza-2)]">{calcIdade(p.data_nascimento)}</span></div>
-                    <div><span className="block text-[10px] uppercase tracking-wider">Peso</span><span className="text-[color:var(--admin-cinza-2)]">{p.peso ? `${p.peso} kg` : "—"}</span></div>
-                    <div><span className="block text-[10px] uppercase tracking-wider">Exp.</span><span className="capitalize text-[color:var(--admin-cinza-2)]">{p.experiencia_equestre ?? "—"}</span></div>
-                  </div>
-                  <div className="mt-2 flex items-center justify-between gap-2 text-[11px]">
-                    <span className="truncate text-[color:var(--admin-cinza-3)]">{exp?.nome ?? "Sem expedição"}</span>
-                    <button onClick={() => setDel(p)} className="admin-btn-ghost px-2 py-1.5 hover:!bg-rose-500/10"><Trash2 className="h-3.5 w-3.5" /></button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </>
+        <VistaLista
+          participantes={filtrados}
+          expedicoes={expedicoes}
+          onEdit={(p) => setEdit(p)}
+          onDelete={(p) => setDel(p)}
+        />
       )}
 
       <ParticipanteDialog
@@ -213,6 +238,242 @@ function ParticipantesPage() {
     </div>
   );
 }
+
+// ----------------- Vista agrupada por Expedição + Data -----------------
+
+function VistaAgrupada({
+  participantes,
+  reservas,
+  datas,
+  expedicoes,
+  onEdit,
+  onDelete,
+}: {
+  participantes: ParticipanteRow[];
+  reservas: ReservaSlim[];
+  datas: DataSlim[];
+  expedicoes: { id: string; nome: string }[];
+  onEdit: (p: ParticipanteRow) => void;
+  onDelete: (p: ParticipanteRow) => void;
+}) {
+  // Agrupa participantes por (expedicao_id, data_id)
+  const grupos = useMemo(() => {
+    const map = new Map<string, { expedicao_id: string | null; data_id: string | null; participantes: ParticipanteRow[] }>();
+    participantes.forEach((p) => {
+      const key = `${p.expedicao_id ?? "sem-exp"}|${p.data_id ?? "sem-data"}`;
+      if (!map.has(key)) {
+        map.set(key, { expedicao_id: p.expedicao_id, data_id: p.data_id, participantes: [] });
+      }
+      map.get(key)!.participantes.push(p);
+    });
+    return Array.from(map.values()).sort((a, b) => {
+      const da = datas.find((d) => d.id === a.data_id)?.data_inicio ?? "";
+      const db = datas.find((d) => d.id === b.data_id)?.data_inicio ?? "";
+      return da.localeCompare(db);
+    });
+  }, [participantes, datas]);
+
+  return (
+    <div className="space-y-4">
+      {grupos.map((g) => {
+        const exp = expedicoes.find((e) => e.id === g.expedicao_id);
+        const data = datas.find((d) => d.id === g.data_id);
+        const reservasGrupo = reservas.filter(
+          (r) => r.expedicao_id === g.expedicao_id && r.data_id === g.data_id,
+        );
+        const confirmados = g.participantes.filter((p) => p.status === "confirmado").length;
+        const pendentes = g.participantes.filter((p) => p.status === "pendente").length;
+        const vagasTotal = data?.vagas_total ?? g.participantes.length;
+        const vagasDisp = data?.vagas_disponiveis ?? 0;
+        const receitaPrevista = reservasGrupo.reduce((s, r) => s + Number(r.valor_total ?? 0), 0);
+        const receitaRecebida = reservasGrupo.reduce((s, r) => s + Number(r.valor_pago ?? 0), 0);
+        const aReceber = receitaPrevista - receitaRecebida;
+
+        return (
+          <section
+            key={`${g.expedicao_id}-${g.data_id}`}
+            className="admin-card overflow-hidden"
+          >
+            <header className="border-b border-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo-soft)]/30 px-5 py-4">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h3 className="font-display text-lg text-[color:var(--admin-cinza-1)]">
+                    {exp?.nome ?? "Sem expedição"}
+                  </h3>
+                  <div className="mt-1 flex items-center gap-1.5 text-[12px] text-[color:var(--admin-cinza-3)]">
+                    <Calendar className="h-3 w-3" />
+                    {data ? fmtDateRange(data.data_inicio, data.data_fim) : "Sem data definida"}
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-3 text-[11px]">
+                  <Pill icon={Users} label="Vagas" value={`${vagasTotal - vagasDisp}/${vagasTotal}`} />
+                  <Pill icon={UserCheck} label="Confirmados" value={String(confirmados)} tone="ok" />
+                  {pendentes > 0 ? (
+                    <Pill icon={AlertCircle} label="Pendentes" value={String(pendentes)} tone="warn" />
+                  ) : null}
+                  <Pill icon={Wallet} label="Receita prevista" value={fmtBRL(receitaPrevista)} />
+                  <Pill icon={Wallet} label="Recebida" value={fmtBRL(receitaRecebida)} tone="ok" />
+                  {aReceber > 0 ? (
+                    <Pill icon={Wallet} label="A receber" value={fmtBRL(aReceber)} tone="warn" />
+                  ) : null}
+                </div>
+              </div>
+            </header>
+            <div className="admin-table-wrap p-0">
+              <table className="w-full text-sm min-w-[640px]">
+                <thead className="text-left text-[10px] uppercase tracking-[0.16em] text-[color:var(--admin-cinza-3)]">
+                  <tr>
+                    <th className="px-5 py-3 font-medium">Participante</th>
+                    <th className="px-3 py-3 font-medium">Idade</th>
+                    <th className="px-3 py-3 font-medium">Peso</th>
+                    <th className="px-3 py-3 font-medium">Experiência</th>
+                    <th className="px-3 py-3 font-medium">Status</th>
+                    <th className="px-3 py-3 font-medium">Reserva</th>
+                    <th className="px-5 py-3 font-medium text-right">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {g.participantes.map((p) => (
+                    <tr key={p.id} className="border-t border-[color:var(--admin-borda)] hover:bg-[color:var(--admin-petroleo)]/20">
+                      <td className="px-5 py-3">
+                        <button
+                          onClick={() => onEdit(p)}
+                          className="font-medium text-[color:var(--admin-cinza-1)] hover:text-[color:var(--admin-dourado)] text-left"
+                        >
+                          {p.nome}
+                        </button>
+                        <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{p.telefone ?? p.email ?? "—"}</div>
+                      </td>
+                      <td className="px-3 py-3 text-[color:var(--admin-cinza-2)]">{calcIdade(p.data_nascimento)}</td>
+                      <td className="px-3 py-3 text-[color:var(--admin-cinza-2)]">{p.peso ? `${p.peso} kg` : "—"}</td>
+                      <td className="px-3 py-3 text-[color:var(--admin-cinza-2)] capitalize">{p.experiencia_equestre ?? "—"}</td>
+                      <td className="px-3 py-3"><StatusBadge status={p.status} /></td>
+                      <td className="px-3 py-3">
+                        {p.reserva_id ? (
+                          <Link
+                            to="/admin/reservas/$id"
+                            params={{ id: p.reserva_id }}
+                            className="text-[11px] text-[color:var(--admin-dourado)] hover:underline"
+                          >
+                            Ver reserva
+                          </Link>
+                        ) : (
+                          <span className="text-[11px] text-[color:var(--admin-cinza-3)]">—</span>
+                        )}
+                      </td>
+                      <td className="px-5 py-3 text-right">
+                        <button onClick={() => onDelete(p)} className="admin-btn-ghost px-2 py-1.5 hover:!bg-rose-500/10"><Trash2 className="h-3.5 w-3.5" /></button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
+function Pill({ icon: Icon, label, value, tone }: { icon: typeof Users; label: string; value: string; tone?: "ok" | "warn" }) {
+  const cls =
+    tone === "ok"
+      ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
+      : tone === "warn"
+      ? "border-amber-500/30 bg-amber-500/10 text-amber-300"
+      : "border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 text-[color:var(--admin-cinza-2)]";
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${cls}`}>
+      <Icon className="h-3 w-3" />
+      <span className="text-[10px] uppercase tracking-[0.16em] opacity-80">{label}</span>
+      <span className="font-medium">{value}</span>
+    </span>
+  );
+}
+
+// ----------------- Vista lista (tabela simples antiga) -----------------
+
+function VistaLista({
+  participantes,
+  expedicoes,
+  onEdit,
+  onDelete,
+}: {
+  participantes: ParticipanteRow[];
+  expedicoes: { id: string; nome: string }[];
+  onEdit: (p: ParticipanteRow) => void;
+  onDelete: (p: ParticipanteRow) => void;
+}) {
+  return (
+    <>
+      <div className="admin-card admin-table-wrap p-0 hidden md:block">
+        <table className="w-full text-left text-sm min-w-[720px]">
+          <thead className="bg-[color:var(--admin-carvao-deep)]/60 text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
+            <tr>
+              <th className="px-5 py-3.5 font-medium">Nome</th>
+              <th className="px-3 py-3.5 font-medium">Idade</th>
+              <th className="px-3 py-3.5 font-medium">Peso</th>
+              <th className="px-3 py-3.5 font-medium">Experiência</th>
+              <th className="px-3 py-3.5 font-medium">Expedição</th>
+              <th className="px-3 py-3.5 font-medium">Status</th>
+              <th className="px-5 py-3.5 font-medium text-right">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {participantes.map((p) => {
+              const exp = expedicoes.find((e) => e.id === p.expedicao_id);
+              return (
+                <tr key={p.id} className="border-t border-[color:var(--admin-borda)] hover:bg-[color:var(--admin-petroleo)]/20">
+                  <td className="px-5 py-4">
+                    <button className="font-medium text-[color:var(--admin-cinza-1)] hover:text-[color:var(--admin-dourado)]" onClick={() => onEdit(p)}>{p.nome}</button>
+                    <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{p.telefone ?? p.email ?? "—"}</div>
+                  </td>
+                  <td className="px-3 py-4 text-[color:var(--admin-cinza-2)]">{calcIdade(p.data_nascimento)}</td>
+                  <td className="px-3 py-4 text-[color:var(--admin-cinza-2)]">{p.peso ? `${p.peso} kg` : "—"}</td>
+                  <td className="px-3 py-4 text-[color:var(--admin-cinza-2)] capitalize">{p.experiencia_equestre ?? "—"}</td>
+                  <td className="px-3 py-4 text-[color:var(--admin-cinza-2)] truncate max-w-[200px]">{exp?.nome ?? "—"}</td>
+                  <td className="px-3 py-4"><StatusBadge status={p.status} /></td>
+                  <td className="px-5 py-4 text-right">
+                    <button onClick={() => onDelete(p)} className="admin-btn-ghost px-2 py-1.5 hover:!bg-rose-500/10"><Trash2 className="h-3.5 w-3.5" /></button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="grid gap-2 md:hidden">
+        {participantes.map((p) => {
+          const exp = expedicoes.find((e) => e.id === p.expedicao_id);
+          return (
+            <div key={p.id} className="admin-card p-4">
+              <div className="flex items-start justify-between gap-2">
+                <button onClick={() => onEdit(p)} className="text-left">
+                  <div className="font-medium text-[color:var(--admin-cinza-1)]">{p.nome}</div>
+                  <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{p.telefone ?? p.email ?? "—"}</div>
+                </button>
+                <StatusBadge status={p.status} />
+              </div>
+              <div className="mt-3 grid grid-cols-3 gap-2 text-[11px] text-[color:var(--admin-cinza-3)]">
+                <div><span className="block text-[10px] uppercase tracking-wider">Idade</span><span className="text-[color:var(--admin-cinza-2)]">{calcIdade(p.data_nascimento)}</span></div>
+                <div><span className="block text-[10px] uppercase tracking-wider">Peso</span><span className="text-[color:var(--admin-cinza-2)]">{p.peso ? `${p.peso} kg` : "—"}</span></div>
+                <div><span className="block text-[10px] uppercase tracking-wider">Exp.</span><span className="capitalize text-[color:var(--admin-cinza-2)]">{p.experiencia_equestre ?? "—"}</span></div>
+              </div>
+              <div className="mt-2 flex items-center justify-between gap-2 text-[11px]">
+                <span className="truncate text-[color:var(--admin-cinza-3)]">{exp?.nome ?? "Sem expedição"}</span>
+                <button onClick={() => onDelete(p)} className="admin-btn-ghost px-2 py-1.5 hover:!bg-rose-500/10"><Trash2 className="h-3.5 w-3.5" /></button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
+// ----------------- Dialog (criar/editar) -----------------
 
 function ParticipanteDialog({
   open, onOpenChange, expedicoes, initial, onSaved,
@@ -260,9 +521,6 @@ function ParticipanteDialog({
               <option value="">Nenhuma</option>
               {expedicoes.map((e) => <option key={e.id} value={e.id}>{e.nome}</option>)}
             </select>
-          </AdminField>
-          <AdminField label="Grupo / reserva (opcional)" hint="UUID da reserva quando o participante faz parte de um grupo">
-            <input className="admin-input font-mono text-xs" value={form.reserva_id ?? ""} onChange={(e) => setForm({ ...form, reserva_id: e.target.value || null })} placeholder="Ex.: id da reserva 'Empresa Josefina'" />
           </AdminField>
           <AdminField label="Acompanhante"><input className="admin-input" value={form.acompanhante ?? ""} onChange={(e) => setForm({ ...form, acompanhante: e.target.value })} /></AdminField>
           <AdminField label="Observações médicas / alergias"><textarea className="admin-input min-h-[60px]" value={form.observacoes_medicas ?? ""} onChange={(e) => setForm({ ...form, observacoes_medicas: e.target.value })} /></AdminField>

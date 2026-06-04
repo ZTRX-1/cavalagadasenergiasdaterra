@@ -382,13 +382,11 @@ export async function deleteData(id: string): Promise<void> {
 /** Etapas do Atendimento — coluna do Kanban e progresso do lead. */
 export const LEAD_ETAPAS = [
   { id: "novo", label: "Novo", descricao: "Acabou de chegar" },
-  { id: "em_atendimento", label: "Em Atendimento", descricao: "Conversando com a equipe" },
+  { id: "em_atendimento", label: "Atendimento", descricao: "IA ou equipe iniciou conversa" },
   { id: "qualificado", label: "Qualificado", descricao: "Tem perfil para a viagem" },
-  { id: "interessado", label: "Interessado", descricao: "Mostrou interesse real" },
-  { id: "pronto_reserva", label: "Pronto pra Reserva", descricao: "Quer fechar" },
-  { id: "encaminhado_financeiro", label: "No Financeiro", descricao: "Aguardando pagamento" },
-  { id: "pago", label: "Pago", descricao: "Reserva confirmada" },
-  { id: "perdido", label: "Perdido", descricao: "Não fechou" },
+  { id: "pronto_reserva", label: "Pronto pra Reserva", descricao: "Quer reservar agora" },
+  { id: "convertido", label: "Convertido", descricao: "Virou reserva" },
+  { id: "perdido", label: "Perdido", descricao: "Não avançou" },
 ] as const;
 export type LeadEtapaId = (typeof LEAD_ETAPAS)[number]["id"];
 
@@ -1164,4 +1162,140 @@ export async function addVideoUrl(expedicaoId: string, url: string, titulo?: str
     .single();
   if (error) throw new Error(error.message);
   return data as unknown as AssetRow;
+}
+
+// ---------- CONVERSÃO LEAD → RESERVA ----------
+
+export interface ConverterLeadInput {
+  expedicao_id: string;
+  expedicao_nome: string;
+  data_id: string;
+  data_label: string;
+  quantidade_participantes: number;
+  preco_unitario: number;
+  forma_pagamento?: string | null;
+  observacoes?: string | null;
+}
+
+export interface ConverterLeadResult {
+  reserva_id: string;
+  protocolo: string;
+}
+
+/**
+ * Converte um lead em reserva confirmada.
+ * - Gera protocolo único
+ * - Cria a reserva vinculada ao lead, com dados do responsável copiados
+ * - Cria N registros em participantes (1 por vaga) já vinculados à reserva,
+ *   data e expedição. O primeiro participante leva o nome do responsável.
+ * - Move o lead para a etapa "convertido"
+ * Tudo em sequência; se falhar, lança erro e a operação para.
+ */
+export async function converterLeadEmReserva(
+  leadId: string,
+  input: ConverterLeadInput,
+): Promise<ConverterLeadResult> {
+  const lead = await getLead(leadId);
+  if (!lead) throw new Error("Lead não encontrado.");
+
+  if (input.quantidade_participantes < 1) {
+    throw new Error("Quantidade de participantes deve ser pelo menos 1.");
+  }
+  if (input.preco_unitario < 0) {
+    throw new Error("Preço unitário inválido.");
+  }
+
+  const valor_total = input.preco_unitario * input.quantidade_participantes;
+
+  // 1) gera protocolo
+  const { data: protoData, error: protoErr } = await supabase.rpc("gerar_protocolo");
+  if (protoErr || !protoData) throw new Error("Falha ao gerar protocolo.");
+  const protocolo = String(protoData);
+
+  const responsavel = {
+    nome: lead.nome,
+    email: lead.email ?? "",
+    telefone: lead.telefone ?? "",
+    cpf: lead.cpf ?? "",
+    cidade: lead.cidade ?? "",
+    estado: lead.estado ?? "",
+  };
+
+  // 2) cria reserva
+  const { data: reservaRow, error: reservaErr } = await supabase
+    .from("reservas")
+    .insert({
+      protocolo,
+      lead_id: leadId,
+      expedicao_id: input.expedicao_id,
+      expedicao_nome: input.expedicao_nome,
+      data_id: input.data_id,
+      data_label: input.data_label,
+      status: "pre_reserva_enviada",
+      status_operacional: "pre_reserva",
+      status_financeiro: "aguardando_pagamento",
+      quantidade_participantes: input.quantidade_participantes,
+      cliente_nome: lead.nome,
+      cliente_email: lead.email,
+      cliente_telefone: lead.telefone,
+      cliente_cpf: lead.cpf,
+      responsavel,
+      forma_pagamento: input.forma_pagamento ?? null,
+      valor_total,
+      observacoes_internas: input.observacoes ?? null,
+    } as never)
+    .select("id, protocolo")
+    .maybeSingle();
+  if (reservaErr) throw new Error("Falha ao criar reserva: " + reservaErr.message);
+  if (!reservaRow) throw new Error("Reserva criada mas não retornada.");
+
+  // 3) cria participantes (1 por vaga; primeiro herda o nome do responsável)
+  const participantesPayload = Array.from({ length: input.quantidade_participantes }).map(
+    (_, i) => ({
+      reserva_id: reservaRow.id,
+      expedicao_id: input.expedicao_id,
+      data_id: input.data_id,
+      nome: i === 0 ? lead.nome : "(preencher)",
+      cpf: i === 0 ? lead.cpf : null,
+      telefone: i === 0 ? lead.telefone : null,
+      email: i === 0 ? lead.email : null,
+      peso: i === 0 ? lead.peso : null,
+      data_nascimento: i === 0 ? lead.data_nascimento : null,
+      experiencia_equestre: i === 0 ? lead.experiencia_equestre : null,
+      observacoes_medicas: i === 0 ? lead.observacoes_medicas : null,
+      restricoes_alimentares: i === 0 ? lead.restricoes_alimentares : null,
+      status: "pendente",
+    }),
+  );
+  const { error: partErr } = await supabase
+    .from("participantes")
+    .insert(participantesPayload as never);
+  if (partErr) {
+    // rollback manual
+    await supabase.from("reservas").delete().eq("id", reservaRow.id);
+    throw new Error("Falha ao criar participantes: " + partErr.message);
+  }
+
+  // 4) move lead para convertido
+  await updateLead(leadId, {
+    etapa_atendimento: "convertido",
+    status: "convertido",
+  });
+
+  // 5) registra na timeline da reserva
+  await supabase.from("reserva_historico").insert({
+    reserva_id: reservaRow.id,
+    tipo: "criacao",
+    descricao: `Reserva criada a partir do lead ${lead.protocolo ?? lead.nome}`,
+    metadata: { lead_id: leadId, lead_protocolo: lead.protocolo },
+  } as never);
+
+  await logActivity({
+    modulo: "reservas",
+    acao: "converter_lead",
+    descricao: `${lead.nome} → ${protocolo}`,
+    metadata: { lead_id: leadId, reserva_id: reservaRow.id },
+  });
+
+  return { reserva_id: reservaRow.id, protocolo };
 }

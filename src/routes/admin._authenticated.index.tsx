@@ -65,10 +65,25 @@ function rangeFor(preset: Preset, custom?: { from: string; to: string }) {
 
 async function fetchDashboard(range: { from: string; to: string }) {
   const today = new Date().toISOString().slice(0, 10);
-  const [leads, preReservas, reservasPagas, expedicoes, datas, proximas] = await Promise.all([
+  const [
+    leadsTotal,
+    leadsQualificados,
+    leadsConvertidos,
+    reservasCriadas,
+    reservasConfirmadas,
+    reservasFinanceiro,
+    participantesConfirmados,
+    expedicoes,
+    datas,
+    proximas,
+  ] = await Promise.all([
     supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
+    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("etapa_atendimento", ["qualificado", "pronto_reserva", "convertido"]),
+    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).eq("etapa_atendimento", "convertido"),
     supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
-    supabase.from("reservas").select("valor_pago, status_pagamento, created_at").gte("created_at", range.from).lte("created_at", range.to),
+    supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).eq("status_operacional", "reserva_confirmada"),
+    supabase.from("reservas").select("valor_total, valor_pago, saldo_restante, status_financeiro, created_at").gte("created_at", range.from).lte("created_at", range.to),
+    supabase.from("participantes").select("id", { count: "exact", head: true }).eq("status", "confirmado"),
     supabase.from("expedicoes").select("id", { count: "exact", head: true }).eq("ativo", true).eq("status", "publicado"),
     supabase.from("datas").select("vagas_disponiveis, vagas_total, preco_pix, preco_cartao, expedicoes(preco)").eq("status", "disponivel").gte("data_inicio", today),
     supabase
@@ -80,8 +95,19 @@ async function fetchDashboard(range: { from: string; to: string }) {
       .limit(5),
   ]);
 
-  // Faturamento misto: 50% Pix + 50% Cartão. Fallback: preço cheio da expedição.
-  const faturamentoEstimado = (datas.data || []).reduce((acc, d: any) => {
+  // Faturamento previsto: soma de valor_total das reservas no período
+  const receitaPrevista = (reservasFinanceiro.data ?? []).reduce(
+    (s: number, r: { valor_total?: number | null }) => s + Number(r.valor_total ?? 0),
+    0,
+  );
+  const receitaRecebida = (reservasFinanceiro.data ?? []).reduce(
+    (s: number, r: { valor_pago?: number | null }) => s + Number(r.valor_pago ?? 0),
+    0,
+  );
+  const receitaPendente = receitaPrevista - receitaRecebida;
+
+  // Faturamento estimado das vagas restantes (50/50 Pix+Cartão)
+  const faturamentoEstimadoVagas = (datas.data || []).reduce((acc, d: any) => {
     const vagas = d.vagas_disponiveis || 0;
     const pix = Number(d.preco_pix ?? d.expedicoes?.preco ?? 0);
     const cartao = Number(d.preco_cartao ?? d.preco_pix ?? d.expedicoes?.preco ?? 0);
@@ -89,21 +115,23 @@ async function fetchDashboard(range: { from: string; to: string }) {
     return acc + metade * pix + metade * cartao;
   }, 0);
 
-  const faturamentoConfirmado = (reservasPagas.data || [])
-    .filter((r: any) => r.status_pagamento === "confirmado")
-    .reduce((s: number, r: any) => s + Number(r.valor_pago || 0), 0);
-
   const vagasRestantes = (datas.data || []).reduce((acc, d: any) => acc + (d.vagas_disponiveis || 0), 0);
   const vagasTotais = (datas.data || []).reduce((acc, d: any) => acc + (d.vagas_total || 0), 0);
 
   return {
-    leads: leads.count ?? 0,
-    preReservas: preReservas.count ?? 0,
+    leadsTotal: leadsTotal.count ?? 0,
+    leadsQualificados: leadsQualificados.count ?? 0,
+    leadsConvertidos: leadsConvertidos.count ?? 0,
+    reservasCriadas: reservasCriadas.count ?? 0,
+    reservasConfirmadas: reservasConfirmadas.count ?? 0,
+    participantesConfirmados: participantesConfirmados.count ?? 0,
     expedicoesAtivas: expedicoes.count ?? 0,
     vagasRestantes,
     vagasTotais,
-    faturamentoEstimado,
-    faturamentoConfirmado,
+    receitaPrevista,
+    receitaRecebida,
+    receitaPendente,
+    faturamentoEstimadoVagas,
     proximas: proximas.data || [],
   };
 }
@@ -181,16 +209,26 @@ function DashboardPage() {
         </div>
       </div>
 
-      {/* KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KPI label="Leads no período" value={isLoading ? "—" : String(data?.leads ?? 0)} icon={Sparkles} />
-        <KPI label="Pré-reservas" value={isLoading ? "—" : String(data?.preReservas ?? 0)} icon={CalendarCheck} />
-        <KPI label="Expedições ativas" value={isLoading ? "—" : String(data?.expedicoesAtivas ?? 0)} icon={Compass} />
-        <KPI
-          label="Vagas restantes"
-          value={isLoading ? "—" : `${data?.vagasRestantes ?? 0} / ${data?.vagasTotais ?? 0}`}
-          icon={Users}
-        />
+      {/* KPIs operacionais — funil de vendas */}
+      <div>
+        <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">Funil no período</p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <KPI label="Leads recebidos" value={isLoading ? "—" : String(data?.leadsTotal ?? 0)} icon={Sparkles} />
+          <KPI label="Leads qualificados" value={isLoading ? "—" : String(data?.leadsQualificados ?? 0)} icon={Users} />
+          <KPI label="Reservas criadas" value={isLoading ? "—" : String(data?.reservasCriadas ?? 0)} icon={CalendarCheck} />
+          <KPI label="Reservas confirmadas" value={isLoading ? "—" : String(data?.reservasConfirmadas ?? 0)} icon={Compass} />
+        </div>
+      </div>
+
+      {/* KPIs receita */}
+      <div>
+        <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">Receita no período</p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <KPI label="Receita prevista" value={isLoading ? "—" : formatBRL(data?.receitaPrevista ?? 0)} icon={TrendingUp} />
+          <KPI label="Receita recebida" value={isLoading ? "—" : formatBRL(data?.receitaRecebida ?? 0)} icon={TrendingUp} />
+          <KPI label="Receita pendente" value={isLoading ? "—" : formatBRL(data?.receitaPendente ?? 0)} icon={TrendingUp} />
+          <KPI label="Participantes confirmados" value={isLoading ? "—" : String(data?.participantesConfirmados ?? 0)} icon={Users} />
+        </div>
       </div>
 
       {/* Faturamento + próximas */}
@@ -198,17 +236,17 @@ function DashboardPage() {
         <div className="admin-card p-6 lg:col-span-2">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)]">Faturamento estimado</p>
+              <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)]">Potencial das vagas em aberto</p>
               <h3 className="mt-1 font-display text-[26px] text-[color:var(--admin-cinza-1)]">
-                {isLoading ? "—" : formatBRL(data?.faturamentoEstimado ?? 0)}
+                {isLoading ? "—" : formatBRL(data?.faturamentoEstimadoVagas ?? 0)}
               </h3>
-              <p className="mt-1 text-[12px] text-[color:var(--admin-cinza-3)]">Metade Pix + metade Cartão por vaga restante</p>
+              <p className="mt-1 text-[12px] text-[color:var(--admin-cinza-3)]">Soma estimada das vagas restantes (50% Pix + 50% Cartão)</p>
               <p className="mt-1 text-[12px] text-[color:var(--admin-cinza-2)]">
-                Confirmado no período: <span className="text-[color:var(--admin-dourado)]">{isLoading ? "—" : formatBRL(data?.faturamentoConfirmado ?? 0)}</span>
+                Vagas em aberto: <span className="text-[color:var(--admin-dourado)]">{isLoading ? "—" : `${data?.vagasRestantes ?? 0} / ${data?.vagasTotais ?? 0}`}</span>
               </p>
             </div>
             <span className="inline-flex items-center gap-1 rounded-full border border-[color:var(--admin-borda)] px-2.5 py-1 text-[11px] text-[color:var(--admin-cinza-2)]">
-              <TrendingUp className="h-3 w-3" strokeWidth={2} /> últimos 7 meses
+              <TrendingUp className="h-3 w-3" strokeWidth={2} /> tendência ilustrativa
             </span>
           </div>
           <div className="mt-4 h-[220px]">
