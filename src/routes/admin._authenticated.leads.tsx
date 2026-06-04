@@ -204,6 +204,7 @@ function LeadsPage() {
                     lead={l}
                     onDelete={() => setDel(l)}
                     onMove={(etapa) => moveMut.mutate({ id: l.id, etapa })}
+                    onConverter={() => setConverter(l)}
                   />
                 ))}
               </div>
@@ -211,10 +212,19 @@ function LeadsPage() {
           ))}
         </div>
       ) : (
-        <LeadsLista leads={leadsFiltrados} onDelete={(l) => setDel(l)} />
+        <LeadsLista leads={leadsFiltrados} onDelete={(l) => setDel(l)} onConverter={(l) => setConverter(l)} />
       )}
 
       <NovoLeadDialog open={novo} onOpenChange={setNovo} onCreated={refresh} />
+
+      {converter ? (
+        <ConverterLeadModal
+          open={!!converter}
+          onOpenChange={(v) => !v && setConverter(null)}
+          lead={converter}
+          onConverted={refresh}
+        />
+      ) : null}
 
       <ConfirmDialog
         open={!!del}
