@@ -382,13 +382,11 @@ export async function deleteData(id: string): Promise<void> {
 /** Etapas do Atendimento — coluna do Kanban e progresso do lead. */
 export const LEAD_ETAPAS = [
   { id: "novo", label: "Novo", descricao: "Acabou de chegar" },
-  { id: "em_atendimento", label: "Em Atendimento", descricao: "Conversando com a equipe" },
+  { id: "em_atendimento", label: "Atendimento", descricao: "IA ou equipe iniciou conversa" },
   { id: "qualificado", label: "Qualificado", descricao: "Tem perfil para a viagem" },
-  { id: "interessado", label: "Interessado", descricao: "Mostrou interesse real" },
-  { id: "pronto_reserva", label: "Pronto pra Reserva", descricao: "Quer fechar" },
-  { id: "encaminhado_financeiro", label: "No Financeiro", descricao: "Aguardando pagamento" },
-  { id: "pago", label: "Pago", descricao: "Reserva confirmada" },
-  { id: "perdido", label: "Perdido", descricao: "Não fechou" },
+  { id: "pronto_reserva", label: "Pronto pra Reserva", descricao: "Quer reservar agora" },
+  { id: "convertido", label: "Convertido", descricao: "Virou reserva" },
+  { id: "perdido", label: "Perdido", descricao: "Não avançou" },
 ] as const;
 export type LeadEtapaId = (typeof LEAD_ETAPAS)[number]["id"];
 

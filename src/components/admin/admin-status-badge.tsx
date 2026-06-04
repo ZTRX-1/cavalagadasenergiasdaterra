@@ -6,15 +6,17 @@ const TOKENS: Record<string, { bg: string; fg: string; ring: string; label?: str
   publicado: { bg: "bg-emerald-500/15", fg: "text-emerald-300", ring: "ring-emerald-500/30", label: "Publicado" },
   pausado: { bg: "bg-amber-500/15", fg: "text-amber-300", ring: "ring-amber-500/30", label: "Pausado" },
   arquivado: { bg: "bg-zinc-700/30", fg: "text-zinc-400", ring: "ring-zinc-600/40", label: "Arquivado" },
-  // leads — etapas do atendimento
+  // leads — etapas do atendimento (modelo simplificado: 6 etapas)
   novo: { bg: "bg-sky-500/15", fg: "text-sky-300", ring: "ring-sky-500/30", label: "Novo" },
-  em_atendimento: { bg: "bg-indigo-500/15", fg: "text-indigo-300", ring: "ring-indigo-500/30", label: "Em Atendimento" },
+  em_atendimento: { bg: "bg-indigo-500/15", fg: "text-indigo-300", ring: "ring-indigo-500/30", label: "Atendimento" },
   qualificado: { bg: "bg-violet-500/15", fg: "text-violet-300", ring: "ring-violet-500/30", label: "Qualificado" },
-  interessado: { bg: "bg-fuchsia-500/15", fg: "text-fuchsia-300", ring: "ring-fuchsia-500/30", label: "Interessado" },
   pronto_reserva: { bg: "bg-amber-500/15", fg: "text-amber-300", ring: "ring-amber-500/30", label: "Pronto pra Reserva" },
+  convertido: { bg: "bg-emerald-500/15", fg: "text-emerald-300", ring: "ring-emerald-500/30", label: "Convertido" },
+  perdido: { bg: "bg-rose-500/15", fg: "text-rose-300", ring: "ring-rose-500/30", label: "Perdido" },
+  // legados (mantidos pra compat de eventos antigos no histórico)
+  interessado: { bg: "bg-fuchsia-500/15", fg: "text-fuchsia-300", ring: "ring-fuchsia-500/30", label: "Interessado" },
   encaminhado_financeiro: { bg: "bg-orange-500/15", fg: "text-orange-300", ring: "ring-orange-500/30", label: "No Financeiro" },
   pago: { bg: "bg-emerald-500/15", fg: "text-emerald-300", ring: "ring-emerald-500/30", label: "Pago" },
-  perdido: { bg: "bg-rose-500/15", fg: "text-rose-300", ring: "ring-rose-500/30", label: "Perdido" },
   // legados
   confirmado: { bg: "bg-emerald-500/15", fg: "text-emerald-300", ring: "ring-emerald-500/30", label: "Confirmado" },
   cancelado: { bg: "bg-rose-500/15", fg: "text-rose-300", ring: "ring-rose-500/30", label: "Cancelado" },
