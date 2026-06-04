@@ -16,6 +16,7 @@ import {
   type TimelineItem,
 } from "@/lib/admin/financeiro-api";
 import { ReservaPagamentos } from "@/components/admin/reserva-pagamentos";
+import { ReservaParticipantes } from "@/components/admin/reserva-participantes";
 import { StatusBadge } from "@/components/admin/admin-status-badge";
 import { cn } from "@/lib/utils";
 import {
@@ -234,6 +235,8 @@ function ReservaDetalhePage() {
           timelineQ.refetch();
         }}
       />
+
+      <ReservaParticipantes reservaId={id} />
 
       <Documentos reservaId={id} docs={docsQ.data ?? []} onChange={() => docsQ.refetch()} />
 
