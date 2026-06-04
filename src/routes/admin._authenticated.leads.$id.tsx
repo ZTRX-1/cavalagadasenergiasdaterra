@@ -26,9 +26,24 @@ function LeadEdit() {
   const { data: lead } = useQuery({ queryKey: ["admin", "lead", id], queryFn: () => getLead(id) });
   const { data: conversas = [] } = useQuery({ queryKey: ["admin", "lead-conv", id], queryFn: () => listLeadConversas(id) });
   const { data: memoria } = useQuery({ queryKey: ["admin", "lead-mem", id], queryFn: () => getLeadMemoria(id) });
+  // se já existe reserva vinda desse lead, mostra atalho
+  const { data: reservaExistente } = useQuery({
+    queryKey: ["admin", "reserva-do-lead", id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("reservas")
+        .select("id, protocolo")
+        .eq("lead_id", id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      return data as { id: string; protocolo: string } | null;
+    },
+  });
   const [form, setForm] = useState<Partial<LeadRow> | null>(null);
   const [nota, setNota] = useState("");
   const [tipoNota, setTipoNota] = useState<LeadConversaTipo>("observacao_interna");
+  const [converter, setConverter] = useState(false);
   useEffect(() => { if (lead) setForm(lead); }, [lead]);
 
   const saveMut = useMutation({
@@ -50,18 +65,60 @@ function LeadEdit() {
 
   if (!form) return <div className="admin-card h-40 animate-pulse" />;
 
+  const podeConverter =
+    !reservaExistente &&
+    form.etapa_atendimento !== "convertido" &&
+    form.etapa_atendimento !== "perdido";
+
   return (
     <div className="space-y-6">
       <AdminPageHeader
         eyebrow={form.protocolo ?? "lead"}
         title={form.nome ?? ""}
         actions={
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <button className="admin-btn-ghost" onClick={() => nav({ to: "/admin/leads" })}><ArrowLeft className="h-4 w-4" /> Voltar</button>
             <button className="admin-btn-primary" onClick={() => saveMut.mutate(form)}><Save className="h-4 w-4" /> Salvar</button>
           </div>
         }
       />
+
+      {/* CTA principal: converter ou ver reserva */}
+      {reservaExistente ? (
+        <Link
+          to="/admin/reservas/$id"
+          params={{ id: reservaExistente.id }}
+          className="flex items-center justify-between rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 hover:bg-emerald-500/15 transition"
+        >
+          <div className="flex items-center gap-3">
+            <CheckCircle2 className="h-5 w-5 text-emerald-300" />
+            <div>
+              <div className="text-sm font-medium text-[color:var(--admin-cinza-1)]">
+                Reserva já criada
+              </div>
+              <div className="text-[11px] text-[color:var(--admin-cinza-3)]">
+                Protocolo {reservaExistente.protocolo} — clique pra abrir a ficha completa
+              </div>
+            </div>
+          </div>
+          <ArrowRight className="h-4 w-4 text-[color:var(--admin-dourado)]" />
+        </Link>
+      ) : podeConverter ? (
+        <button
+          onClick={() => setConverter(true)}
+          className="flex w-full items-center justify-between rounded-xl border border-[color:var(--admin-dourado)]/30 bg-[color:var(--admin-dourado)]/10 px-4 py-3 hover:bg-[color:var(--admin-dourado)]/15 transition"
+        >
+          <div className="text-left">
+            <div className="text-sm font-medium text-[color:var(--admin-cinza-1)]">
+              Pronto pra reservar? Converta em reserva
+            </div>
+            <div className="text-[11px] text-[color:var(--admin-cinza-3)]">
+              Cria a reserva já vinculada, com participantes prontos pra completar — e move o lead pra Convertido
+            </div>
+          </div>
+          <ArrowRight className="h-4 w-4 text-[color:var(--admin-dourado)]" />
+        </button>
+      ) : null}
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
