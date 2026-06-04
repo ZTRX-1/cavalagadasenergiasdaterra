@@ -65,10 +65,25 @@ function rangeFor(preset: Preset, custom?: { from: string; to: string }) {
 
 async function fetchDashboard(range: { from: string; to: string }) {
   const today = new Date().toISOString().slice(0, 10);
-  const [leads, preReservas, reservasPagas, expedicoes, datas, proximas] = await Promise.all([
+  const [
+    leadsTotal,
+    leadsQualificados,
+    leadsConvertidos,
+    reservasCriadas,
+    reservasConfirmadas,
+    reservasFinanceiro,
+    participantesConfirmados,
+    expedicoes,
+    datas,
+    proximas,
+  ] = await Promise.all([
     supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
+    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("etapa_atendimento", ["qualificado", "pronto_reserva", "convertido"]),
+    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).eq("etapa_atendimento", "convertido"),
     supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
-    supabase.from("reservas").select("valor_pago, status_pagamento, created_at").gte("created_at", range.from).lte("created_at", range.to),
+    supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).eq("status_operacional", "reserva_confirmada"),
+    supabase.from("reservas").select("valor_total, valor_pago, saldo_restante, status_financeiro, created_at").gte("created_at", range.from).lte("created_at", range.to),
+    supabase.from("participantes").select("id", { count: "exact", head: true }).eq("status", "confirmado"),
     supabase.from("expedicoes").select("id", { count: "exact", head: true }).eq("ativo", true).eq("status", "publicado"),
     supabase.from("datas").select("vagas_disponiveis, vagas_total, preco_pix, preco_cartao, expedicoes(preco)").eq("status", "disponivel").gte("data_inicio", today),
     supabase
@@ -80,8 +95,19 @@ async function fetchDashboard(range: { from: string; to: string }) {
       .limit(5),
   ]);
 
-  // Faturamento misto: 50% Pix + 50% Cartão. Fallback: preço cheio da expedição.
-  const faturamentoEstimado = (datas.data || []).reduce((acc, d: any) => {
+  // Faturamento previsto: soma de valor_total das reservas no período
+  const receitaPrevista = (reservasFinanceiro.data ?? []).reduce(
+    (s: number, r: { valor_total?: number | null }) => s + Number(r.valor_total ?? 0),
+    0,
+  );
+  const receitaRecebida = (reservasFinanceiro.data ?? []).reduce(
+    (s: number, r: { valor_pago?: number | null }) => s + Number(r.valor_pago ?? 0),
+    0,
+  );
+  const receitaPendente = receitaPrevista - receitaRecebida;
+
+  // Faturamento estimado das vagas restantes (50/50 Pix+Cartão)
+  const faturamentoEstimadoVagas = (datas.data || []).reduce((acc, d: any) => {
     const vagas = d.vagas_disponiveis || 0;
     const pix = Number(d.preco_pix ?? d.expedicoes?.preco ?? 0);
     const cartao = Number(d.preco_cartao ?? d.preco_pix ?? d.expedicoes?.preco ?? 0);
@@ -89,21 +115,23 @@ async function fetchDashboard(range: { from: string; to: string }) {
     return acc + metade * pix + metade * cartao;
   }, 0);
 
-  const faturamentoConfirmado = (reservasPagas.data || [])
-    .filter((r: any) => r.status_pagamento === "confirmado")
-    .reduce((s: number, r: any) => s + Number(r.valor_pago || 0), 0);
-
   const vagasRestantes = (datas.data || []).reduce((acc, d: any) => acc + (d.vagas_disponiveis || 0), 0);
   const vagasTotais = (datas.data || []).reduce((acc, d: any) => acc + (d.vagas_total || 0), 0);
 
   return {
-    leads: leads.count ?? 0,
-    preReservas: preReservas.count ?? 0,
+    leadsTotal: leadsTotal.count ?? 0,
+    leadsQualificados: leadsQualificados.count ?? 0,
+    leadsConvertidos: leadsConvertidos.count ?? 0,
+    reservasCriadas: reservasCriadas.count ?? 0,
+    reservasConfirmadas: reservasConfirmadas.count ?? 0,
+    participantesConfirmados: participantesConfirmados.count ?? 0,
     expedicoesAtivas: expedicoes.count ?? 0,
     vagasRestantes,
     vagasTotais,
-    faturamentoEstimado,
-    faturamentoConfirmado,
+    receitaPrevista,
+    receitaRecebida,
+    receitaPendente,
+    faturamentoEstimadoVagas,
     proximas: proximas.data || [],
   };
 }
