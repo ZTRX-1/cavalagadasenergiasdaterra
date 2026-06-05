@@ -157,11 +157,6 @@ function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: s
                 <UserIcon className="mr-2 h-4 w-4" /> Meu perfil
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to="/admin/configuracoes" onClick={onNavigate} className="cursor-pointer">
-                <Settings className="mr-2 h-4 w-4" /> Configurações
-              </Link>
-            </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-[color:var(--admin-borda)]" />
             <DropdownMenuItem
               onClick={handleLogout}
