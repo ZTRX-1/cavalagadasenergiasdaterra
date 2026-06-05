@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
-import { Plus, Sparkles, Trash2, Filter, X, LayoutGrid, List, Star, Flame, ArrowRight } from "lucide-react";
+import { Plus, Sparkles, Trash2, Filter, X, LayoutGrid, List, Star, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminEmpty } from "@/components/admin/admin-empty";
@@ -217,71 +217,6 @@ function LeadsPage() {
   );
 }
 
-function LeadKanbanCard({ lead, onDelete, onMove, onConverter }: { lead: LeadRow; onDelete: () => void; onMove: (etapa: LeadEtapaId) => void; onConverter: () => void }) {
-  const nivel = lead.nivel_interesse ?? 3;
-  const score = lead.lead_score ?? 0;
-  const proximaEtapa = useMemo(() => {
-    const idx = LEAD_ETAPAS.findIndex((e) => e.id === lead.etapa_atendimento);
-    return LEAD_ETAPAS[idx + 1];
-  }, [lead.etapa_atendimento]);
-  const ehProntoReserva = lead.etapa_atendimento === "pronto_reserva";
-  return (
-    <Link
-      to="/admin/leads/$id"
-      params={{ id: lead.id }}
-      className="block rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/60 p-3 transition hover:border-[color:var(--admin-dourado)]/40"
-    >
-      <div className="flex items-start justify-between gap-2">
-        <span className="text-sm font-medium text-[color:var(--admin-cinza-1)] truncate">{lead.nome}</span>
-        <button
-          onClick={(e) => { e.preventDefault(); onDelete(); }}
-          className="text-[color:var(--admin-cinza-3)] hover:text-rose-300"
-        >
-          <Trash2 className="h-3.5 w-3.5" />
-        </button>
-      </div>
-      {lead.expedicao_interesse ? (
-        <p className="mt-1 text-xs text-[color:var(--admin-cinza-2)] truncate">{lead.expedicao_interesse}</p>
-      ) : null}
-      <div className="mt-2 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-0.5">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Star key={i} className={`h-3 w-3 ${i < nivel ? "fill-[color:var(--admin-dourado)] text-[color:var(--admin-dourado)]" : "text-[color:var(--admin-borda)]"}`} strokeWidth={1.5} />
-          ))}
-        </div>
-        {score > 0 ? (
-          <div className="flex items-center gap-1 text-[10px] text-amber-300/90">
-            <Flame className="h-3 w-3" strokeWidth={2} /> {score}
-          </div>
-        ) : null}
-      </div>
-      <div className="mt-2 flex items-center justify-between text-[11px] text-[color:var(--admin-cinza-3)]">
-        <span>{lead.protocolo ?? "—"}</span>
-        {lead.valor_estimado ? <span>R$ {Number(lead.valor_estimado).toLocaleString("pt-BR")}</span> : null}
-      </div>
-      {lead.proxima_acao ? (
-        <p className="mt-2 rounded border border-amber-400/20 bg-amber-400/5 px-2 py-1 text-[11px] text-amber-200/90 truncate">
-          → {lead.proxima_acao}
-        </p>
-      ) : null}
-      {ehProntoReserva ? (
-        <button
-          onClick={(e) => { e.preventDefault(); onConverter(); }}
-          className="mt-2 w-full rounded-md border border-[color:var(--admin-dourado)]/40 bg-[color:var(--admin-dourado)]/10 px-2 py-1.5 text-[11px] text-[color:var(--admin-dourado)] hover:bg-[color:var(--admin-dourado)]/15 flex items-center justify-center gap-1"
-        >
-          <ArrowRight className="h-3 w-3" /> Converter em reserva
-        </button>
-      ) : proximaEtapa ? (
-        <button
-          onClick={(e) => { e.preventDefault(); onMove(proximaEtapa.id); }}
-          className="mt-2 w-full rounded-md border border-[color:var(--admin-borda)] px-2 py-1 text-[11px] text-[color:var(--admin-cinza-2)] hover:border-[color:var(--admin-dourado)]/50"
-        >
-          Avançar → {proximaEtapa.label}
-        </button>
-      ) : null}
-    </Link>
-  );
-}
 
 function LeadsLista({ leads, onDelete, onConverter }: { leads: LeadRow[]; onDelete: (l: LeadRow) => void; onConverter: (l: LeadRow) => void }) {
   return (
