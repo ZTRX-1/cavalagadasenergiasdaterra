@@ -336,12 +336,13 @@ function VistaAgrupada({
                   {g.participantes.map((p) => (
                     <tr key={p.id} className="border-t border-[color:var(--admin-borda)] hover:bg-[color:var(--admin-petroleo)]/20">
                       <td className="px-5 py-3">
-                        <button
-                          onClick={() => onEdit(p)}
+                        <Link
+                          to="/admin/participantes/$id"
+                          params={{ id: p.id }}
                           className="font-medium text-[color:var(--admin-cinza-1)] hover:text-[color:var(--admin-dourado)] text-left"
                         >
                           {p.nome}
-                        </button>
+                        </Link>
                         <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{p.telefone ?? p.email ?? "—"}</div>
                       </td>
                       <td className="px-3 py-3 text-[color:var(--admin-cinza-2)]">{calcIdade(p.data_nascimento)}</td>
