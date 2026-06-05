@@ -1,0 +1,1 @@
+DROP TRIGGER IF EXISTS trg_reserva_status_changed_before ON public.reservas;

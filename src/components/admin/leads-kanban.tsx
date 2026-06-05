@@ -10,6 +10,8 @@ import {
   useDroppable,
   type DragEndEvent,
   type DragStartEvent,
+  type DraggableAttributes,
+  type DraggableSyntheticListeners,
   closestCenter,
 } from "@dnd-kit/core";
 import { Star, Flame, Trash2, ArrowRight } from "lucide-react";
@@ -144,15 +146,20 @@ function DraggableLeadCard({
   onDelete: () => void;
   onConverter: () => void;
 }) {
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: lead.id });
+  const { attributes, listeners, setNodeRef, setActivatorNodeRef, isDragging } = useDraggable({ id: lead.id });
   return (
     <div
       ref={setNodeRef}
       style={{ opacity: isDragging ? 0.4 : 1 }}
-      {...attributes}
-      {...listeners}
     >
-      <LeadCardInner lead={lead} onDelete={onDelete} onConverter={onConverter} />
+      <LeadCardInner
+        lead={lead}
+        onDelete={onDelete}
+        onConverter={onConverter}
+        dragAttributes={attributes}
+        dragListeners={listeners}
+        setActivatorNodeRef={setActivatorNodeRef}
+      />
     </div>
   );
 }
@@ -162,11 +169,17 @@ function LeadCardInner({
   onDelete,
   onConverter,
   dragging,
+  dragAttributes,
+  dragListeners,
+  setActivatorNodeRef,
 }: {
   lead: LeadRow;
   onDelete?: () => void;
   onConverter?: () => void;
   dragging?: boolean;
+  dragAttributes?: DraggableAttributes;
+  dragListeners?: DraggableSyntheticListeners;
+  setActivatorNodeRef?: (element: HTMLElement | null) => void;
 }) {
   const nivel = lead.nivel_interesse ?? 3;
   const score = lead.lead_score ?? 0;
@@ -176,7 +189,13 @@ function LeadCardInner({
   const content = (
     <>
       <div className="flex items-start justify-between gap-2">
-        <span className="text-sm font-medium text-[color:var(--admin-cinza-1)] truncate">
+        <span
+          ref={setActivatorNodeRef}
+          {...dragAttributes}
+          {...dragListeners}
+          className="min-w-0 cursor-grab truncate text-sm font-medium text-[color:var(--admin-cinza-1)] active:cursor-grabbing"
+          title="Arrastar lead"
+        >
           {lead.nome}
         </span>
         {!dragging && onDelete ? (
@@ -260,7 +279,7 @@ function LeadCardInner({
   );
 
   return (
-    <div className="cursor-grab rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/80 p-3 transition hover:border-[color:var(--admin-dourado)]/40 active:cursor-grabbing">
+    <div className="rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/80 p-3 transition hover:border-[color:var(--admin-dourado)]/40">
       {content}
     </div>
   );
