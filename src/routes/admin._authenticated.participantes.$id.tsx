@@ -125,7 +125,7 @@ function ParticipanteFichaPage() {
 
   const save = () => {
     updMut.mutate({
-      nome: form.nome ?? null,
+      nome: form.nome ?? "Sem nome",
       email: form.email ?? null,
       telefone: form.telefone ?? null,
       cpf: form.cpf ?? null,
