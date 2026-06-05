@@ -82,10 +82,6 @@ function LeadsPage() {
   const filtrosAtivos = fOrigem !== "todas" || fExpedicao !== "todas" || fNivel !== "todos" || fBusca.trim().length > 0;
   const limparFiltros = () => { setFOrigem("todas"); setFExpedicao("todas"); setFNivel("todos"); setFBusca(""); };
 
-  const grouped: Record<LeadEtapaId, LeadRow[]> = LEAD_ETAPAS.reduce((acc, s) => {
-    acc[s.id] = leadsFiltrados.filter((l) => (l.etapa_atendimento ?? "novo") === s.id);
-    return acc;
-  }, {} as Record<LeadEtapaId, LeadRow[]>);
 
   return (
     <div>
