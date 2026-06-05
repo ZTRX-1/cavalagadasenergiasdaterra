@@ -427,7 +427,7 @@ function VistaLista({
               return (
                 <tr key={p.id} className="border-t border-[color:var(--admin-borda)] hover:bg-[color:var(--admin-petroleo)]/20">
                   <td className="px-5 py-4">
-                    <button className="font-medium text-[color:var(--admin-cinza-1)] hover:text-[color:var(--admin-dourado)]" onClick={() => onEdit(p)}>{p.nome}</button>
+                    <Link to="/admin/participantes/$id" params={{ id: p.id }} className="font-medium text-[color:var(--admin-cinza-1)] hover:text-[color:var(--admin-dourado)]">{p.nome}</Link>
                     <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{p.telefone ?? p.email ?? "—"}</div>
                   </td>
                   <td className="px-3 py-4 text-[color:var(--admin-cinza-2)]">{calcIdade(p.data_nascimento)}</td>
