@@ -1209,6 +1209,21 @@ export async function converterLeadEmReserva(
   const lead = await getLead(leadId);
   if (!lead) throw new Error("Lead não encontrado.");
 
+  const { data: reservaExistente, error: reservaExistenteErr } = await supabase
+    .from("reservas")
+    .select("id, protocolo")
+    .eq("lead_id", leadId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (reservaExistenteErr) throw new Error("Falha ao verificar reserva existente: " + reservaExistenteErr.message);
+  if (reservaExistente) {
+    if (lead.etapa_atendimento !== "convertido" || lead.status !== "convertido") {
+      await updateLead(leadId, { etapa_atendimento: "convertido", status: "convertido" });
+    }
+    return { reserva_id: reservaExistente.id, protocolo: reservaExistente.protocolo };
+  }
+
   if (input.quantidade_participantes < 1) {
     throw new Error("Quantidade de participantes deve ser pelo menos 1.");
   }
@@ -1220,7 +1235,9 @@ export async function converterLeadEmReserva(
 
   // 1) gera protocolo
   const { data: protoData, error: protoErr } = await supabase.rpc("gerar_protocolo");
-  if (protoErr || !protoData) throw new Error("Falha ao gerar protocolo.");
+  if (protoErr || !protoData) {
+    throw new Error("Falha ao gerar protocolo: " + (protoErr?.message ?? "sem retorno do banco"));
+  }
   const protocolo = String(protoData);
 
   const responsavel = {
