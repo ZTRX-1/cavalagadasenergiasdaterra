@@ -76,6 +76,9 @@ export function ReservaPagamentos({
 
   const invalidate = () => {
     qc.invalidateQueries({ queryKey: ["admin", "reserva", reservaId] });
+    // Pagamento mexe em receita prevista/recebida/pendente no Dashboard
+    qc.invalidateQueries({ queryKey: ["admin-dashboard"] });
+    qc.invalidateQueries({ queryKey: ["admin", "reservas", "lista"] });
     onChanged();
   };
 

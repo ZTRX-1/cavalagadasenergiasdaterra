@@ -133,8 +133,11 @@ async function handleCriar(payload: CriarPayload) {
     expedicao_interesse: payload.expedicao_nome,
     origem: "pre_reserva_site",
     canal_entrada: "site",
-    status: "pronto_reserva",
-    etapa_atendimento: "pronto_reserva",
+    // Lead nasce em 'novo'; o trigger no banco força essa etapa também.
+    // A própria criação da reserva já move o lead para 'convertido' adiante,
+    // ou o operador promove manualmente conforme o atendimento.
+    status: "novo",
+    etapa_atendimento: "novo",
     nivel_interesse: 5,
     lead_score: 80,
     quantidade_pessoas: qtd,
