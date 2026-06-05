@@ -1,105 +1,98 @@
-# Fase 1 — Núcleo conectado: Lead → Reserva → Participante
+# Fase 3 — Operação conectada de ponta a ponta
 
-Foco: o caminho mais curto pra você operar sem retrabalho. Financeiro avançado, docs por participante e IA ficam pra Fases 2 e 3.
+As Fases 1 e 2 já criaram a espinha dorsal (etapas reduzidas, conversão Lead→Reserva, participantes agrupados por expedição+data, trigger que confirma participantes quando a reserva é quitada, upload livre de docs por participante). Esta fase resolve o que ainda está **quebrado ou desconectado** na operação real.
 
-## 1. Limpeza do banco (leads de teste)
+## 1. Leads — corrigir o ponto de entrada
 
-- Apago todos os leads existentes (você confirmou que é tudo teste).
-- Apago também: reservas, participantes, pagamentos, documentos vinculados, histórico e conversas órfãs. Expedições, datas, usuários e configurações ficam intactos.
-- Roda uma vez via migration de dados, com confirmação antes de executar.
+**Problema:** leads novos estão caindo direto em "Pronto para Reserva".
 
-## 2. Etapas de Lead simplificadas (8 → 6)
+- Forçar etapa inicial `novo` em todo insert (formulário interno + endpoint público `pre-reserva`). Adiciono `DEFAULT 'novo'` + trigger `BEFORE INSERT` que normaliza qualquer valor recebido pra `novo`, exceto quando o operador cria manualmente já em outra etapa.
+- Garantir que o webhook/IA quando entrar no ar só consiga **promover** etapa, nunca pular pra `pronto_reserva` direto.
 
-Novas etapas: **Novo · Atendimento · Qualificado · Pronto pra Reserva · Convertido · Perdido**.
+## 2. Kanban arrastável (drag and drop real)
 
-- Atualizo `LEAD_ETAPAS` em `src/lib/admin/api.ts`.
-- Kanban e filtros em `admin._authenticated.leads.tsx` passam a ler as 6.
-- Ficha do lead (`leads.$id.tsx`) ganha botão único de avançar etapa, com descrição clara do que cada uma significa (linguagem simples, sem jargão).
-- Como o banco vai começar limpo, não precisa migração de dados antigos.
+- Instalar `@dnd-kit/core` + `@dnd-kit/sortable`.
+- Refatorar `admin._authenticated.leads.tsx` (modo Kanban) com `DndContext`, colunas como `droppable`, cards como `draggable`.
+- `onDragEnd` chama a mutation `updateLead({ etapa_atendimento })` que já existe → trigger `lead_etapa_changed` registra na timeline automaticamente.
+- Otimismo: atualizar UI antes da confirmação, rollback no erro.
+- Mantém a vista Lista intacta como fallback.
 
-## 3. Automação Lead → Reserva (com confirmação)
+## 3. Ficha do Lead — abrir e editar
 
-Quando o operador move um lead para **Pronto pra Reserva**:
+A rota `leads.$id.tsx` existe mas o usuário relata "não abro o lead". Vou:
 
-- Abre um modal "Converter em reserva?" com:
-  - Expedição (pré-preenchida se o lead tem `expedicao_interesse`)
-  - Data (select das datas disponíveis daquela expedição)
-  - Quantidade de participantes (pré-preenchida)
-  - Valor unitário (puxado da data selecionada)
-- Ao confirmar: cria a **reserva** vinculada ao lead, cria **1 registro de participante** pra cada vaga (com nome do responsável no primeiro, demais em branco pra preencher depois) e gera entrada na **timeline**.
-- Lead vai automaticamente pra etapa **Convertido**, com link clicável pra reserva criada.
-- Tudo numa única transação — se falhar, nada é gravado.
+- Garantir que cada card do Kanban e linha da Lista tenha `<Link to="/admin/leads/$id" params={{ id }}>` (não só botão de ação).
+- Revisar a ficha: blocos **Dados** (nome, telefone, email, CPF, origem, expedição de interesse, valor estimado) todos editáveis inline; **Observações**; **Timeline** (puxando de `lead_conversas` + eventos de webhook); **Ações** (avançar etapa, converter em reserva, marcar como perdido).
+- Botão "Converter em reserva" já existe — confirmar que aparece a partir de `qualificado`.
 
-## 4. Ficha de Reserva consolidada
+## 4. Ficha de Reserva — o botão "Abrir"
 
-A ficha (`/admin/reservas/$id`) já existe e o botão "Abrir" já leva pra ela. Vou:
+- Reproduzir o bug do "Abrir não funciona", investigar (provavelmente Link sem `params` tipados ou erro de render). Corrigir.
+- Conferir que `admin._authenticated.reservas.$id.tsx` renderiza **todos os blocos**: Resumo · Pagamentos · Participantes (já feito Fase 2) · Documentos · Timeline · Observações.
+- Adicionar select de **status operacional** editável (confirmar, aguardando, parcial, pago, cancelado, em risco) — hoje só mostra badge.
 
-- Verificar e corrigir qualquer bug que esteja impedindo a abertura (você relatou "não abre nada" — testo e arrumo).
-- Reorganizar em 4 blocos visuais claros, na mesma tela, sem abas escondidas:
-  1. **Resumo** — cliente, expedição, data, valor total, valor recebido, saldo restante, situação.
-  2. **Participantes** — lista editável (nome, CPF, idade, peso, experiência), botão pra adicionar/remover.
-  3. **Timeline** — histórico cronológico automático (lead criado, qualificado, reserva criada, contrato enviado, pagamento recebido, etc.).
-  4. **Pagamentos e Documentos** — o que já existe hoje, só reorganizado.
-- Linguagem em português direto, sem termos técnicos.
+## 5. Financeiro reativo no Dashboard
 
-## 5. Timeline automática
+- Dashboard já lê valores reais (Fase 1). Confirmar que **toda** mudança em `pagamentos` invalida cache do dashboard (`queryClient.invalidateQueries(['admin-dashboard'])` no componente de pagamento).
+- Adicionar card "Saldo a receber" detalhado por expedição próxima.
 
-Já existe `reserva_historico` no banco com triggers. Vou:
+## 6. Documentos vinculados (limpar repositório solto)
 
-- Estender o trigger pra registrar também: criação do lead, mudanças de etapa do lead, conversão em reserva.
-- Renderizar a timeline na ficha da reserva (componente novo `reserva-timeline.tsx`) puxando de `reserva_historico` + `lead_conversas` do lead vinculado.
+- Manter `documentos_central` como está para docs institucionais.
+- Na ficha do **Participante** (criar `participantes.$id.tsx`): mostrar dados completos + documentos enviados (já temos `participante-docs` bucket).
+- Tornar a página `/admin/documentos` apenas visão consolidada (filtros por escopo: institucional · expedição · participante), não mais ponto de upload solto.
 
-## 6. Participantes — vista agrupada por Expedição+Data
+## 7. Configurações — remover duplicidade
 
-Refaço `/admin/participantes` pra mostrar:
+- Hoje: rotas `configuracoes`, `usuarios`, `cargos`, `perfil`, `integracoes` separadas.
+- Reorganizar a sidebar em **Configurações** como hub com subitens: Empresa · Usuários · Cargos & Permissões · Integrações · Sistema. As rotas existentes ficam, só passam a viver sob o mesmo grupo visual.
+- Não mexo no schema, só na navegação.
 
-```text
-SERRA DA CANASTRA — 10 a 13/Out
-├─ Vagas: 12 · Confirmados: 8 · Pendentes: 2 · Disponíveis: 2
-├─ Receita prevista: R$ 58.800 · Recebida: R$ 42.000 · A receber: R$ 16.800
-└─ [lista de participantes com link pra reserva de cada um]
-```
+## 8. Perfil — avatar e espaçamentos
 
-- Agrupamento por `expedicao_id + data_id`.
-- Cada linha de participante mostra status de pagamento (puxado da reserva) e link "Ver reserva".
-- Filtros: por expedição, por data, por status.
+- Corrigir avatar: forçar `aspect-square object-cover rounded-full` no `<img>`, container com `overflow-hidden`.
+- Revisar paddings e alinhamento dos blocos.
 
-## 7. Dashboard com KPIs reais
+## 9. Padronização visual (passe geral)
 
-Atualizo `/admin` (index) com cards conectados:
-
-- Leads recebidos (mês) · Leads qualificados · Reservas criadas · Reservas confirmadas
-- Receita prevista · Receita recebida · Receita pendente
-- Participantes confirmados · Próximas expedições (3 mais próximas com contagem de vagas)
-
-Tudo lendo de queries existentes — sem inventar tabela nova.
-
-## Fora desta fase (próximas)
-
-- **Fase 2**: financeiro reativo (pagamento → atualiza tudo automático), documentos vinculados ao participante (Maria → contrato, RG, comprovante).
-- **Fase 3**: dashboard analítico avançado, IA movendo o funil sozinha.
+- Auditoria rápida em todas as rotas `admin._authenticated.*`:
+  - Container padrão `mx-auto max-w-[1400px] px-6 py-8`.
+  - `AdminPageHeader` em todas as páginas.
+  - Cards usando `admin-card` token.
+- Sem mudança de cor/tema, só consistência de espaçamento.
 
 ---
 
-## Detalhes técnicos
+## Fora desta fase
 
-**Arquivos editados:**
-- `src/lib/admin/api.ts` — `LEAD_ETAPAS` reduzido pra 6, função nova `converterLeadEmReserva(leadId, payload)`.
-- `src/routes/admin._authenticated.leads.tsx` — Kanban com 6 colunas, modal de conversão.
-- `src/routes/admin._authenticated.leads.$id.tsx` — botão "Avançar etapa" e CTA "Converter em reserva".
-- `src/routes/admin._authenticated.reservas.$id.tsx` — reorganização em 4 blocos, integração com timeline.
-- `src/routes/admin._authenticated.participantes.tsx` — refeito com vista agrupada.
-- `src/routes/admin._authenticated.index.tsx` — KPIs novos.
-- `src/components/admin/reserva-timeline.tsx` (novo).
-- `src/components/admin/converter-lead-modal.tsx` (novo).
+- IA movendo o funil sozinha (Fase 4 — depende do gateway de IA + regras já existentes em `ia_configuracoes`).
+- Contas a pagar/receber automáticas (Fase 4 financeiro avançado).
+
+---
+
+## Arquivos afetados
+
+**Novos:**
+- `src/routes/admin._authenticated.participantes.$id.tsx` (ficha individual).
+- `src/components/admin/kanban-leads.tsx` (extraído com dnd-kit).
+- `src/components/admin/reserva-status-select.tsx`.
+
+**Editados:**
+- `src/routes/admin._authenticated.leads.tsx` (Kanban dnd-kit, links pra ficha).
+- `src/routes/admin._authenticated.leads.$id.tsx` (edição inline + timeline).
+- `src/routes/admin._authenticated.reservas.tsx` e `reservas.$id.tsx` (corrigir Abrir + status editável).
+- `src/routes/admin._authenticated.participantes.tsx` (link pra ficha).
+- `src/routes/admin._authenticated.documentos.tsx` (vira visão consolidada).
+- `src/routes/admin._authenticated.perfil.tsx` (avatar).
+- `src/components/admin/admin-sidebar.tsx` (agrupar Configurações).
+- `src/components/admin/reserva-pagamentos.tsx` (invalidar dashboard).
 
 **Banco (migrations):**
-1. Limpeza de dados de teste (leads, reservas, participantes, pagamentos, docs, históricos).
-2. Trigger `lead_etapa_changed` estendido pra registrar conversão Lead→Reserva em `reserva_historico` quando aplicável.
-3. (sem mudança de schema — só dados e função trigger)
+1. `leads.etapa_atendimento` default `'novo'` + trigger `BEFORE INSERT` que força etapa inicial.
+2. `supabase/functions/pre-reserva` (se já cria lead): garantir etapa `novo`.
 
-**Sem mudanças em:** expedições, datas, usuários, cargos, config, IA, integrações, área pública do site.
+**Dependências novas:** `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`.
 
-**Risco:** baixo. Mudanças são aditivas exceto pela limpeza de dados (que você confirmou) e pela redução de etapas (banco começa limpo). Botão "Abrir" da reserva: investigo o motivo de não funcionar antes de refatorar — pode ser só um bug pontual.
+**Risco:** médio — dnd-kit é mudança visual sensível no Kanban, e a correção do "Abrir" depende de reproduzir o bug. Faço Kanban + ficha do Lead + bug do Abrir primeiro (núcleo operacional), depois o resto.
 
-Topa essa Fase 1? Se sim, posso começar pela limpeza + etapas novas + modal de conversão (que é o coração da mudança).
+Topa essa Fase 3? Posso começar pelos itens 1–4 (entrada de leads + Kanban arrastável + fichas abrindo), que são o que mais te trava hoje.
