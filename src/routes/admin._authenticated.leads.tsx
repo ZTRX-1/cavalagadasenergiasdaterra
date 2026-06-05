@@ -12,6 +12,7 @@ import { AdminField } from "@/components/admin/admin-section";
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
 import { ConverterLeadModal } from "@/components/admin/converter-lead-modal";
+import { LeadsKanban } from "@/components/admin/leads-kanban";
 import { useCan } from "@/hooks/use-permissions";
 import {
   listLeads,
@@ -187,30 +188,12 @@ function LeadsPage() {
           acao={<button className="admin-btn-ghost" onClick={limparFiltros}><X className="h-4 w-4" /> Limpar filtros</button>}
         />
       ) : view === "kanban" ? (
-        <div className="grid gap-3 overflow-x-auto pb-4" style={{ gridTemplateColumns: `repeat(${LEAD_ETAPAS.length}, minmax(260px, 1fr))` }}>
-          {LEAD_ETAPAS.map((s) => (
-            <div key={s.id} className="admin-card flex min-h-[400px] flex-col p-3">
-              <div className="mb-3 flex items-center justify-between px-1">
-                <div className="flex flex-col gap-0.5">
-                  <StatusBadge status={s.id} />
-                  <span className="text-[10px] text-[color:var(--admin-cinza-3)]">{s.descricao}</span>
-                </div>
-                <span className="text-xs text-[color:var(--admin-cinza-3)]">{grouped[s.id].length}</span>
-              </div>
-              <div className="flex-1 space-y-2 overflow-y-auto">
-                {grouped[s.id].map((l) => (
-                  <LeadKanbanCard
-                    key={l.id}
-                    lead={l}
-                    onDelete={() => setDel(l)}
-                    onMove={(etapa) => moveMut.mutate({ id: l.id, etapa })}
-                    onConverter={() => setConverter(l)}
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        <LeadsKanban
+          leads={leadsFiltrados}
+          onMove={(id, etapa) => moveMut.mutate({ id, etapa })}
+          onDelete={(l) => setDel(l)}
+          onConverter={(l) => setConverter(l)}
+        />
       ) : (
         <LeadsLista leads={leadsFiltrados} onDelete={(l) => setDel(l)} onConverter={(l) => setConverter(l)} />
       )}
