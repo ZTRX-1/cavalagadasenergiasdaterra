@@ -164,9 +164,11 @@ function ParticipantesPage() {
                 onClick={() => setView("lista")}
               ><List className="h-3.5 w-3.5" /> Lista</button>
             </div>
-            <button className="admin-btn-ghost flex items-center gap-2" onClick={exportar} title="Gerar PDF com a ficha completa">
-              <FileDown className="h-4 w-4 shrink-0" /> <span className="whitespace-nowrap">Ficha do guia (PDF)</span>
+            <button className="admin-btn-ghost flex items-center justify-center gap-2 h-10" onClick={exportar} title="Gerar PDF com a ficha completa">
+              <FileDown className="h-4 w-4 shrink-0" /> 
+              <span className="whitespace-nowrap">Ficha do guia (PDF)</span>
             </button>
+
             <button className="admin-btn-primary" onClick={() => setNovo(true)}><Plus className="h-4 w-4" /> Novo participante</button>
           </div>
         }
@@ -178,15 +180,16 @@ function ParticipantesPage() {
       </AdminPageIntro>
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <div className="relative">
-          <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[color:var(--admin-cinza-3)]" />
+        <div className="relative group">
+          <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-[color:var(--admin-cinza-3)] group-focus-within:text-[color:var(--admin-dourado)] transition-colors" />
           <input
-            className="admin-input pl-8 w-[220px]"
-            placeholder="Buscar nome, e-mail, CPF…"
+            className="admin-input pl-7 w-[180px] sm:w-[240px] text-[12px] h-[38px] placeholder:text-[color:var(--admin-cinza-3)] placeholder:text-[11px]"
+            placeholder="Nome, e-mail, CPF…"
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
           />
         </div>
+
         <select className="admin-input w-auto" value={filtroExp} onChange={(e) => setFiltroExp(e.target.value)}>
           <option value="">Todas as expedições</option>
           {expedicoes.map((e) => <option key={e.id} value={e.id}>{e.nome}</option>)}
@@ -308,7 +311,7 @@ function VistaAgrupada({
   }, [participantes, datas]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {grupos.map((g) => {
         const exp = expedicoes.find((e) => e.id === g.expedicao_id);
         const data = datas.find((d) => d.id === g.data_id);
@@ -326,111 +329,141 @@ function VistaAgrupada({
         return (
           <section
             key={`${g.expedicao_id}-${g.data_id}`}
-            className="admin-card overflow-hidden"
+            className="admin-card overflow-hidden border-[color:var(--admin-borda-strong)]/40 shadow-xl"
           >
-            <header className="border-b border-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo-soft)]/30 px-5 py-4">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <h3 className="font-display text-lg text-[color:var(--admin-cinza-1)]">
+            <header className="border-b border-[color:var(--admin-borda)] bg-gradient-to-r from-[color:var(--admin-petroleo-soft)]/40 to-transparent px-5 py-5">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-dourado)] font-semibold">
+                    Expedição
+                  </div>
+                  <h3 className="font-display text-xl text-[color:var(--admin-cinza-1)]">
                     {exp?.nome ?? "Sem expedição"}
                   </h3>
-                  <div className="mt-1 flex items-center gap-1.5 text-[12px] text-[color:var(--admin-cinza-3)]">
-                    <Calendar className="h-3 w-3" />
-                    {data ? fmtDateRange(data.data_inicio, data.data_fim) : "Sem data definida"}
+                  <div className="flex items-center gap-3 text-[12px] text-[color:var(--admin-cinza-3)] font-medium">
+                    <span className="flex items-center gap-1.5 bg-[color:var(--admin-carvao)]/50 px-2 py-0.5 rounded border border-[color:var(--admin-borda)]">
+                      <Calendar className="h-3.5 w-3.5 text-[color:var(--admin-dourado)]" />
+                      {data ? fmtDateRange(data.data_inicio, data.data_fim) : "Sem data definida"}
+                    </span>
                   </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-3 text-[11px]">
+                <div className="flex flex-wrap items-center gap-2.5">
                   <Pill icon={Users} label="Vagas" value={`${vagasTotal - vagasDisp}/${vagasTotal}`} />
                   <Pill icon={UserCheck} label="Confirmados" value={String(confirmados)} tone="ok" />
                   {pendentes > 0 ? (
                     <Pill icon={AlertCircle} label="Pendentes" value={String(pendentes)} tone="warn" />
                   ) : null}
-                  <Pill icon={Wallet} label="Receita prevista" value={fmtBRL(receitaPrevista)} />
-                  <Pill icon={Wallet} label="Recebida" value={fmtBRL(receitaRecebida)} tone="ok" />
-                  {aReceber > 0 ? (
-                    <Pill icon={Wallet} label="A receber" value={fmtBRL(aReceber)} tone="warn" />
-                  ) : null}
+                  <div className="h-8 w-px bg-[color:var(--admin-borda)]/30 mx-1 hidden sm:block" />
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2 text-[10px]">
+                      <span className="text-[color:var(--admin-cinza-3)] uppercase tracking-wider">Receita:</span>
+                      <span className="text-emerald-300 font-mono font-medium">{fmtBRL(receitaRecebida)}</span>
+                      <span className="text-[color:var(--admin-cinza-3)]">/ {fmtBRL(receitaPrevista)}</span>
+                    </div>
+                    {aReceber > 0 && (
+                      <div className="flex items-center gap-1 text-[9px] text-amber-300 font-medium uppercase tracking-tighter">
+                        <AlertCircle className="h-2.5 w-2.5" /> {fmtBRL(aReceber)} a receber
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </header>
+            
             <div className="admin-table-wrap p-0">
-              <table className="w-full text-sm min-w-[640px]">
-                <thead className="text-left text-[10px] uppercase tracking-[0.16em] text-[color:var(--admin-cinza-3)]">
+              <table className="w-full text-sm min-w-[760px]">
+                <thead className="bg-[color:var(--admin-petroleo-soft)]/20 text-left text-[10px] uppercase tracking-[0.16em] text-[color:var(--admin-cinza-3)]">
                   <tr>
-                    <th className="px-5 py-3 font-medium">Participante</th>
-                    <th className="px-3 py-3 font-medium">Idade / Peso</th>
-                    <th className="px-3 py-3 font-medium">Experiência</th>
-                    <th className="px-3 py-3 font-medium text-center">Docs</th>
-                    <th className="px-3 py-3 font-medium">Status</th>
-                    <th className="px-3 py-3 font-medium">Reserva / Responsável</th>
-                    <th className="px-5 py-3 font-medium text-right">Ações</th>
+                    <th className="px-5 py-3.5 font-semibold">Participante</th>
+                    <th className="px-3 py-3.5 font-semibold">Idade / Peso</th>
+                    <th className="px-3 py-3.5 font-semibold">Experiência</th>
+                    <th className="px-3 py-3.5 font-semibold text-center">Docs</th>
+                    <th className="px-3 py-3.5 font-semibold">Status</th>
+                    <th className="px-3 py-3.5 font-semibold">Origem (Reserva)</th>
+                    <th className="px-5 py-3.5 font-semibold text-right">Ações</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-[color:var(--admin-borda)]/50">
                   {g.participantes.map((p) => {
                     const res = reservas.find(r => r.id === p.reserva_id);
                     return (
-                      <tr key={p.id} className="border-t border-[color:var(--admin-borda)] hover:bg-[color:var(--admin-petroleo)]/20">
-                        <td className="px-5 py-3">
+                      <tr key={p.id} className="group hover:bg-[color:var(--admin-petroleo)]/10 transition-colors">
+                        <td className="px-5 py-4">
                           <Link
                             to="/admin/participantes/$id"
                             params={{ id: p.id }}
-                            className="font-medium text-[color:var(--admin-cinza-1)] hover:text-[color:var(--admin-dourado)] text-left block"
+                            className="font-semibold text-[color:var(--admin-cinza-1)] group-hover:text-[color:var(--admin-dourado)] transition-colors text-left block"
                           >
                             {p.nome}
                           </Link>
-                          <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{p.telefone ?? p.email ?? "—"}</div>
+                          <div className="text-[11px] text-[color:var(--admin-cinza-3)] mt-0.5">{p.telefone ?? p.email ?? "—"}</div>
                         </td>
-                        <td className="px-3 py-3">
-                          <div className="text-[color:var(--admin-cinza-2)]">{calcIdade(p.data_nascimento)}</div>
+                        <td className="px-3 py-4">
+                          <div className="text-[color:var(--admin-cinza-2)] font-medium">{calcIdade(p.data_nascimento)}</div>
                           <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{p.peso ? `${p.peso} kg` : "—"}</div>
                         </td>
-                        <td className="px-3 py-3 text-[color:var(--admin-cinza-2)] capitalize text-xs">
-                          {p.experiencia_equestre ?? "—"}
+                        <td className="px-3 py-4">
+                          <span className={cn(
+                            "text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full border",
+                            p.experiencia_equestre === 'avancado' ? "border-emerald-500/30 text-emerald-300 bg-emerald-500/5" :
+                            p.experiencia_equestre === 'intermediario' ? "border-sky-500/30 text-sky-300 bg-sky-500/5" :
+                            "border-[color:var(--admin-borda)] text-[color:var(--admin-cinza-3)]"
+                          )}>
+                            {p.experiencia_equestre ?? "—"}
+                          </span>
                         </td>
-                        <td className="px-3 py-3 text-center">
+                        <td className="px-3 py-4 text-center">
                           <div className="flex justify-center">
                             {p.documento ? (
-                              <div className="h-2 w-2 rounded-full bg-emerald-500" title="Documento informado" />
+                              <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" title="Documento informado" />
                             ) : (
-                              <div className="h-2 w-2 rounded-full bg-rose-500/40" title="Documento pendente" />
+                              <div className="h-2 w-2 rounded-full bg-rose-500/30 border border-rose-500/50" title="Documento pendente" />
                             )}
                           </div>
                         </td>
-                        <td className="px-3 py-3">
-                          <div className="flex flex-col gap-1">
-                            <StatusBadge status={p.status} />
-                          </div>
+                        <td className="px-3 py-4">
+                          <StatusBadge status={p.status} />
                         </td>
-                        <td className="px-3 py-3">
+                        <td className="px-3 py-4">
                           {res ? (
                             <Link
                               to="/admin/reservas/$id"
                               params={{ id: res.id }}
-                              className="group block"
+                              className="group/res block"
                             >
-                              <div className="text-[11px] text-[color:var(--admin-dourado)] font-mono">{res.protocolo}</div>
-                              <div className="text-[10px] text-[color:var(--admin-cinza-3)] truncate max-w-[120px] group-hover:text-[color:var(--admin-cinza-2)]">
-                                Resp: {res.cliente_nome}
+                              <div className="text-[11px] text-[color:var(--admin-dourado)] font-mono font-medium group-hover/res:underline">{res.protocolo}</div>
+                              <div className="text-[10px] text-[color:var(--admin-cinza-3)] truncate max-w-[140px] group-hover/res:text-[color:var(--admin-cinza-2)]">
+                                {res.cliente_nome}
                               </div>
                             </Link>
                           ) : (
                             <span className="text-[11px] text-[color:var(--admin-cinza-3)]">—</span>
                           )}
                         </td>
-                        <td className="px-5 py-3 text-right">
-                        <button onClick={() => onDelete(p)} className="admin-btn-ghost px-2 py-1.5 hover:!bg-rose-500/10"><Trash2 className="h-3.5 w-3.5" /></button>
-                      </td>
+                        <td className="px-5 py-4 text-right">
+                          <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onClick={() => onEdit(p)} className="admin-btn-ghost p-1.5" title="Editar"><Users className="h-3.5 w-3.5" /></button>
+                            <button onClick={() => onDelete(p)} className="admin-btn-ghost p-1.5 hover:!text-rose-300" title="Excluir"><Trash2 className="h-3.5 w-3.5" /></button>
+                          </div>
+                        </td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
             </div>
+            
+            <footer className="bg-[color:var(--admin-petroleo-soft)]/10 px-5 py-3 border-t border-[color:var(--admin-borda)]/30">
+              <div className="text-[11px] text-[color:var(--admin-cinza-3)] flex items-center justify-between">
+                <span>{g.participantes.length} participantes vinculados</span>
+                <span className="font-mono">{exp?.nome} · {data?.data_inicio ? new Date(data.data_inicio).getFullYear() : ''}</span>
+              </div>
+            </footer>
           </section>
         );
       })}
     </div>
+
   );
 }
 
