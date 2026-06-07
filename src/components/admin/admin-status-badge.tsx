@@ -30,9 +30,6 @@ const TOKENS: Record<string, { bg: string; fg: string; ring: string; label?: str
   pagamento: { bg: "bg-emerald-500/15", fg: "text-emerald-300", ring: "ring-emerald-500/30", label: "Pagamento" },
   alteracao_status: { bg: "bg-zinc-500/15", fg: "text-zinc-300", ring: "ring-zinc-500/30", label: "Status" },
   sistema: { bg: "bg-zinc-700/30", fg: "text-zinc-400", ring: "ring-zinc-600/40", label: "Sistema" },
-  lead_criado: { bg: "bg-sky-500/15", fg: "text-sky-300", ring: "ring-sky-500/30", label: "Novo Lead" },
-  alteracao_temperatura: { bg: "bg-orange-500/15", fg: "text-orange-300", ring: "ring-orange-500/30", label: "Temperatura" },
-  transferido_humano: { bg: "bg-emerald-500/15", fg: "text-emerald-300", ring: "ring-emerald-500/30", label: "Transf. Humano" },
   // pagamentos
   pendente: { bg: "bg-amber-500/15", fg: "text-amber-300", ring: "ring-amber-500/30", label: "Pendente" },
   parcial: { bg: "bg-blue-500/15", fg: "text-blue-300", ring: "ring-blue-500/30", label: "Parcial" },

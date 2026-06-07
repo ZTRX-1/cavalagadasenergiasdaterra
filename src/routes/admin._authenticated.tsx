@@ -39,7 +39,7 @@ function AdminLayout() {
       if (mounted) setUser({ email: data.user.email, nome: profile?.nome ?? null });
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!_event.includes("SIGNED_IN") && !session) window.location.href = "/admin/login";
+      if (!session) window.location.href = "/admin/login";
     });
     return () => {
       mounted = false;

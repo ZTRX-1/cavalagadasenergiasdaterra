@@ -38,7 +38,6 @@ import { Route as AdminAuthenticatedIaRouteImport } from './routes/admin._authen
 import { Route as AdminAuthenticatedHistoricoRouteImport } from './routes/admin._authenticated.historico'
 import { Route as AdminAuthenticatedFinanceiroRouteImport } from './routes/admin._authenticated.financeiro'
 import { Route as AdminAuthenticatedDocumentosRouteImport } from './routes/admin._authenticated.documentos'
-import { Route as AdminAuthenticatedDashboardAquisicaoRouteImport } from './routes/admin._authenticated.dashboard-aquisicao'
 import { Route as AdminAuthenticatedConfiguracoesRouteImport } from './routes/admin._authenticated.configuracoes'
 import { Route as AdminAuthenticatedCargosRouteImport } from './routes/admin._authenticated.cargos'
 import { Route as AdminAuthenticatedAutomacoesRouteImport } from './routes/admin._authenticated.automacoes'
@@ -46,6 +45,7 @@ import { Route as AdminAuthenticatedReservasIndexRouteImport } from './routes/ad
 import { Route as AdminAuthenticatedParticipantesIndexRouteImport } from './routes/admin._authenticated.participantes.index'
 import { Route as AdminAuthenticatedLeadsIndexRouteImport } from './routes/admin._authenticated.leads.index'
 import { Route as AdminAuthenticatedExpedicoesIndexRouteImport } from './routes/admin._authenticated.expedicoes.index'
+import { Route as ApiPublicIaBarbaraLeadsRouteImport } from './routes/api/public/ia-barbara/leads'
 import { Route as AdminAuthenticatedReservasIdRouteImport } from './routes/admin._authenticated.reservas.$id'
 import { Route as AdminAuthenticatedParticipantesIdRouteImport } from './routes/admin._authenticated.participantes.$id'
 import { Route as AdminAuthenticatedLeadsIdRouteImport } from './routes/admin._authenticated.leads.$id'
@@ -204,12 +204,6 @@ const AdminAuthenticatedDocumentosRoute =
     path: '/documentos',
     getParentRoute: () => AdminAuthenticatedRoute,
   } as any)
-const AdminAuthenticatedDashboardAquisicaoRoute =
-  AdminAuthenticatedDashboardAquisicaoRouteImport.update({
-    id: '/dashboard-aquisicao',
-    path: '/dashboard-aquisicao',
-    getParentRoute: () => AdminAuthenticatedRoute,
-  } as any)
 const AdminAuthenticatedConfiguracoesRoute =
   AdminAuthenticatedConfiguracoesRouteImport.update({
     id: '/configuracoes',
@@ -252,6 +246,11 @@ const AdminAuthenticatedExpedicoesIndexRoute =
     path: '/expedicoes/',
     getParentRoute: () => AdminAuthenticatedRoute,
   } as any)
+const ApiPublicIaBarbaraLeadsRoute = ApiPublicIaBarbaraLeadsRouteImport.update({
+  id: '/api/public/ia-barbara/leads',
+  path: '/api/public/ia-barbara/leads',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminAuthenticatedReservasIdRoute =
   AdminAuthenticatedReservasIdRouteImport.update({
     id: '/$id',
@@ -298,7 +297,6 @@ export interface FileRoutesByFullPath {
   '/admin/automacoes': typeof AdminAuthenticatedAutomacoesRoute
   '/admin/cargos': typeof AdminAuthenticatedCargosRoute
   '/admin/configuracoes': typeof AdminAuthenticatedConfiguracoesRoute
-  '/admin/dashboard-aquisicao': typeof AdminAuthenticatedDashboardAquisicaoRoute
   '/admin/documentos': typeof AdminAuthenticatedDocumentosRoute
   '/admin/financeiro': typeof AdminAuthenticatedFinanceiroRoute
   '/admin/historico': typeof AdminAuthenticatedHistoricoRoute
@@ -315,6 +313,7 @@ export interface FileRoutesByFullPath {
   '/admin/leads/$id': typeof AdminAuthenticatedLeadsIdRoute
   '/admin/participantes/$id': typeof AdminAuthenticatedParticipantesIdRoute
   '/admin/reservas/$id': typeof AdminAuthenticatedReservasIdRoute
+  '/api/public/ia-barbara/leads': typeof ApiPublicIaBarbaraLeadsRoute
   '/admin/expedicoes/': typeof AdminAuthenticatedExpedicoesIndexRoute
   '/admin/leads/': typeof AdminAuthenticatedLeadsIndexRoute
   '/admin/participantes/': typeof AdminAuthenticatedParticipantesIndexRoute
@@ -340,7 +339,6 @@ export interface FileRoutesByTo {
   '/admin/automacoes': typeof AdminAuthenticatedAutomacoesRoute
   '/admin/cargos': typeof AdminAuthenticatedCargosRoute
   '/admin/configuracoes': typeof AdminAuthenticatedConfiguracoesRoute
-  '/admin/dashboard-aquisicao': typeof AdminAuthenticatedDashboardAquisicaoRoute
   '/admin/documentos': typeof AdminAuthenticatedDocumentosRoute
   '/admin/financeiro': typeof AdminAuthenticatedFinanceiroRoute
   '/admin/historico': typeof AdminAuthenticatedHistoricoRoute
@@ -354,6 +352,7 @@ export interface FileRoutesByTo {
   '/admin/leads/$id': typeof AdminAuthenticatedLeadsIdRoute
   '/admin/participantes/$id': typeof AdminAuthenticatedParticipantesIdRoute
   '/admin/reservas/$id': typeof AdminAuthenticatedReservasIdRoute
+  '/api/public/ia-barbara/leads': typeof ApiPublicIaBarbaraLeadsRoute
   '/admin/expedicoes': typeof AdminAuthenticatedExpedicoesIndexRoute
   '/admin/leads': typeof AdminAuthenticatedLeadsIndexRoute
   '/admin/participantes': typeof AdminAuthenticatedParticipantesIndexRoute
@@ -381,7 +380,6 @@ export interface FileRoutesById {
   '/admin/_authenticated/automacoes': typeof AdminAuthenticatedAutomacoesRoute
   '/admin/_authenticated/cargos': typeof AdminAuthenticatedCargosRoute
   '/admin/_authenticated/configuracoes': typeof AdminAuthenticatedConfiguracoesRoute
-  '/admin/_authenticated/dashboard-aquisicao': typeof AdminAuthenticatedDashboardAquisicaoRoute
   '/admin/_authenticated/documentos': typeof AdminAuthenticatedDocumentosRoute
   '/admin/_authenticated/financeiro': typeof AdminAuthenticatedFinanceiroRoute
   '/admin/_authenticated/historico': typeof AdminAuthenticatedHistoricoRoute
@@ -398,6 +396,7 @@ export interface FileRoutesById {
   '/admin/_authenticated/leads/$id': typeof AdminAuthenticatedLeadsIdRoute
   '/admin/_authenticated/participantes/$id': typeof AdminAuthenticatedParticipantesIdRoute
   '/admin/_authenticated/reservas/$id': typeof AdminAuthenticatedReservasIdRoute
+  '/api/public/ia-barbara/leads': typeof ApiPublicIaBarbaraLeadsRoute
   '/admin/_authenticated/expedicoes/': typeof AdminAuthenticatedExpedicoesIndexRoute
   '/admin/_authenticated/leads/': typeof AdminAuthenticatedLeadsIndexRoute
   '/admin/_authenticated/participantes/': typeof AdminAuthenticatedParticipantesIndexRoute
@@ -426,7 +425,6 @@ export interface FileRouteTypes {
     | '/admin/automacoes'
     | '/admin/cargos'
     | '/admin/configuracoes'
-    | '/admin/dashboard-aquisicao'
     | '/admin/documentos'
     | '/admin/financeiro'
     | '/admin/historico'
@@ -443,6 +441,7 @@ export interface FileRouteTypes {
     | '/admin/leads/$id'
     | '/admin/participantes/$id'
     | '/admin/reservas/$id'
+    | '/api/public/ia-barbara/leads'
     | '/admin/expedicoes/'
     | '/admin/leads/'
     | '/admin/participantes/'
@@ -468,7 +467,6 @@ export interface FileRouteTypes {
     | '/admin/automacoes'
     | '/admin/cargos'
     | '/admin/configuracoes'
-    | '/admin/dashboard-aquisicao'
     | '/admin/documentos'
     | '/admin/financeiro'
     | '/admin/historico'
@@ -482,6 +480,7 @@ export interface FileRouteTypes {
     | '/admin/leads/$id'
     | '/admin/participantes/$id'
     | '/admin/reservas/$id'
+    | '/api/public/ia-barbara/leads'
     | '/admin/expedicoes'
     | '/admin/leads'
     | '/admin/participantes'
@@ -508,7 +507,6 @@ export interface FileRouteTypes {
     | '/admin/_authenticated/automacoes'
     | '/admin/_authenticated/cargos'
     | '/admin/_authenticated/configuracoes'
-    | '/admin/_authenticated/dashboard-aquisicao'
     | '/admin/_authenticated/documentos'
     | '/admin/_authenticated/financeiro'
     | '/admin/_authenticated/historico'
@@ -525,6 +523,7 @@ export interface FileRouteTypes {
     | '/admin/_authenticated/leads/$id'
     | '/admin/_authenticated/participantes/$id'
     | '/admin/_authenticated/reservas/$id'
+    | '/api/public/ia-barbara/leads'
     | '/admin/_authenticated/expedicoes/'
     | '/admin/_authenticated/leads/'
     | '/admin/_authenticated/participantes/'
@@ -548,6 +547,7 @@ export interface RootRouteChildren {
   MarcasCavalgadasRoute: typeof MarcasCavalgadasRoute
   MarcasElasNaSelaRoute: typeof MarcasElasNaSelaRoute
   ReservaSlugRoute: typeof ReservaSlugRoute
+  ApiPublicIaBarbaraLeadsRoute: typeof ApiPublicIaBarbaraLeadsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -755,13 +755,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthenticatedDocumentosRouteImport
       parentRoute: typeof AdminAuthenticatedRoute
     }
-    '/admin/_authenticated/dashboard-aquisicao': {
-      id: '/admin/_authenticated/dashboard-aquisicao'
-      path: '/dashboard-aquisicao'
-      fullPath: '/admin/dashboard-aquisicao'
-      preLoaderRoute: typeof AdminAuthenticatedDashboardAquisicaoRouteImport
-      parentRoute: typeof AdminAuthenticatedRoute
-    }
     '/admin/_authenticated/configuracoes': {
       id: '/admin/_authenticated/configuracoes'
       path: '/configuracoes'
@@ -810,6 +803,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/expedicoes/'
       preLoaderRoute: typeof AdminAuthenticatedExpedicoesIndexRouteImport
       parentRoute: typeof AdminAuthenticatedRoute
+    }
+    '/api/public/ia-barbara/leads': {
+      id: '/api/public/ia-barbara/leads'
+      path: '/api/public/ia-barbara/leads'
+      fullPath: '/api/public/ia-barbara/leads'
+      preLoaderRoute: typeof ApiPublicIaBarbaraLeadsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/_authenticated/reservas/$id': {
       id: '/admin/_authenticated/reservas/$id'
@@ -908,7 +908,6 @@ interface AdminAuthenticatedRouteChildren {
   AdminAuthenticatedAutomacoesRoute: typeof AdminAuthenticatedAutomacoesRoute
   AdminAuthenticatedCargosRoute: typeof AdminAuthenticatedCargosRoute
   AdminAuthenticatedConfiguracoesRoute: typeof AdminAuthenticatedConfiguracoesRoute
-  AdminAuthenticatedDashboardAquisicaoRoute: typeof AdminAuthenticatedDashboardAquisicaoRoute
   AdminAuthenticatedDocumentosRoute: typeof AdminAuthenticatedDocumentosRoute
   AdminAuthenticatedFinanceiroRoute: typeof AdminAuthenticatedFinanceiroRoute
   AdminAuthenticatedHistoricoRoute: typeof AdminAuthenticatedHistoricoRoute
@@ -929,8 +928,6 @@ const AdminAuthenticatedRouteChildren: AdminAuthenticatedRouteChildren = {
   AdminAuthenticatedAutomacoesRoute: AdminAuthenticatedAutomacoesRoute,
   AdminAuthenticatedCargosRoute: AdminAuthenticatedCargosRoute,
   AdminAuthenticatedConfiguracoesRoute: AdminAuthenticatedConfiguracoesRoute,
-  AdminAuthenticatedDashboardAquisicaoRoute:
-    AdminAuthenticatedDashboardAquisicaoRoute,
   AdminAuthenticatedDocumentosRoute: AdminAuthenticatedDocumentosRoute,
   AdminAuthenticatedFinanceiroRoute: AdminAuthenticatedFinanceiroRoute,
   AdminAuthenticatedHistoricoRoute: AdminAuthenticatedHistoricoRoute,
@@ -969,6 +966,7 @@ const rootRouteChildren: RootRouteChildren = {
   MarcasCavalgadasRoute: MarcasCavalgadasRoute,
   MarcasElasNaSelaRoute: MarcasElasNaSelaRoute,
   ReservaSlugRoute: ReservaSlugRoute,
+  ApiPublicIaBarbaraLeadsRoute: ApiPublicIaBarbaraLeadsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

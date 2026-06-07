@@ -228,40 +228,6 @@ function LeadEdit() {
               <AdminField label="UTM medium"><input className="admin-input" value={form.utm_medium ?? ""} onChange={(e) => setForm({ ...form, utm_medium: e.target.value || null })} /></AdminField>
               <AdminField label="UTM campaign"><input className="admin-input" value={form.utm_campaign ?? ""} onChange={(e) => setForm({ ...form, utm_campaign: e.target.value || null })} /></AdminField>
             </div>
-            
-            <div className="rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 p-4 space-y-4">
-              <div className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">Inteligência de Marketing</div>
-              <div className="grid grid-cols-2 gap-4">
-                <AdminField label="Primeira página visitada">
-                  <div className="text-sm text-[color:var(--admin-cinza-2)] bg-[color:var(--admin-carvao-deep)]/60 px-3 py-2 rounded border border-[color:var(--admin-borda)] truncate" title={form.primeira_pagina_visitada ?? "—"}>
-                    {form.primeira_pagina_visitada ?? "—"}
-                  </div>
-                </AdminField>
-                <AdminField label="Última página visitada">
-                  <div className="text-sm text-[color:var(--admin-cinza-2)] bg-[color:var(--admin-carvao-deep)]/60 px-3 py-2 rounded border border-[color:var(--admin-borda)] truncate" title={form.ultima_pagina_visitada ?? "—"}>
-                    {form.ultima_pagina_visitada ?? "—"}
-                  </div>
-                </AdminField>
-              </div>
-              <div className="grid grid-cols-3 gap-4">
-                <AdminField label="Dispositivo">
-                  <div className="text-sm text-[color:var(--admin-cinza-2)] bg-[color:var(--admin-carvao-deep)]/60 px-3 py-2 rounded border border-[color:var(--admin-borda)]">
-                    {form.dispositivo ?? "—"}
-                  </div>
-                </AdminField>
-                <AdminField label="Visitas">
-                  <div className="text-sm text-[color:var(--admin-cinza-2)] bg-[color:var(--admin-carvao-deep)]/60 px-3 py-2 rounded border border-[color:var(--admin-borda)]">
-                    {form.quantidade_visitas ?? 1}
-                  </div>
-                </AdminField>
-                <AdminField label="Conversão">
-                  <div className="text-sm text-[color:var(--admin-cinza-2)] bg-[color:var(--admin-carvao-deep)]/60 px-3 py-2 rounded border border-[color:var(--admin-borda)]">
-                    {form.data_conversao ? new Date(form.data_conversao).toLocaleDateString("pt-BR") : "Pendente"}
-                  </div>
-                </AdminField>
-              </div>
-            </div>
-
             <AdminField label="Observações"><textarea className="admin-input min-h-[80px]" value={form.observacoes ?? ""} onChange={(e) => setForm({ ...form, observacoes: e.target.value })} /></AdminField>
           </AdminSection>
 

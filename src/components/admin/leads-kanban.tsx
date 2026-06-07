@@ -213,16 +213,11 @@ function LeadCardInner({
           </button>
         ) : null}
       </div>
-      <div className="mt-1 flex items-center justify-between gap-2 min-w-0">
-        <p className="text-xs text-[color:var(--admin-cinza-2)] truncate flex-1">
-          {lead.expedicao_interesse ?? "—"}
+      {lead.expedicao_interesse ? (
+        <p className="mt-1 text-xs text-[color:var(--admin-cinza-2)] truncate">
+          {lead.expedicao_interesse}
         </p>
-        {lead.origem && (
-          <span className="shrink-0 text-[9px] uppercase tracking-wider text-[color:var(--admin-dourado)]/70 px-1.5 py-0.5 rounded border border-[color:var(--admin-dourado)]/30 bg-[color:var(--admin-dourado)]/5">
-            {lead.origem}
-          </span>
-        )}
-      </div>
+      ) : null}
       <div className="mt-2 flex items-center justify-between gap-2">
         <div className="flex items-center gap-0.5">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -278,6 +273,7 @@ function LeadCardInner({
             to="/admin/leads/$id"
             params={{ id: lead.id }}
             onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
             className="text-[11px] text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-dourado)]"
           >
             Abrir ficha →
