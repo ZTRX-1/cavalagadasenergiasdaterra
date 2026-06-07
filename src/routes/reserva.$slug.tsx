@@ -13,6 +13,7 @@ import { formatDateRange, formatPrice } from "@/lib/format";
 import { getExpedicaoImage } from "@/lib/expedicao-images";
 import { ESTADOS_BR, maskCPF, maskPhone, ageFromDateString } from "@/lib/br-estados";
 import { cn } from "@/lib/utils";
+import { useTracking } from "@/hooks/use-tracking";
 
 
 const qo = (slug: string) =>
@@ -78,6 +79,7 @@ function ReservaPage() {
   const { data } = useSuspenseQuery(qo(slug));
 
   const [step, setStep] = useState(0);
+  const { getTrackingData } = useTracking();
   const [submitted, setSubmitted] = useState<null | { protocolo: string; expedicao_nome: string; quantidade_participantes: number; nome_responsavel: string }>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -183,6 +185,7 @@ function ReservaPage() {
         participantes: values.participantes,
         adicionais: values.adicionais,
         aceites: values.aceites,
+        tracking: getTrackingData(),
       });
 
       const res = {

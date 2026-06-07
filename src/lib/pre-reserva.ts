@@ -4,6 +4,7 @@
  * public.leads + public.reservas usando service role.
  */
 import { supabase } from "@/integrations/supabase/client";
+import { TrackingData } from "@/hooks/use-tracking";
 
 export type PreReservaInput = {
   expedicao_id: string;
@@ -40,6 +41,7 @@ export type PreReservaInput = {
     cancelamento: boolean;
     riscos: boolean;
   };
+  tracking?: TrackingData;
 };
 
 export type PreReservaResposta = {
