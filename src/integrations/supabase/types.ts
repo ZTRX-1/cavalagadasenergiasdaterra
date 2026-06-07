@@ -1252,6 +1252,8 @@ export type Database = {
           restricoes: string | null
           restricoes_alimentares: string | null
           status: string
+          status_changed_at: string | null
+          status_motivo: string | null
           telefone: string | null
           updated_at: string
         }
@@ -1274,6 +1276,8 @@ export type Database = {
           restricoes?: string | null
           restricoes_alimentares?: string | null
           status?: string
+          status_changed_at?: string | null
+          status_motivo?: string | null
           telefone?: string | null
           updated_at?: string
         }
@@ -1296,6 +1300,8 @@ export type Database = {
           restricoes?: string | null
           restricoes_alimentares?: string | null
           status?: string
+          status_changed_at?: string | null
+          status_motivo?: string | null
           telefone?: string | null
           updated_at?: string
         }
