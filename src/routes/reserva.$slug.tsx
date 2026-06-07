@@ -188,7 +188,7 @@ function ReservaPage() {
         preco_unitario: expedicao.preco,
         moeda: expedicao.moeda,
         responsavel: values.responsavel,
-        participantes: values.participantes,
+        participantes: values.participantes as any,
         adicionais: values.adicionais,
         aceites: values.aceites,
       });
@@ -557,10 +557,15 @@ function ReservaPage() {
                   </div>
 
                   <div className="grid gap-5 sm:grid-cols-2">
-                    <Field label="Restrições alimentares" className="sm:col-span-2">
-                      <textarea className="input min-h-[88px]" {...form.register("adicionais.restricoes")} placeholder="Vegetarianos, alergias, intolerâncias..." />
+                    <Field label="Como nos conheceu?" error={form.formState.errors.adicionais?.como_conheceu?.message}>
+                      <select className="input" {...form.register("adicionais.como_conheceu")}>
+                        <option value="instagram">Instagram</option>
+                        <option value="google">Google</option>
+                        <option value="indicacao">Indicação</option>
+                        <option value="outro">Outro</option>
+                      </select>
                     </Field>
-                    <Field label="Observações" className="sm:col-span-2">
+                    <Field label="Observações adicionais" className="sm:col-span-2">
                       <textarea className="input min-h-[110px]" {...form.register("adicionais.observacoes")} placeholder="Algo mais que devamos saber?" />
                     </Field>
                   </div>

@@ -16,6 +16,9 @@ import {
   IdCard,
   Weight,
   AlertCircle,
+  Clock,
+  AlertTriangle,
+  CheckCircle2,
 } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { ConfirmDialog } from "@/components/admin/admin-confirm";
@@ -33,6 +36,7 @@ import {
   type DocumentoRow,
 } from "@/lib/admin/api";
 import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/_authenticated/participantes/$id")({
   component: ParticipanteFichaPage,
@@ -297,6 +301,37 @@ function ParticipanteFichaPage() {
 
       <ConfirmDialog open={confirmDel} onOpenChange={setConfirmDel} title="Remover participante" destructive onConfirm={() => delMut.mutate()} />
     </div>
+  );
+}
+
+function ToggleRow({
+  label,
+  checked,
+  at,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  at: string | null;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <label className="flex items-center justify-between gap-2 cursor-pointer">
+      <span className="text-sm">
+        {label}
+        {at && (
+          <span className="ml-2 text-[11px] text-[color:var(--admin-cinza-3)]">
+            ({new Date(at).toLocaleDateString("pt-BR")})
+          </span>
+        )}
+      </span>
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        className="h-4 w-4 accent-[color:var(--admin-dourado)]"
+      />
+    </label>
   );
 }
 
