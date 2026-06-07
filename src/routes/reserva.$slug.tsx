@@ -166,9 +166,9 @@ function ReservaPage() {
     }
   }, [resp.nome, resp.email, resp.telefone, step, leadId, expedicao.id, expedicao.nome, form]);
 
-
   if (!data) return null;
   const { expedicao, datas } = data;
+
 
   if (submitted) {
     const dt = datas.find((d) => d.id === form.getValues("data_id"));
