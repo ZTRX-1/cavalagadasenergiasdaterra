@@ -20,6 +20,7 @@ import {
   ShieldCheck,
   User as UserIcon,
   ChevronUp,
+  TrendingUp,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logoCavalgadas from "@/assets/logo-cavalgadas.jpg";
