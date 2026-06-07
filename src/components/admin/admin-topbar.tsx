@@ -3,8 +3,7 @@ import { Search, Menu } from "lucide-react";
 import { NotificationsCenter } from "@/components/admin/notifications-center";
 
 const titles: Record<string, string> = {
-  "/admin": "Dashboard Operacional",
-  "/admin/dashboard-aquisicao": "Aquisição de Leads",
+  "/admin": "Dashboard",
   "/admin/expedicoes": "Expedições",
   "/admin/leads": "Leads",
   "/admin/reservas": "Reservas",

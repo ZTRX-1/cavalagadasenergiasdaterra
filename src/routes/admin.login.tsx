@@ -96,7 +96,7 @@ function AdminLoginPage() {
             <div className="mb-5 inline-flex items-center gap-3">
               <span className="inline-block h-px w-8 bg-[color:var(--admin-dourado)]" />
               <span className="text-[10px] font-medium uppercase tracking-[0.34em] text-[color:var(--admin-dourado-glow)]">
-                Portal da Equipe
+                Central operacional
               </span>
             </div>
 

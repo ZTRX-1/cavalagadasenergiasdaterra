@@ -909,12 +909,9 @@ export type Database = {
           cidade: string | null
           cpf: string | null
           created_at: string
-          data_conversao: string | null
           data_expedicao_id: string | null
           data_interesse: string | null
           data_nascimento: string | null
-          data_primeira_visita: string | null
-          dispositivo: string | null
           email: string | null
           estado: string | null
           etapa_atendimento: string
@@ -930,13 +927,10 @@ export type Database = {
           observacoes: string | null
           observacoes_medicas: string | null
           origem: string | null
-          pais: string | null
           peso: number | null
-          primeira_pagina_visitada: string | null
           protocolo: string | null
           proxima_acao: string | null
           quantidade_pessoas: number
-          quantidade_visitas: number | null
           responsavel_id: string | null
           restricoes_alimentares: string | null
           resumo_atendimento: string | null
@@ -946,7 +940,6 @@ export type Database = {
           telefone: string | null
           temperatura_lead: string
           ultima_interacao_at: string | null
-          ultima_pagina_visitada: string | null
           updated_at: string
           utm_campaign: string | null
           utm_medium: string | null
@@ -960,12 +953,9 @@ export type Database = {
           cidade?: string | null
           cpf?: string | null
           created_at?: string
-          data_conversao?: string | null
           data_expedicao_id?: string | null
           data_interesse?: string | null
           data_nascimento?: string | null
-          data_primeira_visita?: string | null
-          dispositivo?: string | null
           email?: string | null
           estado?: string | null
           etapa_atendimento?: string
@@ -981,13 +971,10 @@ export type Database = {
           observacoes?: string | null
           observacoes_medicas?: string | null
           origem?: string | null
-          pais?: string | null
           peso?: number | null
-          primeira_pagina_visitada?: string | null
           protocolo?: string | null
           proxima_acao?: string | null
           quantidade_pessoas?: number
-          quantidade_visitas?: number | null
           responsavel_id?: string | null
           restricoes_alimentares?: string | null
           resumo_atendimento?: string | null
@@ -997,7 +984,6 @@ export type Database = {
           telefone?: string | null
           temperatura_lead?: string
           ultima_interacao_at?: string | null
-          ultima_pagina_visitada?: string | null
           updated_at?: string
           utm_campaign?: string | null
           utm_medium?: string | null
@@ -1011,12 +997,9 @@ export type Database = {
           cidade?: string | null
           cpf?: string | null
           created_at?: string
-          data_conversao?: string | null
           data_expedicao_id?: string | null
           data_interesse?: string | null
           data_nascimento?: string | null
-          data_primeira_visita?: string | null
-          dispositivo?: string | null
           email?: string | null
           estado?: string | null
           etapa_atendimento?: string
@@ -1032,13 +1015,10 @@ export type Database = {
           observacoes?: string | null
           observacoes_medicas?: string | null
           origem?: string | null
-          pais?: string | null
           peso?: number | null
-          primeira_pagina_visitada?: string | null
           protocolo?: string | null
           proxima_acao?: string | null
           quantidade_pessoas?: number
-          quantidade_visitas?: number | null
           responsavel_id?: string | null
           restricoes_alimentares?: string | null
           resumo_atendimento?: string | null
@@ -1048,7 +1028,6 @@ export type Database = {
           telefone?: string | null
           temperatura_lead?: string
           ultima_interacao_at?: string | null
-          ultima_pagina_visitada?: string | null
           updated_at?: string
           utm_campaign?: string | null
           utm_medium?: string | null

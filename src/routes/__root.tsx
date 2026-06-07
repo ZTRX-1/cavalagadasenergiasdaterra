@@ -13,7 +13,6 @@ import { CookieConsent } from "@/components/cookie-consent";
 import { VLibras } from "@/components/vlibras";
 import { AccessibilityPanel } from "@/components/accessibility-panel";
 import { AnalyticsTracker } from "@/components/analytics-tracker";
-import { useTracking } from "@/hooks/use-tracking";
 
 import heroOg from "@/assets/founders/ligia-rio.jpg";
 
@@ -90,7 +89,6 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isAdmin = pathname.startsWith("/admin");
-  useTracking();
 
   return (
     <QueryClientProvider client={queryClient}>
