@@ -38,6 +38,7 @@ import { Route as AdminAuthenticatedIaRouteImport } from './routes/admin._authen
 import { Route as AdminAuthenticatedHistoricoRouteImport } from './routes/admin._authenticated.historico'
 import { Route as AdminAuthenticatedFinanceiroRouteImport } from './routes/admin._authenticated.financeiro'
 import { Route as AdminAuthenticatedDocumentosRouteImport } from './routes/admin._authenticated.documentos'
+import { Route as AdminAuthenticatedDashboardAquisicaoRouteImport } from './routes/admin._authenticated.dashboard-aquisicao'
 import { Route as AdminAuthenticatedConfiguracoesRouteImport } from './routes/admin._authenticated.configuracoes'
 import { Route as AdminAuthenticatedCargosRouteImport } from './routes/admin._authenticated.cargos'
 import { Route as AdminAuthenticatedAutomacoesRouteImport } from './routes/admin._authenticated.automacoes'
@@ -203,6 +204,12 @@ const AdminAuthenticatedDocumentosRoute =
     path: '/documentos',
     getParentRoute: () => AdminAuthenticatedRoute,
   } as any)
+const AdminAuthenticatedDashboardAquisicaoRoute =
+  AdminAuthenticatedDashboardAquisicaoRouteImport.update({
+    id: '/dashboard-aquisicao',
+    path: '/dashboard-aquisicao',
+    getParentRoute: () => AdminAuthenticatedRoute,
+  } as any)
 const AdminAuthenticatedConfiguracoesRoute =
   AdminAuthenticatedConfiguracoesRouteImport.update({
     id: '/configuracoes',
@@ -291,6 +298,7 @@ export interface FileRoutesByFullPath {
   '/admin/automacoes': typeof AdminAuthenticatedAutomacoesRoute
   '/admin/cargos': typeof AdminAuthenticatedCargosRoute
   '/admin/configuracoes': typeof AdminAuthenticatedConfiguracoesRoute
+  '/admin/dashboard-aquisicao': typeof AdminAuthenticatedDashboardAquisicaoRoute
   '/admin/documentos': typeof AdminAuthenticatedDocumentosRoute
   '/admin/financeiro': typeof AdminAuthenticatedFinanceiroRoute
   '/admin/historico': typeof AdminAuthenticatedHistoricoRoute
@@ -332,6 +340,7 @@ export interface FileRoutesByTo {
   '/admin/automacoes': typeof AdminAuthenticatedAutomacoesRoute
   '/admin/cargos': typeof AdminAuthenticatedCargosRoute
   '/admin/configuracoes': typeof AdminAuthenticatedConfiguracoesRoute
+  '/admin/dashboard-aquisicao': typeof AdminAuthenticatedDashboardAquisicaoRoute
   '/admin/documentos': typeof AdminAuthenticatedDocumentosRoute
   '/admin/financeiro': typeof AdminAuthenticatedFinanceiroRoute
   '/admin/historico': typeof AdminAuthenticatedHistoricoRoute
@@ -372,6 +381,7 @@ export interface FileRoutesById {
   '/admin/_authenticated/automacoes': typeof AdminAuthenticatedAutomacoesRoute
   '/admin/_authenticated/cargos': typeof AdminAuthenticatedCargosRoute
   '/admin/_authenticated/configuracoes': typeof AdminAuthenticatedConfiguracoesRoute
+  '/admin/_authenticated/dashboard-aquisicao': typeof AdminAuthenticatedDashboardAquisicaoRoute
   '/admin/_authenticated/documentos': typeof AdminAuthenticatedDocumentosRoute
   '/admin/_authenticated/financeiro': typeof AdminAuthenticatedFinanceiroRoute
   '/admin/_authenticated/historico': typeof AdminAuthenticatedHistoricoRoute
@@ -416,6 +426,7 @@ export interface FileRouteTypes {
     | '/admin/automacoes'
     | '/admin/cargos'
     | '/admin/configuracoes'
+    | '/admin/dashboard-aquisicao'
     | '/admin/documentos'
     | '/admin/financeiro'
     | '/admin/historico'
@@ -457,6 +468,7 @@ export interface FileRouteTypes {
     | '/admin/automacoes'
     | '/admin/cargos'
     | '/admin/configuracoes'
+    | '/admin/dashboard-aquisicao'
     | '/admin/documentos'
     | '/admin/financeiro'
     | '/admin/historico'
@@ -496,6 +508,7 @@ export interface FileRouteTypes {
     | '/admin/_authenticated/automacoes'
     | '/admin/_authenticated/cargos'
     | '/admin/_authenticated/configuracoes'
+    | '/admin/_authenticated/dashboard-aquisicao'
     | '/admin/_authenticated/documentos'
     | '/admin/_authenticated/financeiro'
     | '/admin/_authenticated/historico'
@@ -742,6 +755,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthenticatedDocumentosRouteImport
       parentRoute: typeof AdminAuthenticatedRoute
     }
+    '/admin/_authenticated/dashboard-aquisicao': {
+      id: '/admin/_authenticated/dashboard-aquisicao'
+      path: '/dashboard-aquisicao'
+      fullPath: '/admin/dashboard-aquisicao'
+      preLoaderRoute: typeof AdminAuthenticatedDashboardAquisicaoRouteImport
+      parentRoute: typeof AdminAuthenticatedRoute
+    }
     '/admin/_authenticated/configuracoes': {
       id: '/admin/_authenticated/configuracoes'
       path: '/configuracoes'
@@ -888,6 +908,7 @@ interface AdminAuthenticatedRouteChildren {
   AdminAuthenticatedAutomacoesRoute: typeof AdminAuthenticatedAutomacoesRoute
   AdminAuthenticatedCargosRoute: typeof AdminAuthenticatedCargosRoute
   AdminAuthenticatedConfiguracoesRoute: typeof AdminAuthenticatedConfiguracoesRoute
+  AdminAuthenticatedDashboardAquisicaoRoute: typeof AdminAuthenticatedDashboardAquisicaoRoute
   AdminAuthenticatedDocumentosRoute: typeof AdminAuthenticatedDocumentosRoute
   AdminAuthenticatedFinanceiroRoute: typeof AdminAuthenticatedFinanceiroRoute
   AdminAuthenticatedHistoricoRoute: typeof AdminAuthenticatedHistoricoRoute
@@ -908,6 +929,8 @@ const AdminAuthenticatedRouteChildren: AdminAuthenticatedRouteChildren = {
   AdminAuthenticatedAutomacoesRoute: AdminAuthenticatedAutomacoesRoute,
   AdminAuthenticatedCargosRoute: AdminAuthenticatedCargosRoute,
   AdminAuthenticatedConfiguracoesRoute: AdminAuthenticatedConfiguracoesRoute,
+  AdminAuthenticatedDashboardAquisicaoRoute:
+    AdminAuthenticatedDashboardAquisicaoRoute,
   AdminAuthenticatedDocumentosRoute: AdminAuthenticatedDocumentosRoute,
   AdminAuthenticatedFinanceiroRoute: AdminAuthenticatedFinanceiroRoute,
   AdminAuthenticatedHistoricoRoute: AdminAuthenticatedHistoricoRoute,
