@@ -723,6 +723,11 @@ export interface ParticipanteRow {
   status: string;
   created_at: string;
   updated_at: string;
+  cpf_recebido: boolean;
+  pagamento_recebido: boolean;
+  contrato_assinado: boolean;
+  ficha_medica_enviada: boolean;
+  documentacao_aprovada: boolean;
 }
 
 export async function listParticipantes(): Promise<ParticipanteRow[]> {
