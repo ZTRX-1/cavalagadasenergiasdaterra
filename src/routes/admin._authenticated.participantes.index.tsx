@@ -141,12 +141,18 @@ function ParticipantesPage() {
     if (!filtroExp) { toast.error("Selecione uma expedição para gerar a ficha do guia"); return; }
     const exp = expedicoes.find((e) => e.id === filtroExp);
     if (!exp) return;
-    const confirmados = filtrados.filter((p) => p.status === "confirmado");
-    const alvo = confirmados.length > 0 ? confirmados : filtrados;
-    if (alvo.length === 0) { toast.error("Nenhum participante para exportar"); return; }
-    exportarFichaGuiaPDF({ expedicaoNome: exp.nome, participantes: alvo });
+    // Ficha do Guia: apenas participantes ATIVOS (confirmado/pago). Nunca cancelados/reembolsados/expirados.
+    const ativos = filtrados.filter((p) =>
+      ["confirmado", "pago", "ativo"].includes((p.status ?? "").toLowerCase())
+    );
+    if (ativos.length === 0) {
+      toast.error("Nenhum participante ativo para exportar nesta expedição");
+      return;
+    }
+    exportarFichaGuiaPDF({ expedicaoNome: exp.nome, participantes: ativos });
     toast.success("PDF gerado");
   };
+
 
   return (
     <div>
