@@ -261,7 +261,7 @@ export async function fluxoCaixa(range: { from: string; to: string }) {
   const [reservasRes, despesasRes] = await Promise.all([
     supabase
       .from("reservas")
-      .select("valor_pago, created_at, status_pagamento")
+      .select("valor_total, valor_pago, created_at, status_pagamento, status_operacional")
       .gte("created_at", range.from)
       .lte("created_at", range.to),
     supabase
