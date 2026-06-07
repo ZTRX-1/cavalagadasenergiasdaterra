@@ -8,6 +8,7 @@
  * Compatível com chamadas externas (N8N, WhatsApp API, etc).
  */
 import { createFileRoute } from "@tanstack/react-router";
+import "@tanstack/react-start";
 import { z } from "zod";
 
 // ---------- Schemas ----------
