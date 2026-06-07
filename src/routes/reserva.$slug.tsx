@@ -424,28 +424,51 @@ function ReservaPage() {
                         <Field label="Nome completo" error={form.formState.errors.participantes?.[i]?.nome?.message} className="sm:col-span-2">
                           <Input {...form.register(`participantes.${i}.nome`)} placeholder="Como aparece no documento" />
                         </Field>
-                        <Field label="Data de nascimento" error={form.formState.errors.participantes?.[i]?.idade?.message}>
+                        <Field label="CPF" error={form.formState.errors.participantes?.[i]?.cpf?.message}>
                           <Controller
                             control={form.control}
-                            name={`participantes.${i}.idade`}
+                            name={`participantes.${i}.cpf`}
                             render={({ field }) => (
                               <input
-                                type="date"
                                 className="input"
-                                max={new Date().toISOString().slice(0, 10)}
-                                min="1920-01-01"
-                                onChange={(e) => {
-                                  const age = ageFromDateString(e.target.value);
-                                  if (age != null && age > 0) field.onChange(age);
-                                }}
+                                inputMode="numeric"
+                                placeholder="000.000.000-00"
+                                value={field.value}
+                                onChange={(e) => field.onChange(maskCPF(e.target.value))}
                               />
                             )}
                           />
-                          <span className="text-[0.7rem] text-muted-foreground">Idade calculada: {form.watch(`participantes.${i}.idade`) || "—"} anos</span>
+                        </Field>
+                        <Field label="Data de nascimento" error={form.formState.errors.participantes?.[i]?.data_nascimento?.message}>
+                          <Input
+                            type="date"
+                            className="input"
+                            max={new Date().toISOString().slice(0, 10)}
+                            min="1920-01-01"
+                            {...form.register(`participantes.${i}.data_nascimento`)}
+                          />
+                          <span className="text-[0.7rem] text-muted-foreground">
+                            Idade calculada: {ageFromDateString(form.watch(`participantes.${i}.data_nascimento`)) || "—"} anos
+                          </span>
                         </Field>
                         <Field label="Peso (kg) · máx. 110 kg" error={form.formState.errors.participantes?.[i]?.peso?.message}>
                           <Input type="number" inputMode="decimal" step="0.1" min={20} max={110} {...form.register(`participantes.${i}.peso`)} />
-                          <span className="text-[0.7rem] text-muted-foreground">Por bem-estar e segurança dos cavalos, o peso máximo permitido por cavaleiro é <strong>110 kg</strong>. Travessias longas com sobrepeso comprometem a saúde do animal.</span>
+                          <span className="text-[0.7rem] text-muted-foreground">Por bem-estar e segurança dos cavalos, o peso máximo permitido por cavaleiro é <strong>110 kg</strong>.</span>
+                        </Field>
+                        <Field label="WhatsApp (opcional)" error={form.formState.errors.participantes?.[i]?.telefone?.message}>
+                          <Controller
+                            control={form.control}
+                            name={`participantes.${i}.telefone`}
+                            render={({ field }) => (
+                              <input
+                                className="input"
+                                inputMode="tel"
+                                placeholder="(11) 99999-9999"
+                                value={field.value || ""}
+                                onChange={(e) => field.onChange(maskPhone(e.target.value))}
+                              />
+                            )}
+                          />
                         </Field>
                         <Field label="Experiência com cavalgada" className="sm:col-span-2">
                           <Controller
