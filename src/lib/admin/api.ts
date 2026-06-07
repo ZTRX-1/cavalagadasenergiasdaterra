@@ -14,6 +14,8 @@ async function currentUserId(): Promise<string | null> {
   return data.user?.id ?? null;
 }
 
+
+
 export async function logActivity(args: {
   modulo: string;
   acao: string;
