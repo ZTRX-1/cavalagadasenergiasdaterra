@@ -14,6 +14,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 
 import hero from "@/assets/founders/ligia-rio.jpg";
 import fundoHome from "/uploads/fundo-home.png";
+import fundoHomeMobile from "/uploads/9.jfif";
 import manifestoImg from "@/assets/fotos/home/experiencia.jpg";
 import ctaFinal from "@/assets/fotos/canastra/26.jpg";
 import acampamento from "@/assets/acampamento.jpg";
@@ -120,26 +121,20 @@ function HomePage() {
     <>
       {/* HERO — focal points por breakpoint, preservando rosto + cavalo */}
       <section className="relative min-h-[100svh] overflow-hidden text-areia md:min-h-[720px] md:h-screen bg-black">
+        {/* Mobile Background */}
         <img
-          src={fundoHome}
+          src={fundoHomeMobile}
           alt="Cavalgadas Energias da Terra"
-          className="absolute inset-0 h-full w-full object-contain md:hidden"
+          className="absolute inset-0 h-full w-full object-cover object-center md:hidden"
           fetchPriority="high"
           decoding="async"
         />
+        {/* Tablet/Desktop Background */}
         <img
           src={fundoHome}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 hidden h-full w-full object-contain md:block xl:hidden"
-          fetchPriority="high"
-          decoding="async"
-        />
-        <img
-          src={fundoHome}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 hidden h-full w-full object-contain xl:block"
+          className="absolute inset-0 hidden h-full w-full object-contain md:block"
           fetchPriority="high"
           decoding="async"
         />
