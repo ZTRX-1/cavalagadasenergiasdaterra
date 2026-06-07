@@ -238,6 +238,7 @@ function ParticipantesPage() {
         open={novo}
         onOpenChange={setNovo}
         expedicoes={expedicoes}
+        reservas={reservas}
         onSaved={refresh}
       />
       {edit ? (
@@ -245,6 +246,7 @@ function ParticipantesPage() {
           open={!!edit}
           onOpenChange={(v) => !v && setEdit(null)}
           expedicoes={expedicoes}
+          reservas={reservas}
           initial={edit}
           onSaved={refresh}
         />
