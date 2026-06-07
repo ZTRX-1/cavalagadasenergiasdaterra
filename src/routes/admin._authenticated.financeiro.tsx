@@ -27,6 +27,7 @@ import {
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
 import { useCan } from "@/hooks/use-permissions";
+import { getFinancialSummary } from "@/lib/admin/finance-utils";
 
 export const Route = createFileRoute("/admin/_authenticated/financeiro")({
   component: FinanceiroPage,
@@ -90,16 +91,17 @@ function FinanceiroPage() {
     () => reservas.filter((r) => r.created_at >= range.from && r.created_at <= range.to),
     [reservas, range],
   );
-  const totalConfirmado = reservasNoPeriodo
-    .filter((r) => r.status_pagamento === "confirmado")
-    .reduce((s, r) => s + Number(r.valor_pago || 0), 0);
-  const totalEstimado = reservasNoPeriodo.reduce((s, r) => s + Number(r.valor_total || 0), 0);
-  const totalPendente = reservasNoPeriodo
-    .filter((r) => r.status_pagamento !== "confirmado")
-    .reduce((s, r) => s + (Number(r.valor_total || 0) - Number(r.valor_pago || 0)), 0);
+  const fin = useMemo(
+    () => getFinancialSummary(reservasNoPeriodo, despesas),
+    [reservasNoPeriodo, despesas]
+  );
+
+  const totalConfirmado = fin.receitaConfirmada;
+  const totalEstimado = fin.receitaPrevista;
+  const totalPendente = fin.receitaPendente;
   const totalDespesas = despesas.reduce((s, d) => s + Number(d.valor), 0);
-  const lucro = totalConfirmado - totalDespesas;
-  const margem = totalConfirmado > 0 ? (lucro / totalConfirmado) * 100 : 0;
+  const lucro = fin.lucroLiquido;
+  const margem = fin.margem;
 
   function exportCSV() {
     const lines = [
