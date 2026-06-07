@@ -184,20 +184,20 @@ function LeadCardInner({
   const nivel = lead.nivel_interesse ?? 3;
   const score = lead.lead_score ?? 0;
   const ehProntoReserva = lead.etapa_atendimento === "pronto_reserva";
+  const temperatura = LEAD_TEMPERATURAS.find((t) => t.id === (lead.temperatura_lead ?? "frio")) ?? LEAD_TEMPERATURAS[0];
 
-  // No DragOverlay (dragging=true) o conteúdo é apenas visual.
   const content = (
-    <>
+    <div className="space-y-2.5">
       <div className="flex items-start justify-between gap-2">
-        <span
+        <div 
           ref={setActivatorNodeRef}
           {...dragAttributes}
           {...dragListeners}
-          className="min-w-0 cursor-grab truncate text-sm font-medium text-[color:var(--admin-cinza-1)] active:cursor-grabbing"
+          className="min-w-0 cursor-grab truncate text-sm font-semibold text-[color:var(--admin-cinza-1)] active:cursor-grabbing hover:text-[color:var(--admin-dourado)] transition-colors"
           title="Arrastar lead"
         >
           {lead.nome}
-        </span>
+        </div>
         {!dragging && onDelete ? (
           <button
             onPointerDown={(e) => e.stopPropagation()}
@@ -206,24 +206,40 @@ function LeadCardInner({
               e.stopPropagation();
               onDelete();
             }}
-            className="text-[color:var(--admin-cinza-3)] hover:text-rose-300"
+            className="text-[color:var(--admin-cinza-3)] hover:text-rose-300 transition-colors p-1 -m-1"
             aria-label="Excluir"
           >
             <Trash2 className="h-3.5 w-3.5" />
           </button>
         ) : null}
       </div>
-      {lead.expedicao_interesse ? (
-        <p className="mt-1 text-xs text-[color:var(--admin-cinza-2)] truncate">
+
+      <div className="flex flex-wrap items-center gap-1.5">
+        <span 
+          className="inline-flex items-center gap-1 rounded-md bg-[color:var(--admin-petroleo-soft)]/40 px-1.5 py-0.5 text-[10px] text-[color:var(--admin-cinza-2)] ring-1 ring-[color:var(--admin-borda)]"
+          title={`Temperatura: ${temperatura.label}`}
+        >
+          {temperatura.emoji} {temperatura.label}
+        </span>
+        {score > 0 && (
+          <span className="inline-flex items-center gap-1 rounded-md bg-amber-500/10 px-1.5 py-0.5 text-[10px] text-amber-300 ring-1 ring-amber-500/20">
+            <Flame className="h-3 w-3" /> {score}
+          </span>
+        )}
+      </div>
+
+      {lead.expedicao_interesse && (
+        <div className="text-[11px] text-[color:var(--admin-cinza-2)] bg-[color:var(--admin-dourado)]/5 border border-[color:var(--admin-dourado)]/10 rounded px-2 py-1 truncate">
           {lead.expedicao_interesse}
-        </p>
-      ) : null}
-      <div className="mt-2 flex items-center justify-between gap-2">
+        </div>
+      )}
+
+      <div className="flex items-center justify-between gap-2 pt-1">
         <div className="flex items-center gap-0.5">
           {Array.from({ length: 5 }).map((_, i) => (
             <Star
               key={i}
-              className={`h-3 w-3 ${
+              className={`h-2.5 w-2.5 ${
                 i < nivel
                   ? "fill-[color:var(--admin-dourado)] text-[color:var(--admin-dourado)]"
                   : "text-[color:var(--admin-borda)]"
@@ -232,28 +248,23 @@ function LeadCardInner({
             />
           ))}
         </div>
-        {score > 0 ? (
-          <div className="flex items-center gap-1 text-[10px] text-amber-300/90">
-            <Flame className="h-3 w-3" strokeWidth={2} /> {score}
-          </div>
-        ) : null}
-      </div>
-      <div className="mt-2 flex items-center justify-between text-[11px] text-[color:var(--admin-cinza-3)]">
-        <span className="flex items-center gap-1.5">
-          <span title={`Temperatura: ${lead.temperatura_lead ?? "frio"}`}>
-            {(LEAD_TEMPERATURAS.find((t) => t.id === (lead.temperatura_lead ?? "frio")) ?? LEAD_TEMPERATURAS[0]).emoji}
-          </span>
-          <span>{lead.protocolo ?? "—"}</span>
+        <span className="text-[10px] font-mono text-[color:var(--admin-cinza-3)]">
+          {lead.protocolo ?? "—"}
         </span>
-        {lead.valor_estimado ? (
-          <span>R$ {Number(lead.valor_estimado).toLocaleString("pt-BR")}</span>
-        ) : null}
       </div>
-      {lead.proxima_acao ? (
-        <p className="mt-2 rounded border border-amber-400/20 bg-amber-400/5 px-2 py-1 text-[11px] text-amber-200/90 truncate">
-          → {lead.proxima_acao}
-        </p>
-      ) : null}
+
+      <div className="flex flex-col gap-1 border-t border-[color:var(--admin-borda)]/30 pt-2 text-[10px] text-[color:var(--admin-cinza-3)]">
+        <div className="flex justify-between items-center">
+          <span>Última interação:</span>
+          <span>{lead.ultima_interacao_at ? new Date(lead.ultima_interacao_at).toLocaleDateString("pt-BR") : "—"}</span>
+        </div>
+        {lead.proxima_acao && (
+          <div className="text-amber-200/80 italic truncate" title={lead.proxima_acao}>
+            → {lead.proxima_acao}
+          </div>
+        )}
+      </div>
+
       {!dragging && ehProntoReserva && onConverter ? (
         <button
           onPointerDown={(e) => e.stopPropagation()}
@@ -262,30 +273,31 @@ function LeadCardInner({
             e.stopPropagation();
             onConverter();
           }}
-          className="mt-2 flex w-full items-center justify-center gap-1 rounded-md border border-[color:var(--admin-dourado)]/40 bg-[color:var(--admin-dourado)]/10 px-2 py-1.5 text-[11px] text-[color:var(--admin-dourado)] hover:bg-[color:var(--admin-dourado)]/15"
+          className="flex w-full items-center justify-center gap-1.5 rounded-md border border-[color:var(--admin-dourado)]/40 bg-[color:var(--admin-dourado)]/10 px-2 py-1.5 text-xs font-medium text-[color:var(--admin-dourado)] hover:bg-[color:var(--admin-dourado)]/20 transition-all"
         >
-          <ArrowRight className="h-3 w-3" /> Converter em reserva
+          <ArrowRight className="h-3.5 w-3.5" /> Converter em reserva
         </button>
       ) : null}
-      {!dragging ? (
-        <div className="mt-2 border-t border-[color:var(--admin-borda)]/50 pt-2">
-          <Link
-            to="/admin/leads/$id"
-            params={{ id: lead.id }}
-            onPointerDown={(e) => e.stopPropagation()}
-            onClick={(e) => e.stopPropagation()}
-            className="text-[11px] text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-dourado)]"
-          >
-            Abrir ficha →
-          </Link>
-        </div>
-      ) : null}
-    </>
+
+      {!dragging && (
+        <Link
+          to="/admin/leads/$id"
+          params={{ id: lead.id }}
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
+          className="block w-full text-center text-[10px] text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-dourado)] transition-colors mt-1 py-1"
+        >
+          Ver detalhes →
+        </Link>
+      )}
+    </div>
   );
 
   return (
-    <div className="rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/80 p-3 transition hover:border-[color:var(--admin-dourado)]/40">
-      {content}
+    <div className="group rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/90 p-3.5 transition-all duration-200 hover:border-[color:var(--admin-dourado)]/50 hover:shadow-[0_0_20px_-12px_rgba(212,175,55,0.3)]">
+      {content
+...
+
     </div>
   );
 }
