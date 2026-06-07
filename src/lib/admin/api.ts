@@ -381,6 +381,7 @@ export async function deleteData(id: string): Promise<void> {
 
 /** Etapas do Atendimento — coluna do Kanban e progresso do lead. */
 export const LEAD_ETAPAS = [
+  { id: "incompleto", label: "Incompleto", descricao: "Iniciou mas não concluiu o formulário" },
   { id: "novo", label: "Novo", descricao: "Acabou de chegar" },
   { id: "em_atendimento", label: "Atendimento", descricao: "IA ou equipe iniciou conversa" },
   { id: "qualificado", label: "Qualificado", descricao: "Tem perfil para a viagem" },
