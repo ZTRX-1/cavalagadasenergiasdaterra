@@ -279,9 +279,10 @@ export async function fluxoCaixa(range: { from: string; to: string }) {
     return map.get(dia)!;
   };
   for (const r of reservasRes.data ?? []) {
-    if (r.status_pagamento !== "confirmado") continue;
+    const isConfirmado = r.status_pagamento === "confirmado" || r.status_operacional === "reserva_confirmada";
+    if (!isConfirmado) continue;
     const dia = r.created_at.slice(0, 10);
-    ensure(dia).entrada += Number(r.valor_pago ?? 0);
+    ensure(dia).entrada += Number(isConfirmado && r.status_operacional === "reserva_confirmada" ? (r.valor_total ?? r.valor_pago ?? 0) : (r.valor_pago ?? 0));
   }
   for (const d of despesasRes.data ?? []) {
     ensure(d.data).saida += Number(d.valor ?? 0);
