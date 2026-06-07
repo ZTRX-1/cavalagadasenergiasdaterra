@@ -14,11 +14,6 @@ async function currentUserId(): Promise<string | null> {
   return data.user?.id ?? null;
 }
 
-export async function deleteParticipante(id: string): Promise<void> {
-  const { error } = await supabase.from("participantes").delete().eq("id", id);
-  if (error) throw error;
-  await logActivity({ modulo: "reservas", acao: "excluir_participante", metadata: { id } });
-}
 
 
 export async function logActivity(args: {
