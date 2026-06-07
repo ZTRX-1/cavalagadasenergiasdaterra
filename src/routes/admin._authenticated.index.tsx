@@ -223,8 +223,9 @@ function DashboardPage() {
       {/* KPIs operacionais — funil de vendas */}
       <div>
         <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">Funil no período</p>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
           <KPI label="Leads recebidos" value={isLoading ? "—" : String(data?.leadsTotal ?? 0)} icon={Sparkles} />
+          <KPI label="Leads abandonados" value={isLoading ? "—" : String(data?.leadsAbandonados ?? 0)} icon={Users} tone="warn" />
           <KPI label="Leads qualificados" value={isLoading ? "—" : String(data?.leadsQualificados ?? 0)} icon={Users} />
           <KPI label="Reservas criadas" value={isLoading ? "—" : String(data?.reservasCriadas ?? 0)} icon={CalendarCheck} />
           <KPI label="Reservas confirmadas" value={isLoading ? "—" : String(data?.reservasConfirmadas ?? 0)} icon={Compass} />
