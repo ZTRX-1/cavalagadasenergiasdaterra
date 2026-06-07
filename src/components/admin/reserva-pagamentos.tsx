@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Plus, Trash2, CheckCircle2, Wallet, ExternalLink } from "lucide-react";
+import { Plus, Trash2, CheckCircle2, Wallet, ExternalLink, Calendar as CalendarIcon } from "lucide-react";
 import {
   TIPOS_PAGAMENTO,
   FORMAS_PAGAMENTO,
