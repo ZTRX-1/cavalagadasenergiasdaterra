@@ -197,6 +197,22 @@ function ReservaDetalhePage() {
             <InfoRow icon={Phone} label="Telefone" value={reserva.cliente_telefone ?? "—"} />
             <div className="pt-2">
               <label className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">
+                Motivação da viagem
+              </label>
+              <textarea
+                defaultValue={(reserva as any).motivacao_viagem ?? ""}
+                onBlur={(e) => {
+                  if (e.target.value !== ((reserva as any).motivacao_viagem ?? "")) {
+                    updateMut.mutate({ motivacao_viagem: e.target.value } as any);
+                  }
+                }}
+                rows={2}
+                className="mt-1 w-full rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao)] px-2 py-1.5 text-sm"
+                placeholder="O que espera viver nessa experiência..."
+              />
+            </div>
+            <div className="pt-2">
+              <label className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">
                 Status operacional
               </label>
               <select
@@ -231,6 +247,22 @@ function ReservaDetalhePage() {
             at={reserva.contrato_assinado_em}
             onChange={(v) => updateMut.mutate({ contrato_assinado: v })}
           />
+          <div className="pt-2">
+            <label className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">
+              Informações importantes
+            </label>
+            <textarea
+              defaultValue={(reserva as any).observacoes_importantes ?? ""}
+              onBlur={(e) => {
+                if (e.target.value !== ((reserva as any).observacoes_importantes ?? "")) {
+                  updateMut.mutate({ observacoes_importantes: e.target.value } as any);
+                }
+              }}
+              rows={2}
+              className="mt-1 w-full rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao)] px-2 py-1.5 text-sm"
+              placeholder="Alergias, restrições, limitações..."
+            />
+          </div>
           <div className="pt-2">
             <label className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">
               Observações internas
