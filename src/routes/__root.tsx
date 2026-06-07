@@ -90,6 +90,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isAdmin = pathname.startsWith("/admin");
+  useTracking();
 
   return (
     <QueryClientProvider client={queryClient}>
