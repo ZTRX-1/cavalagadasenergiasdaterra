@@ -68,6 +68,7 @@ async function fetchDashboard(range: { from: string; to: string }) {
   const [
     leadsTotal,
     leadsQualificados,
+    leadsAbandonados,
     leadsConvertidos,
     reservasCriadas,
     reservasConfirmadas,
@@ -77,8 +78,9 @@ async function fetchDashboard(range: { from: string; to: string }) {
     datas,
     proximas,
   ] = await Promise.all([
-    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
+    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).neq("status", "incompleto"),
     supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("etapa_atendimento", ["qualificado", "pronto_reserva", "convertido"]),
+    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).eq("status", "incompleto"),
     supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).eq("etapa_atendimento", "convertido"),
     supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
     supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("status_operacional", ["reserva_confirmada", "participante_confirmado"]),
