@@ -42,7 +42,7 @@ function LeadEdit() {
       return data as { id: string; protocolo: string } | null;
     },
   });
-  const [form, setForm] = useState<Partial<LeadRow> | null>(null);
+  const [form, setForm] = useState<Partial<LeadRow & { tipo_grupo: string | null }> | null>(null);
   const [nota, setNota] = useState("");
   const [tipoNota, setTipoNota] = useState<LeadConversaTipo>("observacao_interna");
   const [converter, setConverter] = useState(false);
@@ -197,6 +197,44 @@ function LeadEdit() {
               <AdminField label="Estado"><input className="admin-input" value={form.estado ?? ""} onChange={(e) => setForm({ ...form, estado: e.target.value })} /></AdminField>
             </div>
             <AdminField label="Expedição de interesse"><input className="admin-input" value={form.expedicao_interesse ?? ""} onChange={(e) => setForm({ ...form, expedicao_interesse: e.target.value })} /></AdminField>
+            
+            <div className="grid grid-cols-2 gap-3">
+              <AdminField label="Tipo de viagem">
+                <select className="admin-input" value={form.tipo_grupo ?? ""} onChange={(e) => setForm({ ...form, tipo_grupo: e.target.value || null })}>
+                  <option value="">—</option>
+                  <option value="sozinho">Sozinho(a)</option>
+                  <option value="casal">Casal</option>
+                  <option value="familia">Família</option>
+                  <option value="grupo">Grupo</option>
+                </select>
+              </AdminField>
+              <AdminField label="Nível equestre">
+                <select className="admin-input" value={form.experiencia_equestre ?? ""} onChange={(e) => setForm({ ...form, experiencia_equestre: e.target.value || null })}>
+                  <option value="">—</option>
+                  <option value="nunca">Nunca montei</option>
+                  <option value="algumas">Já montei algumas vezes</option>
+                  <option value="frequente">Experiência frequente</option>
+                </select>
+              </AdminField>
+            </div>
+
+            <AdminField label="O que espera viver nessa experiência?">
+              <textarea 
+                className="admin-input min-h-[60px]" 
+                value={form.motivacao_viagem ?? ""} 
+                onChange={(e) => setForm({ ...form, motivacao_viagem: e.target.value })} 
+                maxLength={250}
+              />
+            </AdminField>
+
+            <AdminField label="Informações importantes (Alergias, Restrições, etc.)">
+              <textarea 
+                className="admin-input min-h-[60px]" 
+                value={form.observacoes_importantes ?? ""} 
+                onChange={(e) => setForm({ ...form, observacoes_importantes: e.target.value })} 
+              />
+            </AdminField>
+
             <div className="grid grid-cols-3 gap-3">
               <AdminField label="Data de interesse"><input type="date" className="admin-input" value={form.data_interesse ?? ""} onChange={(e) => setForm({ ...form, data_interesse: e.target.value || null })} /></AdminField>
               <AdminField label="Pessoas"><input type="number" className="admin-input" value={form.quantidade_pessoas ?? 1} onChange={(e) => setForm({ ...form, quantidade_pessoas: Number(e.target.value) })} /></AdminField>
@@ -228,7 +266,7 @@ function LeadEdit() {
               <AdminField label="UTM medium"><input className="admin-input" value={form.utm_medium ?? ""} onChange={(e) => setForm({ ...form, utm_medium: e.target.value || null })} /></AdminField>
               <AdminField label="UTM campaign"><input className="admin-input" value={form.utm_campaign ?? ""} onChange={(e) => setForm({ ...form, utm_campaign: e.target.value || null })} /></AdminField>
             </div>
-            <AdminField label="Observações"><textarea className="admin-input min-h-[80px]" value={form.observacoes ?? ""} onChange={(e) => setForm({ ...form, observacoes: e.target.value })} /></AdminField>
+            <AdminField label="Observações internas"><textarea className="admin-input min-h-[80px]" value={form.observacoes ?? ""} onChange={(e) => setForm({ ...form, observacoes: e.target.value })} /></AdminField>
           </AdminSection>
 
           <MemoriaCard leadId={id} memoria={memoria ?? null} />
