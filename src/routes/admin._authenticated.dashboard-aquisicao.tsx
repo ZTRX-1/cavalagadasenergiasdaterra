@@ -132,7 +132,8 @@ function DashboardAquisicao() {
       dataOrigens,
       dataCampanhas,
       dataExpedicoes,
-      dataEvolucao
+      dataEvolucao,
+      rankingConversao
     };
   }, [leads, periodo]);
 
