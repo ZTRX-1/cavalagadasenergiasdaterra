@@ -109,6 +109,17 @@ function auth(request: Request): Response | null {
 export const Route = createFileRoute("/api/public/ia-barbara/leads")({
   server: {
     handlers: {
+      OPTIONS: async (): Promise<Response> =>
+        new Response(null, {
+          status: 204,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          },
+        }) as never,
+
+      GET: async ({ request }: { request: Request }) => {
       OPTIONS: async () =>
         new Response(null, {
           status: 204,
