@@ -211,8 +211,8 @@ async function handlePOST(request: Request): Promise<Response> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   // O cliente admin tem tipos estritos para INSERT/UPDATE; trabalhar com payloads
   // dinâmicos exige cast pontual. RLS bypass + validação Zod garantem integridade.
-  type AnyTable = ReturnType<typeof supabaseAdmin.from>;
-  const tbl = (name: string) => supabaseAdmin.from(name as never) as unknown as AnyTable;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tbl = (name: string): any => (supabaseAdmin as unknown as { from: (n: string) => unknown }).from(name);
 
   if (body.action === "upsert_lead") {
     let existing: { id: string } | null = null;
