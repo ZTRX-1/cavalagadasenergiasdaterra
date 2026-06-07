@@ -119,7 +119,7 @@ function HomePage() {
   return (
     <>
       {/* HERO — focal points por breakpoint, preservando rosto + cavalo */}
-      <section className="relative min-h-[100svh] overflow-hidden text-areia md:min-h-[720px] md:h-screen">
+      <section className="relative min-h-[100svh] overflow-hidden text-areia md:min-h-[720px] md:h-screen bg-black">
         <img
           src={fundoHome}
           alt="Cavalgadas Energias da Terra"
