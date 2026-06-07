@@ -806,6 +806,8 @@ export interface ReservaRow {
   data_id: string | null;
   data_label: string;
   status: string;
+  status_operacional: string;
+  status_financeiro: string;
   quantidade_participantes: number;
   responsavel: Record<string, unknown>;
   grupo_nome: string | null;

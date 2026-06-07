@@ -78,6 +78,9 @@ function LeadsPage() {
   const leadsFiltrados = useMemo(() => {
     const q = fBusca.trim().toLowerCase();
     return leads.filter((l) => {
+      // Regra de Auditoria: Leads abandonados não aparecem no CRM operacional
+      if (l.status === "incompleto") return false;
+
       if (fOrigem !== "todas" && l.origem !== fOrigem) return false;
       if (fExpedicao !== "todas" && l.expedicao_interesse !== fExpedicao) return false;
       if (fNivel !== "todos" && String(l.nivel_interesse ?? 3) !== fNivel) return false;
