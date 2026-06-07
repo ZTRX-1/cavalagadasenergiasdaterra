@@ -310,3 +310,62 @@ function MemoriaCard({ leadId, memoria }: { leadId: string; memoria: LeadMemoria
     </AdminSection>
   );
 }
+
+const CONVERSA_EVENTOS = new Set(["mensagem_ia", "mensagem_humana", "ligacao", "email", "observacao_interna"]);
+
+function HistoricoAbas({ conversas }: { conversas: Array<{ id: string; created_at: string; conteudo: string | null; tipo_evento: string }> }) {
+  const [aba, setAba] = useState<"conversas" | "timeline" | "tudo">("tudo");
+  const filtradas = conversas.filter((c) => {
+    if (aba === "tudo") return true;
+    const isConversa = CONVERSA_EVENTOS.has(c.tipo_evento);
+    return aba === "conversas" ? isConversa : !isConversa;
+  });
+  const Tab = ({ id, label }: { id: typeof aba; label: string }) => (
+    <button
+      onClick={() => setAba(id)}
+      className={`px-3 py-1 text-[11px] uppercase tracking-[0.18em] rounded-md border transition ${
+        aba === id
+          ? "border-[color:var(--admin-dourado)]/40 bg-[color:var(--admin-dourado)]/10 text-[color:var(--admin-dourado)]"
+          : "border-[color:var(--admin-borda)] text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-cinza-1)]"
+      }`}
+    >
+      {label}
+    </button>
+  );
+  return (
+    <AdminSection titulo="Histórico" descricao="Conversas com o lead e eventos da timeline (criação, mudanças, IA, transferências).">
+      <div className="flex items-center gap-2">
+        <Tab id="tudo" label="Tudo" />
+        <Tab id="conversas" label="Conversas" />
+        <Tab id="timeline" label="Timeline" />
+      </div>
+      <ol className="space-y-3 mt-2">
+        {filtradas.map((c) => (
+          <li key={c.id} className="relative pl-5">
+            <span className="absolute left-0 top-1.5 h-2 w-2 rounded-full bg-[color:var(--admin-dourado)]" />
+            <div className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">{new Date(c.created_at).toLocaleString("pt-BR")}</div>
+            <div className="mt-0.5 text-sm text-[color:var(--admin-cinza-1)] whitespace-pre-wrap">{c.conteudo ?? "—"}</div>
+            <div className="mt-1"><StatusBadge status={c.tipo_evento} /></div>
+          </li>
+        ))}
+        {filtradas.length === 0 ? <p className="text-sm text-[color:var(--admin-cinza-3)]">Nada por aqui ainda.</p> : null}
+      </ol>
+    </AdminSection>
+  );
+}
+
+function TemperaturaBadge({ value }: { value: LeadTemperaturaId }) {
+  const t = LEAD_TEMPERATURAS.find((x) => x.id === value) ?? LEAD_TEMPERATURAS[0];
+  const tone: Record<LeadTemperaturaId, string> = {
+    frio: "border-sky-400/30 bg-sky-400/10 text-sky-200",
+    morno: "border-amber-300/30 bg-amber-300/10 text-amber-100",
+    quente: "border-orange-400/40 bg-orange-400/10 text-orange-200",
+    urgente: "border-rose-500/40 bg-rose-500/10 text-rose-200",
+  };
+  return (
+    <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] uppercase tracking-[0.18em] ${tone[value]}`}>
+      <span>{t.emoji}</span> {t.label}
+    </span>
+  );
+}
+
