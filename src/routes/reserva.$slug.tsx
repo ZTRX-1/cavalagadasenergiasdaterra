@@ -13,6 +13,7 @@ import { formatDateRange, formatPrice } from "@/lib/format";
 import { getExpedicaoImage } from "@/lib/expedicao-images";
 import { ESTADOS_BR, maskCPF, maskPhone, ageFromDateString } from "@/lib/br-estados";
 import { cn } from "@/lib/utils";
+import { useTracking } from "@/hooks/use-tracking";
 
 
 const qo = (slug: string) =>
