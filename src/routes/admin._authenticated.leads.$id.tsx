@@ -9,9 +9,11 @@ import { StatusBadge } from "@/components/admin/admin-status-badge";
 import { ConverterLeadModal } from "@/components/admin/converter-lead-modal";
 import {
   getLead, updateLead, LEAD_ETAPAS, CONVERSA_TIPOS,
+  LEAD_TEMPERATURAS, LEAD_STATUS_ATENDIMENTO, LEAD_MOTIVOS_PERDA,
   listLeadConversas, addLeadConversa,
   getLeadMemoria, upsertLeadMemoria,
   type LeadRow, type LeadEtapaId, type LeadConversaTipo, type LeadMemoriaRow,
+  type LeadTemperaturaId, type LeadStatusAtendimentoId, type LeadMotivoPerdaId,
 } from "@/lib/admin/api";
 import { supabase } from "@/integrations/supabase/client";
 
