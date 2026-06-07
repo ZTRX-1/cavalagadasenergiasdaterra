@@ -305,7 +305,7 @@ function MemoriaCard({ leadId, memoria }: { leadId: string; memoria: LeadMemoria
       <AdminField label="Objetivos"><input className="admin-input" value={form.objetivos ?? ""} onChange={(e) => setForm({ ...form, objetivos: e.target.value })} placeholder="Desconectar, conexão com a natureza…" /></AdminField>
       <AdminField label="Interesses"><input className="admin-input" value={form.interesses ?? ""} onChange={(e) => setForm({ ...form, interesses: e.target.value })} /></AdminField>
       <AdminField label="Restrições"><input className="admin-input" value={form.restricoes ?? ""} onChange={(e) => setForm({ ...form, restricoes: e.target.value })} placeholder="Alimentar, médica, datas…" /></AdminField>
-      <AdminField label="Orçamento (R$)"><input type="number" className="admin-input" value={form.orcamento ?? ""} onChange={(e) => setForm({ ...form, orcamento: e.target.value ? Number(e.target.value) : null })} /></AdminField>
+      <AdminField label="Orçamento"><input className="admin-input" value={form.orcamento ?? ""} onChange={(e) => setForm({ ...form, orcamento: e.target.value })} placeholder="Faixa estimada..." /></AdminField>
       <button className="admin-btn-ghost w-full" onClick={() => mut.mutate()} disabled={mut.isPending}>Salvar memória</button>
     </AdminSection>
   );
