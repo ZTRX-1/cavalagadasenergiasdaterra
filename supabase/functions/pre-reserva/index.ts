@@ -33,11 +33,10 @@ const admin = createClient(SUPABASE_URL, SERVICE_ROLE, {
 
 type Participante = {
   nome: string;
-  idade?: number;
   data_nascimento: string;
   cpf: string;
   peso: number;
-  experiencia: "nenhuma" | "iniciante" | "intermediario" | "avancado";
+  experiencia: "nunca" | "algumas" | "frequente";
   telefone?: string;
   email?: string;
 };
@@ -64,7 +63,8 @@ type CriarPayload = {
     tipo_grupo: string;
     forma_pagamento: string;
     como_conheceu: string;
-    restricoes?: string | null;
+    motivacao_viagem: string;
+    observacoes_importantes?: string | null;
     observacoes?: string | null;
   };
   aceites: {
@@ -101,7 +101,7 @@ function validarCriar(b: any): { ok: true; data: CriarPayload } | { ok: false; e
     if (typeof p.cpf !== "string" || p.cpf.trim().length < 11) return { ok: false, error: "participante.cpf obrigatório." };
     if (typeof p.data_nascimento !== "string" || p.data_nascimento.length < 10) return { ok: false, error: "participante.data_nascimento obrigatória." };
     if (typeof p.peso !== "number" || p.peso < 20 || p.peso > 110) return { ok: false, error: "participante.peso inválido." };
-    if (!["nenhuma", "iniciante", "intermediario", "avancado"].includes(p.experiencia)) return { ok: false, error: "participante.experiencia inválida." };
+    if (!["nunca", "algumas", "frequente"].includes(p.experiencia)) return { ok: false, error: "participante.experiencia inválida." };
   }
 
   const a = b.adicionais;
@@ -147,7 +147,9 @@ async function handleCriar(payload: CriarPayload) {
     valor_estimado: valor_total,
     data_interesse: payload.data_inicio ?? null,
     observacoes: payload.adicionais.observacoes ?? null,
-    restricoes_alimentares: payload.adicionais.restricoes ?? null,
+    observacoes_importantes: payload.adicionais.observacoes_importantes ?? null,
+    motivacao_viagem: payload.adicionais.motivacao_viagem ?? null,
+    tipo_grupo: payload.adicionais.tipo_grupo ?? null,
     protocolo: (protoLeadData as string | null) ?? null,
     forma_pagamento: payload.adicionais.forma_pagamento,
     peso: firstP?.peso,
@@ -181,6 +183,9 @@ async function handleCriar(payload: CriarPayload) {
     participantes: payload.participantes,
     adicionais: payload.adicionais,
     aceites: payload.aceites,
+    tipo_grupo: payload.adicionais.tipo_grupo,
+    motivacao_viagem: payload.adicionais.motivacao_viagem,
+    observacoes_importantes: payload.adicionais.observacoes_importantes,
     forma_pagamento: payload.adicionais.forma_pagamento,
     valor_total,
   };
