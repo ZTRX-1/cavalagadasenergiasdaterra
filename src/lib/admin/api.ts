@@ -624,7 +624,7 @@ export interface LeadMemoriaRow {
   interesses: string | null;
   restricoes: string | null;
   expedicoes_favoritas: string[];
-  orcamento: number | null;
+  orcamento: string | null;
   dados_extraidos: Record<string, unknown>;
   ultima_atualizacao: string;
 }
