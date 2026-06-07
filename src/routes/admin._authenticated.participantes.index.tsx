@@ -358,12 +358,14 @@ function VistaAgrupada({
         const vagasDisp = data?.vagas_disponiveis ?? 0;
         const receitaPrevista = reservasGrupo.reduce((s, r) => s + Number(r.valor_total ?? 0), 0);
         const receitaRecebida = reservasGrupo.reduce((s, r) => {
+          // Receita Confirmada: Se a reserva está confirmada operacionalmente, o valor total é considerado receita confirmada
           if (["reserva_confirmada", "participante_confirmado"].includes(r.status_operacional)) {
             return s + Number(r.valor_total ?? 0);
           }
+          // Caso contrário, apenas o que já foi efetivamente pago
           return s + Number(r.valor_pago ?? 0);
         }, 0);
-        const aReceber = receitaPrevista - receitaRecebida;
+        const aReceber = Math.max(0, receitaPrevista - receitaRecebida);
 
         return (
           <section

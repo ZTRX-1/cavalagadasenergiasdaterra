@@ -181,7 +181,7 @@ function LeadEdit() {
                 <div className="mb-1 flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-violet-300/80">
                   <Brain className="h-3 w-3" /> Resumo gerado por IA
                 </div>
-                <p className="text-sm text-[color:var(--admin-cinza-1)]">{form.resumo_ia}</p>
+                <p className="text-sm text-[color:var(--admin-cinza-1)] whitespace-pre-wrap">{form.resumo_ia}</p>
               </div>
             ) : null}
           </AdminSection>
