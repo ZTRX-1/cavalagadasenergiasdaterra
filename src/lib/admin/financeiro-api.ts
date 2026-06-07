@@ -70,12 +70,11 @@ export const STATUS_OPERACIONAL = [
   { id: "pre_reserva", label: "Pré-reserva" },
   { id: "reserva_confirmada", label: "Reserva confirmada" },
   { id: "participante_confirmado", label: "Participante confirmado" },
-  { id: "participante_embarcado", label: "Participante embarcado" },
   { id: "expedicao_concluida", label: "Expedição concluída" },
 ] as const;
 
 export const TIPOS_PAGAMENTO = ["entrada", "parcela", "final", "reembolso", "ajuste"] as const;
-export const FORMAS_PAGAMENTO = ["pix", "cartao", "transferencia", "dinheiro", "boleto"] as const;
+export const FORMAS_PAGAMENTO = ["pix", "cartao", "pix_parcelado", "transferencia", "dinheiro"] as const;
 export const STATUS_PAGAMENTO_NOVO = ["previsto", "confirmado", "estornado", "cancelado"] as const;
 
 export type Pagamento = {
