@@ -105,6 +105,7 @@ function ParticipantesPage() {
   const [view, setView] = useState<"agrupado" | "lista">("agrupado");
   const [filtroExp, setFiltroExp] = useState<string>("");
   const [filtroStatus, setFiltroStatus] = useState<string>("");
+  const [filtroStatusFinanceiro, setFiltroStatusFinanceiro] = useState<string>("");
   const [apenasConfirmados, setApenasConfirmados] = useState(false);
   const [busca, setBusca] = useState("");
   const refresh = () => qc.invalidateQueries({ queryKey: ["admin", "participantes"] });
@@ -120,6 +121,10 @@ function ParticipantesPage() {
     return list.filter((p) => {
       if (filtroExp && p.expedicao_id !== filtroExp) return false;
       if (filtroStatus && p.status !== filtroStatus) return false;
+      if (filtroStatusFinanceiro) {
+        const res = reservas.find(r => r.id === p.reserva_id);
+        if (!res || res.status_financeiro !== filtroStatusFinanceiro) return false;
+      }
       if (apenasConfirmados) {
         const res = reservas.find(r => r.id === p.reserva_id);
         if (!res || res.status_operacional !== "reserva_confirmada") return false;
@@ -127,7 +132,7 @@ function ParticipantesPage() {
       if (q && !(p.nome ?? "").toLowerCase().includes(q) && !(p.email ?? "").toLowerCase().includes(q) && !(p.cpf ?? "").toLowerCase().includes(q)) return false;
       return true;
     });
-  }, [list, filtroExp, filtroStatus, apenasConfirmados, busca, reservas]);
+  }, [list, filtroExp, filtroStatus, filtroStatusFinanceiro, apenasConfirmados, busca, reservas]);
 
   const exportar = () => {
     if (!filtroExp) { toast.error("Selecione uma expedição para gerar a ficha do guia"); return; }
@@ -158,8 +163,8 @@ function ParticipantesPage() {
                 onClick={() => setView("lista")}
               ><List className="h-3.5 w-3.5" /> Lista</button>
             </div>
-            <button className="admin-btn-ghost" onClick={exportar} title="Gerar PDF com a ficha completa">
-              <FileDown className="h-4 w-4" /> Ficha do guia (PDF)
+            <button className="admin-btn-ghost flex items-center gap-2" onClick={exportar} title="Gerar PDF com a ficha completa">
+              <FileDown className="h-4 w-4 shrink-0" /> <span className="whitespace-nowrap">Ficha do guia (PDF)</span>
             </button>
             <button className="admin-btn-primary" onClick={() => setNovo(true)}><Plus className="h-4 w-4" /> Novo participante</button>
           </div>
@@ -186,10 +191,20 @@ function ParticipantesPage() {
           {expedicoes.map((e) => <option key={e.id} value={e.id}>{e.nome}</option>)}
         </select>
         <select className="admin-input w-auto" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
-          <option value="">Todos os status</option>
+          <option value="">Status do Participante</option>
           <option value="pendente">Pendente</option>
           <option value="confirmado">Confirmado</option>
           <option value="cancelado">Cancelado</option>
+        </select>
+        <select 
+          className="admin-input w-auto" 
+          value={filtroStatusFinanceiro} 
+          onChange={(e) => setFiltroStatusFinanceiro(e.target.value)}
+        >
+          <option value="">Status Financeiro</option>
+          <option value="aguardando_pagamento">Aguardando Pagamento</option>
+          <option value="parcialmente_pago">Parcialmente Pago</option>
+          <option value="pago_integralmente">Pago Integralmente</option>
         </select>
         <label className="flex items-center gap-2 cursor-pointer bg-[color:var(--admin-carvao-deep)]/40 border border-[color:var(--admin-borda)] rounded-lg px-3 py-1.5 h-[38px]">
           <input 
@@ -342,49 +357,72 @@ function VistaAgrupada({
                 <thead className="text-left text-[10px] uppercase tracking-[0.16em] text-[color:var(--admin-cinza-3)]">
                   <tr>
                     <th className="px-5 py-3 font-medium">Participante</th>
-                    <th className="px-3 py-3 font-medium">Idade</th>
-                    <th className="px-3 py-3 font-medium">Peso</th>
+                    <th className="px-3 py-3 font-medium">Idade / Peso</th>
                     <th className="px-3 py-3 font-medium">Experiência</th>
+                    <th className="px-3 py-3 font-medium text-center">Docs</th>
                     <th className="px-3 py-3 font-medium">Status</th>
-                    <th className="px-3 py-3 font-medium">Reserva</th>
+                    <th className="px-3 py-3 font-medium">Reserva / Responsável</th>
                     <th className="px-5 py-3 font-medium text-right">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {g.participantes.map((p) => (
-                    <tr key={p.id} className="border-t border-[color:var(--admin-borda)] hover:bg-[color:var(--admin-petroleo)]/20">
-                      <td className="px-5 py-3">
-                        <Link
-                          to="/admin/participantes/$id"
-                          params={{ id: p.id }}
-                          className="font-medium text-[color:var(--admin-cinza-1)] hover:text-[color:var(--admin-dourado)] text-left"
-                        >
-                          {p.nome}
-                        </Link>
-                        <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{p.telefone ?? p.email ?? "—"}</div>
-                      </td>
-                      <td className="px-3 py-3 text-[color:var(--admin-cinza-2)]">{calcIdade(p.data_nascimento)}</td>
-                      <td className="px-3 py-3 text-[color:var(--admin-cinza-2)]">{p.peso ? `${p.peso} kg` : "—"}</td>
-                      <td className="px-3 py-3 text-[color:var(--admin-cinza-2)] capitalize">{p.experiencia_equestre ?? "—"}</td>
-                      <td className="px-3 py-3"><StatusBadge status={p.status} /></td>
-                      <td className="px-3 py-3">
-                        {p.reserva_id ? (
+                  {g.participantes.map((p) => {
+                    const res = reservas.find(r => r.id === p.reserva_id);
+                    return (
+                      <tr key={p.id} className="border-t border-[color:var(--admin-borda)] hover:bg-[color:var(--admin-petroleo)]/20">
+                        <td className="px-5 py-3">
                           <Link
-                            to="/admin/reservas/$id"
-                            params={{ id: p.reserva_id }}
-                            className="text-[11px] text-[color:var(--admin-dourado)] hover:underline"
+                            to="/admin/participantes/$id"
+                            params={{ id: p.id }}
+                            className="font-medium text-[color:var(--admin-cinza-1)] hover:text-[color:var(--admin-dourado)] text-left block"
                           >
-                            Ver reserva
+                            {p.nome}
                           </Link>
-                        ) : (
-                          <span className="text-[11px] text-[color:var(--admin-cinza-3)]">—</span>
-                        )}
-                      </td>
-                      <td className="px-5 py-3 text-right">
+                          <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{p.telefone ?? p.email ?? "—"}</div>
+                        </td>
+                        <td className="px-3 py-3">
+                          <div className="text-[color:var(--admin-cinza-2)]">{calcIdade(p.data_nascimento)}</div>
+                          <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{p.peso ? `${p.peso} kg` : "—"}</div>
+                        </td>
+                        <td className="px-3 py-3 text-[color:var(--admin-cinza-2)] capitalize text-xs">
+                          {p.experiencia_equestre ?? "—"}
+                        </td>
+                        <td className="px-3 py-3 text-center">
+                          <div className="flex justify-center">
+                            {p.documento ? (
+                              <div className="h-2 w-2 rounded-full bg-emerald-500" title="Documento informado" />
+                            ) : (
+                              <div className="h-2 w-2 rounded-full bg-rose-500/40" title="Documento pendente" />
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-3 py-3">
+                          <div className="flex flex-col gap-1">
+                            <StatusBadge status={p.status} />
+                          </div>
+                        </td>
+                        <td className="px-3 py-3">
+                          {res ? (
+                            <Link
+                              to="/admin/reservas/$id"
+                              params={{ id: res.id }}
+                              className="group block"
+                            >
+                              <div className="text-[11px] text-[color:var(--admin-dourado)] font-mono">{res.protocolo}</div>
+                              <div className="text-[10px] text-[color:var(--admin-cinza-3)] truncate max-w-[120px] group-hover:text-[color:var(--admin-cinza-2)]">
+                                Resp: {res.cliente_nome}
+                              </div>
+                            </Link>
+                          ) : (
+                            <span className="text-[11px] text-[color:var(--admin-cinza-3)]">—</span>
+                          )}
+                        </td>
+                        <td className="px-5 py-3 text-right">
                         <button onClick={() => onDelete(p)} className="admin-btn-ghost px-2 py-1.5 hover:!bg-rose-500/10"><Trash2 className="h-3.5 w-3.5" /></button>
                       </td>
-                    </tr>
-                  ))}
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
