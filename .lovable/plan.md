@@ -1,98 +1,342 @@
-# Fase 3 — Operação conectada de ponta a ponta
+# Evolução CRM de Leads → IA Bárbara (Versão Aprovada)
 
-As Fases 1 e 2 já criaram a espinha dorsal (etapas reduzidas, conversão Lead→Reserva, participantes agrupados por expedição+data, trigger que confirma participantes quando a reserva é quitada, upload livre de docs por participante). Esta fase resolve o que ainda está **quebrado ou desconectado** na operação real.
+Objetivo: preparar o CRM para a IA Bárbara atender, qualificar e atualizar leads em tempo real, sem recriar telas e sem alterar o design atual.
 
-## 1. Leads — corrigir o ponto de entrada
+## 1. Banco de Dados
 
-**Problema:** leads novos estão caindo direto em "Pronto para Reserva".
+### Tabela Leads
 
-- Forçar etapa inicial `novo` em todo insert (formulário interno + endpoint público `pre-reserva`). Adiciono `DEFAULT 'novo'` + trigger `BEFORE INSERT` que normaliza qualquer valor recebido pra `novo`, exceto quando o operador cria manualmente já em outra etapa.
-- Garantir que o webhook/IA quando entrar no ar só consiga **promover** etapa, nunca pular pra `pronto_reserva` direto.
+Manter os campos existentes:
 
-## 2. Kanban arrastável (drag and drop real)
+- resumo_ia
+- lead_score
+- proxima_acao
+- ultima_interacao_at
+- etapa_atendimento
+- status
+- resumo_atendimento
 
-- Instalar `@dnd-kit/core` + `@dnd-kit/sortable`.
-- Refatorar `admin._authenticated.leads.tsx` (modo Kanban) com `DndContext`, colunas como `droppable`, cards como `draggable`.
-- `onDragEnd` chama a mutation `updateLead({ etapa_atendimento })` que já existe → trigger `lead_etapa_changed` registra na timeline automaticamente.
-- Otimismo: atualizar UI antes da confirmação, rollback no erro.
-- Mantém a vista Lista intacta como fallback.
+Adicionar:
 
-## 3. Ficha do Lead — abrir e editar
+- temperatura_lead (frio | morno | quente | urgente)
+- status_atendimento (ia | humano | transferido | encerrado)
+- motivo_perda (preco | data | sem_disponibilidade | nao_respondeu | concorrente | outro)
+- motivo_perda_detalhe (texto livre)
 
-A rota `leads.$id.tsx` existe mas o usuário relata "não abro o lead". Vou:
+Adicionar também:
 
-- Garantir que cada card do Kanban e linha da Lista tenha `<Link to="/admin/leads/$id" params={{ id }}>` (não só botão de ação).
-- Revisar a ficha: blocos **Dados** (nome, telefone, email, CPF, origem, expedição de interesse, valor estimado) todos editáveis inline; **Observações**; **Timeline** (puxando de `lead_conversas` + eventos de webhook); **Ações** (avançar etapa, converter em reserva, marcar como perdido).
-- Botão "Converter em reserva" já existe — confirmar que aparece a partir de `qualificado`.
+- expedicao_id
+- data_expedicao_id
 
-## 4. Ficha de Reserva — o botão "Abrir"
+Objetivo:
 
-- Reproduzir o bug do "Abrir não funciona", investigar (provavelmente Link sem `params` tipados ou erro de render). Corrigir.
-- Conferir que `admin._authenticated.reservas.$id.tsx` renderiza **todos os blocos**: Resumo · Pagamentos · Participantes (já feito Fase 2) · Documentos · Timeline · Observações.
-- Adicionar select de **status operacional** editável (confirmar, aguardando, parcial, pago, cancelado, em risco) — hoje só mostra badge.
-
-## 5. Financeiro reativo no Dashboard
-
-- Dashboard já lê valores reais (Fase 1). Confirmar que **toda** mudança em `pagamentos` invalida cache do dashboard (`queryClient.invalidateQueries(['admin-dashboard'])` no componente de pagamento).
-- Adicionar card "Saldo a receber" detalhado por expedição próxima.
-
-## 6. Documentos vinculados (limpar repositório solto)
-
-- Manter `documentos_central` como está para docs institucionais.
-- Na ficha do **Participante** (criar `participantes.$id.tsx`): mostrar dados completos + documentos enviados (já temos `participante-docs` bucket).
-- Tornar a página `/admin/documentos` apenas visão consolidada (filtros por escopo: institucional · expedição · participante), não mais ponto de upload solto.
-
-## 7. Configurações — remover duplicidade
-
-- Hoje: rotas `configuracoes`, `usuarios`, `cargos`, `perfil`, `integracoes` separadas.
-- Reorganizar a sidebar em **Configurações** como hub com subitens: Empresa · Usuários · Cargos & Permissões · Integrações · Sistema. As rotas existentes ficam, só passam a viver sob o mesmo grupo visual.
-- Não mexo no schema, só na navegação.
-
-## 8. Perfil — avatar e espaçamentos
-
-- Corrigir avatar: forçar `aspect-square object-cover rounded-full` no `<img>`, container com `overflow-hidden`.
-- Revisar paddings e alinhamento dos blocos.
-
-## 9. Padronização visual (passe geral)
-
-- Auditoria rápida em todas as rotas `admin._authenticated.*`:
-  - Container padrão `mx-auto max-w-[1400px] px-6 py-8`.
-  - `AdminPageHeader` em todas as páginas.
-  - Cards usando `admin-card` token.
-- Sem mudança de cor/tema, só consistência de espaçamento.
+Permitir que a IA saiba exatamente qual expedição e qual data o lead deseja, sem precisar reler toda a conversa.
 
 ---
 
-## Fora desta fase
+### Lead Score Inteligente
 
-- IA movendo o funil sozinha (Fase 4 — depende do gateway de IA + regras já existentes em `ia_configuracoes`).
-- Contas a pagar/receber automáticas (Fase 4 financeiro avançado).
+O campo lead_score deve possuir estrutura para atualização automática por IA e automações.
+
+Exemplo de lógica:
+
++10 primeira interação
+
++10 informou expedição
+
++10 informou data
+
++15 informou quantidade de participantes
+
++20 demonstrou intenção de reserva
+
++20 perguntou pagamento
+
++15 solicitou contrato
+
+Reduções:
+
+-20 sem interação por período definido
+
+-30 lead perdido
+
+O objetivo é manter uma pontuação de 0 a 100.
 
 ---
 
-## Arquivos afetados
+### Tabela lead_conversas
 
-**Novos:**
-- `src/routes/admin._authenticated.participantes.$id.tsx` (ficha individual).
-- `src/components/admin/kanban-leads.tsx` (extraído com dnd-kit).
-- `src/components/admin/reserva-status-select.tsx`.
+Reaproveitar a estrutura existente.
 
-**Editados:**
-- `src/routes/admin._authenticated.leads.tsx` (Kanban dnd-kit, links pra ficha).
-- `src/routes/admin._authenticated.leads.$id.tsx` (edição inline + timeline).
-- `src/routes/admin._authenticated.reservas.tsx` e `reservas.$id.tsx` (corrigir Abrir + status editável).
-- `src/routes/admin._authenticated.participantes.tsx` (link pra ficha).
-- `src/routes/admin._authenticated.documentos.tsx` (vira visão consolidada).
-- `src/routes/admin._authenticated.perfil.tsx` (avatar).
-- `src/components/admin/admin-sidebar.tsx` (agrupar Configurações).
-- `src/components/admin/reserva-pagamentos.tsx` (invalidar dashboard).
+Campos atuais já atendem:
 
-**Banco (migrations):**
-1. `leads.etapa_atendimento` default `'novo'` + trigger `BEFORE INSERT` que força etapa inicial.
-2. `supabase/functions/pre-reserva` (se já cria lead): garantir etapa `novo`.
+- lead_id
+- canal
+- autor_nome
+- autor_id
+- direcao
+- tipo_evento
+- conteudo
+- metadata
+- created_at
 
-**Dependências novas:** `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`.
+Padronizar eventos:
 
-**Risco:** médio — dnd-kit é mudança visual sensível no Kanban, e a correção do "Abrir" depende de reproduzir o bug. Faço Kanban + ficha do Lead + bug do Abrir primeiro (núcleo operacional), depois o resto.
+Conversas:
 
-Topa essa Fase 3? Posso começar pelos itens 1–4 (entrada de leads + Kanban arrastável + fichas abrindo), que são o que mais te trava hoje.
+- mensagem_recebida
+- mensagem_enviada
+- ligacao
+- observacao_interna
+
+Timeline:
+
+- lead_criado
+- primeira_mensagem
+- qualificado
+- pronto_reserva
+- transferido_humano
+- reserva_criada
+- convertido
+- perdido
+- alteracao_status
+- alteracao_temperatura
+
+---
+
+### Triggers
+
+Estender trigger existente para registrar:
+
+- mudança de temperatura_lead
+- mudança de status_atendimento
+
+Criar trigger:
+
+lead_criado_timeline
+
+Ao criar um lead:
+
+Registrar automaticamente evento:
+
+tipo_evento = lead_criado
+
+---
+
+## 2. Interface (Sem Redesign)
+
+### Ficha do Lead
+
+Adicionar:
+
+- Temperatura
+- Status de Atendimento
+- Motivo da Perda
+
+Quando aplicável.
+
+---
+
+### Conversas e Timeline
+
+Na área de histórico:
+
+Separar visualmente:
+
+- Conversas
+- Timeline
+
+Utilizando filtros locais.
+
+Sem criar nova rota.
+
+---
+
+### Header do Lead
+
+Adicionar badge de temperatura:
+
+- 🥶 Frio
+- 🌤️ Morno
+- 🔥 Quente
+- 🚨 Urgente
+
+Reutilizar componentes existentes.
+
+---
+
+### Kanban
+
+Adicionar:
+
+- Temperatura do lead
+- Lead Score
+
+Nos cards.
+
+---
+
+## 3. API Interna da IA Bárbara
+
+Criar rota:
+
+/api/public/ia-barbara/leads
+
+Autenticação:
+
+Bearer IA_BARBARA_API_KEY
+
+---
+
+### Endpoints
+
+GET
+
+Buscar lead por:
+
+- id
+- telefone
+- email
+
+Retornar:
+
+- Lead
+- Memória
+- Conversas
+- Timeline
+
+---
+
+POST action=upsert_lead
+
+Criar ou atualizar lead.
+
+---
+
+POST action=update_campos
+
+Atualizar:
+
+- temperatura
+- score
+- status
+- próxima ação
+- resumo IA
+- motivo perda
+
+---
+
+POST action=registrar_conversa
+
+Registrar mensagem da IA ou do lead.
+
+---
+
+POST action=registrar_timeline
+
+Registrar evento.
+
+---
+
+POST action=transferir_humano
+
+Atualizar:
+
+status_atendimento = humano
+
+Registrar timeline.
+
+Disparar webhook.
+
+---
+
+GET action=expedicoes
+
+Retornar:
+
+- Expedições
+- Datas
+- Valores
+- Vagas
+- Disponibilidade
+- FAQ
+- Requisitos
+- Como chegar
+- O que inclui
+- O que não inclui
+
+---
+
+### Endpoint de Disponibilidade
+
+Criar endpoint específico para consulta de disponibilidade em tempo real.
+
+A IA deve sempre consultar:
+
+- vagas_disponiveis
+- status da data
+
+Antes de informar disponibilidade ao cliente.
+
+Objetivo:
+
+Evitar informar vagas incorretamente quando houver poucas vagas restantes.
+
+---
+
+## 4. Expedições
+
+Manter banco como fonte principal.
+
+A IA deve consultar prioritariamente:
+
+- Datas
+- Valores
+- Vagas
+- Disponibilidade
+- FAQ
+- Como chegar
+- Requisitos
+- Nível da experiência
+- O que está incluso
+- O que não está incluso
+
+PDFs devem funcionar apenas como conhecimento complementar.
+
+Em caso de conflito:
+
+CRM e Banco de Dados sempre têm prioridade sobre PDFs.
+
+---
+
+## 5. Compatibilidade
+
+Garantir compatibilidade futura com:
+
+- Supabase
+- N8N
+- WhatsApp API
+- OpenAI
+- Base vetorial
+- Atendimento híbrido IA + humano
+
+---
+
+## Entrega Final
+
+Ao concluir:
+
+Apresentar relatório contendo:
+
+- O que foi criado
+- O que foi alterado
+- O que foi reaproveitado
+- Possíveis melhorias futuras
+
+Sem alterar design.
+
+Sem remover funcionalidades existentes.
+
+Sem recriar módulos desnecessariamente.
+
+Priorizar reaproveitamento da arquitetura atual.
