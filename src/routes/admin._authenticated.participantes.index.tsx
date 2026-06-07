@@ -184,12 +184,12 @@ function ParticipantesPage() {
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <div className="relative group">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-[color:var(--admin-cinza-3)] group-focus-within:text-[color:var(--admin-dourado)] transition-colors" />
-            <input
-              className="admin-input pl-7 w-[180px] sm:w-[240px] text-[12px] h-[38px] placeholder:text-[color:var(--admin-cinza-3)] placeholder:text-[11px]"
-              placeholder="Buscar por Nome, E-mail ou CPF"
-              value={busca}
-              onChange={(e) => setBusca(e.target.value)}
-            />
+          <input
+            className="admin-input pl-7 w-[160px] sm:w-[280px] text-[12px] h-[38px] placeholder:text-[color:var(--admin-cinza-3)] placeholder:text-[10px]"
+            placeholder="Nome, E-mail ou CPF"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+          />
         </div>
 
         <div className="flex flex-col gap-1">
