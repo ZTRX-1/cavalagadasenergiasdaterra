@@ -134,6 +134,7 @@ async function handleCriar(payload: CriarPayload) {
 
   const { data: protoLeadData } = await admin.rpc("gerar_protocolo_lead");
 
+  const t = payload.tracking ?? {};
   const leadPayload = {
     nome: payload.responsavel.nome,
     email: payload.responsavel.email,
@@ -142,11 +143,8 @@ async function handleCriar(payload: CriarPayload) {
     cidade: payload.responsavel.cidade,
     estado: payload.responsavel.estado,
     expedicao_interesse: payload.expedicao_nome,
-    origem: "pre_reserva_site",
+    origem: t.utm_source || "pre_reserva_site",
     canal_entrada: "site",
-    // Lead nasce em 'novo'; o trigger no banco força essa etapa também.
-    // A própria criação da reserva já move o lead para 'convertido' adiante,
-    // ou o operador promove manualmente conforme o atendimento.
     status: "novo",
     etapa_atendimento: "novo",
     nivel_interesse: 5,
@@ -157,6 +155,14 @@ async function handleCriar(payload: CriarPayload) {
     observacoes: payload.adicionais.observacoes ?? null,
     restricoes_alimentares: payload.adicionais.restricoes ?? null,
     protocolo: (protoLeadData as string | null) ?? null,
+    // Novos campos de tracking
+    utm_source: t.utm_source ?? null,
+    utm_medium: t.utm_medium ?? null,
+    utm_campaign: t.utm_campaign ?? null,
+    primeira_pagina_visitada: t.primeira_pagina_visitada ?? null,
+    ultima_pagina_visitada: t.ultima_pagina_visitada ?? null,
+    quantidade_visitas: t.quantidade_visitas ?? 1,
+    dispositivo: t.dispositivo ?? null,
   };
 
   const { data: leadRow, error: leadErr } = await admin
