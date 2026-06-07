@@ -261,7 +261,11 @@ function ReservaDetalhePage() {
         }}
       />
 
-      <ReservaParticipantes reservaId={id} />
+      <ReservaParticipantes 
+        reservaId={id} 
+        expedicaoId={reserva.expedicao_id ?? null}
+        dataId={reserva.data_id ?? null}
+      />
 
       <Documentos reservaId={id} docs={docsQ.data ?? []} onChange={() => docsQ.refetch()} />
 

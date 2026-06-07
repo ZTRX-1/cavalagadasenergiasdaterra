@@ -1,10 +1,11 @@
 import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Users, Upload, Trash2, ExternalLink, FileText, CheckCircle2, Clock } from "lucide-react";
+import { Users, Upload, Trash2, ExternalLink, FileText, CheckCircle2, Clock, Plus, UserPlus } from "lucide-react";
 import {
   listParticipantesDaReserva,
   updateParticipante,
+  deleteParticipante,
   listDocumentosByParticipante,
   uploadDocumento,
   deleteDocumento,
@@ -12,6 +13,7 @@ import {
   type ParticipanteRow,
   type DocumentoRow,
 } from "@/lib/admin/api";
+import { addParticipanteManual } from "@/lib/admin/participantes-actions";
 import { cn } from "@/lib/utils";
 
 const STATUS_OPTS = [
@@ -26,11 +28,34 @@ const TONE: Record<string, string> = {
   danger: "bg-rose-500/15 text-rose-300 ring-rose-500/30",
 };
 
-export function ReservaParticipantes({ reservaId }: { reservaId: string }) {
+export function ReservaParticipantes({ reservaId, expedicaoId, dataId }: { reservaId: string; expedicaoId: string | null; dataId: string | null }) {
   const qc = useQueryClient();
+  const [showAdd, setShowAdd] = useState(false);
+  const [novoNome, setNovoNome] = useState("");
+
   const q = useQuery({
     queryKey: ["admin", "reserva", reservaId, "participantes"],
     queryFn: () => listParticipantesDaReserva(reservaId),
+  });
+
+  const addMut = useMutation({
+    mutationFn: (nome: string) => addParticipanteManual({ reservaId, expedicaoId, dataId, nome }),
+    onSuccess: () => {
+      toast.success("Participante adicionado");
+      setShowAdd(false);
+      setNovoNome("");
+      qc.invalidateQueries({ queryKey: ["admin", "reserva", reservaId, "participantes"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const delMut = useMutation({
+    mutationFn: (id: string) => deleteParticipante(id),
+    onSuccess: () => {
+      toast.success("Participante removido");
+      qc.invalidateQueries({ queryKey: ["admin", "reserva", reservaId, "participantes"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
   });
 
   return (
@@ -39,15 +64,43 @@ export function ReservaParticipantes({ reservaId }: { reservaId: string }) {
         <div className="flex items-center gap-2 text-[color:var(--admin-cinza-3)] text-xs uppercase tracking-[0.2em]">
           <Users className="h-3.5 w-3.5" /> Participantes
         </div>
-        <span className="text-[11px] text-[color:var(--admin-cinza-3)]">
-          {(q.data ?? []).length} pessoa{(q.data ?? []).length === 1 ? "" : "s"} nesta reserva
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="text-[11px] text-[color:var(--admin-cinza-3)]">
+            {(q.data ?? []).length} pessoa{(q.data ?? []).length === 1 ? "" : "s"} nesta reserva
+          </span>
+          <button
+            onClick={() => setShowAdd(!showAdd)}
+            className="inline-flex items-center gap-1 text-[11px] text-[color:var(--admin-dourado)] hover:underline"
+          >
+            <UserPlus className="h-3 w-3" /> Adicionar
+          </button>
+        </div>
       </header>
+
+      {showAdd && (
+        <div className="mb-4 flex gap-2">
+          <input
+            autoFocus
+            className="flex-1 admin-input h-9 text-sm"
+            placeholder="Nome do participante"
+            value={novoNome}
+            onChange={(e) => setNovoNome(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && addMut.mutate(novoNome)}
+          />
+          <button
+            disabled={addMut.isPending || !novoNome}
+            onClick={() => addMut.mutate(novoNome)}
+            className="admin-btn-primary h-9 px-3"
+          >
+            Salvar
+          </button>
+        </div>
+      )}
 
       {q.isLoading ? (
         <p className="text-sm text-[color:var(--admin-cinza-3)]">Carregando…</p>
       ) : (q.data ?? []).length === 0 ? (
-        <p className="text-sm text-[color:var(--admin-cinza-3)]">
+        <p className="text-sm text-[color:var(--admin-cinza-3)] italic">
           Nenhum participante vinculado a esta reserva.
         </p>
       ) : (
@@ -58,6 +111,11 @@ export function ReservaParticipantes({ reservaId }: { reservaId: string }) {
               index={idx + 1}
               participante={p}
               onChanged={() => qc.invalidateQueries({ queryKey: ["admin", "reserva", reservaId, "participantes"] })}
+              onDelete={() => {
+                if (confirm(`Excluir participante ${p.nome}?`)) {
+                  delMut.mutate(p.id);
+                }
+              }}
             />
           ))}
         </ul>
@@ -70,10 +128,12 @@ function ParticipanteCard({
   index,
   participante,
   onChanged,
+  onDelete,
 }: {
   index: number;
   participante: ParticipanteRow;
   onChanged: () => void;
+  onDelete: () => void;
 }) {
   const qc = useQueryClient();
   const [nome, setNome] = useState(participante.nome ?? "");
@@ -110,13 +170,22 @@ function ParticipanteCard({
             {STATUS_OPTS.find((s) => s.id === participante.status)?.label ?? participante.status}
           </span>
         </div>
-        <select
-          value={participante.status}
-          onChange={(e) => updMut.mutate({ status: e.target.value })}
-          className="rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao)] px-2 py-1 text-xs"
-        >
-          {STATUS_OPTS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
-        </select>
+        <div className="flex items-center gap-2">
+          <select
+            value={participante.status}
+            onChange={(e) => updMut.mutate({ status: e.target.value })}
+            className="rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao)] px-2 py-1 text-xs"
+          >
+            {STATUS_OPTS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+          </select>
+          <button
+            onClick={onDelete}
+            className="p-1.5 text-[color:var(--admin-cinza-3)] hover:text-rose-400 transition-colors"
+            title="Excluir participante"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       <div className="grid sm:grid-cols-3 gap-2">
