@@ -41,6 +41,8 @@ import { Route as AdminAuthenticatedDocumentosRouteImport } from './routes/admin
 import { Route as AdminAuthenticatedConfiguracoesRouteImport } from './routes/admin._authenticated.configuracoes'
 import { Route as AdminAuthenticatedCargosRouteImport } from './routes/admin._authenticated.cargos'
 import { Route as AdminAuthenticatedAutomacoesRouteImport } from './routes/admin._authenticated.automacoes'
+import { Route as AdminAuthenticatedReservasIndexRouteImport } from './routes/admin._authenticated.reservas.index'
+import { Route as AdminAuthenticatedParticipantesIndexRouteImport } from './routes/admin._authenticated.participantes.index'
 import { Route as AdminAuthenticatedLeadsIndexRouteImport } from './routes/admin._authenticated.leads.index'
 import { Route as AdminAuthenticatedExpedicoesIndexRouteImport } from './routes/admin._authenticated.expedicoes.index'
 import { Route as AdminAuthenticatedReservasIdRouteImport } from './routes/admin._authenticated.reservas.$id'
@@ -219,6 +221,18 @@ const AdminAuthenticatedAutomacoesRoute =
     path: '/automacoes',
     getParentRoute: () => AdminAuthenticatedRoute,
   } as any)
+const AdminAuthenticatedReservasIndexRoute =
+  AdminAuthenticatedReservasIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AdminAuthenticatedReservasRoute,
+  } as any)
+const AdminAuthenticatedParticipantesIndexRoute =
+  AdminAuthenticatedParticipantesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AdminAuthenticatedParticipantesRoute,
+  } as any)
 const AdminAuthenticatedLeadsIndexRoute =
   AdminAuthenticatedLeadsIndexRouteImport.update({
     id: '/',
@@ -295,6 +309,8 @@ export interface FileRoutesByFullPath {
   '/admin/reservas/$id': typeof AdminAuthenticatedReservasIdRoute
   '/admin/expedicoes/': typeof AdminAuthenticatedExpedicoesIndexRoute
   '/admin/leads/': typeof AdminAuthenticatedLeadsIndexRoute
+  '/admin/participantes/': typeof AdminAuthenticatedParticipantesIndexRoute
+  '/admin/reservas/': typeof AdminAuthenticatedReservasIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -322,9 +338,7 @@ export interface FileRoutesByTo {
   '/admin/ia': typeof AdminAuthenticatedIaRoute
   '/admin/integracoes': typeof AdminAuthenticatedIntegracoesRoute
   '/admin/midia': typeof AdminAuthenticatedMidiaRoute
-  '/admin/participantes': typeof AdminAuthenticatedParticipantesRouteWithChildren
   '/admin/perfil': typeof AdminAuthenticatedPerfilRoute
-  '/admin/reservas': typeof AdminAuthenticatedReservasRouteWithChildren
   '/admin/usuarios': typeof AdminAuthenticatedUsuariosRoute
   '/admin': typeof AdminAuthenticatedIndexRoute
   '/admin/expedicoes/$id': typeof AdminAuthenticatedExpedicoesIdRoute
@@ -333,6 +347,8 @@ export interface FileRoutesByTo {
   '/admin/reservas/$id': typeof AdminAuthenticatedReservasIdRoute
   '/admin/expedicoes': typeof AdminAuthenticatedExpedicoesIndexRoute
   '/admin/leads': typeof AdminAuthenticatedLeadsIndexRoute
+  '/admin/participantes': typeof AdminAuthenticatedParticipantesIndexRoute
+  '/admin/reservas': typeof AdminAuthenticatedReservasIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -374,6 +390,8 @@ export interface FileRoutesById {
   '/admin/_authenticated/reservas/$id': typeof AdminAuthenticatedReservasIdRoute
   '/admin/_authenticated/expedicoes/': typeof AdminAuthenticatedExpedicoesIndexRoute
   '/admin/_authenticated/leads/': typeof AdminAuthenticatedLeadsIndexRoute
+  '/admin/_authenticated/participantes/': typeof AdminAuthenticatedParticipantesIndexRoute
+  '/admin/_authenticated/reservas/': typeof AdminAuthenticatedReservasIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -416,6 +434,8 @@ export interface FileRouteTypes {
     | '/admin/reservas/$id'
     | '/admin/expedicoes/'
     | '/admin/leads/'
+    | '/admin/participantes/'
+    | '/admin/reservas/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -443,9 +463,7 @@ export interface FileRouteTypes {
     | '/admin/ia'
     | '/admin/integracoes'
     | '/admin/midia'
-    | '/admin/participantes'
     | '/admin/perfil'
-    | '/admin/reservas'
     | '/admin/usuarios'
     | '/admin'
     | '/admin/expedicoes/$id'
@@ -454,6 +472,8 @@ export interface FileRouteTypes {
     | '/admin/reservas/$id'
     | '/admin/expedicoes'
     | '/admin/leads'
+    | '/admin/participantes'
+    | '/admin/reservas'
   id:
     | '__root__'
     | '/'
@@ -494,6 +514,8 @@ export interface FileRouteTypes {
     | '/admin/_authenticated/reservas/$id'
     | '/admin/_authenticated/expedicoes/'
     | '/admin/_authenticated/leads/'
+    | '/admin/_authenticated/participantes/'
+    | '/admin/_authenticated/reservas/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -741,6 +763,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthenticatedAutomacoesRouteImport
       parentRoute: typeof AdminAuthenticatedRoute
     }
+    '/admin/_authenticated/reservas/': {
+      id: '/admin/_authenticated/reservas/'
+      path: '/'
+      fullPath: '/admin/reservas/'
+      preLoaderRoute: typeof AdminAuthenticatedReservasIndexRouteImport
+      parentRoute: typeof AdminAuthenticatedReservasRoute
+    }
+    '/admin/_authenticated/participantes/': {
+      id: '/admin/_authenticated/participantes/'
+      path: '/'
+      fullPath: '/admin/participantes/'
+      preLoaderRoute: typeof AdminAuthenticatedParticipantesIndexRouteImport
+      parentRoute: typeof AdminAuthenticatedParticipantesRoute
+    }
     '/admin/_authenticated/leads/': {
       id: '/admin/_authenticated/leads/'
       path: '/'
@@ -816,12 +852,15 @@ const AdminAuthenticatedLeadsRouteWithChildren =
 
 interface AdminAuthenticatedParticipantesRouteChildren {
   AdminAuthenticatedParticipantesIdRoute: typeof AdminAuthenticatedParticipantesIdRoute
+  AdminAuthenticatedParticipantesIndexRoute: typeof AdminAuthenticatedParticipantesIndexRoute
 }
 
 const AdminAuthenticatedParticipantesRouteChildren: AdminAuthenticatedParticipantesRouteChildren =
   {
     AdminAuthenticatedParticipantesIdRoute:
       AdminAuthenticatedParticipantesIdRoute,
+    AdminAuthenticatedParticipantesIndexRoute:
+      AdminAuthenticatedParticipantesIndexRoute,
   }
 
 const AdminAuthenticatedParticipantesRouteWithChildren =
@@ -831,11 +870,13 @@ const AdminAuthenticatedParticipantesRouteWithChildren =
 
 interface AdminAuthenticatedReservasRouteChildren {
   AdminAuthenticatedReservasIdRoute: typeof AdminAuthenticatedReservasIdRoute
+  AdminAuthenticatedReservasIndexRoute: typeof AdminAuthenticatedReservasIndexRoute
 }
 
 const AdminAuthenticatedReservasRouteChildren: AdminAuthenticatedReservasRouteChildren =
   {
     AdminAuthenticatedReservasIdRoute: AdminAuthenticatedReservasIdRoute,
+    AdminAuthenticatedReservasIndexRoute: AdminAuthenticatedReservasIndexRoute,
   }
 
 const AdminAuthenticatedReservasRouteWithChildren =
