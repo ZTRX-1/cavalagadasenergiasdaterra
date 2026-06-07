@@ -54,11 +54,13 @@ export function ReservaPagamentos({
   expedicaoId,
   pagamentos,
   onChanged,
+  valorTotal,
 }: {
   reservaId: string;
   expedicaoId: string | null;
   pagamentos: Pagamento[];
   onChanged: () => void;
+  valorTotal?: number | null;
 }) {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
