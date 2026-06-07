@@ -909,15 +909,19 @@ export type Database = {
           cidade: string | null
           cpf: string | null
           created_at: string
+          data_expedicao_id: string | null
           data_interesse: string | null
           data_nascimento: string | null
           email: string | null
           estado: string | null
           etapa_atendimento: string
+          expedicao_id: string | null
           expedicao_interesse: string | null
           experiencia_equestre: string | null
           id: string
           lead_score: number
+          motivo_perda: string | null
+          motivo_perda_detalhe: string | null
           nivel_interesse: number
           nome: string
           observacoes: string | null
@@ -932,7 +936,9 @@ export type Database = {
           resumo_atendimento: string | null
           resumo_ia: string | null
           status: string
+          status_atendimento: string
           telefone: string | null
+          temperatura_lead: string
           ultima_interacao_at: string | null
           updated_at: string
           utm_campaign: string | null
@@ -947,15 +953,19 @@ export type Database = {
           cidade?: string | null
           cpf?: string | null
           created_at?: string
+          data_expedicao_id?: string | null
           data_interesse?: string | null
           data_nascimento?: string | null
           email?: string | null
           estado?: string | null
           etapa_atendimento?: string
+          expedicao_id?: string | null
           expedicao_interesse?: string | null
           experiencia_equestre?: string | null
           id?: string
           lead_score?: number
+          motivo_perda?: string | null
+          motivo_perda_detalhe?: string | null
           nivel_interesse?: number
           nome: string
           observacoes?: string | null
@@ -970,7 +980,9 @@ export type Database = {
           resumo_atendimento?: string | null
           resumo_ia?: string | null
           status?: string
+          status_atendimento?: string
           telefone?: string | null
+          temperatura_lead?: string
           ultima_interacao_at?: string | null
           updated_at?: string
           utm_campaign?: string | null
@@ -985,15 +997,19 @@ export type Database = {
           cidade?: string | null
           cpf?: string | null
           created_at?: string
+          data_expedicao_id?: string | null
           data_interesse?: string | null
           data_nascimento?: string | null
           email?: string | null
           estado?: string | null
           etapa_atendimento?: string
+          expedicao_id?: string | null
           expedicao_interesse?: string | null
           experiencia_equestre?: string | null
           id?: string
           lead_score?: number
+          motivo_perda?: string | null
+          motivo_perda_detalhe?: string | null
           nivel_interesse?: number
           nome?: string
           observacoes?: string | null
@@ -1008,7 +1024,9 @@ export type Database = {
           resumo_atendimento?: string | null
           resumo_ia?: string | null
           status?: string
+          status_atendimento?: string
           telefone?: string | null
+          temperatura_lead?: string
           ultima_interacao_at?: string | null
           updated_at?: string
           utm_campaign?: string | null
