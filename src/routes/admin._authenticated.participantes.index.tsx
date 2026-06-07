@@ -194,14 +194,14 @@ function ParticipantesPage() {
 
         <div className="flex flex-col gap-1">
           <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Filtrar Expedição</span>
-          <select className="admin-input w-auto h-[38px]" value={filtroExp} onChange={(e) => setFiltroExp(e.target.value)}>
+          <select className="admin-input min-w-[180px] h-[38px]" value={filtroExp} onChange={(e) => setFiltroExp(e.target.value)}>
             <option value="">Todas as expedições</option>
             {expedicoes.map((e) => <option key={e.id} value={e.id}>{e.nome}</option>)}
           </select>
         </div>
         <div className="flex flex-col gap-1">
           <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Status Participante</span>
-          <select className="admin-input w-auto h-[38px]" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
+          <select className="admin-input min-w-[140px] h-[38px]" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
             <option value="">Todos os status</option>
             <option value="pendente">Pendente</option>
             <option value="confirmado">Confirmado</option>
@@ -211,7 +211,7 @@ function ParticipantesPage() {
         <div className="flex flex-col gap-1">
           <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Situação Financeira</span>
           <select 
-            className="admin-input w-auto h-[38px]" 
+            className="admin-input min-w-[160px] h-[38px]" 
             value={filtroStatusFinanceiro} 
             onChange={(e) => setFiltroStatusFinanceiro(e.target.value)}
           >
