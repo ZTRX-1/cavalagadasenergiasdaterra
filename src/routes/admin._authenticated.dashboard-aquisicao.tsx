@@ -59,7 +59,11 @@ function DashboardAquisicao() {
     // 1. Leads por Origem
     const origens: Record<string, number> = {};
     leadsNoPeriodo.forEach(l => {
-      const o = l.origem || "Direto";
+      let o = l.origem || "Direto";
+      // Front-end sanitization for legacy data
+      if (o.toLowerCase().includes("lovable") || o.toLowerCase().includes("localhost") || o.toLowerCase().includes("gptengineer")) {
+        o = "Direto";
+      }
       origens[o] = (origens[o] || 0) + 1;
     });
     const dataOrigens = Object.entries(origens)
