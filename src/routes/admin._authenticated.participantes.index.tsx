@@ -124,14 +124,18 @@ function ParticipantesPage() {
     return list.filter((p) => {
       if (filtroExp && p.expedicao_id !== filtroExp) return false;
       if (filtroStatus && p.status !== filtroStatus) return false;
+      
+      const res = reservas.find(r => r.id === p.reserva_id);
+      
       if (filtroStatusFinanceiro) {
-        const res = reservas.find(r => r.id === p.reserva_id);
         if (!res || res.status_financeiro !== filtroStatusFinanceiro) return false;
       }
+      
       if (apenasConfirmados) {
-        const res = reservas.find(r => r.id === p.reserva_id);
+        // Correção do filtro: buscar na reserva o status operacional correto
         if (!res || !["reserva_confirmada", "participante_confirmado"].includes(res.status_operacional)) return false;
       }
+      
       if (q && !(p.nome ?? "").toLowerCase().includes(q) && !(p.email ?? "").toLowerCase().includes(q) && !(p.cpf ?? "").toLowerCase().includes(q)) return false;
       return true;
     });
@@ -198,26 +202,26 @@ function ParticipantesPage() {
           />
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 min-w-[200px] flex-1 sm:flex-none">
           <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Filtrar Expedição</span>
-          <select className="admin-input min-w-[180px] h-[38px] px-2 text-[12px]" value={filtroExp} onChange={(e) => setFiltroExp(e.target.value)}>
+          <select className="admin-input h-[38px] px-2 text-[12px] w-full" value={filtroExp} onChange={(e) => setFiltroExp(e.target.value)}>
             <option value="">Todas as expedições</option>
             {expedicoes.map((e) => <option key={e.id} value={e.id}>{e.nome}</option>)}
           </select>
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 min-w-[140px] flex-1 sm:flex-none">
           <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Status Participante</span>
-          <select className="admin-input min-w-[140px] h-[38px] px-2 text-[12px]" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
+          <select className="admin-input h-[38px] px-2 text-[12px] w-full" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
             <option value="">Todos os status</option>
             <option value="pendente">Pendente</option>
             <option value="confirmado">Confirmado</option>
             <option value="cancelado">Cancelado</option>
           </select>
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 min-w-[170px] flex-1 sm:flex-none">
           <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Situação Financeira</span>
           <select 
-            className="admin-input min-w-[160px] h-[38px] px-2 text-[12px]" 
+            className="admin-input h-[38px] px-2 text-[12px] w-full" 
             value={filtroStatusFinanceiro} 
             onChange={(e) => setFiltroStatusFinanceiro(e.target.value)}
           >
@@ -227,16 +231,16 @@ function ParticipantesPage() {
             <option value="pago_integralmente">Pago Integralmente</option>
           </select>
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 flex-1 sm:flex-none">
           <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Filtro Rápido</span>
-          <label className="flex items-center gap-2 cursor-pointer bg-[color:var(--admin-carvao-deep)]/40 border border-[color:var(--admin-borda)] rounded-lg px-3 py-1.5 h-[38px]">
+          <label className="flex items-center gap-2 cursor-pointer bg-[color:var(--admin-carvao-deep)]/40 border border-[color:var(--admin-borda)] rounded-lg px-3 py-1.5 h-[38px] whitespace-nowrap">
             <input 
               type="checkbox" 
               className="accent-[color:var(--admin-dourado)]" 
               checked={apenasConfirmados} 
               onChange={(e) => setApenasConfirmados(e.target.checked)} 
             />
-            <span className="text-[12px] text-[color:var(--admin-cinza-2)] whitespace-nowrap">Somente Reservas Confirmadas</span>
+            <span className="text-[12px] text-[color:var(--admin-cinza-2)]">Somente Confirmadas</span>
           </label>
         </div>
         <span className="text-[11px] text-[color:var(--admin-cinza-3)] ml-auto">
