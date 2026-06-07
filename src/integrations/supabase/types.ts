@@ -868,7 +868,7 @@ export type Database = {
           interesses: string | null
           lead_id: string
           objetivos: string | null
-          orcamento: number | null
+          orcamento: string | null
           perfil: string | null
           restricoes: string | null
           ultima_atualizacao: string
@@ -881,7 +881,7 @@ export type Database = {
           interesses?: string | null
           lead_id: string
           objetivos?: string | null
-          orcamento?: number | null
+          orcamento?: string | null
           perfil?: string | null
           restricoes?: string | null
           ultima_atualizacao?: string
@@ -894,7 +894,7 @@ export type Database = {
           interesses?: string | null
           lead_id?: string
           objetivos?: string | null
-          orcamento?: number | null
+          orcamento?: string | null
           perfil?: string | null
           restricoes?: string | null
           ultima_atualizacao?: string
