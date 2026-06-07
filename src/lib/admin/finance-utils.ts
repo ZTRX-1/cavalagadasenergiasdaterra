@@ -25,19 +25,12 @@ export function calculateReceitaPrevista(reservas: ReservaRow[]): number {
 }
 
 /**
- * Regra: Receita Confirmada = Reservas com pagamento confirmado
- * Consideramos o valor_pago (ou valor_total se estiver totalmente confirmada).
+ * Regra: Receita Confirmada = reservas com pagamento confirmado
  */
 export function calculateReceitaConfirmada(reservas: ReservaRow[]): number {
   return reservas
-    .filter(r => r.status_pagamento === "confirmado" || r.status_operacional === "reserva_confirmada" || r.status_operacional === "participante_confirmado")
-    .reduce((acc, r) => {
-      // Se a reserva está confirmada operacionalmente, o financeiro deve contar como 100% recebido (regra solicitada)
-      if (r.status_operacional === "reserva_confirmada" || r.status_operacional === "participante_confirmado") {
-        return acc + Number(r.valor_total ?? 0);
-      }
-      return acc + Number(r.valor_pago ?? 0);
-    }, 0);
+    .filter(r => r.status_pagamento === "confirmado")
+    .reduce((acc, r) => acc + Number(r.valor_total ?? 0), 0);
 }
 
 /**
