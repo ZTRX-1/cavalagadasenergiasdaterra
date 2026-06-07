@@ -36,6 +36,30 @@ export function maskCPF(v: string): string {
     .replace(/(\d{3})(\d)/, "$1.$2")
     .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
 }
+6: 
+40: export function isValidCPF(cpf: string): boolean {
+41:   const cleanCPF = cpf.replace(/\D/g, "");
+42:   if (cleanCPF.length !== 11) return false;
+43:   if (/^(\d)\1+$/.test(cleanCPF)) return false;
+44: 
+45:   let sum = 0;
+46:   let remainder;
+47: 
+48:   for (let i = 1; i <= 9; i++) sum = sum + parseInt(cleanCPF.substring(i - 1, i)) * (11 - i);
+49:   remainder = (sum * 10) % 11;
+50: 
+51:   if (remainder === 10 || remainder === 11) remainder = 0;
+52:   if (remainder !== parseInt(cleanCPF.substring(9, 10))) return false;
+53: 
+54:   sum = 0;
+55:   for (let i = 1; i <= 10; i++) sum = sum + parseInt(cleanCPF.substring(i - 1, i)) * (12 - i);
+56:   remainder = (sum * 10) % 11;
+57: 
+58:   if (remainder === 10 || remainder === 11) remainder = 0;
+59:   if (remainder !== parseInt(cleanCPF.substring(10, 11))) return false;
+60: 
+61:   return true;
+62: }
 
 export function maskPhone(v: string): string {
   const d = v.replace(/\D/g, "").slice(0, 11);
