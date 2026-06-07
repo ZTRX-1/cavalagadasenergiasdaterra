@@ -1,4 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
+import { logActivity } from "./api";
+
 
 export type Despesa = {
   id: string;
@@ -467,6 +469,18 @@ export async function getReservaDetalhada(id: string): Promise<ReservaDetalhada 
   const { data, error } = await sb.from("reservas").select("*").eq("id", id).maybeSingle();
   if (error) throw error;
   return (data as unknown as ReservaDetalhada) ?? null;
+}
+
+export async function deleteReserva(id: string): Promise<void> {
+  const { data: res } = await supabase.from("reservas").select("protocolo").eq("id", id).maybeSingle();
+  const { error } = await supabase.from("reservas").delete().eq("id", id);
+  if (error) throw error;
+  await logActivity({
+    modulo: "reservas",
+    acao: "excluir",
+    descricao: res?.protocolo ?? "Reserva",
+    metadata: { id },
+  });
 }
 
 export async function updateReservaCampo(
