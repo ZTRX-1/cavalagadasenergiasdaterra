@@ -1,0 +1,2 @@
+ALTER TABLE public.lead_conversas DROP CONSTRAINT IF EXISTS lead_conversas_tipo_chk;
+ALTER TABLE public.lead_conversas ADD CONSTRAINT lead_conversas_tipo_chk CHECK (tipo_evento = ANY (ARRAY['mensagem_ia'::text, 'mensagem_humana'::text, 'ligacao'::text, 'pagamento'::text, 'contrato'::text, 'alteracao_status'::text, 'observacao_interna'::text, 'email'::text, 'sistema'::text, 'lead_criado'::text, 'alteracao_temperatura'::text, 'transferido_humano'::text]));

@@ -273,7 +273,6 @@ function LeadCardInner({
             to="/admin/leads/$id"
             params={{ id: lead.id }}
             onPointerDown={(e) => e.stopPropagation()}
-            onClick={(e) => e.stopPropagation()}
             className="text-[11px] text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-dourado)]"
           >
             Abrir ficha →
