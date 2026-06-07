@@ -273,7 +273,9 @@ function LeadCardInner({
             to="/admin/leads/$id"
             params={{ id: lead.id }}
             onPointerDown={(e) => e.stopPropagation()}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()} // Keep this if we want to prevent bubbling to the card if card had a click handler, but Link needs it to work. Wait, Link uses onClick.
+            // Actually, if we want the Link to work, we SHOULD NOT stop propagation on onClick UNLESS we handle navigation manually.
+            // But TanStack Link needs the click. Let's see if we can just remove onClick stopPropagation.
             className="text-[11px] text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-dourado)]"
           >
             Abrir ficha →
