@@ -29,7 +29,6 @@ import {
 } from "recharts";
 import { listLeads, type LeadRow } from "@/lib/admin/api";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
-import { AdminCard } from "@/components/admin/admin-section";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
