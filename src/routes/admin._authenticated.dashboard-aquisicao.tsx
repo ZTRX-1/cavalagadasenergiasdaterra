@@ -86,7 +86,25 @@ function DashboardAquisicao() {
     const convertidos = leadsNoPeriodo.filter(l => l.etapa_atendimento === "convertido").length;
     const taxaConversao = totalLeads > 0 ? (convertidos / totalLeads) * 100 : 0;
 
-    // 4. Expedições mais procuradas
+    // 4. Ranking de Conversão por Origem
+    const conversaoOrigem: Record<string, { total: number; convertidos: number }> = {};
+    leadsNoPeriodo.forEach(l => {
+      let o = l.origem || "Direto";
+      if (o.toLowerCase().includes("lovable") || o.toLowerCase().includes("localhost") || o.toLowerCase().includes("gptengineer")) o = "Direto";
+      if (!conversaoOrigem[o]) conversaoOrigem[o] = { total: 0, convertidos: 0 };
+      conversaoOrigem[o].total++;
+      if (l.etapa_atendimento === "convertido") conversaoOrigem[o].convertidos++;
+    });
+    const rankingConversao = Object.entries(conversaoOrigem)
+      .map(([name, val]) => ({ 
+        name, 
+        rate: (val.convertidos / val.total) * 100,
+        total: val.total
+      }))
+      .sort((a, b) => b.rate - a.rate)
+      .filter(a => a.total >= 1); // no minimo 1 lead pra aparecer no ranking
+
+    // 5. Expedições mais procuradas
     const expedicoes: Record<string, number> = {};
     leadsNoPeriodo.forEach(l => {
       const e = l.expedicao_interesse || "Não informada";
