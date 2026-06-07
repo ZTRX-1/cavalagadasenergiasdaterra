@@ -221,15 +221,18 @@ function ParticipantesPage() {
             <option value="pago_integralmente">Pago Integralmente</option>
           </select>
         </div>
-        <label className="flex items-center gap-2 cursor-pointer bg-[color:var(--admin-carvao-deep)]/40 border border-[color:var(--admin-borda)] rounded-lg px-3 py-1.5 h-[38px]">
-          <input 
-            type="checkbox" 
-            className="accent-[color:var(--admin-dourado)]" 
-            checked={apenasConfirmados} 
-            onChange={(e) => setApenasConfirmados(e.target.checked)} 
-          />
-          <span className="text-[12px] text-[color:var(--admin-cinza-2)] whitespace-nowrap">Somente Reservas Confirmadas</span>
-        </label>
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Filtro Rápido</span>
+          <label className="flex items-center gap-2 cursor-pointer bg-[color:var(--admin-carvao-deep)]/40 border border-[color:var(--admin-borda)] rounded-lg px-3 py-1.5 h-[38px]">
+            <input 
+              type="checkbox" 
+              className="accent-[color:var(--admin-dourado)]" 
+              checked={apenasConfirmados} 
+              onChange={(e) => setApenasConfirmados(e.target.checked)} 
+            />
+            <span className="text-[12px] text-[color:var(--admin-cinza-2)] whitespace-nowrap">Somente Reservas Confirmadas</span>
+          </label>
+        </div>
         <span className="text-[11px] text-[color:var(--admin-cinza-3)] ml-auto">
           {filtrados.length} de {list.length}
         </span>
