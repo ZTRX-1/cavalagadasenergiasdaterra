@@ -906,6 +906,7 @@ export type Database = {
           acompanhantes: number
           canal_atendimento: string | null
           canal_entrada: string | null
+          canal_venda: string | null
           cidade: string | null
           cpf: string | null
           created_at: string
@@ -921,6 +922,7 @@ export type Database = {
           expedicao_id: string | null
           expedicao_interesse: string | null
           experiencia_equestre: string | null
+          forma_pagamento: string | null
           id: string
           lead_score: number
           motivo_perda: string | null
@@ -957,6 +959,7 @@ export type Database = {
           acompanhantes?: number
           canal_atendimento?: string | null
           canal_entrada?: string | null
+          canal_venda?: string | null
           cidade?: string | null
           cpf?: string | null
           created_at?: string
@@ -972,6 +975,7 @@ export type Database = {
           expedicao_id?: string | null
           expedicao_interesse?: string | null
           experiencia_equestre?: string | null
+          forma_pagamento?: string | null
           id?: string
           lead_score?: number
           motivo_perda?: string | null
@@ -1008,6 +1012,7 @@ export type Database = {
           acompanhantes?: number
           canal_atendimento?: string | null
           canal_entrada?: string | null
+          canal_venda?: string | null
           cidade?: string | null
           cpf?: string | null
           created_at?: string
@@ -1023,6 +1028,7 @@ export type Database = {
           expedicao_id?: string | null
           expedicao_interesse?: string | null
           experiencia_equestre?: string | null
+          forma_pagamento?: string | null
           id?: string
           lead_score?: number
           motivo_perda?: string | null
