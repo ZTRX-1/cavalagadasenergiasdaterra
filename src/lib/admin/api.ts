@@ -437,6 +437,13 @@ export interface LeadRow {
   motivo_perda_detalhe: string | null;
   expedicao_id: string | null;
   data_expedicao_id: string | null;
+  motivacao_viagem: string | null;
+  observacoes_importantes: string | null;
+  perfil: string | null;
+  objetivos: string | null;
+  interesses: string | null;
+  restricoes: string | null;
+  orcamento: string | null;
 }
 
 // ---------- TEMPERATURA / STATUS DE ATENDIMENTO / MOTIVO DE PERDA ----------

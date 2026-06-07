@@ -137,6 +137,11 @@ function ParticipanteFichaPage() {
       restricoes_alimentares: form.restricoes_alimentares ?? null,
       acompanhante: form.acompanhante ?? null,
       expedicao_id: form.expedicao_id ?? null,
+      cpf_recebido: form.cpf_recebido ?? false,
+      pagamento_recebido: form.pagamento_recebido ?? false,
+      contrato_assinado: form.contrato_assinado ?? false,
+      ficha_medica_enviada: form.ficha_medica_enviada ?? false,
+      documentacao_aprovada: form.documentacao_aprovada ?? false,
     });
   };
 
@@ -248,6 +253,19 @@ function ParticipanteFichaPage() {
         </section>
 
         <aside className="space-y-4">
+          <section className="admin-card p-5">
+            <h3 className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)] mb-4 flex items-center gap-2">
+              Checklist Operacional
+            </h3>
+            <div className="space-y-3">
+              <ToggleRow label="CPF Recebido" checked={!!form.cpf_recebido} onChange={(v) => setForm({ ...form, cpf_recebido: v })} at={null} />
+              <ToggleRow label="Pagamento Recebido" checked={!!form.pagamento_recebido} onChange={(v) => setForm({ ...form, pagamento_recebido: v })} at={null} />
+              <ToggleRow label="Contrato Assinado" checked={!!form.contrato_assinado} onChange={(v) => setForm({ ...form, contrato_assinado: v })} at={null} />
+              <ToggleRow label="Ficha Médica Enviada" checked={!!form.ficha_medica_enviada} onChange={(v) => setForm({ ...form, ficha_medica_enviada: v })} at={null} />
+              <ToggleRow label="Documentação Aprovada" checked={!!form.documentacao_aprovada} onChange={(v) => setForm({ ...form, documentacao_aprovada: v })} at={null} />
+            </div>
+          </section>
+
           <section className="admin-card p-5">
             <h3 className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)] mb-3 flex items-center gap-2">
               <BookOpen className="h-3 w-3" /> Reserva vinculada

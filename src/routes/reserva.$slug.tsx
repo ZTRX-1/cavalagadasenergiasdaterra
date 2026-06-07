@@ -53,15 +53,16 @@ const schema = z.object({
     peso: z.coerce.number({ invalid_type_error: "Informe o peso" })
       .min(20, "Peso mínimo 20 kg")
       .max(110, "Por bem-estar dos cavalos, o peso máximo permitido é 110 kg."),
-    experiencia: z.enum(["nenhuma", "iniciante", "intermediario", "avancado"]),
+    experiencia: z.enum(["nunca", "algumas", "frequente"]),
     telefone: z.string().optional(),
     email: z.string().optional(),
   })).min(1),
   adicionais: z.object({
-    tipo_grupo: z.string().min(2, "Selecione"),
+    tipo_grupo: z.enum(["sozinho", "casal", "familia", "grupo"]),
     forma_pagamento: z.string().min(2, "Selecione"),
     como_conheceu: z.string().min(2, "Selecione"),
-    restricoes: z.string().optional(),
+    motivacao_viagem: z.string().min(1, "Obrigatório").max(250, "Máximo 250 caracteres"),
+    observacoes_importantes: z.string().optional(),
     observacoes: z.string().optional(),
   }),
   aceites: z.object({
@@ -89,8 +90,8 @@ function ReservaPage() {
     defaultValues: {
       data_id: search.data ?? "",
       responsavel: { nome: "", cpf: "", telefone: "", email: "", cidade: "", estado: "" },
-      participantes: [{ nome: "", cpf: "", data_nascimento: "", peso: 70, experiencia: "nenhuma" }],
-      adicionais: { tipo_grupo: "individual", forma_pagamento: "pix", como_conheceu: "instagram", restricoes: "", observacoes: "" },
+      participantes: [{ nome: "", cpf: "", data_nascimento: "", peso: 70, experiencia: "nunca" }],
+      adicionais: { tipo_grupo: "sozinho", forma_pagamento: "pix", como_conheceu: "instagram", motivacao_viagem: "", observacoes_importantes: "", observacoes: "" },
       aceites: { responsabilidade: false as unknown as true, cancelamento: false as unknown as true, riscos: false as unknown as true },
     },
     mode: "onTouched",
@@ -106,7 +107,7 @@ function ReservaPage() {
     if (qtdTotal === current.length) return;
     if (qtdTotal > current.length) {
       const toAdd = qtdTotal - current.length;
-      for (let i = 0; i < toAdd; i++) append({ nome: "", cpf: "", data_nascimento: "", peso: 70, experiencia: "nenhuma" });
+      for (let i = 0; i < toAdd; i++) append({ nome: "", cpf: "", data_nascimento: "", peso: 70, experiencia: "nunca" });
     } else {
       replace(current.slice(0, qtdTotal));
     }
@@ -116,9 +117,10 @@ function ReservaPage() {
   // Sugere quantidade conforme tipo de grupo (sem travar o usuário)
   const tipoGrupo = form.watch("adicionais.tipo_grupo");
   useEffect(() => {
-    if (tipoGrupo === "individual" && qtdTotal !== 1) setQtdTotal(1);
+    if (tipoGrupo === "sozinho" && qtdTotal !== 1) setQtdTotal(1);
     else if (tipoGrupo === "casal" && qtdTotal < 2) setQtdTotal(2);
     else if (tipoGrupo === "familia" && qtdTotal < 3) setQtdTotal(4);
+    else if (tipoGrupo === "grupo" && qtdTotal < 3) setQtdTotal(5);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tipoGrupo]);
 
@@ -264,7 +266,7 @@ function ReservaPage() {
                   <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Data</dt><dd className="text-right font-medium">{selectedDate ? formatDateRange(selectedDate.data_inicio, selectedDate.data_fim) : "—"}</dd></div>
                   <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Duração</dt><dd className="font-medium">{expedicao.duracao}</dd></div>
                   <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Nível</dt><dd className="font-medium">{expedicao.nivel}</dd></div>
-                  <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Participantes</dt><dd className="font-medium">{qtdParts}</dd></div>
+                  <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Participantes</dt><dd className="font-medium">{qtdParts} (Idade mín. 8 anos)</dd></div>
                   <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Pagamento</dt><dd className="font-medium">{formaPag === "cartao" ? "Cartão 6x" : formaPag === "pix" ? "PIX à vista" : formaPag === "sinal" ? "Sinal + Saldo" : formaPag}</dd></div>
                 </dl>
                 <div className="mt-5 border-t border-border pt-4">
