@@ -224,9 +224,9 @@ function DashboardPage() {
       <div>
         <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">Receita no período</p>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <KPI label="Receita prevista" value={isLoading ? "—" : formatBRL(data?.receitaPrevista ?? 0)} icon={TrendingUp} />
-          <KPI label="Receita recebida" value={isLoading ? "—" : formatBRL(data?.receitaRecebida ?? 0)} icon={TrendingUp} />
-          <KPI label="Receita pendente" value={isLoading ? "—" : formatBRL(data?.receitaPendente ?? 0)} icon={TrendingUp} />
+          <KPI label="Receita prevista" value={isLoading ? "—" : formatBRL(data?.receitaPrevista ?? 0)} icon={TrendingUp} tone="warn" />
+          <KPI label="Receita recebida" value={isLoading ? "—" : formatBRL(data?.receitaRecebida ?? 0)} icon={TrendingUp} tone="ok" />
+          <KPI label="Receita pendente" value={isLoading ? "—" : formatBRL(data?.receitaPendente ?? 0)} icon={TrendingUp} tone="danger" />
           <KPI label="Participantes confirmados" value={isLoading ? "—" : String(data?.participantesConfirmados ?? 0)} icon={Users} />
         </div>
       </div>
@@ -319,18 +319,30 @@ function DashboardPage() {
   );
 }
 
-function KPI({ label, value, icon: Icon }: { label: string; value: string; icon: typeof Sparkles }) {
+function KPI({ label, value, icon: Icon, tone }: { label: string; value: string; icon: typeof Sparkles; tone?: "ok" | "warn" | "danger" }) {
+  const iconColor = 
+    tone === "ok" ? "text-emerald-400" : 
+    tone === "warn" ? "text-amber-400" : 
+    tone === "danger" ? "text-rose-400" : 
+    "text-[color:var(--admin-dourado)]";
+  
+  const valueColor = 
+    tone === "ok" ? "text-emerald-400" : 
+    tone === "warn" ? "text-amber-400" : 
+    tone === "danger" ? "text-rose-400" : 
+    "text-[color:var(--admin-cinza-1)]";
+
   return (
     <div className="admin-card p-5">
       <div className="flex items-start justify-between">
-        <div className="grid h-9 w-9 place-items-center rounded-lg bg-[color:var(--admin-carvao-deep)]/70 text-[color:var(--admin-dourado)] ring-1 ring-[color:var(--admin-borda)]">
+        <div className={`grid h-9 w-9 place-items-center rounded-lg bg-[color:var(--admin-carvao-deep)]/70 ${iconColor} ring-1 ring-[color:var(--admin-borda)]`}>
           <Icon className="h-4 w-4" strokeWidth={1.6} />
         </div>
         <span className="inline-flex items-center gap-0.5 text-[11px] font-medium text-[color:var(--admin-cinza-3)]">
           <ArrowUpRight className="h-3 w-3" strokeWidth={2} />
         </span>
       </div>
-      <div className="mt-4 font-display text-[32px] leading-none text-[color:var(--admin-cinza-1)]">{value}</div>
+      <div className={`mt-4 font-display text-[32px] leading-none ${valueColor}`}>{value}</div>
       <div className="mt-1.5 text-[12px] text-[color:var(--admin-cinza-3)]">{label}</div>
     </div>
   );
