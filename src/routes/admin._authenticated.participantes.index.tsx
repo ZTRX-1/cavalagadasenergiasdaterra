@@ -52,6 +52,7 @@ type ReservaSlim = {
   valor_total: number | null;
   valor_pago: number;
   status_operacional: string;
+  status_financeiro: string;
 };
 type DataSlim = {
   id: string;
@@ -67,7 +68,7 @@ type DataSlim = {
 async function fetchReservasSlim(): Promise<ReservaSlim[]> {
   const { data, error } = await supabase
     .from("reservas")
-    .select("id, protocolo, cliente_nome, data_id, expedicao_id, data_label, expedicao_nome, valor_total, valor_pago, status_operacional");
+    .select("id, protocolo, cliente_nome, data_id, expedicao_id, data_label, expedicao_nome, valor_total, valor_pago, status_operacional, status_financeiro");
   if (error) throw error;
   return (data ?? []) as unknown as ReservaSlim[];
 }
