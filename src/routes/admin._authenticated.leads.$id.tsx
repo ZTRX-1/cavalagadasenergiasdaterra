@@ -181,7 +181,7 @@ function LeadEdit() {
                 <div className="mb-1 flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-violet-300/80">
                   <Brain className="h-3 w-3" /> Resumo gerado por IA
                 </div>
-                <p className="text-sm text-[color:var(--admin-cinza-1)]">{form.resumo_ia}</p>
+                <p className="text-sm text-[color:var(--admin-cinza-1)] whitespace-pre-wrap">{form.resumo_ia}</p>
               </div>
             ) : null}
           </AdminSection>
@@ -301,11 +301,11 @@ function MemoriaCard({ leadId, memoria }: { leadId: string; memoria: LeadMemoria
       titulo="Memória do lead (para a IA)"
       descricao="Resumo de quem é essa pessoa — alimenta o atendimento por IA no futuro. Pode ser preenchido manualmente agora."
     >
-      <AdminField label="Perfil"><textarea className="admin-input min-h-[60px]" value={form.perfil ?? ""} onChange={(e) => setForm({ ...form, perfil: e.target.value })} placeholder="Ex: Mulher 38 anos, executiva, já fez cavalgada no Pantanal." /></AdminField>
-      <AdminField label="Objetivos"><input className="admin-input" value={form.objetivos ?? ""} onChange={(e) => setForm({ ...form, objetivos: e.target.value })} placeholder="Desconectar, conexão com a natureza…" /></AdminField>
-      <AdminField label="Interesses"><input className="admin-input" value={form.interesses ?? ""} onChange={(e) => setForm({ ...form, interesses: e.target.value })} /></AdminField>
-      <AdminField label="Restrições"><input className="admin-input" value={form.restricoes ?? ""} onChange={(e) => setForm({ ...form, restricoes: e.target.value })} placeholder="Alimentar, médica, datas…" /></AdminField>
-      <AdminField label="Orçamento"><input className="admin-input" value={form.orcamento ?? ""} onChange={(e) => setForm({ ...form, orcamento: e.target.value })} placeholder="Faixa estimada..." /></AdminField>
+      <AdminField label="PERFIL"><textarea className="admin-input min-h-[60px]" value={form.perfil ?? ""} onChange={(e) => setForm({ ...form, perfil: e.target.value })} placeholder="Origem, idade, tipo de grupo..." /></AdminField>
+      <AdminField label="OBJETIVOS"><input className="admin-input" value={form.objetivos ?? ""} onChange={(e) => setForm({ ...form, objetivos: e.target.value })} placeholder="Motivação, natureza, conexão..." /></AdminField>
+      <AdminField label="INTERESSES"><input className="admin-input" value={form.interesses ?? ""} onChange={(e) => setForm({ ...form, interesses: e.target.value })} placeholder="Expedição, nível equestre, histórico..." /></AdminField>
+      <AdminField label="RESTRIÇÕES"><textarea className="admin-input min-h-[60px]" value={form.restricoes ?? ""} onChange={(e) => setForm({ ...form, restricoes: e.target.value })} placeholder="Alimentar, médica, limitações físicas..." /></AdminField>
+      <AdminField label="ORÇAMENTO"><input className="admin-input" value={form.orcamento ?? ""} onChange={(e) => setForm({ ...form, orcamento: e.target.value })} placeholder="Valor total, forma de pagamento..." /></AdminField>
       <button className="admin-btn-ghost w-full" onClick={() => mut.mutate()} disabled={mut.isPending}>Salvar memória</button>
     </AdminSection>
   );
