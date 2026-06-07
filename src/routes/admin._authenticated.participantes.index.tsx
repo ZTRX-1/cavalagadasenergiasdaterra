@@ -22,6 +22,8 @@ import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
 import { useCan } from "@/hooks/use-permissions";
 import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
+
 
 export const Route = createFileRoute("/admin/_authenticated/participantes/")({
   component: ParticipantesPage,
