@@ -68,6 +68,7 @@ async function fetchDashboard(range: { from: string; to: string }) {
   const [
     leadsTotal,
     leadsQualificados,
+    leadsAbandonados,
     leadsConvertidos,
     reservasCriadas,
     reservasConfirmadas,
@@ -77,8 +78,9 @@ async function fetchDashboard(range: { from: string; to: string }) {
     datas,
     proximas,
   ] = await Promise.all([
-    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
+    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).neq("status", "incompleto"),
     supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("etapa_atendimento", ["qualificado", "pronto_reserva", "convertido"]),
+    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).eq("status", "incompleto"),
     supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).eq("etapa_atendimento", "convertido"),
     supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
     supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("status_operacional", ["reserva_confirmada", "participante_confirmado"]),
@@ -128,8 +130,10 @@ async function fetchDashboard(range: { from: string; to: string }) {
   return {
     leadsTotal: leadsTotal.count ?? 0,
     leadsQualificados: leadsQualificados.count ?? 0,
+    leadsAbandonados: leadsAbandonados.count ?? 0,
     leadsConvertidos: leadsConvertidos.count ?? 0,
     reservasCriadas: reservasCriadas.count ?? 0,
+
     reservasConfirmadas: reservasConfirmadas.count ?? 0,
     participantesConfirmados: participantesConfirmados.count ?? 0,
     expedicoesAtivas: expedicoes.count ?? 0,
@@ -219,8 +223,9 @@ function DashboardPage() {
       {/* KPIs operacionais — funil de vendas */}
       <div>
         <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">Funil no período</p>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
           <KPI label="Leads recebidos" value={isLoading ? "—" : String(data?.leadsTotal ?? 0)} icon={Sparkles} />
+          <KPI label="Leads abandonados" value={isLoading ? "—" : String(data?.leadsAbandonados ?? 0)} icon={Users} tone="warn" />
           <KPI label="Leads qualificados" value={isLoading ? "—" : String(data?.leadsQualificados ?? 0)} icon={Users} />
           <KPI label="Reservas criadas" value={isLoading ? "—" : String(data?.reservasCriadas ?? 0)} icon={CalendarCheck} />
           <KPI label="Reservas confirmadas" value={isLoading ? "—" : String(data?.reservasConfirmadas ?? 0)} icon={Compass} />

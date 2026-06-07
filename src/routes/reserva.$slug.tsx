@@ -83,10 +83,15 @@ function ReservaPage() {
   const { slug } = Route.useParams();
   const search = Route.useSearch();
   const { data } = useSuspenseQuery(qo(slug));
+  if (!data) return null;
+  const { expedicao, datas } = data;
+
+
 
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState<null | { protocolo: string; expedicao_nome: string; quantidade_participantes: number; nome_responsavel: string }>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [leadId, setLeadId] = useState<string | undefined>(undefined);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -136,11 +141,38 @@ function ReservaPage() {
     if (resp.email) form.setValue("participantes.0.email", resp.email, { shouldValidate: false });
     if (resp.telefone) form.setValue("participantes.0.telefone", resp.telefone, { shouldValidate: false });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [responsavelParticipa, resp.nome]);
+  }, [responsavelParticipa, resp.nome, resp.cpf, resp.email, resp.telefone]);
 
+  // Captura progressiva de Lead Abandonado
+  useEffect(() => {
+    const { nome, email, telefone } = resp;
+    if (nome && email && telefone && email.includes("@") && telefone.length >= 10) {
+      const timer = setTimeout(async () => {
+        try {
+          const res = await import("@/lib/pre-reserva").then(m => m.capturaInicialLead({
+            nome,
+            email,
+            telefone,
+            expedicao_id: expedicao.id,
+            expedicao_nome: expedicao.nome,
+            data_id: form.getValues("data_id"),
+            etapa_abandono: STEPS[step],
+            lead_id: leadId,
+          }));
+          if (res.lead_id && res.lead_id !== leadId) {
+            setLeadId(res.lead_id);
+          }
+        } catch (err) {
+          console.error("Erro na captura progressiva:", err);
+        }
+      }, 2000); // Debounce de 2s
+      return () => clearTimeout(timer);
+    }
+  }, [resp.nome, resp.email, resp.telefone, step, leadId, expedicao.id, expedicao.nome, form]);
 
   if (!data) return null;
-  const { expedicao, datas } = data;
+
+
 
   if (submitted) {
     const dt = datas.find((d) => d.id === form.getValues("data_id"));
@@ -194,6 +226,7 @@ function ReservaPage() {
         participantes: values.participantes as any,
         adicionais: values.adicionais,
         aceites: values.aceites,
+        lead_id: leadId,
       });
 
       const res = {

@@ -63,7 +63,25 @@ export type ReservaConsulta = {
   created_at: string;
 };
 
-export async function criarPreReserva(input: PreReservaInput): Promise<PreReservaResposta> {
+export async function capturaInicialLead(payload: {
+  nome: string;
+  email: string;
+  telefone: string;
+  expedicao_id: string;
+  expedicao_nome: string;
+  data_id: string;
+  etapa_abandono: string;
+  lead_id?: string;
+}): Promise<{ lead_id: string }> {
+  const { data, error } = await supabase.functions.invoke("pre-reserva", {
+    body: { action: "captura-inicial", ...payload },
+  });
+  if (error) throw new Error(error.message || "Falha na captura inicial.");
+  if (data?.error) throw new Error(data.error);
+  return data as { lead_id: string };
+}
+
+export async function criarPreReserva(input: PreReservaInput & { lead_id?: string }): Promise<PreReservaResposta> {
   const { data, error } = await supabase.functions.invoke("pre-reserva", {
     body: { action: "criar", ...input },
   });
