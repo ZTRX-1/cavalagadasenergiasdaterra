@@ -295,9 +295,7 @@ function LeadCardInner({
 
   return (
     <div className="group rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/90 p-3.5 transition-all duration-200 hover:border-[color:var(--admin-dourado)]/50 hover:shadow-[0_0_20px_-12px_rgba(212,175,55,0.3)]">
-      {content
-...
-
+      {content}
     </div>
   );
 }
