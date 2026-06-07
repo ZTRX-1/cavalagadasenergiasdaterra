@@ -83,7 +83,9 @@ function ReservaPage() {
   const { slug } = Route.useParams();
   const search = Route.useSearch();
   const { data } = useSuspenseQuery(qo(slug));
+  if (!data) return null;
   const { expedicao, datas } = data;
+
 
 
   const [step, setStep] = useState(0);
