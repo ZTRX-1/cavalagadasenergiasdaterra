@@ -733,7 +733,7 @@ export interface ParticipanteRow {
 export async function listParticipantes(): Promise<ParticipanteRow[]> {
   const { data, error } = await supabase
     .from("participantes")
-    .select("*")
+    .select("*, cpf_recebido, pagamento_recebido, contrato_assinado, ficha_medica_enviada, documentacao_aprovada")
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as unknown as ParticipanteRow[];

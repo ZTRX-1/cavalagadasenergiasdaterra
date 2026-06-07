@@ -493,6 +493,8 @@ export async function updateReservaCampo(
     status_financeiro: string;
     observacoes_internas: string;
     responsavel_id: string | null;
+    motivacao_viagem: string;
+    observacoes_importantes: string;
   }>,
 ) {
   const { error } = await sb.from("reservas").update(patch as never).eq("id", id);
