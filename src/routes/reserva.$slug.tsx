@@ -169,7 +169,7 @@ function ReservaPage() {
   }, [resp.nome, resp.email, resp.telefone, step, leadId, expedicao.id, expedicao.nome, form]);
 
   if (!data) return null;
-  const { expedicao, datas } = data;
+
 
 
   if (submitted) {
