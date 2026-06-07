@@ -300,6 +300,39 @@ function DashboardAquisicao() {
           </div>
         </div>
 
+        {/* Ranking de Conversão por Origem */}
+        <div className="admin-card p-6">
+          <h3 className="mb-6 font-display text-lg text-[color:var(--admin-cinza-1)] flex items-center gap-2">
+            <Target className="h-4 w-4 text-[color:var(--admin-dourado)]" />
+            Origens que Mais Convertem
+          </h3>
+          <div className="space-y-4">
+            {stats?.rankingConversao.map((item, i) => (
+              <div key={item.name} className="flex items-center gap-4">
+                <div className="w-[120px] truncate text-sm font-medium text-[color:var(--admin-cinza-1)]">
+                  {item.name}
+                </div>
+                <div className="flex-1">
+                  <div className="h-1.5 w-full bg-[color:var(--admin-borda)] rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-emerald-500/60" 
+                      style={{ width: `${item.rate}%` }}
+                    />
+                  </div>
+                </div>
+                <div className="w-[60px] text-right text-sm font-display text-emerald-300">
+                  {item.rate.toFixed(0)}%
+                </div>
+              </div>
+            ))}
+            {!stats?.rankingConversao.length && (
+              <div className="text-center py-8 text-sm text-[color:var(--admin-cinza-3)] italic">
+                Aguardando dados de conversão…
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Expedições Mais Procuradas */}
         <div className="admin-card p-6">
           <h3 className="mb-6 font-display text-lg text-[color:var(--admin-cinza-1)]">Expedições com Mais Interessados</h3>
