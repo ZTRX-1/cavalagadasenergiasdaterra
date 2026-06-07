@@ -1799,6 +1799,13 @@ export type Database = {
       }
     }
     Functions: {
+      check_crm_health: {
+        Args: never
+        Returns: {
+          count: number
+          issue: string
+        }[]
+      }
       gerar_protocolo: { Args: never; Returns: string }
       gerar_protocolo_lead: { Args: never; Returns: string }
       get_primary_role: { Args: { _user_id: string }; Returns: string }
