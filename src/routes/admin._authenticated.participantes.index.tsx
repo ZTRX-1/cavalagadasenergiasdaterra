@@ -297,7 +297,16 @@ function VistaAgrupada({
 }) {
   // Agrupa participantes por (expedicao_id, data_id)
   const grupos = useMemo(() => {
+    // Create a map for all existing dates first
     const map = new Map<string, { expedicao_id: string | null; data_id: string | null; participantes: ParticipanteRow[] }>();
+    
+    // Initialize with all dates to ensure they appear even without participants
+    datas.forEach(d => {
+      const key = `${d.expedicao_id}|${d.id}`;
+      map.set(key, { expedicao_id: d.expedicao_id, data_id: d.id, participantes: [] });
+    });
+
+    // Add participants to their respective groups
     participantes.forEach((p) => {
       const key = `${p.expedicao_id ?? "sem-exp"}|${p.data_id ?? "sem-data"}`;
       if (!map.has(key)) {
@@ -305,9 +314,10 @@ function VistaAgrupada({
       }
       map.get(key)!.participantes.push(p);
     });
+
     return Array.from(map.values()).sort((a, b) => {
-      const da = datas.find((d) => d.id === a.data_id)?.data_inicio ?? "";
-      const db = datas.find((d) => d.id === b.data_id)?.data_inicio ?? "";
+      const da = datas.find((d) => d.id === a.data_id)?.data_inicio ?? "9999-12-31";
+      const db = datas.find((d) => d.id === b.data_id)?.data_inicio ?? "9999-12-31";
       return da.localeCompare(db);
     });
   }, [participantes, datas]);
