@@ -130,8 +130,10 @@ async function fetchDashboard(range: { from: string; to: string }) {
   return {
     leadsTotal: leadsTotal.count ?? 0,
     leadsQualificados: leadsQualificados.count ?? 0,
+    leadsAbandonados: leadsAbandonados.count ?? 0,
     leadsConvertidos: leadsConvertidos.count ?? 0,
     reservasCriadas: reservasCriadas.count ?? 0,
+
     reservasConfirmadas: reservasConfirmadas.count ?? 0,
     participantesConfirmados: participantesConfirmados.count ?? 0,
     expedicoesAtivas: expedicoes.count ?? 0,
