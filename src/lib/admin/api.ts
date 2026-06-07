@@ -445,6 +445,7 @@ export interface LeadRow {
   interesses: string | null;
   restricoes: string | null;
   orcamento: string | null;
+  etapa_abandono: string | null;
 }
 
 // ---------- TEMPERATURA / STATUS DE ATENDIMENTO / MOTIVO DE PERDA ----------
