@@ -437,6 +437,13 @@ export interface LeadRow {
   motivo_perda_detalhe: string | null;
   expedicao_id: string | null;
   data_expedicao_id: string | null;
+  motivacao_viagem: string | null;
+  observacoes_importantes: string | null;
+  perfil: string | null;
+  objetivos: string | null;
+  interesses: string | null;
+  restricoes: string | null;
+  orcamento: string | null;
 }
 
 // ---------- TEMPERATURA / STATUS DE ATENDIMENTO / MOTIVO DE PERDA ----------
@@ -716,12 +723,17 @@ export interface ParticipanteRow {
   status: string;
   created_at: string;
   updated_at: string;
+  cpf_recebido: boolean;
+  pagamento_recebido: boolean;
+  contrato_assinado: boolean;
+  ficha_medica_enviada: boolean;
+  documentacao_aprovada: boolean;
 }
 
 export async function listParticipantes(): Promise<ParticipanteRow[]> {
   const { data, error } = await supabase
     .from("participantes")
-    .select("*")
+    .select("*, cpf_recebido, pagamento_recebido, contrato_assinado, ficha_medica_enviada, documentacao_aprovada")
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as unknown as ParticipanteRow[];

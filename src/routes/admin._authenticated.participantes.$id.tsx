@@ -16,6 +16,9 @@ import {
   IdCard,
   Weight,
   AlertCircle,
+  Clock,
+  AlertTriangle,
+  CheckCircle2,
 } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { ConfirmDialog } from "@/components/admin/admin-confirm";
@@ -33,6 +36,7 @@ import {
   type DocumentoRow,
 } from "@/lib/admin/api";
 import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/_authenticated/participantes/$id")({
   component: ParticipanteFichaPage,
@@ -137,6 +141,11 @@ function ParticipanteFichaPage() {
       restricoes_alimentares: form.restricoes_alimentares ?? null,
       acompanhante: form.acompanhante ?? null,
       expedicao_id: form.expedicao_id ?? null,
+      cpf_recebido: form.cpf_recebido ?? false,
+      pagamento_recebido: form.pagamento_recebido ?? false,
+      contrato_assinado: form.contrato_assinado ?? false,
+      ficha_medica_enviada: form.ficha_medica_enviada ?? false,
+      documentacao_aprovada: form.documentacao_aprovada ?? false,
     });
   };
 
@@ -249,6 +258,19 @@ function ParticipanteFichaPage() {
 
         <aside className="space-y-4">
           <section className="admin-card p-5">
+            <h3 className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)] mb-4 flex items-center gap-2">
+              Checklist Operacional
+            </h3>
+            <div className="space-y-3">
+              <ToggleRow label="CPF Recebido" checked={!!form.cpf_recebido} onChange={(v) => setForm({ ...form, cpf_recebido: v })} at={null} />
+              <ToggleRow label="Pagamento Recebido" checked={!!form.pagamento_recebido} onChange={(v) => setForm({ ...form, pagamento_recebido: v })} at={null} />
+              <ToggleRow label="Contrato Assinado" checked={!!form.contrato_assinado} onChange={(v) => setForm({ ...form, contrato_assinado: v })} at={null} />
+              <ToggleRow label="Ficha Médica Enviada" checked={!!form.ficha_medica_enviada} onChange={(v) => setForm({ ...form, ficha_medica_enviada: v })} at={null} />
+              <ToggleRow label="Documentação Aprovada" checked={!!form.documentacao_aprovada} onChange={(v) => setForm({ ...form, documentacao_aprovada: v })} at={null} />
+            </div>
+          </section>
+
+          <section className="admin-card p-5">
             <h3 className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)] mb-3 flex items-center gap-2">
               <BookOpen className="h-3 w-3" /> Reserva vinculada
             </h3>
@@ -279,6 +301,37 @@ function ParticipanteFichaPage() {
 
       <ConfirmDialog open={confirmDel} onOpenChange={setConfirmDel} title="Remover participante" destructive onConfirm={() => delMut.mutate()} />
     </div>
+  );
+}
+
+function ToggleRow({
+  label,
+  checked,
+  at,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  at: string | null;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <label className="flex items-center justify-between gap-2 cursor-pointer">
+      <span className="text-sm">
+        {label}
+        {at && (
+          <span className="ml-2 text-[11px] text-[color:var(--admin-cinza-3)]">
+            ({new Date(at).toLocaleDateString("pt-BR")})
+          </span>
+        )}
+      </span>
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        className="h-4 w-4 accent-[color:var(--admin-dourado)]"
+      />
+    </label>
   );
 }
 
