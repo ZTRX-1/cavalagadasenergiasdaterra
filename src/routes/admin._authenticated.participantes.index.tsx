@@ -43,6 +43,8 @@ function fmtBRL(v: number) {
 
 type ReservaSlim = {
   id: string;
+  protocolo: string;
+  cliente_nome: string | null;
   data_id: string | null;
   expedicao_id: string | null;
   data_label: string;
@@ -65,7 +67,7 @@ type DataSlim = {
 async function fetchReservasSlim(): Promise<ReservaSlim[]> {
   const { data, error } = await supabase
     .from("reservas")
-    .select("id, data_id, expedicao_id, data_label, expedicao_nome, valor_total, valor_pago, status_operacional");
+    .select("id, protocolo, cliente_nome, data_id, expedicao_id, data_label, expedicao_nome, valor_total, valor_pago, status_operacional");
   if (error) throw error;
   return (data ?? []) as unknown as ReservaSlim[];
 }
