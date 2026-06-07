@@ -136,6 +136,7 @@ async function handleCapturaInicial(payload: any) {
     data_expedicao_id: data_id,
     etapa_abandono,
     status: "incompleto",
+    etapa_atendimento: "incompleto",
     origem: "captura_progressiva",
     canal_entrada: "site",
     updated_at: new Date().toISOString(),
