@@ -96,21 +96,20 @@ function AdminLoginPage() {
             <div className="mb-5 inline-flex items-center gap-3">
               <span className="inline-block h-px w-8 bg-[color:var(--admin-dourado)]" />
               <span className="text-[10px] font-medium uppercase tracking-[0.34em] text-[color:var(--admin-dourado-glow)]">
-                Central operacional
+                Central Operacional
               </span>
             </div>
 
             <h1 className="font-display text-[30px] leading-[1.08] text-white sm:text-[36px] lg:text-[42px] xl:text-[48px]">
-              Cavalgadas <em className="italic text-[color:var(--admin-dourado-glow)]">Energias da Terra</em>
+              Central <em className="italic text-[color:var(--admin-dourado-glow)]">Operacional</em>
             </h1>
 
             <p className="mt-5 max-w-md text-[13.5px] leading-relaxed text-white/85 mx-auto lg:mx-0 lg:text-[14.5px]">
-              Painel interno desenvolvido para coordenar reservas, expedições,
-              participantes e processos estratégicos da operação.
+              Ambiente exclusivo para gestão de expedições, reservas, participantes, documentos e operações internas da marca.
             </p>
 
             <p className="mt-4 max-w-md text-[12px] uppercase tracking-[0.18em] text-white/55 mx-auto lg:mx-0">
-              Área confidencial · Acesso exclusivo para colaboradores autorizados
+              Acesso restrito a usuários autorizados.
             </p>
           </div>
         </div>
@@ -138,20 +137,20 @@ function AdminLoginPage() {
             />
             <div className="min-w-0">
               <div className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--admin-cinza-3)]">
-                Painel interno
+                Central Operacional
               </div>
               <div className="truncate font-display text-[17px] text-[color:var(--admin-cinza-1)]">
-                Cavalgadas
+                Gestão de Expedições
               </div>
             </div>
           </div>
 
           <header className="mb-8">
             <h2 className="font-display text-[30px] leading-tight text-[color:var(--admin-cinza-1)] sm:text-[34px]">
-              Acesso ao painel
+              Acesso Restrito
             </h2>
             <p className="mt-2 text-[13.5px] leading-relaxed text-[color:var(--admin-cinza-3)]">
-              Insira suas credenciais para acessar o sistema interno.
+              Identifique-se para acessar a Central Operacional.
             </p>
           </header>
 
@@ -246,7 +245,7 @@ function AdminLoginPage() {
             >
               <span className="relative z-10 inline-flex items-center gap-2">
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                {loading ? "Entrando…" : "Entrar no sistema"}
+                {loading ? "Autenticando..." : "Entrar"}
               </span>
               <span
                 aria-hidden="true"

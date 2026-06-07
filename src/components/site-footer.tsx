@@ -92,6 +92,7 @@ export function SiteFooter() {
             <Link to="/privacidade" className="text-areia/70 hover:text-cobre">Privacidade</Link>
             <Link to="/termos" className="text-areia/70 hover:text-cobre">Termos de Uso</Link>
             <Link to="/regras" className="text-areia/70 hover:text-cobre">Regras</Link>
+            <Link to="/admin/login" className="text-areia/70 hover:text-cobre border-l border-areia/20 pl-5">Área Restrita</Link>
           </div>
           <div className="text-areia/55">
             {t("footer.feitoPor")}{" "}

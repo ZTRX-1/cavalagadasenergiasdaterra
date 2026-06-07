@@ -163,6 +163,14 @@ export function SiteHeader() {
             >
               <WhatsAppIcon className="h-4 w-4" /> {t("nav.whatsapp")}
             </a>
+            
+            <Link
+              to="/admin/login"
+              onClick={() => setOpen(false)}
+              className="mt-8 flex items-center justify-center border-t border-border/30 pt-8 font-eyebrow text-[0.65rem] uppercase tracking-[0.25em] text-muted-foreground/60 hover:text-cobre transition-colors"
+            >
+              Área Restrita
+            </Link>
           </nav>
         </div>
       </div>
