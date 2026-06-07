@@ -130,7 +130,7 @@ function ParticipantesPage() {
       }
       if (apenasConfirmados) {
         const res = reservas.find(r => r.id === p.reserva_id);
-        if (!res || res.status_operacional !== "reserva_confirmada") return false;
+        if (!res || !["reserva_confirmada", "participante_confirmado"].includes(res.status_operacional)) return false;
       }
       if (q && !(p.nome ?? "").toLowerCase().includes(q) && !(p.email ?? "").toLowerCase().includes(q) && !(p.cpf ?? "").toLowerCase().includes(q)) return false;
       return true;
@@ -181,7 +181,7 @@ function ParticipantesPage() {
         <strong className="text-[color:var(--admin-cinza-1)]">Quem vai pra cada expedição.</strong> A visão <em>Por expedição</em> mostra vagas, confirmados, pendentes e receita prevista/recebida de cada data. Participantes nascem automaticamente quando o lead vira reserva — você só precisa completar os dados (peso, CPF, restrições).
       </AdminPageIntro>
 
-      <div className="mb-4 flex flex-wrap items-center gap-2">
+      <div className="mb-4 flex flex-wrap items-center gap-4">
         <div className="relative group">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-[color:var(--admin-cinza-3)] group-focus-within:text-[color:var(--admin-dourado)] transition-colors" />
           <input
@@ -347,7 +347,12 @@ function VistaAgrupada({
         const vagasTotal = data?.vagas_total ?? g.participantes.length;
         const vagasDisp = data?.vagas_disponiveis ?? 0;
         const receitaPrevista = reservasGrupo.reduce((s, r) => s + Number(r.valor_total ?? 0), 0);
-        const receitaRecebida = reservasGrupo.reduce((s, r) => s + Number(r.valor_pago ?? 0), 0);
+        const receitaRecebida = reservasGrupo.reduce((s, r) => {
+          if (["reserva_confirmada", "participante_confirmado"].includes(r.status_operacional)) {
+            return s + Number(r.valor_total ?? 0);
+          }
+          return s + Number(r.valor_pago ?? 0);
+        }, 0);
         const aReceber = receitaPrevista - receitaRecebida;
 
         return (
