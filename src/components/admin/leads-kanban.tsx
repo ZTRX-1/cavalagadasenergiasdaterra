@@ -16,7 +16,7 @@ import {
 } from "@dnd-kit/core";
 import { Star, Flame, Trash2, ArrowRight } from "lucide-react";
 import { StatusBadge } from "@/components/admin/admin-status-badge";
-import { LEAD_ETAPAS, type LeadEtapaId, type LeadRow } from "@/lib/admin/api";
+import { LEAD_ETAPAS, LEAD_TEMPERATURAS, type LeadEtapaId, type LeadRow } from "@/lib/admin/api";
 
 type Props = {
   leads: LeadRow[];
@@ -239,7 +239,12 @@ function LeadCardInner({
         ) : null}
       </div>
       <div className="mt-2 flex items-center justify-between text-[11px] text-[color:var(--admin-cinza-3)]">
-        <span>{lead.protocolo ?? "—"}</span>
+        <span className="flex items-center gap-1.5">
+          <span title={`Temperatura: ${lead.temperatura_lead ?? "frio"}`}>
+            {(LEAD_TEMPERATURAS.find((t) => t.id === (lead.temperatura_lead ?? "frio")) ?? LEAD_TEMPERATURAS[0]).emoji}
+          </span>
+          <span>{lead.protocolo ?? "—"}</span>
+        </span>
         {lead.valor_estimado ? (
           <span>R$ {Number(lead.valor_estimado).toLocaleString("pt-BR")}</span>
         ) : null}

@@ -45,6 +45,7 @@ import { Route as AdminAuthenticatedReservasIndexRouteImport } from './routes/ad
 import { Route as AdminAuthenticatedParticipantesIndexRouteImport } from './routes/admin._authenticated.participantes.index'
 import { Route as AdminAuthenticatedLeadsIndexRouteImport } from './routes/admin._authenticated.leads.index'
 import { Route as AdminAuthenticatedExpedicoesIndexRouteImport } from './routes/admin._authenticated.expedicoes.index'
+import { Route as ApiPublicIaBarbaraLeadsRouteImport } from './routes/api/public/ia-barbara/leads'
 import { Route as AdminAuthenticatedReservasIdRouteImport } from './routes/admin._authenticated.reservas.$id'
 import { Route as AdminAuthenticatedParticipantesIdRouteImport } from './routes/admin._authenticated.participantes.$id'
 import { Route as AdminAuthenticatedLeadsIdRouteImport } from './routes/admin._authenticated.leads.$id'
@@ -245,6 +246,11 @@ const AdminAuthenticatedExpedicoesIndexRoute =
     path: '/expedicoes/',
     getParentRoute: () => AdminAuthenticatedRoute,
   } as any)
+const ApiPublicIaBarbaraLeadsRoute = ApiPublicIaBarbaraLeadsRouteImport.update({
+  id: '/api/public/ia-barbara/leads',
+  path: '/api/public/ia-barbara/leads',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminAuthenticatedReservasIdRoute =
   AdminAuthenticatedReservasIdRouteImport.update({
     id: '/$id',
@@ -307,6 +313,7 @@ export interface FileRoutesByFullPath {
   '/admin/leads/$id': typeof AdminAuthenticatedLeadsIdRoute
   '/admin/participantes/$id': typeof AdminAuthenticatedParticipantesIdRoute
   '/admin/reservas/$id': typeof AdminAuthenticatedReservasIdRoute
+  '/api/public/ia-barbara/leads': typeof ApiPublicIaBarbaraLeadsRoute
   '/admin/expedicoes/': typeof AdminAuthenticatedExpedicoesIndexRoute
   '/admin/leads/': typeof AdminAuthenticatedLeadsIndexRoute
   '/admin/participantes/': typeof AdminAuthenticatedParticipantesIndexRoute
@@ -345,6 +352,7 @@ export interface FileRoutesByTo {
   '/admin/leads/$id': typeof AdminAuthenticatedLeadsIdRoute
   '/admin/participantes/$id': typeof AdminAuthenticatedParticipantesIdRoute
   '/admin/reservas/$id': typeof AdminAuthenticatedReservasIdRoute
+  '/api/public/ia-barbara/leads': typeof ApiPublicIaBarbaraLeadsRoute
   '/admin/expedicoes': typeof AdminAuthenticatedExpedicoesIndexRoute
   '/admin/leads': typeof AdminAuthenticatedLeadsIndexRoute
   '/admin/participantes': typeof AdminAuthenticatedParticipantesIndexRoute
@@ -388,6 +396,7 @@ export interface FileRoutesById {
   '/admin/_authenticated/leads/$id': typeof AdminAuthenticatedLeadsIdRoute
   '/admin/_authenticated/participantes/$id': typeof AdminAuthenticatedParticipantesIdRoute
   '/admin/_authenticated/reservas/$id': typeof AdminAuthenticatedReservasIdRoute
+  '/api/public/ia-barbara/leads': typeof ApiPublicIaBarbaraLeadsRoute
   '/admin/_authenticated/expedicoes/': typeof AdminAuthenticatedExpedicoesIndexRoute
   '/admin/_authenticated/leads/': typeof AdminAuthenticatedLeadsIndexRoute
   '/admin/_authenticated/participantes/': typeof AdminAuthenticatedParticipantesIndexRoute
@@ -432,6 +441,7 @@ export interface FileRouteTypes {
     | '/admin/leads/$id'
     | '/admin/participantes/$id'
     | '/admin/reservas/$id'
+    | '/api/public/ia-barbara/leads'
     | '/admin/expedicoes/'
     | '/admin/leads/'
     | '/admin/participantes/'
@@ -470,6 +480,7 @@ export interface FileRouteTypes {
     | '/admin/leads/$id'
     | '/admin/participantes/$id'
     | '/admin/reservas/$id'
+    | '/api/public/ia-barbara/leads'
     | '/admin/expedicoes'
     | '/admin/leads'
     | '/admin/participantes'
@@ -512,6 +523,7 @@ export interface FileRouteTypes {
     | '/admin/_authenticated/leads/$id'
     | '/admin/_authenticated/participantes/$id'
     | '/admin/_authenticated/reservas/$id'
+    | '/api/public/ia-barbara/leads'
     | '/admin/_authenticated/expedicoes/'
     | '/admin/_authenticated/leads/'
     | '/admin/_authenticated/participantes/'
@@ -535,6 +547,7 @@ export interface RootRouteChildren {
   MarcasCavalgadasRoute: typeof MarcasCavalgadasRoute
   MarcasElasNaSelaRoute: typeof MarcasElasNaSelaRoute
   ReservaSlugRoute: typeof ReservaSlugRoute
+  ApiPublicIaBarbaraLeadsRoute: typeof ApiPublicIaBarbaraLeadsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -791,6 +804,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthenticatedExpedicoesIndexRouteImport
       parentRoute: typeof AdminAuthenticatedRoute
     }
+    '/api/public/ia-barbara/leads': {
+      id: '/api/public/ia-barbara/leads'
+      path: '/api/public/ia-barbara/leads'
+      fullPath: '/api/public/ia-barbara/leads'
+      preLoaderRoute: typeof ApiPublicIaBarbaraLeadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/_authenticated/reservas/$id': {
       id: '/admin/_authenticated/reservas/$id'
       path: '/$id'
@@ -946,6 +966,7 @@ const rootRouteChildren: RootRouteChildren = {
   MarcasCavalgadasRoute: MarcasCavalgadasRoute,
   MarcasElasNaSelaRoute: MarcasElasNaSelaRoute,
   ReservaSlugRoute: ReservaSlugRoute,
+  ApiPublicIaBarbaraLeadsRoute: ApiPublicIaBarbaraLeadsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
