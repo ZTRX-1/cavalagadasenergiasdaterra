@@ -918,6 +918,7 @@ export type Database = {
           dispositivo: string | null
           email: string | null
           estado: string | null
+          etapa_abandono: string | null
           etapa_atendimento: string
           expedicao_id: string | null
           expedicao_interesse: string | null
@@ -973,6 +974,7 @@ export type Database = {
           dispositivo?: string | null
           email?: string | null
           estado?: string | null
+          etapa_abandono?: string | null
           etapa_atendimento?: string
           expedicao_id?: string | null
           expedicao_interesse?: string | null
@@ -1028,6 +1030,7 @@ export type Database = {
           dispositivo?: string | null
           email?: string | null
           estado?: string | null
+          etapa_abandono?: string | null
           etapa_atendimento?: string
           expedicao_id?: string | null
           expedicao_interesse?: string | null
