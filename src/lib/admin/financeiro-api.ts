@@ -206,7 +206,7 @@ export async function dreExpedicoes(range: { from: string; to: string }): Promis
   const [reservasRes, despesasRes, expedicoesRes] = await Promise.all([
     supabase
       .from("reservas")
-      .select("expedicao_id, expedicao_nome, valor_pago, status_pagamento, created_at")
+      .select("expedicao_id, expedicao_nome, valor_total, valor_pago, status_pagamento, status_operacional, created_at")
       .gte("created_at", range.from)
       .lte("created_at", range.to),
     supabase
