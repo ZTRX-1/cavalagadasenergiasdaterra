@@ -8,6 +8,7 @@ import {
   createReservaDocumento,
   deleteReservaDocumento,
   updateReservaCampo,
+  deleteReserva,
   buildReservaTimeline,
   calcularSituacaoReserva,
   STATUS_FINANCEIRO,
@@ -100,6 +101,15 @@ function ReservaDetalhePage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const deleteMut = useMutation({
+    mutationFn: () => deleteReserva(id),
+    onSuccess: () => {
+      toast.success("Reserva excluída.");
+      router.navigate({ to: "/admin/reservas" });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   if (reservaQ.isLoading) return <div className="p-6">Carregando…</div>;
   if (!reserva)
     return (
@@ -133,7 +143,21 @@ function ReservaDetalhePage() {
             {reserva.expedicao_nome} · {reserva.data_label}
           </p>
         </div>
-        <SituacaoVisual tone={sit.tone} label={sit.label} />
+        <div className="flex items-center gap-3">
+          <SituacaoVisual tone={sit.tone} label={sit.label} />
+          <button
+            onClick={() => {
+              if (confirm("Tem certeza que deseja excluir esta reserva? Esta ação não pode ser desfeita e removerá todos os participantes e pagamentos vinculados.")) {
+                deleteMut.mutate();
+              }
+            }}
+            disabled={deleteMut.isPending}
+            className="admin-btn-ghost hover:!bg-rose-500/10 hover:!text-rose-300 gap-2 h-10 px-4"
+          >
+            <Trash2 className="h-4 w-4" />
+            Excluir Reserva
+          </button>
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-5">

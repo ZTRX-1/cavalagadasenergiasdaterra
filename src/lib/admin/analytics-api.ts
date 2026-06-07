@@ -5,7 +5,14 @@ export type AnalyticsRange = { from: string; to: string };
 function classifyReferrer(ref: string | null): string {
   if (!ref) return "Direto";
   try {
-    const h = new URL(ref).hostname.replace(/^www\./, "");
+    const url = new URL(ref);
+    const h = url.hostname.replace(/^www\./, "");
+    
+    // Ocultar origens internas de desenvolvimento
+    if (h.includes("lovable") || h.includes("localhost") || h.includes("preview")) {
+      return "Direto";
+    }
+
     if (h.includes("google")) return "Google";
     if (h.includes("instagram")) return "Instagram";
     if (h.includes("facebook") || h.includes("fb.com")) return "Facebook";

@@ -154,12 +154,12 @@ function FinanceiroPage() {
 
       {/* 6 KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-        <KPI label="Faturamento confirmado" value={fmtBRL(totalConfirmado)} accent />
-        <KPI label="Faturamento estimado" value={fmtBRL(totalEstimado)} />
-        <KPI label="Pagamentos pendentes" value={fmtBRL(totalPendente)} />
+        <KPI label="Faturamento confirmado" value={fmtBRL(totalConfirmado)} tone="ok" />
+        <KPI label="Faturamento estimado" value={fmtBRL(totalEstimado)} tone="warn" />
+        <KPI label="Pagamentos pendentes" value={fmtBRL(totalPendente)} tone="danger" />
         <KPI label="Despesas totais" value={fmtBRL(totalDespesas)} />
-        <KPI label="Lucro líquido" value={fmtBRL(lucro)} accent={lucro > 0} />
-        <KPI label="Margem" value={`${margem.toFixed(1)}%`} />
+        <KPI label="Lucro líquido" value={fmtBRL(lucro)} tone={lucro >= 0 ? "ok" : "danger"} />
+        <KPI label="Margem" value={`${margem.toFixed(1)}%`} tone={margem >= 0 ? "ok" : "danger"} />
       </div>
 
       {/* Tabs */}
@@ -188,11 +188,17 @@ function FinanceiroPage() {
   );
 }
 
-function KPI({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+function KPI({ label, value, tone }: { label: string; value: string; tone?: "ok" | "warn" | "danger" }) {
+  const colorClass = 
+    tone === "ok" ? "text-emerald-400" : 
+    tone === "warn" ? "text-amber-400" : 
+    tone === "danger" ? "text-rose-400" : 
+    "text-[color:var(--admin-cinza-1)]";
+
   return (
     <div className="admin-card p-5">
       <div className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">{label}</div>
-      <div className={`mt-2 font-display text-2xl lg:text-3xl ${accent ? "text-[color:var(--admin-dourado)]" : "text-[color:var(--admin-cinza-1)]"}`}>{value}</div>
+      <div className={`mt-2 font-display text-2xl lg:text-3xl ${colorClass}`}>{value}</div>
     </div>
   );
 }
