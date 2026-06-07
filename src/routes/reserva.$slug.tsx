@@ -185,6 +185,7 @@ function ReservaPage() {
         participantes: values.participantes,
         adicionais: values.adicionais,
         aceites: values.aceites,
+        tracking: getTrackingData(),
       });
 
       const res = {
