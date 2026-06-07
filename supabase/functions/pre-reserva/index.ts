@@ -307,6 +307,9 @@ Deno.serve(async (req) => {
       if (!v.ok) return json({ error: v.error }, 400);
       return await handleCriar(v.data);
     }
+    if (action === "captura-inicial") {
+      return await handleCapturaInicial(body);
+    }
     if (action === "consultar") {
       return await handleConsultar(body.protocolo);
     }
