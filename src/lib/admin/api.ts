@@ -814,6 +814,20 @@ export async function listReservas(): Promise<ReservaRow[]> {
   return (data ?? []) as unknown as ReservaRow[];
 }
 
+export async function deleteReserva(id: string): Promise<void> {
+  // O trigger de banco ou RLS deve lidar com as cascatas se houver, 
+  // mas aqui garantimos o log de atividade.
+  const { data: res } = await supabase.from("reservas").select("protocolo").eq("id", id).maybeSingle();
+  const { error } = await supabase.from("reservas").delete().eq("id", id);
+  if (error) throw error;
+  await logActivity({ 
+    modulo: "reservas", 
+    acao: "excluir", 
+    descricao: res?.protocolo ?? "Reserva",
+    metadata: { id } 
+  });
+}
+
 export async function getReserva(id: string): Promise<ReservaRow | null> {
   const { data, error } = await supabase.from("reservas").select("*").eq("id", id).maybeSingle();
   if (error) throw error;
