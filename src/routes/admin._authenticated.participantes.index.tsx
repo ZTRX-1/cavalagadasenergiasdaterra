@@ -493,7 +493,7 @@ function VistaAgrupada({
                                   {p.cpf ? (
                                     <span className="text-[10px] font-mono text-[color:var(--admin-cinza-2)]">{p.cpf}</span>
                                   ) : (
-                                    <AlertCircle className="h-3 w-3 text-rose-500" title="CPF Pendente" />
+                                    <AlertCircle className="h-3 w-3 text-rose-500" />
                                   )}
                                 </div>
                               </td>
