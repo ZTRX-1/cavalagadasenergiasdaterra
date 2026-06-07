@@ -16,7 +16,7 @@ import {
 } from "@dnd-kit/core";
 import { Star, Flame, Trash2, ArrowRight } from "lucide-react";
 import { StatusBadge } from "@/components/admin/admin-status-badge";
-import { LEAD_ETAPAS, type LeadEtapaId, type LeadRow } from "@/lib/admin/api";
+import { LEAD_ETAPAS, LEAD_TEMPERATURAS, type LeadEtapaId, type LeadRow } from "@/lib/admin/api";
 
 type Props = {
   leads: LeadRow[];
