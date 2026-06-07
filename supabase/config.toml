@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.pre-reserva]
 verify_jwt = false
+
+[functions.ia-barbara]
+verify_jwt = false
