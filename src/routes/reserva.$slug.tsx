@@ -11,7 +11,7 @@ import { criarPreReserva } from "@/lib/pre-reserva";
 import { buildReservaWhatsappUrl } from "@/lib/whatsapp";
 import { formatDateRange, formatPrice } from "@/lib/format";
 import { getExpedicaoImage } from "@/lib/expedicao-images";
-import { ESTADOS_BR, maskCPF, maskPhone, ageFromDateString } from "@/lib/br-estados";
+import { ESTADOS_BR, maskCPF, maskPhone, ageFromDateString, isValidCPF } from "@/lib/br-estados";
 import { cn } from "@/lib/utils";
 
 
@@ -48,11 +48,14 @@ const schema = z.object({
   }),
   participantes: z.array(z.object({
     nome: z.string().trim().min(2, "Nome obrigatório"),
-    idade: z.coerce.number().int().min(1).max(110),
+    cpf: z.string().trim().refine((v) => isValidCPF(v), { message: "CPF inválido" }),
+    data_nascimento: z.string().min(10, "Data obrigatória"),
     peso: z.coerce.number({ invalid_type_error: "Informe o peso" })
       .min(20, "Peso mínimo 20 kg")
       .max(110, "Por bem-estar dos cavalos, o peso máximo permitido é 110 kg."),
     experiencia: z.enum(["nenhuma", "iniciante", "intermediario", "avancado"]),
+    telefone: z.string().optional(),
+    email: z.string().optional(),
   })).min(1),
   adicionais: z.object({
     tipo_grupo: z.string().min(2, "Selecione"),
@@ -86,7 +89,7 @@ function ReservaPage() {
     defaultValues: {
       data_id: search.data ?? "",
       responsavel: { nome: "", cpf: "", telefone: "", email: "", cidade: "", estado: "" },
-      participantes: [{ nome: "", idade: 18, peso: 70, experiencia: "nenhuma" }],
+      participantes: [{ nome: "", cpf: "", data_nascimento: "", peso: 70, experiencia: "nenhuma" }],
       adicionais: { tipo_grupo: "individual", forma_pagamento: "pix", como_conheceu: "instagram", restricoes: "", observacoes: "" },
       aceites: { responsabilidade: false as unknown as true, cancelamento: false as unknown as true, riscos: false as unknown as true },
     },
@@ -103,7 +106,7 @@ function ReservaPage() {
     if (qtdTotal === current.length) return;
     if (qtdTotal > current.length) {
       const toAdd = qtdTotal - current.length;
-      for (let i = 0; i < toAdd; i++) append({ nome: "", idade: 18, peso: 70, experiencia: "nenhuma" });
+      for (let i = 0; i < toAdd; i++) append({ nome: "", cpf: "", data_nascimento: "", peso: 70, experiencia: "nenhuma" });
     } else {
       replace(current.slice(0, qtdTotal));
     }
@@ -124,6 +127,9 @@ function ReservaPage() {
   useEffect(() => {
     if (!responsavelParticipa) return;
     if (resp.nome) form.setValue("participantes.0.nome", resp.nome, { shouldValidate: false });
+    if (resp.cpf) form.setValue("participantes.0.cpf", resp.cpf, { shouldValidate: false });
+    if (resp.email) form.setValue("participantes.0.email", resp.email, { shouldValidate: false });
+    if (resp.telefone) form.setValue("participantes.0.telefone", resp.telefone, { shouldValidate: false });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [responsavelParticipa, resp.nome]);
 
