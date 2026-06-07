@@ -680,7 +680,7 @@ function SucessoView({ protocolo, waUrl, nome, dataLabel }: { protocolo: string;
         <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-floresta-deep text-areia">
           <Check className="h-7 w-7" />
         </div>
-        <div className="eyebrow mt-8">Pré-reserva confirmada</div>
+        <div className="eyebrow mt-8">Pré-reserva enviada</div>
         <h1 className="mt-4 font-display text-4xl md:text-5xl">Sua trilha começou.</h1>
         <p className="mt-4 text-muted-foreground">
           Recebemos sua pré-reserva para <strong className="text-foreground">{nome}</strong> em {dataLabel}.
