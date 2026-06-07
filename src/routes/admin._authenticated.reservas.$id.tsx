@@ -253,6 +253,7 @@ function ReservaDetalhePage() {
       <ReservaPagamentos
         reservaId={id}
         expedicaoId={reserva.expedicao_id ?? null}
+        valorTotal={reserva.valor_total}
         pagamentos={pagamentosQ.data ?? []}
         onChanged={() => {
           pagamentosQ.refetch();
