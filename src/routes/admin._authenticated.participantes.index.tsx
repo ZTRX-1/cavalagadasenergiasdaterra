@@ -103,6 +103,7 @@ function ParticipantesPage() {
   const [view, setView] = useState<"agrupado" | "lista">("agrupado");
   const [filtroExp, setFiltroExp] = useState<string>("");
   const [filtroStatus, setFiltroStatus] = useState<string>("");
+  const [apenasConfirmados, setApenasConfirmados] = useState(false);
   const [busca, setBusca] = useState("");
   const refresh = () => qc.invalidateQueries({ queryKey: ["admin", "participantes"] });
   const { canEdit } = useCan("participantes");
@@ -117,10 +118,14 @@ function ParticipantesPage() {
     return list.filter((p) => {
       if (filtroExp && p.expedicao_id !== filtroExp) return false;
       if (filtroStatus && p.status !== filtroStatus) return false;
+      if (apenasConfirmados) {
+        const res = reservas.find(r => r.id === p.reserva_id);
+        if (!res || res.status_operacional !== "reserva_confirmada") return false;
+      }
       if (q && !(p.nome ?? "").toLowerCase().includes(q) && !(p.email ?? "").toLowerCase().includes(q) && !(p.cpf ?? "").toLowerCase().includes(q)) return false;
       return true;
     });
-  }, [list, filtroExp, filtroStatus, busca]);
+  }, [list, filtroExp, filtroStatus, apenasConfirmados, busca, reservas]);
 
   const exportar = () => {
     if (!filtroExp) { toast.error("Selecione uma expedição para gerar a ficha do guia"); return; }
@@ -184,6 +189,15 @@ function ParticipantesPage() {
           <option value="confirmado">Confirmado</option>
           <option value="cancelado">Cancelado</option>
         </select>
+        <label className="flex items-center gap-2 cursor-pointer bg-[color:var(--admin-carvao-deep)]/40 border border-[color:var(--admin-borda)] rounded-lg px-3 py-1.5 h-[38px]">
+          <input 
+            type="checkbox" 
+            className="accent-[color:var(--admin-dourado)]" 
+            checked={apenasConfirmados} 
+            onChange={(e) => setApenasConfirmados(e.target.checked)} 
+          />
+          <span className="text-[12px] text-[color:var(--admin-cinza-2)] whitespace-nowrap">Somente Reservas Confirmadas</span>
+        </label>
         <span className="text-[11px] text-[color:var(--admin-cinza-3)] ml-auto">
           {filtrados.length} de {list.length}
         </span>
@@ -477,11 +491,12 @@ function VistaLista({
 // ----------------- Dialog (criar/editar) -----------------
 
 function ParticipanteDialog({
-  open, onOpenChange, expedicoes, initial, onSaved,
+  open, onOpenChange, expedicoes, reservas, initial, onSaved,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   expedicoes: { id: string; nome: string }[];
+  reservas: ReservaSlim[];
   initial?: ParticipanteRow;
   onSaved: () => void;
 }) {
@@ -496,6 +511,48 @@ function ParticipanteDialog({
       <DialogContent className="border border-[color:var(--admin-borda-strong)] bg-[color:var(--admin-carvao)] text-[color:var(--admin-cinza-1)] sm:max-w-xl max-h-[90vh] overflow-y-auto">
         <DialogHeader><DialogTitle className="font-display text-2xl">{initial ? "Editar participante" : "Novo participante"}</DialogTitle></DialogHeader>
         <div className="space-y-3">
+          {!initial && (
+            <AdminField label="Vincular a uma Reserva Confirmada (Auto-preencher)">
+              <select 
+                className="admin-input border-[color:var(--admin-dourado)]/30"
+                onChange={(e) => {
+                  const rId = e.target.value;
+                  if (!rId) return;
+                  const res = reservas.find(r => r.id === rId);
+                  if (res) {
+                    // Tenta buscar dados do cliente da reserva para pré-preencher
+                    // Como temos apenas ReservaSlim aqui, talvez precisemos de mais dados ou apenas vincular o ID.
+                    // Mas o usuário quer "preenche automaticamente os dados".
+                    // Vou buscar os dados completos da reserva se selecionada.
+                    supabase.from("reservas").select("*").eq("id", rId).maybeSingle().then(({ data }) => {
+                      if (data) {
+                        setForm(f => ({
+                          ...f,
+                          reserva_id: rId,
+                          expedicao_id: data.expedicao_id,
+                          data_id: data.data_id,
+                          nome: data.cliente_nome ?? f.nome,
+                          email: data.cliente_email ?? f.email,
+                          telefone: data.cliente_telefone ?? f.telefone,
+                          cpf: data.cliente_cpf ?? f.cpf,
+                        }));
+                      }
+                    });
+                  }
+                }}
+              >
+                <option value="">Selecione uma reserva...</option>
+                {reservas
+                  .filter(r => r.status_operacional === "reserva_confirmada")
+                  .map(r => (
+                    <option key={r.id} value={r.id}>
+                      {r.protocolo || r.id.slice(0,8)} - {r.cliente_nome} ({r.expedicao_nome})
+                    </option>
+                  ))}
+              </select>
+              <p className="mt-1 text-[10px] text-[color:var(--admin-cinza-3)]">Isso preencherá os dados do responsável pela reserva.</p>
+            </AdminField>
+          )}
           <AdminField label="Nome completo"><input className="admin-input" value={form.nome ?? ""} onChange={(e) => setForm({ ...form, nome: e.target.value })} /></AdminField>
           <div className="grid grid-cols-3 gap-3">
             <AdminField label="CPF"><input className="admin-input" value={form.cpf ?? ""} onChange={(e) => setForm({ ...form, cpf: e.target.value })} /></AdminField>
