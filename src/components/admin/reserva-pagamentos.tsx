@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Plus, Trash2, CheckCircle2, Wallet, ExternalLink } from "lucide-react";
+import { Plus, Trash2, CheckCircle2, Wallet, ExternalLink, Calendar as CalendarIcon } from "lucide-react";
 import {
   TIPOS_PAGAMENTO,
   FORMAS_PAGAMENTO,
@@ -25,9 +25,9 @@ const TIPO_LABEL: Record<string, string> = {
 const FORMA_LABEL: Record<string, string> = {
   pix: "PIX",
   cartao: "Cartão",
+  pix_parcelado: "PIX Parcelado",
   transferencia: "Transferência",
   dinheiro: "Dinheiro",
-  boleto: "Boleto",
 };
 const TONE: Record<string, string> = {
   ok: "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30",
@@ -54,11 +54,13 @@ export function ReservaPagamentos({
   expedicaoId,
   pagamentos,
   onChanged,
+  valorTotal,
 }: {
   reservaId: string;
   expedicaoId: string | null;
   pagamentos: Pagamento[];
   onChanged: () => void;
+  valorTotal?: number | null;
 }) {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
@@ -140,7 +142,12 @@ export function ReservaPagamentos({
           <span>Previsto: <b className="text-amber-300">{brl(previsto)}</b></span>
           <button
             type="button"
-            onClick={() => setOpen(!open)}
+            onClick={() => {
+              if (!open && valorTotal && !form.valor) {
+                setForm(prev => ({ ...prev, valor: String(valorTotal).replace(".", ",") }));
+              }
+              setOpen(!open);
+            }}
             className="inline-flex items-center gap-1 text-xs text-[color:var(--admin-dourado)] hover:underline"
           >
             <Plus className="h-3 w-3" /> Adicionar pagamento
@@ -186,20 +193,33 @@ export function ReservaPagamentos({
             />
           </Field>
           <Field label="Vencimento">
-            <input
-              type="date"
-              value={form.data_prevista}
-              onChange={(e) => setForm({ ...form, data_prevista: e.target.value })}
-              className="w-full rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao)] px-2 py-1.5 text-sm"
-            />
+            <div className="relative">
+              <input
+                type="date"
+                value={form.data_prevista}
+                onChange={(e) => setForm({ ...form, data_prevista: e.target.value })}
+                className="w-full rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao)] pl-8 pr-2 py-1.5 text-sm"
+              />
+              <CalendarIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#D4AF37]" />
+            </div>
           </Field>
           <Field label="Recebido em">
-            <input
-              type="date"
-              value={form.data_pagamento}
-              onChange={(e) => setForm({ ...form, data_pagamento: e.target.value })}
-              className="w-full rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao)] px-2 py-1.5 text-sm"
-            />
+            <div className="relative">
+              <input
+                type="date"
+                value={form.data_pagamento}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setForm({ 
+                    ...form, 
+                    data_pagamento: val,
+                    status: val ? "confirmado" : form.status 
+                  });
+                }}
+                className="w-full rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao)] pl-8 pr-2 py-1.5 text-sm"
+              />
+              <CalendarIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#D4AF37]" />
+            </div>
           </Field>
           <Field label="Parcela atual">
             <input

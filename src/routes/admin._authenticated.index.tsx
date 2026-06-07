@@ -82,7 +82,7 @@ async function fetchDashboard(range: { from: string; to: string }) {
     supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).eq("etapa_atendimento", "convertido"),
     supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
     supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).eq("status_operacional", "reserva_confirmada"),
-    supabase.from("reservas").select("valor_total, valor_pago, saldo_restante, status_financeiro, status_pagamento, created_at").gte("created_at", range.from).lte("created_at", range.to),
+    supabase.from("reservas").select("valor_total, valor_pago, saldo_restante, status_financeiro, status_pagamento, status_operacional, created_at").gte("created_at", range.from).lte("created_at", range.to),
     supabase.from("participantes").select("id", { count: "exact", head: true }).eq("status", "confirmado"),
     supabase.from("expedicoes").select("id", { count: "exact", head: true }).eq("ativo", true).eq("status", "publicado"),
     supabase.from("datas").select("vagas_disponiveis, vagas_total, preco_pix, preco_cartao, expedicoes(preco)").eq("status", "disponivel").gte("data_inicio", today),
@@ -101,8 +101,13 @@ async function fetchDashboard(range: { from: string; to: string }) {
     0,
   );
   const receitaRecebida = (reservasFinanceiro.data ?? []).reduce(
-    (s: number, r: { valor_pago?: number | null; status_pagamento?: string }) => 
-      s + (r.status_pagamento === "confirmado" ? Number(r.valor_pago ?? 0) : 0),
+    (s: number, r: { valor_total?: number | null; valor_pago?: number | null; status_pagamento?: string; status_operacional?: string }) => {
+      // Se a reserva está confirmada operacionalmente, o financeiro deve contar como recebido (regra de negócio solicitada)
+      if (r.status_operacional === "reserva_confirmada") {
+        return s + Number(r.valor_total ?? 0);
+      }
+      return s + (r.status_pagamento === "confirmado" ? Number(r.valor_pago ?? 0) : 0);
+    },
     0,
   );
   const receitaPendente = receitaPrevista - receitaRecebida;

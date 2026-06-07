@@ -70,12 +70,11 @@ export const STATUS_OPERACIONAL = [
   { id: "pre_reserva", label: "Pré-reserva" },
   { id: "reserva_confirmada", label: "Reserva confirmada" },
   { id: "participante_confirmado", label: "Participante confirmado" },
-  { id: "participante_embarcado", label: "Participante embarcado" },
   { id: "expedicao_concluida", label: "Expedição concluída" },
 ] as const;
 
 export const TIPOS_PAGAMENTO = ["entrada", "parcela", "final", "reembolso", "ajuste"] as const;
-export const FORMAS_PAGAMENTO = ["pix", "cartao", "transferencia", "dinheiro", "boleto"] as const;
+export const FORMAS_PAGAMENTO = ["pix", "cartao", "pix_parcelado", "transferencia", "dinheiro"] as const;
 export const STATUS_PAGAMENTO_NOVO = ["previsto", "confirmado", "estornado", "cancelado"] as const;
 
 export type Pagamento = {
@@ -207,7 +206,7 @@ export async function dreExpedicoes(range: { from: string; to: string }): Promis
   const [reservasRes, despesasRes, expedicoesRes] = await Promise.all([
     supabase
       .from("reservas")
-      .select("expedicao_id, expedicao_nome, valor_pago, status_pagamento, created_at")
+      .select("expedicao_id, expedicao_nome, valor_total, valor_pago, status_pagamento, status_operacional, created_at")
       .gte("created_at", range.from)
       .lte("created_at", range.to),
     supabase
@@ -239,9 +238,10 @@ export async function dreExpedicoes(range: { from: string; to: string }): Promis
     return map.get(key)!;
   };
   for (const r of reservasRes.data ?? []) {
-    if (r.status_pagamento !== "confirmado") continue;
+    const isConfirmado = r.status_pagamento === "confirmado" || r.status_operacional === "reserva_confirmada";
+    if (!isConfirmado) continue;
     const row = get(r.expedicao_id, r.expedicao_nome);
-    row.receita += Number(r.valor_pago ?? 0);
+    row.receita += Number(isConfirmado && r.status_operacional === "reserva_confirmada" ? (r.valor_total ?? r.valor_pago ?? 0) : (r.valor_pago ?? 0));
   }
   for (const d of despesasRes.data ?? []) {
     const row = get(d.expedicao_id);
@@ -261,7 +261,7 @@ export async function fluxoCaixa(range: { from: string; to: string }) {
   const [reservasRes, despesasRes] = await Promise.all([
     supabase
       .from("reservas")
-      .select("valor_pago, created_at, status_pagamento")
+      .select("valor_total, valor_pago, created_at, status_pagamento, status_operacional")
       .gte("created_at", range.from)
       .lte("created_at", range.to),
     supabase
@@ -279,9 +279,10 @@ export async function fluxoCaixa(range: { from: string; to: string }) {
     return map.get(dia)!;
   };
   for (const r of reservasRes.data ?? []) {
-    if (r.status_pagamento !== "confirmado") continue;
+    const isConfirmado = r.status_pagamento === "confirmado" || r.status_operacional === "reserva_confirmada";
+    if (!isConfirmado) continue;
     const dia = r.created_at.slice(0, 10);
-    ensure(dia).entrada += Number(r.valor_pago ?? 0);
+    ensure(dia).entrada += Number(isConfirmado && r.status_operacional === "reserva_confirmada" ? (r.valor_total ?? r.valor_pago ?? 0) : (r.valor_pago ?? 0));
   }
   for (const d of despesasRes.data ?? []) {
     ensure(d.data).saida += Number(d.valor ?? 0);
