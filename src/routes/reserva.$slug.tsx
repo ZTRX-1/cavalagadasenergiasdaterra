@@ -49,7 +49,10 @@ const schema = z.object({
   participantes: z.array(z.object({
     nome: z.string().trim().min(2, "Nome obrigatório"),
     cpf: z.string().trim().refine((v) => isValidCPF(v), { message: "CPF inválido" }),
-    data_nascimento: z.string().min(10, "Data obrigatória"),
+    data_nascimento: z.string().min(10, "Data obrigatória").refine((v) => {
+      const age = ageFromDateString(v);
+      return age !== null && age >= 8;
+    }, "Idade mínima permitida é 8 anos."),
     peso: z.coerce.number({ invalid_type_error: "Informe o peso" })
       .min(20, "Peso mínimo 20 kg")
       .max(110, "Por bem-estar dos cavalos, o peso máximo permitido é 110 kg."),
