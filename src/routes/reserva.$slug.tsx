@@ -226,6 +226,7 @@ function ReservaPage() {
         participantes: values.participantes as any,
         adicionais: values.adicionais,
         aceites: values.aceites,
+        lead_id: leadId,
       });
 
       const res = {
