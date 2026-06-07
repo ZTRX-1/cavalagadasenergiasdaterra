@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Users, Upload, Trash2, ExternalLink, FileText, CheckCircle2, Clock } from "lucide-react";
+import { Users, Upload, Trash2, ExternalLink, FileText, CheckCircle2, Clock, Download } from "lucide-react";
 import {
   listParticipantesDaReserva,
   updateParticipante,
@@ -9,10 +9,14 @@ import {
   uploadDocumento,
   deleteDocumento,
   getDocumentoSignedUrl,
+  deleteParticipante,
   type ParticipanteRow,
   type DocumentoRow,
 } from "@/lib/admin/api";
 import { cn } from "@/lib/utils";
+import { exportParticipantesCSV } from "@/lib/admin/export-utils";
+import { getReservaDetalhada } from "@/lib/admin/financeiro-api";
+
 
 const STATUS_OPTS = [
   { id: "pendente", label: "Pendente", tone: "warn" },
@@ -36,13 +40,31 @@ export function ReservaParticipantes({ reservaId }: { reservaId: string }) {
   return (
     <section className="rounded-xl border border-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo-soft)]/20 p-5">
       <header className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2 text-[color:var(--admin-cinza-3)] text-xs uppercase tracking-[0.2em]">
-          <Users className="h-3.5 w-3.5" /> Participantes
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 text-[color:var(--admin-cinza-3)] text-xs uppercase tracking-[0.2em]">
+            <Users className="h-3.5 w-3.5" /> Participantes
+          </div>
+          <button
+            onClick={async () => {
+              try {
+                const res = await getReservaDetalhada(reservaId);
+                await exportParticipantesCSV(reservaId, res?.protocolo || "exp");
+                toast.success("Exportação concluída");
+              } catch (e) {
+                toast.error("Falha ao exportar");
+              }
+            }}
+            className="inline-flex items-center gap-1.5 text-xs text-[color:var(--admin-dourado)] hover:text-white transition-colors"
+            title="Exportar para Excel/CSV"
+          >
+            <Download className="h-3 w-3" /> Exportar
+          </button>
         </div>
         <span className="text-[11px] text-[color:var(--admin-cinza-3)]">
           {(q.data ?? []).length} pessoa{(q.data ?? []).length === 1 ? "" : "s"} nesta reserva
         </span>
       </header>
+
 
       {q.isLoading ? (
         <p className="text-sm text-[color:var(--admin-cinza-3)]">Carregando…</p>
@@ -110,14 +132,35 @@ function ParticipanteCard({
             {STATUS_OPTS.find((s) => s.id === participante.status)?.label ?? participante.status}
           </span>
         </div>
-        <select
-          value={participante.status}
-          onChange={(e) => updMut.mutate({ status: e.target.value })}
-          className="rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao)] px-2 py-1 text-xs"
-        >
-          {STATUS_OPTS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
-        </select>
+        <div className="flex items-center gap-2">
+          <select
+            value={participante.status}
+            onChange={(e) => updMut.mutate({ status: e.target.value })}
+            className="rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao)] px-2 py-1 text-xs"
+          >
+            {STATUS_OPTS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+          </select>
+          <button
+            type="button"
+            onClick={async () => {
+              if (confirm(`Excluir participante ${participante.nome || index}? Esta ação não pode ser desfeita.`)) {
+                try {
+                  await deleteParticipante(participante.id);
+                  toast.success("Participante excluído");
+                  onChanged();
+                } catch (e) {
+                  toast.error("Erro ao excluir");
+                }
+              }
+            }}
+            className="p-1.5 text-[color:var(--admin-cinza-3)] hover:text-rose-400 transition-colors"
+            title="Excluir participante"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        </div>
       </div>
+
 
       <div className="grid sm:grid-cols-3 gap-2">
         <Field label="Nome">
