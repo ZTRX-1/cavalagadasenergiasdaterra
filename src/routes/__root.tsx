@@ -13,6 +13,7 @@ import { CookieConsent } from "@/components/cookie-consent";
 import { VLibras } from "@/components/vlibras";
 import { AccessibilityPanel } from "@/components/accessibility-panel";
 import { AnalyticsTracker } from "@/components/analytics-tracker";
+import { useTracking } from "@/hooks/use-tracking";
 
 import heroOg from "@/assets/founders/ligia-rio.jpg";
 
