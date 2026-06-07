@@ -266,19 +266,8 @@ function LeadEdit() {
             </button>
           </AdminSection>
 
-          <AdminSection titulo="Histórico completo" descricao="Mensagens, ligações, mudanças e ações da IA.">
-            <ol className="space-y-3">
-              {conversas.map((c) => (
-                <li key={c.id} className="relative pl-5">
-                  <span className="absolute left-0 top-1.5 h-2 w-2 rounded-full bg-[color:var(--admin-dourado)]" />
-                  <div className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">{new Date(c.created_at).toLocaleString("pt-BR")}</div>
-                  <div className="mt-0.5 text-sm text-[color:var(--admin-cinza-1)] whitespace-pre-wrap">{c.conteudo ?? "—"}</div>
-                  <div className="mt-1"><StatusBadge status={c.tipo_evento} /></div>
-                </li>
-              ))}
-              {conversas.length === 0 ? <p className="text-sm text-[color:var(--admin-cinza-3)]">Sem interações ainda.</p> : null}
-            </ol>
-          </AdminSection>
+          <HistoricoAbas conversas={conversas} />
+
         </div>
       </div>
 
