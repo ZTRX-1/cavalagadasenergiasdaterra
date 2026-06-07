@@ -68,6 +68,17 @@ type CriarPayload = {
     cancelamento: boolean;
     riscos: boolean;
   };
+  tracking?: {
+    utm_source?: string;
+    utm_medium?: string;
+    utm_campaign?: string;
+    utm_term?: string;
+    utm_content?: string;
+    primeira_pagina_visitada?: string;
+    ultima_pagina_visitada?: string;
+    dispositivo?: string;
+    quantidade_visitas?: number;
+  };
 };
 
 function isUuid(v: unknown): v is string {
