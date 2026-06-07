@@ -431,7 +431,41 @@ export interface LeadRow {
   protocolo: string | null;
   created_at: string;
   updated_at: string;
+  temperatura_lead: LeadTemperaturaId;
+  status_atendimento: LeadStatusAtendimentoId;
+  motivo_perda: LeadMotivoPerdaId | null;
+  motivo_perda_detalhe: string | null;
+  expedicao_id: string | null;
+  data_expedicao_id: string | null;
 }
+
+// ---------- TEMPERATURA / STATUS DE ATENDIMENTO / MOTIVO DE PERDA ----------
+
+export const LEAD_TEMPERATURAS = [
+  { id: "frio", label: "Frio", emoji: "🥶" },
+  { id: "morno", label: "Morno", emoji: "🌤️" },
+  { id: "quente", label: "Quente", emoji: "🔥" },
+  { id: "urgente", label: "Urgente", emoji: "🚨" },
+] as const;
+export type LeadTemperaturaId = (typeof LEAD_TEMPERATURAS)[number]["id"];
+
+export const LEAD_STATUS_ATENDIMENTO = [
+  { id: "ia", label: "Atendimento IA" },
+  { id: "humano", label: "Atendimento Humano" },
+  { id: "transferido", label: "Transferido" },
+  { id: "encerrado", label: "Encerrado" },
+] as const;
+export type LeadStatusAtendimentoId = (typeof LEAD_STATUS_ATENDIMENTO)[number]["id"];
+
+export const LEAD_MOTIVOS_PERDA = [
+  { id: "preco", label: "Preço" },
+  { id: "data", label: "Data" },
+  { id: "sem_disponibilidade", label: "Sem disponibilidade" },
+  { id: "nao_respondeu", label: "Não respondeu" },
+  { id: "concorrente", label: "Concorrente" },
+  { id: "outro", label: "Outro" },
+] as const;
+export type LeadMotivoPerdaId = (typeof LEAD_MOTIVOS_PERDA)[number]["id"];
 
 export async function listLeads(): Promise<LeadRow[]> {
   const { data, error } = await supabase.from("leads").select("*").order("created_at", { ascending: false });
