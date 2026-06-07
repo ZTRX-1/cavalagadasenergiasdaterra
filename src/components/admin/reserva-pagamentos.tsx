@@ -25,9 +25,9 @@ const TIPO_LABEL: Record<string, string> = {
 const FORMA_LABEL: Record<string, string> = {
   pix: "PIX",
   cartao: "Cartão",
+  pix_parcelado: "PIX Parcelado",
   transferencia: "Transferência",
   dinheiro: "Dinheiro",
-  boleto: "Boleto",
 };
 const TONE: Record<string, string> = {
   ok: "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30",
