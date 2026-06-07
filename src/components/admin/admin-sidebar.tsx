@@ -45,7 +45,7 @@ type NavItem = {
 
 const nav: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, modulo: "dashboard", exact: true, group: "operacao" },
-  { to: "/admin/dashboard-aquisicao", label: "Marketing", icon: Sparkles, modulo: "leads", group: "operacao" },
+  { to: "/admin/dashboard-aquisicao", label: "Aquisição", icon: TrendingUp, modulo: "leads", group: "operacao" },
   { to: "/admin/expedicoes", label: "Expedições", icon: Compass, modulo: "expedicoes", group: "operacao" },
   { to: "/admin/leads", label: "Leads", icon: Sparkles, modulo: "leads", group: "operacao" },
   { to: "/admin/reservas", label: "Reservas", icon: BookOpen, modulo: "reservas", group: "operacao" },
