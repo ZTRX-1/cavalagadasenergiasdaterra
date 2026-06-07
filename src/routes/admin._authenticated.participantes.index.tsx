@@ -192,26 +192,35 @@ function ParticipantesPage() {
             />
         </div>
 
-        <select className="admin-input w-auto" value={filtroExp} onChange={(e) => setFiltroExp(e.target.value)}>
-          <option value="">Todas as expedições</option>
-          {expedicoes.map((e) => <option key={e.id} value={e.id}>{e.nome}</option>)}
-        </select>
-        <select className="admin-input w-auto" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
-          <option value="">Status do Participante</option>
-          <option value="pendente">Pendente</option>
-          <option value="confirmado">Confirmado</option>
-          <option value="cancelado">Cancelado</option>
-        </select>
-        <select 
-          className="admin-input w-auto" 
-          value={filtroStatusFinanceiro} 
-          onChange={(e) => setFiltroStatusFinanceiro(e.target.value)}
-        >
-          <option value="">Status Financeiro</option>
-          <option value="aguardando_pagamento">Aguardando Pagamento</option>
-          <option value="parcialmente_pago">Parcialmente Pago</option>
-          <option value="pago_integralmente">Pago Integralmente</option>
-        </select>
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Filtrar Expedição</span>
+          <select className="admin-input w-auto h-[38px]" value={filtroExp} onChange={(e) => setFiltroExp(e.target.value)}>
+            <option value="">Todas as expedições</option>
+            {expedicoes.map((e) => <option key={e.id} value={e.id}>{e.nome}</option>)}
+          </select>
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Status Participante</span>
+          <select className="admin-input w-auto h-[38px]" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
+            <option value="">Todos os status</option>
+            <option value="pendente">Pendente</option>
+            <option value="confirmado">Confirmado</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Situação Financeira</span>
+          <select 
+            className="admin-input w-auto h-[38px]" 
+            value={filtroStatusFinanceiro} 
+            onChange={(e) => setFiltroStatusFinanceiro(e.target.value)}
+          >
+            <option value="">Todas as situações</option>
+            <option value="aguardando_pagamento">Aguardando Pagamento</option>
+            <option value="parcialmente_pago">Parcialmente Pago</option>
+            <option value="pago_integralmente">Pago Integralmente</option>
+          </select>
+        </div>
         <label className="flex items-center gap-2 cursor-pointer bg-[color:var(--admin-carvao-deep)]/40 border border-[color:var(--admin-borda)] rounded-lg px-3 py-1.5 h-[38px]">
           <input 
             type="checkbox" 
