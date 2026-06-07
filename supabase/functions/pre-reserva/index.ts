@@ -144,7 +144,7 @@ async function handleCriar(payload: CriarPayload) {
     observacoes: payload.adicionais.observacoes ?? null,
     restricoes_alimentares: payload.adicionais.restricoes ?? null,
     protocolo: (protoLeadData as string | null) ?? null,
-    // Novos campos herdados do primeiro participante
+    forma_pagamento: payload.adicionais.forma_pagamento,
     peso: firstP?.peso,
     experiencia_equestre: firstP?.experiencia,
     data_nascimento: firstP?.idade ? new Date(new Date().getFullYear() - firstP.idade, 0, 1).toISOString().split('T')[0] : null,
