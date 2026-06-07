@@ -97,7 +97,7 @@ function LeadEdit() {
             <CheckCircle2 className="h-5 w-5 text-emerald-300" />
             <div>
               <div className="text-sm font-medium text-[color:var(--admin-cinza-1)]">
-                Reserva já criada
+                Pré-reserva vinculada
               </div>
               <div className="text-[11px] text-[color:var(--admin-cinza-3)]">
                 Protocolo {reservaExistente.protocolo} — clique pra abrir a ficha completa
