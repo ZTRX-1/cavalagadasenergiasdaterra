@@ -41,6 +41,7 @@ export type PreReservaInput = {
     cancelamento: boolean;
     riscos: boolean;
   };
+  tracking?: TrackingData;
 };
 
 export type PreReservaResposta = {
