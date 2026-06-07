@@ -8,7 +8,6 @@
  * Compatível com chamadas externas (N8N, WhatsApp API, etc).
  */
 import { createFileRoute } from "@tanstack/react-router";
-import "@tanstack/react-start";
 import { z } from "zod";
 
 // ---------- Schemas ----------
@@ -314,24 +313,13 @@ async function handlePOST(request: Request): Promise<Response> {
 
 // ---------- Route ----------
 
-// `server` é registrado via module-augmentation em @tanstack/start-client-core,
-// mas nem sempre é resolvido pelo TS — cast pontual mantém type-safety nos handlers.
+// `server` is used in TanStack Start for API routes. 
+// However, since this is a client-side Vite project, we'll keep the handler 
+// definitions but note that standard TanStack Router (client-only) 
+// does not execute these handlers. They are preserved for future 
+// integration with a backend/edge function.
 const routeOptions = {
-  server: {
-    handlers: {
-      OPTIONS: async () =>
-        new Response(null, {
-          status: 204,
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type, Authorization",
-          },
-        }),
-      GET: async ({ request }: { request: Request }) => handleGET(request),
-      POST: async ({ request }: { request: Request }) => handlePOST(request),
-    },
-  },
-} as never;
+  component: () => null,
+};
 
 export const Route = createFileRoute("/api/public/ia-barbara/leads")(routeOptions);
