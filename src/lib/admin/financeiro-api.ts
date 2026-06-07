@@ -238,9 +238,10 @@ export async function dreExpedicoes(range: { from: string; to: string }): Promis
     return map.get(key)!;
   };
   for (const r of reservasRes.data ?? []) {
-    if (r.status_pagamento !== "confirmado") continue;
+    const isConfirmado = r.status_pagamento === "confirmado" || r.status_operacional === "reserva_confirmada";
+    if (!isConfirmado) continue;
     const row = get(r.expedicao_id, r.expedicao_nome);
-    row.receita += Number(r.valor_pago ?? 0);
+    row.receita += Number(isConfirmado && r.status_operacional === "reserva_confirmada" ? (r.valor_total ?? r.valor_pago ?? 0) : (r.valor_pago ?? 0));
   }
   for (const d of despesasRes.data ?? []) {
     const row = get(d.expedicao_id);
