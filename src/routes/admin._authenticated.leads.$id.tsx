@@ -79,6 +79,7 @@ function LeadEdit() {
         title={form.nome ?? ""}
         actions={
           <div className="flex items-center gap-2 flex-wrap">
+            <TemperaturaBadge value={form.temperatura_lead ?? "frio"} />
             <button className="admin-btn-ghost" onClick={() => nav({ to: "/admin/leads" })}><ArrowLeft className="h-4 w-4" /> Voltar</button>
             <button className="admin-btn-primary" onClick={() => saveMut.mutate(form)}><Save className="h-4 w-4" /> Salvar</button>
           </div>
