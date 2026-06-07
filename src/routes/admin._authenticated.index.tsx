@@ -101,8 +101,13 @@ async function fetchDashboard(range: { from: string; to: string }) {
     0,
   );
   const receitaRecebida = (reservasFinanceiro.data ?? []).reduce(
-    (s: number, r: { valor_pago?: number | null; status_pagamento?: string }) => 
-      s + (r.status_pagamento === "confirmado" ? Number(r.valor_pago ?? 0) : 0),
+    (s: number, r: { valor_total?: number | null; valor_pago?: number | null; status_pagamento?: string; status_operacional?: string }) => {
+      // Se a reserva está confirmada operacionalmente, o financeiro deve contar como recebido (regra de negócio solicitada)
+      if (r.status_operacional === "reserva_confirmada") {
+        return s + Number(r.valor_total ?? 0);
+      }
+      return s + (r.status_pagamento === "confirmado" ? Number(r.valor_pago ?? 0) : 0);
+    },
     0,
   );
   const receitaPendente = receitaPrevista - receitaRecebida;
