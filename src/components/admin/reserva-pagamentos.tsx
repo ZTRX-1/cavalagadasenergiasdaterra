@@ -142,7 +142,12 @@ export function ReservaPagamentos({
           <span>Previsto: <b className="text-amber-300">{brl(previsto)}</b></span>
           <button
             type="button"
-            onClick={() => setOpen(!open)}
+            onClick={() => {
+              if (!open && valorTotal && !form.valor) {
+                setForm(prev => ({ ...prev, valor: String(valorTotal).replace(".", ",") }));
+              }
+              setOpen(!open);
+            }}
             className="inline-flex items-center gap-1 text-xs text-[color:var(--admin-dourado)] hover:underline"
           >
             <Plus className="h-3 w-3" /> Adicionar pagamento
