@@ -24,9 +24,12 @@ export type PreReservaInput = {
   };
   participantes: Array<{
     nome: string;
-    idade: number;
+    cpf: string;
+    data_nascimento: string;
     peso: number;
     experiencia: "nenhuma" | "iniciante" | "intermediario" | "avancado";
+    telefone?: string;
+    email?: string;
   }>;
   adicionais: {
     tipo_grupo: string;

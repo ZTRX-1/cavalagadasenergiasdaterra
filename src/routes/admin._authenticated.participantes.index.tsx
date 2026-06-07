@@ -405,87 +405,115 @@ function VistaAgrupada({
               </div>
             </header>
             
-            <div className="admin-table-wrap p-0">
-              <table className="w-full text-sm min-w-[760px]">
-                <thead className="bg-[color:var(--admin-petroleo-soft)]/20 text-left text-[10px] uppercase tracking-[0.16em] text-[color:var(--admin-cinza-3)]">
-                  <tr>
-                    <th className="px-5 py-3.5 font-semibold">Participante</th>
-                    <th className="px-3 py-3.5 font-semibold">Idade / Peso</th>
-                    <th className="px-3 py-3.5 font-semibold">Experiência</th>
-                    <th className="px-3 py-3.5 font-semibold text-center">Docs</th>
-                    <th className="px-3 py-3.5 font-semibold">Status</th>
-                    <th className="px-3 py-3.5 font-semibold">Origem (Reserva)</th>
-                    <th className="px-5 py-3.5 font-semibold text-right">Ações</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[color:var(--admin-borda)]/50">
-                  {g.participantes.map((p) => {
-                    const res = reservas.find(r => r.id === p.reserva_id);
-                    return (
-                      <tr key={p.id} className="group hover:bg-[color:var(--admin-petroleo)]/10 transition-colors">
-                        <td className="px-5 py-4">
-                          <Link
-                            to="/admin/participantes/$id"
-                            params={{ id: p.id }}
-                            className="font-semibold text-[color:var(--admin-cinza-1)] group-hover:text-[color:var(--admin-dourado)] transition-colors text-left block"
-                          >
-                            {p.nome}
-                          </Link>
-                          <div className="text-[11px] text-[color:var(--admin-cinza-3)] mt-0.5">{p.telefone ?? p.email ?? "—"}</div>
-                        </td>
-                        <td className="px-3 py-4">
-                          <div className="text-[color:var(--admin-cinza-2)] font-medium">{calcIdade(p.data_nascimento)}</div>
-                          <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{p.peso ? `${p.peso} kg` : "—"}</div>
-                        </td>
-                        <td className="px-3 py-4">
-                          <span className={cn(
-                            "text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full border",
-                            p.experiencia_equestre === 'avancado' ? "border-emerald-500/30 text-emerald-300 bg-emerald-500/5" :
-                            p.experiencia_equestre === 'intermediario' ? "border-sky-500/30 text-sky-300 bg-sky-500/5" :
-                            "border-[color:var(--admin-borda)] text-[color:var(--admin-cinza-3)]"
-                          )}>
-                            {p.experiencia_equestre ?? "—"}
-                          </span>
-                        </td>
-                        <td className="px-3 py-4 text-center">
-                          <div className="flex justify-center">
-                            {p.documento ? (
-                              <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" title="Documento informado" />
-                            ) : (
-                              <div className="h-2 w-2 rounded-full bg-rose-500/30 border border-rose-500/50" title="Documento pendente" />
+            <div className="p-5 space-y-8">
+              {Array.from(new Set(g.participantes.map(p => p.reserva_id || 'avulso'))).map((resId) => {
+                const parts = g.participantes.filter(p => (p.reserva_id || 'avulso') === resId);
+                const res = reservas.find(r => r.id === resId);
+                
+                return (
+                  <div key={resId} className="space-y-3">
+                    {/* Header da Reserva */}
+                    <div className="flex items-center justify-between bg-[color:var(--admin-carvao-deep)]/30 border border-[color:var(--admin-borda)]/40 rounded-lg px-4 py-2.5">
+                      <div className="flex items-center gap-4">
+                        <div className="flex flex-col">
+                          <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">Responsável / Reserva</span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-[color:var(--admin-cinza-1)]">
+                              {res ? res.cliente_nome : "Sem reserva vinculada"}
+                            </span>
+                            {res && (
+                              <span className="font-mono text-[10px] px-1.5 py-0.5 bg-[color:var(--admin-dourado)]/10 text-[color:var(--admin-dourado)] rounded border border-[color:var(--admin-dourado)]/20">
+                                {res.protocolo}
+                              </span>
                             )}
                           </div>
-                        </td>
-                        <td className="px-3 py-4">
-                          <StatusBadge status={p.status} />
-                        </td>
-                        <td className="px-3 py-4">
-                          {res ? (
-                            <Link
-                              to="/admin/reservas/$id"
-                              params={{ id: res.id }}
-                              className="group/res block"
-                            >
-                              <div className="text-[11px] text-[color:var(--admin-dourado)] font-mono font-medium group-hover/res:underline">{res.protocolo}</div>
-                              <div className="text-[10px] text-[color:var(--admin-cinza-3)] truncate max-w-[140px] group-hover/res:text-[color:var(--admin-cinza-2)]">
-                                {res.cliente_nome}
-                              </div>
-                            </Link>
-                          ) : (
-                            <span className="text-[11px] text-[color:var(--admin-cinza-3)]">—</span>
-                          )}
-                        </td>
-                        <td className="px-5 py-4 text-right">
-                          <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button onClick={() => onEdit(p)} className="admin-btn-ghost p-1.5" title="Editar"><Users className="h-3.5 w-3.5" /></button>
-                            <button onClick={() => onDelete(p)} className="admin-btn-ghost p-1.5 hover:!text-rose-300" title="Excluir"><Trash2 className="h-3.5 w-3.5" /></button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-6">
+                        <div className="text-right">
+                          <span className="block text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">Receita</span>
+                          <span className="font-mono text-sm text-[color:var(--admin-cinza-2)] font-semibold">
+                            {res ? fmtBRL(Number(res.valor_total || 0)) : "—"}
+                          </span>
+                        </div>
+                        <div className="text-right">
+                          <span className="block text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">Financeiro</span>
+                          <StatusBadge status={res?.status_financeiro || '—'} />
+                        </div>
+                        <div className="text-right">
+                          <span className="block text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">Operação</span>
+                          <StatusBadge status={res?.status_operacional || '—'} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Tabela de Participantes da Reserva */}
+                    <div className="admin-table-wrap !border-none !shadow-none p-0 overflow-visible">
+                      <table className="w-full text-sm">
+                        <thead className="bg-[color:var(--admin-petroleo-soft)]/10 text-left text-[9px] uppercase tracking-[0.16em] text-[color:var(--admin-cinza-3)]">
+                          <tr>
+                            <th className="px-4 py-2 font-semibold w-1/3">Participante</th>
+                            <th className="px-3 py-2 font-semibold">Idade / Peso</th>
+                            <th className="px-3 py-2 font-semibold">Experiência</th>
+                            <th className="px-3 py-2 font-semibold text-center">CPF</th>
+                            <th className="px-3 py-2 font-semibold">Status</th>
+                            <th className="px-4 py-2 font-semibold text-right">Ações</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[color:var(--admin-borda)]/30">
+                          {parts.map((p) => (
+                            <tr key={p.id} className="group/row hover:bg-[color:var(--admin-petroleo)]/5 transition-colors">
+                              <td className="px-4 py-3">
+                                <Link
+                                  to="/admin/participantes/$id"
+                                  params={{ id: p.id }}
+                                  className="font-medium text-[color:var(--admin-cinza-1)] group-hover/row:text-[color:var(--admin-dourado)] transition-colors text-left block"
+                                >
+                                  {p.nome}
+                                </Link>
+                                <div className="text-[10px] text-[color:var(--admin-cinza-3)] mt-0.5">{p.telefone || p.email || "—"}</div>
+                              </td>
+                              <td className="px-3 py-3">
+                                <div className="text-[12px] text-[color:var(--admin-cinza-2)]">{calcIdade(p.data_nascimento)}</div>
+                                <div className="text-[10px] text-[color:var(--admin-cinza-3)]">{p.peso ? `${p.peso} kg` : "—"}</div>
+                              </td>
+                              <td className="px-3 py-3">
+                                <span className={cn(
+                                  "text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full border",
+                                  p.experiencia_equestre === 'avancado' ? "border-emerald-500/30 text-emerald-300 bg-emerald-500/5" :
+                                  p.experiencia_equestre === 'intermediario' ? "border-sky-500/30 text-sky-300 bg-sky-500/5" :
+                                  "border-[color:var(--admin-borda)] text-[color:var(--admin-cinza-3)]"
+                                )}>
+                                  {p.experiencia_equestre || "—"}
+                                </span>
+                              </td>
+                              <td className="px-3 py-3 text-center">
+                                <div className="flex flex-col items-center justify-center">
+                                  {p.cpf ? (
+                                    <span className="text-[10px] font-mono text-[color:var(--admin-cinza-2)]">{p.cpf}</span>
+                                  ) : (
+                                    <AlertCircle className="h-3 w-3 text-rose-500" />
+                                  )}
+                                </div>
+                              </td>
+                              <td className="px-3 py-3">
+                                <StatusBadge status={p.status} />
+                              </td>
+                              <td className="px-4 py-3 text-right">
+                                <div className="flex items-center justify-end gap-1 opacity-0 group-hover/row:opacity-100 transition-opacity">
+                                  <button onClick={() => onEdit(p)} className="admin-btn-ghost p-1.5" title="Editar"><Users className="h-3.5 w-3.5" /></button>
+                                  <button onClick={() => onDelete(p)} className="admin-btn-ghost p-1.5 hover:!text-rose-300" title="Excluir"><Trash2 className="h-3.5 w-3.5" /></button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
             
             <footer className="bg-[color:var(--admin-petroleo-soft)]/10 px-5 py-3 border-t border-[color:var(--admin-borda)]/30">

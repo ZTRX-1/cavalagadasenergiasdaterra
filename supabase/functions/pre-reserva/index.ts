@@ -33,9 +33,13 @@ const admin = createClient(SUPABASE_URL, SERVICE_ROLE, {
 
 type Participante = {
   nome: string;
-  idade: number;
+  idade?: number;
+  data_nascimento: string;
+  cpf: string;
   peso: number;
   experiencia: "nenhuma" | "iniciante" | "intermediario" | "avancado";
+  telefone?: string;
+  email?: string;
 };
 
 type CriarPayload = {
@@ -94,7 +98,8 @@ function validarCriar(b: any): { ok: true; data: CriarPayload } | { ok: false; e
   }
   for (const p of b.participantes) {
     if (!p || typeof p.nome !== "string" || p.nome.trim().length < 2) return { ok: false, error: "participante.nome inválido." };
-    if (typeof p.idade !== "number" || p.idade < 1 || p.idade > 110) return { ok: false, error: "participante.idade inválida." };
+    if (typeof p.cpf !== "string" || p.cpf.trim().length < 11) return { ok: false, error: "participante.cpf obrigatório." };
+    if (typeof p.data_nascimento !== "string" || p.data_nascimento.length < 10) return { ok: false, error: "participante.data_nascimento obrigatória." };
     if (typeof p.peso !== "number" || p.peso < 20 || p.peso > 110) return { ok: false, error: "participante.peso inválido." };
     if (!["nenhuma", "iniciante", "intermediario", "avancado"].includes(p.experiencia)) return { ok: false, error: "participante.experiencia inválida." };
   }
@@ -147,7 +152,7 @@ async function handleCriar(payload: CriarPayload) {
     forma_pagamento: payload.adicionais.forma_pagamento,
     peso: firstP?.peso,
     experiencia_equestre: firstP?.experiencia,
-    data_nascimento: firstP?.idade ? new Date(new Date().getFullYear() - firstP.idade, 0, 1).toISOString().split('T')[0] : null,
+    data_nascimento: firstP?.data_nascimento || null,
   };
 
   const { data: leadRow, error: leadErr } = await admin
