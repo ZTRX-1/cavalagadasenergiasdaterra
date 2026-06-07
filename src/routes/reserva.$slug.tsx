@@ -79,6 +79,7 @@ function ReservaPage() {
   const { data } = useSuspenseQuery(qo(slug));
 
   const [step, setStep] = useState(0);
+  const { getTrackingData } = useTracking();
   const [submitted, setSubmitted] = useState<null | { protocolo: string; expedicao_nome: string; quantidade_participantes: number; nome_responsavel: string }>(null);
   const [submitting, setSubmitting] = useState(false);
 
