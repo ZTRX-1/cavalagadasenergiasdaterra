@@ -141,14 +141,37 @@ function LeadEdit() {
                 </select>
               </AdminField>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <AdminField label="Lead Score (0 a 100, gerado pela IA no futuro)">
-                <input type="number" min={0} max={100} className="admin-input" value={form.lead_score ?? 0} onChange={(e) => setForm({ ...form, lead_score: Math.max(0, Math.min(100, Number(e.target.value))) })} />
+            <div className="grid grid-cols-3 gap-3">
+              <AdminField label="Temperatura">
+                <select className="admin-input" value={form.temperatura_lead ?? "frio"} onChange={(e) => setForm({ ...form, temperatura_lead: e.target.value as LeadTemperaturaId })}>
+                  {LEAD_TEMPERATURAS.map((t) => <option key={t.id} value={t.id}>{t.emoji} {t.label}</option>)}
+                </select>
+              </AdminField>
+              <AdminField label="Status de atendimento">
+                <select className="admin-input" value={form.status_atendimento ?? "ia"} onChange={(e) => setForm({ ...form, status_atendimento: e.target.value as LeadStatusAtendimentoId })}>
+                  {LEAD_STATUS_ATENDIMENTO.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
+                </select>
               </AdminField>
               <AdminField label="Próxima ação">
-                <input className="admin-input" placeholder="Ex: Enviar contrato, Confirmar vaga, Ligar amanhã…" value={form.proxima_acao ?? ""} onChange={(e) => setForm({ ...form, proxima_acao: e.target.value })} />
+                <input className="admin-input" placeholder="Ex: Follow-up 24h, Enviar contrato…" value={form.proxima_acao ?? ""} onChange={(e) => setForm({ ...form, proxima_acao: e.target.value })} />
               </AdminField>
             </div>
+            <div className="grid grid-cols-2 gap-3">
+              <AdminField label="Lead Score (0 a 100, gerado pela IA)">
+                <input type="number" min={0} max={100} className="admin-input" value={form.lead_score ?? 0} onChange={(e) => setForm({ ...form, lead_score: Math.max(0, Math.min(100, Number(e.target.value))) })} />
+              </AdminField>
+              <AdminField label={form.etapa_atendimento === "perdido" ? "Motivo da perda" : "Motivo da perda (se aplicável)"}>
+                <select className="admin-input" value={form.motivo_perda ?? ""} onChange={(e) => setForm({ ...form, motivo_perda: (e.target.value || null) as LeadMotivoPerdaId | null })}>
+                  <option value="">—</option>
+                  {LEAD_MOTIVOS_PERDA.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
+                </select>
+              </AdminField>
+            </div>
+            {form.motivo_perda ? (
+              <AdminField label="Detalhe da perda">
+                <input className="admin-input" value={form.motivo_perda_detalhe ?? ""} onChange={(e) => setForm({ ...form, motivo_perda_detalhe: e.target.value })} />
+              </AdminField>
+            ) : null}
             <AdminField label="Resumo do atendimento (equipe)">
               <textarea className="admin-input min-h-[80px]" value={form.resumo_atendimento ?? ""} onChange={(e) => setForm({ ...form, resumo_atendimento: e.target.value })} />
             </AdminField>
