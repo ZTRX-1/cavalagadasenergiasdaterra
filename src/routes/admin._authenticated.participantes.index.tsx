@@ -130,7 +130,7 @@ function ParticipantesPage() {
       }
       if (apenasConfirmados) {
         const res = reservas.find(r => r.id === p.reserva_id);
-        if (!res || res.status_operacional !== "reserva_confirmada") return false;
+        if (!res || !["reserva_confirmada", "participante_confirmado"].includes(res.status_operacional)) return false;
       }
       if (q && !(p.nome ?? "").toLowerCase().includes(q) && !(p.email ?? "").toLowerCase().includes(q) && !(p.cpf ?? "").toLowerCase().includes(q)) return false;
       return true;
@@ -181,11 +181,11 @@ function ParticipantesPage() {
         <strong className="text-[color:var(--admin-cinza-1)]">Quem vai pra cada expedição.</strong> A visão <em>Por expedição</em> mostra vagas, confirmados, pendentes e receita prevista/recebida de cada data. Participantes nascem automaticamente quando o lead vira reserva — você só precisa completar os dados (peso, CPF, restrições).
       </AdminPageIntro>
 
-      <div className="mb-4 flex flex-wrap items-center gap-2">
+      <div className="mb-4 flex flex-wrap items-center gap-4">
         <div className="relative group">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-[color:var(--admin-cinza-3)] group-focus-within:text-[color:var(--admin-dourado)] transition-colors" />
           <input
-            className="admin-input pl-7 w-[160px] sm:w-[280px] text-[12px] h-[38px] placeholder:text-[color:var(--admin-cinza-3)] placeholder:text-[10px]"
+            className="admin-input pl-7 w-[160px] sm:w-[280px] text-[12px] h-[38px] placeholder:text-[color:var(--admin-cinza-3)] placeholder:text-[11px]"
             placeholder="Nome, E-mail ou CPF"
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
@@ -194,14 +194,14 @@ function ParticipantesPage() {
 
         <div className="flex flex-col gap-1">
           <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Filtrar Expedição</span>
-          <select className="admin-input w-auto h-[38px]" value={filtroExp} onChange={(e) => setFiltroExp(e.target.value)}>
+          <select className="admin-input min-w-[180px] h-[38px] px-2 text-[12px]" value={filtroExp} onChange={(e) => setFiltroExp(e.target.value)}>
             <option value="">Todas as expedições</option>
             {expedicoes.map((e) => <option key={e.id} value={e.id}>{e.nome}</option>)}
           </select>
         </div>
         <div className="flex flex-col gap-1">
           <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Status Participante</span>
-          <select className="admin-input w-auto h-[38px]" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
+          <select className="admin-input min-w-[140px] h-[38px] px-2 text-[12px]" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
             <option value="">Todos os status</option>
             <option value="pendente">Pendente</option>
             <option value="confirmado">Confirmado</option>
@@ -211,7 +211,7 @@ function ParticipantesPage() {
         <div className="flex flex-col gap-1">
           <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Situação Financeira</span>
           <select 
-            className="admin-input w-auto h-[38px]" 
+            className="admin-input min-w-[160px] h-[38px] px-2 text-[12px]" 
             value={filtroStatusFinanceiro} 
             onChange={(e) => setFiltroStatusFinanceiro(e.target.value)}
           >
@@ -347,7 +347,12 @@ function VistaAgrupada({
         const vagasTotal = data?.vagas_total ?? g.participantes.length;
         const vagasDisp = data?.vagas_disponiveis ?? 0;
         const receitaPrevista = reservasGrupo.reduce((s, r) => s + Number(r.valor_total ?? 0), 0);
-        const receitaRecebida = reservasGrupo.reduce((s, r) => s + Number(r.valor_pago ?? 0), 0);
+        const receitaRecebida = reservasGrupo.reduce((s, r) => {
+          if (["reserva_confirmada", "participante_confirmado"].includes(r.status_operacional)) {
+            return s + Number(r.valor_total ?? 0);
+          }
+          return s + Number(r.valor_pago ?? 0);
+        }, 0);
         const aReceber = receitaPrevista - receitaRecebida;
 
         return (

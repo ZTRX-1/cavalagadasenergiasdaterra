@@ -81,7 +81,7 @@ async function fetchDashboard(range: { from: string; to: string }) {
     supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("etapa_atendimento", ["qualificado", "pronto_reserva", "convertido"]),
     supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).eq("etapa_atendimento", "convertido"),
     supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
-    supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).eq("status_operacional", "reserva_confirmada"),
+    supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("status_operacional", ["reserva_confirmada", "participante_confirmado"]),
     supabase.from("reservas").select("valor_total, valor_pago, saldo_restante, status_financeiro, status_pagamento, status_operacional, created_at").gte("created_at", range.from).lte("created_at", range.to),
     supabase.from("participantes").select("id", { count: "exact", head: true }).eq("status", "confirmado"),
     supabase.from("expedicoes").select("id", { count: "exact", head: true }).eq("ativo", true).eq("status", "publicado"),
@@ -103,10 +103,11 @@ async function fetchDashboard(range: { from: string; to: string }) {
   const receitaRecebida = (reservasFinanceiro.data ?? []).reduce(
     (s: number, r: { valor_total?: number | null; valor_pago?: number | null; status_pagamento?: string; status_operacional?: string }) => {
       // Se a reserva está confirmada operacionalmente, o financeiro deve contar como recebido (regra de negócio solicitada)
-      if (r.status_operacional === "reserva_confirmada") {
+      if (r.status_operacional === "reserva_confirmada" || r.status_operacional === "participante_confirmado") {
         return s + Number(r.valor_total ?? 0);
       }
       return s + (r.status_pagamento === "confirmado" ? Number(r.valor_pago ?? 0) : 0);
+
     },
     0,
   );
