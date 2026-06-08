@@ -3,8 +3,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Save, Upload, Shield, KeyRound, Clock, CalendarDays, Eye, EyeOff, User as UserIcon } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
-import { getMeuPerfil, atualizarMeuPerfil, uploadAvatar, alterarMinhaSenha, CARGOS_EQUIPE } from "@/lib/admin/api";
+import { getMeuPerfil, atualizarMeuPerfil, uploadAvatar, CARGOS_EQUIPE } from "@/lib/admin/api";
 
 export const Route = createFileRoute("/admin/_authenticated/perfil")({
   component: PerfilPage,
