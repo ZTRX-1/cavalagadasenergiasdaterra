@@ -69,14 +69,22 @@ export function useMyPermissions() {
 
 const CEO_PREVIEW_MODULES: AdminModule[] = ["dashboard", "expedicoes"];
 
+// CEO: vê e edita Dashboard, Expedições e Leads.
+// Demais módulos operacionais/governança aparecem no menu mas levam à tela "Próxima etapa".
+const CEO_LIBERADO: AdminModule[] = ["dashboard", "expedicoes", "leads"];
+const CEO_LOCKED: AdminModule[] = [
+  "reservas",
+  "participantes",
+  "financeiro",
+  "midia",
+  "documentos",
+  "ia",
+  "automacoes",
+  "integracoes",
+];
+
 /**
  * Decide se o usuário corrente pode visualizar, editar ou se o módulo aparece bloqueado.
- * Regras:
- *  - desenvolvedor: tudo, e não pode ser removido por outros (protegido no banco)
- *  - superadmin / admin / ceo: tudo
- *  - ceo_preview: vê e edita Dashboard e Expedições. Demais módulos visíveis porém bloqueados.
- *  - socia: vê tudo, mas só edita "expedicoes"
- *  - operador: usa user_module_permissions (default = só vê dashboard)
  */
 export function useCan(modulo: AdminModule) {
   const { data, isLoading } = useMyPermissions();
@@ -90,13 +98,17 @@ export function useCan(modulo: AdminModule) {
     return { canView: true, canEdit: true, locked: false, role, isLoading: false };
   }
 
-  // CEO: módulos operacionais completos; sem acesso a Usuários/Cargos/Integrações/Configurações
+  // CEO: visão executiva — Dashboard, Expedições e Leads liberados;
+  // operação/governança sensíveis aparecem como "Próxima etapa";
+  // administração total (Usuários, Cargos, Configurações, Histórico) fica oculta.
   if (role === "ceo") {
-    const bloqueado: AdminModule[] = ["usuarios", "cargos", "integracoes", "configuracoes"];
-    if (bloqueado.includes(modulo)) {
-      return { canView: false, canEdit: false, locked: false, role, isLoading: false };
+    if (CEO_LIBERADO.includes(modulo)) {
+      return { canView: true, canEdit: true, locked: false, role, isLoading: false };
     }
-    return { canView: true, canEdit: true, locked: false, role, isLoading: false };
+    if (CEO_LOCKED.includes(modulo)) {
+      return { canView: true, canEdit: false, locked: true, role, isLoading: false };
+    }
+    return { canView: false, canEdit: false, locked: false, role, isLoading: false };
   }
 
   if (role === "ceo_preview") {

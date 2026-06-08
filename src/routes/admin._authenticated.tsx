@@ -1,8 +1,10 @@
-import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { Outlet, createFileRoute, redirect, useRouterState } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminSidebar, AdminSidebarDrawer } from "@/components/admin/admin-sidebar";
 import { AdminTopbar } from "@/components/admin/admin-topbar";
+import { RestrictedAccess } from "@/components/admin/restricted-access";
+import { useCan, type AdminModule } from "@/hooks/use-permissions";
 
 export const Route = createFileRoute("/admin/_authenticated")({
   head: () => ({
@@ -63,6 +65,34 @@ function AdminLayout() {
     };
   }, []);
 
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const currentModule = useMemo<AdminModule | null>(() => {
+    const map: Array<{ prefix: string; modulo: AdminModule; exact?: boolean }> = [
+      { prefix: "/admin", modulo: "dashboard", exact: true },
+      { prefix: "/admin/expedicoes", modulo: "expedicoes" },
+      { prefix: "/admin/leads", modulo: "leads" },
+      { prefix: "/admin/reservas", modulo: "reservas" },
+      { prefix: "/admin/participantes", modulo: "participantes" },
+      { prefix: "/admin/financeiro", modulo: "financeiro" },
+      { prefix: "/admin/midia", modulo: "midia" },
+      { prefix: "/admin/documentos", modulo: "documentos" },
+      { prefix: "/admin/ia", modulo: "ia" },
+      { prefix: "/admin/automacoes", modulo: "automacoes" },
+      { prefix: "/admin/integracoes", modulo: "integracoes" },
+      { prefix: "/admin/usuarios", modulo: "usuarios" },
+      { prefix: "/admin/cargos", modulo: "cargos" },
+      { prefix: "/admin/configuracoes", modulo: "configuracoes" },
+      { prefix: "/admin/historico", modulo: "historico" },
+    ];
+    const match = map.find((m) =>
+      m.exact ? pathname === m.prefix : pathname === m.prefix || pathname.startsWith(`${m.prefix}/`),
+    );
+    return match?.modulo ?? null;
+  }, [pathname]);
+
+  const { locked } = useCan((currentModule ?? "dashboard") as AdminModule);
+  const showRestricted = !!currentModule && locked;
+
   return (
     <div className="admin-surface flex min-h-screen w-full overflow-x-hidden">
       <AdminSidebar user={user} />
@@ -71,7 +101,7 @@ function AdminLayout() {
         <AdminTopbar onOpenMenu={() => setMenuOpen(true)} />
         <main className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-6 md:px-8 lg:px-10 md:py-8">
           <div className="mx-auto w-full max-w-[1400px] min-w-0">
-            <Outlet />
+            {showRestricted ? <RestrictedAccess modulo={currentModule!} /> : <Outlet />}
           </div>
         </main>
       </div>
