@@ -159,16 +159,27 @@ function UsuariosPage() {
                       <div className="flex justify-end gap-1.5">
                         {canEdit && (
                           <>
-                            <button className="admin-btn-ghost" onClick={() => setEditAlvo(u)} title="Editar papel/cargo">
+                            <button 
+                              className="admin-btn-ghost" 
+                              onClick={() => setEditAlvo(u)} 
+                              title="Editar papel/cargo"
+                              disabled={u.user_id === "20b7839f-b3c3-494c-90df-515ba0a0de4f"}
+                            >
                               <Shield className="h-3.5 w-3.5" />
                             </button>
-                            <button className="admin-btn-ghost" onClick={() => setResetAlvo(u)} title="Redefinir senha">
+                            <button 
+                              className="admin-btn-ghost" 
+                              onClick={() => setResetAlvo(u)} 
+                              title="Redefinir senha"
+                              disabled={u.user_id === "20b7839f-b3c3-494c-90df-515ba0a0de4f"}
+                            >
                               <KeyRound className="h-3.5 w-3.5" />
                             </button>
                             <button
                               className="admin-btn-ghost"
                               onClick={() => setToggleAlvo(u)}
                               title={u.ativo ? "Desativar" : "Ativar"}
+                              disabled={u.user_id === "20b7839f-b3c3-494c-90df-515ba0a0de4f"}
                             >
                               <Power className="h-3.5 w-3.5" />
                             </button>

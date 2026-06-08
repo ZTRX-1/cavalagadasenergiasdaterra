@@ -72,7 +72,7 @@ const CEO_PREVIEW_MODULES: AdminModule[] = ["dashboard", "expedicoes"];
 // CEO: vê e edita Dashboard, Expedições e Leads.
 // Demais módulos operacionais/governança aparecem no menu mas levam à tela "Próxima etapa".
 const CEO_LIBERADO: AdminModule[] = ["dashboard", "expedicoes", "leads"];
-const CEO_LOCKED: AdminModule[] = [
+const CEO_BLUR: AdminModule[] = [
   "reservas",
   "participantes",
   "financeiro",
@@ -80,7 +80,7 @@ const CEO_LOCKED: AdminModule[] = [
   "documentos",
   "ia",
   "automacoes",
-  "integracoes",
+  "equipe",
 ];
 
 /**
@@ -101,14 +101,18 @@ export function useCan(modulo: AdminModule) {
   }
 
   // CEO: visão executiva — Dashboard, Expedições e Leads liberados;
-  // operação/governança sensíveis aparecem como "Próxima etapa";
-  // administração total (Usuários, Cargos, Configurações, Histórico) fica oculta.
+  // operação/governança sensíveis aparecem como "Próxima etapa" (blur);
+  // administração total (Cargos, Configurações, Histórico) fica oculta.
   if (role === "ceo") {
     if (CEO_LIBERADO.includes(modulo)) {
       return { canView: true, canEdit: true, locked: false, role, isLoading: false };
     }
-    if (CEO_LOCKED.includes(modulo)) {
+    if (CEO_BLUR.includes(modulo)) {
       return { canView: true, canEdit: false, locked: true, role, isLoading: false };
+    }
+    // Adição: permitir visualizar usuários para adicionar novos, mas com restrições de edição
+    if (modulo === "usuarios") {
+      return { canView: true, canEdit: true, locked: false, role, isLoading: false };
     }
     return { canView: false, canEdit: false, locked: false, role, isLoading: false };
   }

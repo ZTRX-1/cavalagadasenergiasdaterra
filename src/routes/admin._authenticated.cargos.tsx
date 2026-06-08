@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ShieldCheck, Plus, Copy, Power, Lock, Trash2 } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
@@ -23,6 +24,22 @@ import {
 } from "@/lib/admin/cargos-api";
 
 export const Route = createFileRoute("/admin/_authenticated/cargos")({
+  beforeLoad: async () => {
+     // Apenas Master/Developer podem acessar Cargos agora
+     const { data: userData } = await supabase.auth.getUser();
+     const userId = userData.user?.id;
+     if (!userId) throw redirect({ to: "/admin/login" });
+
+     const isMaster = userId === "20b7839f-b3c3-494c-90df-515ba0a0de4f";
+     
+     // Se não for master, verificamos o role
+     if (!isMaster) {
+       const { data: roleRow } = await supabase.rpc("get_primary_role", { _user_id: userId });
+       if (roleRow !== "desenvolvedor" && roleRow !== "superadmin") {
+         throw redirect({ to: "/admin" });
+       }
+     }
+  },
   component: CargosPage,
 });
 
