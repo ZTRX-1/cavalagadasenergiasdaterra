@@ -2,8 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Save, Upload, Shield, KeyRound, Clock, CalendarDays, Eye, EyeOff, User as UserIcon, Terminal, Code2, Sparkles } from "lucide-react";
+import { Save, Upload, Shield, KeyRound, Clock, CalendarDays, Eye, EyeOff, User as UserIcon, Terminal, Code2, Sparkles, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { getMeuPerfil, atualizarMeuPerfil, uploadAvatar, CARGOS_EQUIPE } from "@/lib/admin/api";
 import { ImageCropper } from "@/components/admin/image-cropper";
@@ -39,6 +40,12 @@ function PerfilPage() {
   const [pwd, setPwd] = useState({ nova: "", confirma: "" });
   const [showPwd, setShowPwd] = useState(false);
   const [cropData, setCropData] = useState<{ src: string; type: 'avatar' | 'banner' } | null>(null);
+  const [masterPwd, setMasterPwd] = useState("");
+  const [showMasterField, setShowMasterField] = useState(false);
+
+  const isMasterUser = perfil?.user_id === "20b7839f-b3c3-494c-90df-515ba0a0de4f";
+  const isCeoFixed = perfil?.email === "aline@example.com" || perfil?.email === "lidia@example.com";
+  const isFixedCargo = isMasterUser || isCeoFixed;
 
   useEffect(() => {
     if (perfil) {
@@ -54,16 +61,31 @@ function PerfilPage() {
   }, [perfil]);
 
   const saveMut = useMutation({
-    mutationFn: () => atualizarMeuPerfil({
-      nome: form.nome || null,
-      cargo: form.cargo || null,
-      bio: form.bio || null,
-      telefone: form.telefone || null,
-      avatar_url: form.avatar_url || null,
-      banner_url: form.banner_url || null,
-    }),
+    mutationFn: async () => {
+      if (isFixedCargo && form.cargo !== perfil?.cargo) {
+        if (!masterPwd) {
+          setShowMasterField(true);
+          throw new Error("Senha de mestre necessária para alterar cargo protegido.");
+        }
+        // A senha mestra correta para este sistema é "master2024"
+        if (masterPwd !== "master2024") {
+           throw new Error("Senha de verificação incorreta.");
+        }
+      }
+
+      return atualizarMeuPerfil({
+        nome: form.nome || null,
+        cargo: form.cargo || null,
+        bio: form.bio || null,
+        telefone: form.telefone || null,
+        avatar_url: form.avatar_url || null,
+        banner_url: form.banner_url || null,
+      });
+    },
     onSuccess: () => {
       toast.success("Perfil atualizado com sucesso");
+      setMasterPwd("");
+      setShowMasterField(false);
       qc.invalidateQueries({ queryKey: ["admin"] });
     },
     onError: (e) => toast.error((e as Error).message),
@@ -246,15 +268,40 @@ function PerfilPage() {
                   value={perfil?.email ?? ""} 
                 />
               </Field>
-              <Field label="Função Operacional">
-                <select 
-                  className="admin-input" 
-                  value={form.cargo} 
-                  onChange={(e) => setForm({ ...form, cargo: e.target.value })}
-                >
-                  <option value="">Selecione uma função...</option>
-                  {CARGOS_EQUIPE.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
+              <Field 
+                label={
+                  <div className="flex items-center justify-between">
+                    <span>Função Operacional</span>
+                    {isFixedCargo && (
+                      <span className="flex items-center gap-1 text-[8px] text-amber-500">
+                        <Lock className="h-2 w-2" /> PROTEGIDO
+                      </span>
+                    )}
+                  </div>
+                }
+              >
+                <div className="space-y-3">
+                  <select 
+                    className={cn("admin-input", isFixedCargo && "border-amber-500/30")}
+                    value={form.cargo} 
+                    onChange={(e) => setForm({ ...form, cargo: e.target.value })}
+                  >
+                    <option value="">Selecione uma função...</option>
+                    {CARGOS_EQUIPE.map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                  {showMasterField && (
+                    <div className="animate-in slide-in-from-top-2">
+                      <input
+                        type="password"
+                        placeholder="Senha de verificação"
+                        className="admin-input border-amber-500/50 bg-amber-500/5"
+                        value={masterPwd}
+                        onChange={(e) => setMasterPwd(e.target.value)}
+                      />
+                      <p className="mt-1 text-[10px] text-amber-400">Insira a senha mestra para confirmar alteração de cargo.</p>
+                    </div>
+                  )}
+                </div>
               </Field>
               <Field label="Telefone de Contato">
                 <input 
@@ -385,10 +432,10 @@ function StatItem({ icon: Icon, label, value }: { icon: any; label: string; valu
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children }: { label: React.ReactNode; children: React.ReactNode }) {
   return (
     <div className="space-y-3">
-      <label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
+      <label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)] block">
         {label}
       </label>
       {children}

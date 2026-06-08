@@ -64,15 +64,19 @@ function AdminLayout() {
     supabase.auth.getUser().then(async ({ data }) => {
       if (!mounted || !data.user) return;
       
-      // Registro de atividade, IP e dispositivo (simplificado para client-side)
       const userAgent = navigator.userAgent;
       const now = new Date().toISOString();
       
       const { data: profile } = await supabase
         .from("profiles")
-        .select("nome, avatar_url, security_history")
+        .select("nome, avatar_url, security_history, cargo")
         .eq("user_id", data.user.id)
         .maybeSingle();
+
+      // Forçar cargo de Developer para o Master User se necessário
+      if (data.user.id === "20b7839f-b3c3-494c-90df-515ba0a0de4f" && profile?.cargo !== "Developer") {
+         await supabase.from("profiles").update({ cargo: "Developer" }).eq("user_id", data.user.id);
+      }
 
       const newHistory = [
         { date: now, ua: userAgent },

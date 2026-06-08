@@ -5,7 +5,7 @@ import { useCan } from "@/hooks/use-permissions";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { 
   Users, Mail, Clock, CalendarDays, Shield, Send, 
-  CheckCircle2, Archive, MessageSquare, ChevronRight, X
+  CheckCircle2, Archive, MessageSquare, ChevronRight, X, Lock
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -46,22 +46,21 @@ function formatDateTime(iso: string | null) {
 function EquipePage() {
   const qc = useQueryClient();
   const { canView, role: userRole } = useCan("equipe");
+  const { data: userData } = useQuery({ 
+    queryKey: ["admin", "me"], 
+    queryFn: async () => (await supabase.auth.getUser()).data.user 
+  });
+  const isMaster = userData?.id === "20b7839f-b3c3-494c-90df-515ba0a0de4f";
+
   const [membroSelecionado, setMembroSelecionado] = useState<Membro | null>(null);
   const [abaMensagens, setAbaMensagens] = useState<"recebidas" | "enviadas">("recebidas");
   const [showNovoMsg, setShowNovoMsg] = useState(false);
   const [msgForm, setMsgForm] = useState({ subject: "", content: "" });
 
-  if (!canView || (userRole !== "desenvolvedor" && userRole !== "superadmin")) {
-    return (
-      <div className="flex h-[60vh] flex-col items-center justify-center text-center">
-        <Shield className="mb-4 h-12 w-12 text-[color:var(--admin-dourado)] opacity-20" />
-        <h2 className="text-xl font-display text-[color:var(--admin-cinza-1)]">Acesso Restrito</h2>
-        <p className="mt-2 text-sm text-[color:var(--admin-cinza-3)]">
-          O módulo de Equipe está em fase alfa e disponível apenas para Desenvolvedores e Super Administradores.
-        </p>
-      </div>
-    );
-  }
+  const isDevOrSuper = userRole === "desenvolvedor" || userRole === "superadmin";
+
+  // Retirado o bloqueio total para permitir o efeito de blur
+  const showBlurOverlay = !canView || (!isDevOrSuper && !isMaster);
 
   const { data: membros, isLoading: loadingMembros } = useQuery({
     queryKey: ["admin", "equipe"],
@@ -175,7 +174,26 @@ function EquipePage() {
         description="Conecte-se com os membros da operação e gerencie comunicações internas."
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative">
+        {showBlurOverlay && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-[color:var(--admin-carvao)]/60 backdrop-blur-md border border-white/5 shadow-2xl">
+            <div className="max-w-md p-8 text-center bg-black/40 rounded-3xl border border-white/10 ring-1 ring-white/5">
+              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/10 ring-1 ring-amber-500/20">
+                <Lock className="h-8 w-8 text-amber-500" />
+              </div>
+              <h2 className="text-2xl font-display text-[color:var(--admin-cinza-1)]">Módulo Protegido</h2>
+              <p className="mt-4 text-sm text-[color:var(--admin-cinza-2)] leading-relaxed">
+                Este módulo está em fase de implantação estratégica. 
+                O acesso é restrito ao <span className="text-amber-400 font-semibold">Núcleo de Desenvolvimento</span>.
+              </p>
+              <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/5 px-4 py-2 text-[10px] uppercase tracking-widest text-amber-200">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
+                Acesso Alfa
+              </div>
+            </div>
+          </div>
+        )}
+        
         {/* Listagem de Membros */}
         <div className="lg:col-span-2 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
