@@ -84,7 +84,7 @@ function NavLinkItem({ item, onNavigate, active }: { item: NavItem; onNavigate?:
   );
 }
 
-function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: string | null } | null; onNavigate?: () => void }) {
+function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: string | null; avatar_url?: string | null } | null; onNavigate?: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -125,7 +125,13 @@ function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: s
               className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-[color:var(--admin-petroleo-soft)]/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--admin-dourado)]/40"
               aria-label="Menu da conta"
             >
-              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[color:var(--admin-petroleo)] text-sm font-medium text-[color:var(--admin-dourado-glow)] ring-1 ring-[color:var(--admin-borda-strong)]">{inicial}</div>
+              <div className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full bg-[color:var(--admin-petroleo)] text-sm font-medium text-[color:var(--admin-dourado-glow)] ring-1 ring-[color:var(--admin-borda-strong)]">
+                {user?.avatar_url ? (
+                  <img src={user.avatar_url} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  inicial
+                )}
+              </div>
               <div className="flex-1 min-w-0">
                 <div className="truncate text-[13px] font-medium text-[color:var(--admin-cinza-1)]">{user?.nome || user?.email?.split("@")[0] || "Operador"}</div>
                 <div className="truncate text-[11px] text-[color:var(--admin-cinza-3)]">{user?.email}</div>
@@ -161,7 +167,7 @@ function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: s
   );
 }
 
-export function AdminSidebar({ user }: { user: { email?: string; nome?: string | null } | null }) {
+export function AdminSidebar({ user }: { user: { email?: string; nome?: string | null; avatar_url?: string | null } | null }) {
   return (
     <aside className="hidden md:flex w-[252px] shrink-0 flex-col border-r border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/80 backdrop-blur-xl h-screen sticky top-0">
       <SidebarContent user={user} />
@@ -169,7 +175,7 @@ export function AdminSidebar({ user }: { user: { email?: string; nome?: string |
   );
 }
 
-export function AdminSidebarDrawer({ user, open, onClose }: { user: { email?: string; nome?: string | null } | null; open: boolean; onClose: () => void }) {
+export function AdminSidebarDrawer({ user, open, onClose }: { user: { email?: string; nome?: string | null; avatar_url?: string | null } | null; open: boolean; onClose: () => void }) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 md:hidden">
