@@ -80,7 +80,7 @@ export function RestrictedAccess({ modulo }: { modulo: AdminModule }) {
           Em breve você terá acesso a recursos avançados de gestão operacional, financeira,
           documental e automações inteligentes.
         </p>
-        <p className="text-[color:var(--admin-cinza-3)]">
+        <p className="font-medium text-amber-200/80 italic">
           Esta funcionalidade será liberada e concluída na segunda etapa do projeto.
         </p>
       </div>
