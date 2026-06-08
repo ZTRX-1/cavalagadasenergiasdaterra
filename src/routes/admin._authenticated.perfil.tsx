@@ -67,14 +67,8 @@ function PerfilPage() {
     onError: (e) => toast.error((e as Error).message),
   });
 
-  const pwdMut = useMutation({
-    mutationFn: () => alterarMinhaSenha(pwd.nova),
-    onSuccess: () => {
-      toast.success("Senha alterada com sucesso");
-      setPwd({ nova: "", confirma: "" });
-    },
-    onError: (e) => toast.error((e as Error).message),
-  });
+  // Removed pwdMut as password resets now happen via email verification
+  const pwdMut = { isPending: false }; 
 
   const onPickFile = async (file: File) => {
     try {
