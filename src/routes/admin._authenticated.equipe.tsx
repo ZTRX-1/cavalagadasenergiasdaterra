@@ -175,7 +175,7 @@ function EquipePage() {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative">
-        {!isDevOrSuper && !isMaster && (
+        {showBlurOverlay && (
           <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-[color:var(--admin-carvao)]/60 backdrop-blur-md border border-white/5 shadow-2xl">
             <div className="max-w-md p-8 text-center bg-black/40 rounded-3xl border border-white/10 ring-1 ring-white/5">
               <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/10 ring-1 ring-amber-500/20">
