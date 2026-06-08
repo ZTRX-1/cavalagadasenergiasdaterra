@@ -397,6 +397,7 @@
 }
 
 @layer utilities {
+  .admin-card { @apply p-6 md:p-10; } /* Global padding increase for all devices */
   .admin-surface {
     background: var(--admin-carvao);
     color: var(--admin-cinza-1);
