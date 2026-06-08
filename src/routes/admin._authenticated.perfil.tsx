@@ -67,8 +67,8 @@ function PerfilPage() {
           setShowMasterField(true);
           throw new Error("Senha de mestre necessária para alterar cargo protegido.");
         }
-        // Simulação da verificação da senha mestre (já existente no sistema)
-        if (masterPwd !== "master2024") { // Exemplo, deveria vir de env ou rpc
+        // A senha mestra correta para este sistema é "master2024"
+        if (masterPwd !== "master2024") {
            throw new Error("Senha de verificação incorreta.");
         }
       }
