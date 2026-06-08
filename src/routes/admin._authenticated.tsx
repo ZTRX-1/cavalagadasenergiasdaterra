@@ -90,8 +90,9 @@ function AdminLayout() {
     return match?.modulo ?? null;
   }, [pathname]);
 
-  const { locked } = useCan((currentModule ?? "dashboard") as AdminModule);
+  const { locked, role } = useCan((currentModule ?? "dashboard") as AdminModule);
   const showRestricted = !!currentModule && locked;
+  const isCeo = role === "ceo";
 
   return (
     <div className="admin-surface flex min-h-screen w-full overflow-x-hidden">
@@ -100,8 +101,21 @@ function AdminLayout() {
       <div className="flex flex-1 flex-col min-w-0">
         <AdminTopbar onOpenMenu={() => setMenuOpen(true)} />
         <main className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-6 md:px-8 lg:px-10 md:py-8">
-          <div className="mx-auto w-full max-w-[1400px] min-w-0">
-            {showRestricted ? <RestrictedAccess modulo={currentModule!} /> : <Outlet />}
+          <div className="mx-auto w-full max-w-[1400px] min-w-0 relative">
+            {showRestricted ? (
+              <div className="relative">
+                {isCeo && (
+                  <div className="pointer-events-none absolute inset-0 z-0 select-none overflow-hidden opacity-30 blur-md grayscale">
+                    <Outlet />
+                  </div>
+                )}
+                <div className={isCeo ? "relative z-10" : ""}>
+                  <RestrictedAccess modulo={currentModule!} />
+                </div>
+              </div>
+            ) : (
+              <Outlet />
+            )}
           </div>
         </main>
       </div>
