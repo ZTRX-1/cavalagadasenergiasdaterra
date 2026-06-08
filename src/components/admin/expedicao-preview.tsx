@@ -78,7 +78,7 @@ export function ExpedicaoPreview({
   const requisitos = (form.requisitos ?? []) as string[];
 
   const stageWidth = device === "desktop" ? 1280 : 390;
-  const containerW = device === "desktop" ? 620 : 360;
+  const containerW = device === "desktop" ? 640 : 360;
   const scale = containerW / stageWidth;
   const stageHeight = device === "desktop" ? 1200 : 2200;
 
@@ -160,7 +160,7 @@ export function ExpedicaoPreview({
               </div>
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/20" />
-            <div className="relative mx-auto flex min-h-[640px] max-w-5xl flex-col justify-end px-12 pb-16 pt-32">
+            <div className="relative mx-auto flex min-h-[640px] max-w-5xl flex-col justify-end px-12 pb-24 pt-32">
               <div
                 data-section="meta"
                 className={`flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-white/80 ${sectionClass("meta")}`}
@@ -172,14 +172,14 @@ export function ExpedicaoPreview({
                 <span>A partir de {formatBRL(form.preco)} <span className="text-white/60">por pessoa</span></span>
               </div>
               <h1 className="mt-5 max-w-3xl font-serif text-6xl">{form.nome || "Nome da expedição"}</h1>
-              <p className="mt-5 max-w-2xl text-lg text-white/85">{form.descricao_curta || "Resumo curto da expedição"}</p>
+              <p className="mt-5 max-w-2xl text-lg text-white/85 leading-relaxed">{form.descricao_curta || "Resumo curto da expedição"}</p>
             </div>
           </section>
 
           {/* Card simulado de listagem */}
           <section data-section="card" className={`bg-stone-950 px-12 py-10 ${sectionClass("card")}`}>
-            <div className="text-[10px] uppercase tracking-[0.22em] text-stone-500">Como aparece nas listagens</div>
-            <div className="mt-4 grid max-w-md grid-cols-[140px_1fr] gap-4 rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm shadow-xl">
+            <div className="text-[10px] uppercase tracking-[0.22em] text-stone-500 mb-4">Como aparece nas listagens</div>
+            <div className="mx-auto grid max-w-md grid-cols-[140px_1fr] gap-4 rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm shadow-xl">
               {capa ? (
                 <img src={capa} alt="" className="aspect-[4/3] w-full rounded-lg object-cover shadow-lg" />
               ) : (
