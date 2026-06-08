@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
         email_confirm: true,
         user_metadata: { nome },
       });
-      if (createErr) return json({ error: createErr.message }, 400);
+      if (createErr) return json({ error: "Erro ao criar usuário." }, 400);
       const uid = created.user!.id;
       // O trigger handle_new_user cria profile e handle_new_internal_user atribui role.
       // Ajustamos cargo e role conforme escolhidos.
@@ -126,7 +126,7 @@ Deno.serve(async (req) => {
       const password = String(body.password ?? "");
       if (!targetId || password.length < 8) return json({ error: "Senha inválida." }, 400);
       const { error } = await admin.auth.admin.updateUserById(targetId, { password });
-      if (error) return json({ error: error.message }, 400);
+      if (error) return json({ error: "Erro ao atualizar senha." }, 400);
       return json({ ok: true });
     }
 
@@ -157,7 +157,7 @@ Deno.serve(async (req) => {
       }
       await admin.from("user_roles").delete().eq("user_id", targetId);
       const { error } = await admin.auth.admin.deleteUser(targetId);
-      if (error) return json({ error: error.message }, 400);
+      if (error) return json({ error: "Erro ao excluir usuário." }, 400);
       return json({ ok: true });
     }
 
