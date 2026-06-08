@@ -608,3 +608,18 @@ body { overflow-x: clip; overscroll-behavior-y: none; }
 a[href*="lovable.dev"][target="_blank"] {
   display: none !important;
 }
+
+/* Custom Scrollbar for Admin */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--admin-borda);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--admin-borda-strong);
+}
