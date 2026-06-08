@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Save, Upload, Shield, KeyRound, Clock, CalendarDays, Eye, EyeOff } from "lucide-react";
+import { Save, Upload, Shield, KeyRound, Clock, CalendarDays, Eye, EyeOff, User as UserIcon } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { getMeuPerfil, atualizarMeuPerfil, uploadAvatar, alterarMinhaSenha, CARGOS_EQUIPE } from "@/lib/admin/api";
 
@@ -30,20 +30,22 @@ function formatDay(value: string | null): string {
 
 function PerfilPage() {
   const qc = useQueryClient();
-  const { data: perfil } = useQuery({ queryKey: ["admin", "meu-perfil"], queryFn: getMeuPerfil });
+  const { data: perfil, isLoading } = useQuery({ queryKey: ["admin", "meu-perfil"], queryFn: getMeuPerfil });
   const fileRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState({ nome: "", cargo: "", bio: "", telefone: "", avatar_url: "" });
   const [pwd, setPwd] = useState({ nova: "", confirma: "" });
   const [showPwd, setShowPwd] = useState(false);
 
   useEffect(() => {
-    if (perfil) setForm({
-      nome: perfil.nome ?? "",
-      cargo: perfil.cargo ?? "",
-      bio: perfil.bio ?? "",
-      telefone: perfil.telefone ?? "",
-      avatar_url: perfil.avatar_url ?? "",
-    });
+    if (perfil) {
+      setForm({
+        nome: perfil.nome ?? "",
+        cargo: perfil.cargo ?? "",
+        bio: perfil.bio ?? "",
+        telefone: perfil.telefone ?? "",
+        avatar_url: perfil.avatar_url ?? "",
+      });
+    }
   }, [perfil]);
 
   const saveMut = useMutation({
@@ -54,13 +56,19 @@ function PerfilPage() {
       telefone: form.telefone || null,
       avatar_url: form.avatar_url || null,
     }),
-    onSuccess: () => { toast.success("Perfil atualizado"); qc.invalidateQueries({ queryKey: ["admin"] }); },
+    onSuccess: () => {
+      toast.success("Perfil atualizado com sucesso");
+      qc.invalidateQueries({ queryKey: ["admin"] });
+    },
     onError: (e) => toast.error((e as Error).message),
   });
 
   const pwdMut = useMutation({
     mutationFn: () => alterarMinhaSenha(pwd.nova),
-    onSuccess: () => { toast.success("Senha alterada com sucesso"); setPwd({ nova: "", confirma: "" }); },
+    onSuccess: () => {
+      toast.success("Senha alterada com sucesso");
+      setPwd({ nova: "", confirma: "" });
+    },
     onError: (e) => toast.error((e as Error).message),
   });
 
@@ -68,116 +76,199 @@ function PerfilPage() {
     try {
       const url = await uploadAvatar(file);
       setForm((f) => ({ ...f, avatar_url: url }));
-      toast.success("Foto enviada — clique em Salvar para confirmar");
-    } catch (e) { toast.error((e as Error).message); }
+      toast.info("Foto processada. Salve o perfil para confirmar.");
+    } catch (e) {
+      toast.error((e as Error).message);
+    }
   };
 
   const handleChangePassword = () => {
-    if (pwd.nova.length < 8) { toast.error("A nova senha deve ter pelo menos 8 caracteres."); return; }
-    if (pwd.nova !== pwd.confirma) { toast.error("As senhas não conferem."); return; }
+    if (pwd.nova.length < 8) {
+      toast.error("A nova senha deve ter pelo menos 8 caracteres.");
+      return;
+    }
+    if (pwd.nova !== pwd.confirma) {
+      toast.error("As senhas não conferem.");
+      return;
+    }
     pwdMut.mutate();
   };
 
-  return (
-    <div className="space-y-6">
-      <AdminPageHeader eyebrow="Conta" title="Meu perfil" description="Suas informações pessoais, cargo e segurança da conta." />
+  if (isLoading) return <div className="animate-pulse space-y-4 pt-10">
+    <div className="h-20 w-1/3 rounded-lg bg-[color:var(--admin-petroleo)]" />
+    <div className="h-64 rounded-xl bg-[color:var(--admin-petroleo)]" />
+  </div>;
 
-      <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
-        <div className="space-y-4">
-          <div className="admin-card text-center space-y-3">
-            {form.avatar_url ? (
-              <img src={form.avatar_url} alt="" className="mx-auto h-32 w-32 rounded-full object-cover ring-2 ring-[color:var(--admin-dourado)]/40" />
-            ) : (
-              <div className="mx-auto grid h-32 w-32 place-items-center rounded-full bg-[color:var(--admin-petroleo)] text-3xl text-[color:var(--admin-dourado-glow)]">
-                {(form.nome || perfil?.email || "?").charAt(0).toUpperCase()}
+  return (
+    <div className="mx-auto max-w-5xl space-y-8 pb-12">
+      <AdminPageHeader 
+        eyebrow="Configurações" 
+        title="Meu perfil" 
+        description="Gerencie suas informações pessoais, cargo e preferências de segurança." 
+      />
+
+      <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
+        {/* Lado Esquerdo: Avatar e Atividade */}
+        <div className="space-y-6">
+          <div className="admin-card overflow-hidden !p-0">
+            <div className="h-24 bg-gradient-to-r from-[color:var(--admin-petroleo)] to-[color:var(--admin-carvao-deep)]" />
+            <div className="relative -mt-12 px-6 pb-6 text-center">
+              <div className="relative mx-auto inline-block">
+                <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-[color:var(--admin-carvao)] bg-[color:var(--admin-petroleo)] shadow-xl ring-1 ring-[color:var(--admin-borda)]">
+                  {form.avatar_url ? (
+                    <img src={form.avatar_url} alt="" className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="grid h-full w-full place-items-center text-4xl font-semibold text-[color:var(--admin-dourado-glow)]">
+                      {(form.nome || perfil?.email || "?").charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+                <button 
+                  onClick={() => fileRef.current?.click()}
+                  className="absolute bottom-1 right-1 grid h-9 w-9 place-items-center rounded-full bg-[color:var(--admin-dourado)] text-[color:var(--admin-carvao-deep)] shadow-lg transition-transform hover:scale-110 active:scale-95"
+                  title="Trocar foto"
+                >
+                  <Upload className="h-4 w-4" />
+                </button>
+                <input 
+                  ref={fileRef} 
+                  type="file" 
+                  accept="image/jpeg,image/png,image/webp" 
+                  className="hidden" 
+                  onChange={(e) => e.target.files?.[0] && onPickFile(e.target.files[0])} 
+                />
               </div>
-            )}
-            <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => e.target.files?.[0] && onPickFile(e.target.files[0])} />
-            <button className="admin-btn-ghost mx-auto" onClick={() => fileRef.current?.click()}>
-              <Upload className="h-4 w-4" /> Trocar foto
-            </button>
-            <p className="text-[11px] text-[color:var(--admin-cinza-3)]">JPG, PNG ou WebP · máx. 2 MB</p>
-            {perfil?.role && (
-              <div className="inline-flex items-center gap-1.5 rounded-md bg-[color:var(--admin-petroleo)] px-2 py-1 text-[11px] text-[color:var(--admin-dourado-glow)]">
-                <Shield className="h-3 w-3" /> {perfil.role}
+
+              <div className="mt-4">
+                <h3 className="text-lg font-medium text-[color:var(--admin-cinza-1)] truncate">{form.nome || "Usuário"}</h3>
+                <p className="text-xs text-[color:var(--admin-cinza-3)] truncate">{perfil?.email}</p>
               </div>
-            )}
+
+              <div className="mt-4 flex flex-wrap justify-center gap-2">
+                {perfil?.role && (
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo)] px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-[color:var(--admin-dourado-glow)]">
+                    <Shield className="h-3 w-3" /> {perfil.role}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
-          <div className="admin-card space-y-3">
-            <h3 className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">Atividade da conta</h3>
-            <div className="space-y-2 text-xs">
-              <div className="flex items-start gap-2">
-                <Shield className="mt-0.5 h-3.5 w-3.5 text-[color:var(--admin-dourado-glow)]" />
-                <div>
-                  <div className="text-[color:var(--admin-cinza-3)]">Cargo</div>
-                  <div className="text-[color:var(--admin-cinza-1)]">{perfil?.cargo_nome ?? perfil?.cargo ?? "—"}</div>
-                </div>
-              </div>
-              <div className="flex items-start gap-2">
-                <CalendarDays className="mt-0.5 h-3.5 w-3.5 text-[color:var(--admin-dourado-glow)]" />
-                <div>
-                  <div className="text-[color:var(--admin-cinza-3)]">Data de entrada</div>
-                  <div className="text-[color:var(--admin-cinza-1)]">{formatDay(perfil?.data_entrada ?? null)}</div>
-                </div>
-              </div>
-              <div className="flex items-start gap-2">
-                <Clock className="mt-0.5 h-3.5 w-3.5 text-[color:var(--admin-dourado-glow)]" />
-                <div>
-                  <div className="text-[color:var(--admin-cinza-3)]">Último acesso</div>
-                  <div className="text-[color:var(--admin-cinza-1)]">{formatDate(perfil?.ultimo_login ?? null)}</div>
-                </div>
-              </div>
+          <div className="admin-card space-y-4">
+            <h4 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">Estatísticas de Acesso</h4>
+            <div className="space-y-4">
+              <StatItem 
+                icon={Shield} 
+                label="Cargo Definido" 
+                value={perfil?.cargo_nome ?? perfil?.cargo ?? "Não definido"} 
+              />
+              <StatItem 
+                icon={CalendarDays} 
+                label="Membro desde" 
+                value={formatDay(perfil?.data_entrada ?? null)} 
+              />
+              <StatItem 
+                icon={Clock} 
+                label="Último login" 
+                value={formatDate(perfil?.ultimo_login ?? null)} 
+              />
             </div>
           </div>
         </div>
 
+        {/* Lado Direito: Formulário e Senha */}
         <div className="space-y-6">
-          <div className="admin-card space-y-4">
-            <div className="grid gap-3 md:grid-cols-2">
-              <Field label="Nome completo"><input className="admin-input w-full" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} /></Field>
-              <Field label="E-mail (somente leitura)"><input disabled className="admin-input w-full opacity-60" value={perfil?.email ?? ""} /></Field>
-              <Field label="Cargo (rótulo livre)">
-                <select className="admin-input w-full" value={form.cargo} onChange={(e) => setForm({ ...form, cargo: e.target.value })}>
-                  <option value="">—</option>
+          <div className="admin-card space-y-6">
+            <div className="flex items-center gap-3 border-b border-[color:var(--admin-borda)] pb-4">
+              <UserIcon className="h-5 w-5 text-[color:var(--admin-dourado)]" />
+              <h3 className="font-display text-xl text-[color:var(--admin-cinza-1)]">Dados Pessoais</h3>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              <Field label="Nome completo">
+                <input 
+                  className="admin-input" 
+                  value={form.nome} 
+                  onChange={(e) => setForm({ ...form, nome: e.target.value })} 
+                />
+              </Field>
+              <Field label="E-mail principal (identificador)">
+                <input 
+                  disabled 
+                  className="admin-input opacity-50 cursor-not-allowed" 
+                  value={perfil?.email ?? ""} 
+                />
+              </Field>
+              <Field label="Função Operacional">
+                <select 
+                  className="admin-input" 
+                  value={form.cargo} 
+                  onChange={(e) => setForm({ ...form, cargo: e.target.value })}
+                >
+                  <option value="">Selecione uma função...</option>
                   {CARGOS_EQUIPE.map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
               </Field>
-              <Field label="Telefone"><input className="admin-input w-full" placeholder="+55 35 99999-0000" value={form.telefone} onChange={(e) => setForm({ ...form, telefone: e.target.value })} /></Field>
+              <Field label="Telefone de Contato">
+                <input 
+                  className="admin-input" 
+                  placeholder="+55 (00) 00000-0000" 
+                  value={form.telefone} 
+                  onChange={(e) => setForm({ ...form, telefone: e.target.value })} 
+                />
+              </Field>
               <div className="md:col-span-2">
-                <Field label="Biografia curta"><textarea className="admin-input w-full min-h-[120px]" placeholder="Conte um pouco sobre você, sua função e experiência." value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} /></Field>
+                <Field label="Biografia / Resumo Profissional">
+                  <textarea 
+                    className="admin-input min-h-[140px] resize-none py-3" 
+                    placeholder="Conte um pouco sobre sua trajetória na Cavalgadas..." 
+                    value={form.bio} 
+                    onChange={(e) => setForm({ ...form, bio: e.target.value })} 
+                  />
+                </Field>
               </div>
             </div>
-            <div className="flex justify-end">
-              <button className="admin-btn-primary" onClick={() => saveMut.mutate()} disabled={saveMut.isPending}>
-                <Save className="h-4 w-4" /> Salvar perfil
+
+            <div className="flex justify-end pt-2">
+              <button 
+                className="admin-btn-primary px-8" 
+                onClick={() => saveMut.mutate()} 
+                disabled={saveMut.isPending}
+              >
+                <Save className="h-4 w-4" /> 
+                {saveMut.isPending ? "Salvando..." : "Atualizar Perfil"}
               </button>
             </div>
           </div>
 
-          <div className="admin-card space-y-4">
-            <div className="flex items-center gap-2">
-              <KeyRound className="h-4 w-4 text-[color:var(--admin-dourado-glow)]" />
-              <h3 className="text-sm font-medium text-[color:var(--admin-cinza-1)]">Alterar senha</h3>
+          <div className="admin-card space-y-6 border-t-2 border-t-[color:var(--admin-dourado)]/20">
+            <div className="flex items-center gap-3">
+              <KeyRound className="h-5 w-5 text-[color:var(--admin-dourado)]" />
+              <h3 className="font-display text-xl text-[color:var(--admin-cinza-1)]">Segurança e Senha</h3>
             </div>
-            <p className="text-xs text-[color:var(--admin-cinza-3)]">
-              Use uma senha forte com pelo menos 8 caracteres. Após alterar, sua sessão atual permanece ativa.
-            </p>
-            <div className="grid gap-3 md:grid-cols-2">
+            
+            <div className="rounded-lg bg-[color:var(--admin-petroleo)]/30 p-4 ring-1 ring-[color:var(--admin-borda)]">
+              <p className="text-xs leading-relaxed text-[color:var(--admin-cinza-2)]">
+                Para sua segurança, utilize uma combinação de letras maiúsculas, minúsculas, números e símbolos. 
+                Sua senha deve ter no mínimo 8 caracteres.
+              </p>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
               <Field label="Nova senha">
                 <div className="relative">
                   <input
                     type={showPwd ? "text" : "password"}
-                    className="admin-input w-full pr-10"
+                    className="admin-input pr-12"
                     autoComplete="new-password"
+                    placeholder="Mínimo 8 caracteres"
                     value={pwd.nova}
                     onChange={(e) => setPwd({ ...pwd, nova: e.target.value })}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPwd((v) => !v)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-cinza-1)]"
-                    aria-label={showPwd ? "Ocultar senha" : "Mostrar senha"}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[color:var(--admin-cinza-3)] transition-colors hover:text-[color:var(--admin-dourado-glow)]"
                   >
                     {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -186,20 +277,23 @@ function PerfilPage() {
               <Field label="Confirmar nova senha">
                 <input
                   type={showPwd ? "text" : "password"}
-                  className="admin-input w-full"
+                  className="admin-input"
                   autoComplete="new-password"
+                  placeholder="Repita a senha"
                   value={pwd.confirma}
                   onChange={(e) => setPwd({ ...pwd, confirma: e.target.value })}
                 />
               </Field>
             </div>
-            <div className="flex justify-end">
+
+            <div className="flex justify-end pt-2">
               <button
-                className="admin-btn-primary"
+                className="admin-btn-ghost border-[color:var(--admin-borda-strong)] bg-transparent px-8 hover:bg-[color:var(--admin-petroleo)]"
                 onClick={handleChangePassword}
                 disabled={pwdMut.isPending || !pwd.nova || !pwd.confirma}
               >
-                <KeyRound className="h-4 w-4" /> Atualizar senha
+                <KeyRound className="h-4 w-4" />
+                {pwdMut.isPending ? "Alterando..." : "Redefinir Senha"}
               </button>
             </div>
           </div>
@@ -209,11 +303,28 @@ function PerfilPage() {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function StatItem({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
   return (
-    <label className="block">
-      <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">{label}</span>
-      <div className="mt-1.5">{children}</div>
-    </label>
+    <div className="flex items-center gap-3">
+      <div className="grid h-8 w-8 place-items-center rounded-lg bg-[color:var(--admin-petroleo)]/50 ring-1 ring-[color:var(--admin-borda)]">
+        <Icon className="h-4 w-4 text-[color:var(--admin-dourado-glow)]" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">{label}</div>
+        <div className="truncate text-[13px] font-medium text-[color:var(--admin-cinza-1)]">{value}</div>
+      </div>
+    </div>
   );
 }
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-2">
+      <label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
+

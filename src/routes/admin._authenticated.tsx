@@ -42,7 +42,7 @@ export const Route = createFileRoute("/admin/_authenticated")({
 });
 
 function AdminLayout() {
-  const [user, setUser] = useState<{ email?: string; nome?: string | null } | null>(null);
+  const [user, setUser] = useState<{ email?: string; nome?: string | null; avatar_url?: string | null } | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -51,10 +51,10 @@ function AdminLayout() {
       if (!mounted || !data.user) return;
       const { data: profile } = await supabase
         .from("profiles")
-        .select("nome")
+        .select("nome, avatar_url")
         .eq("user_id", data.user.id)
         .maybeSingle();
-      if (mounted) setUser({ email: data.user.email, nome: profile?.nome ?? null });
+      if (mounted) setUser({ email: data.user.email, nome: profile?.nome ?? null, avatar_url: profile?.avatar_url ?? null });
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) window.location.href = "/admin/login";
