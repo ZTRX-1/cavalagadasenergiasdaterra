@@ -122,8 +122,29 @@ function validarCriar(b: any): { ok: true; data: CriarPayload } | { ok: false; e
 }
 
 async function handleCriar(payload: CriarPayload) {
+  // SEGURANÇA: Validar preço unitário a partir do banco de dados, nunca confiar no valor vindo do client-side.
+  const { data: realData, error: dataErr } = await admin
+    .from("datas")
+    .select("preco_pix, preco_cartao, status, vagas_disponiveis")
+    .eq("id", payload.data_id)
+    .single();
+
+  if (dataErr || !realData) return json({ error: "Data da expedição não encontrada ou inválida." }, 404);
+
+  // Verifica se ainda há vagas
+  if (realData.status !== "disponivel" || (realData.vagas_disponiveis ?? 0) < payload.participantes.length) {
+    return json({ error: "Não há vagas suficientes para esta data." }, 400);
+  }
+
+  // Define o preço unitário real baseado na forma de pagamento
+  const isPix = payload.adicionais.forma_pagamento?.toLowerCase().includes("pix");
+  const precoReal = isPix ? realData.preco_pix : realData.preco_cartao;
+  
+  // Se o preço real estiver configurado (não nulo), usamos ele. Caso contrário, usamos o do payload (fallback legado).
+  const precoFinal = (precoReal !== null && precoReal !== undefined) ? Number(precoReal) : payload.preco_unitario;
+
   const qtd = payload.participantes.length;
-  const valor_total = payload.preco_unitario * qtd;
+  const valor_total = precoFinal * qtd;
 
   const { data: protoData, error: protoErr } = await admin.rpc("gerar_protocolo");
   if (protoErr || !protoData) return json({ error: "Não foi possível gerar protocolo." }, 500);
