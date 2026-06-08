@@ -6,6 +6,7 @@ import {
   CalendarCheck,
   Compass,
   Users,
+  UserX,
   TrendingUp,
   ArrowUpRight,
 } from "lucide-react";
@@ -226,7 +227,7 @@ function DashboardPage() {
           <KPI label="Leads recebidos" value={isLoading ? "—" : String(data?.leadsTotal ?? 0)} icon={Sparkles} />
           <KPI label="Leads qualificados" value={isLoading ? "—" : String(data?.leadsQualificados ?? 0)} icon={Users} />
           <KPI label="Reservas criadas" value={isLoading ? "—" : String(data?.reservasCriadas ?? 0)} icon={CalendarCheck} />
-          <KPI label="Leads abandonados" value={isLoading ? "—" : String(data?.leadsAbandonados ?? 0)} icon={Users} tone="warn" />
+          <KPI label="Leads abandonados" value={isLoading ? "—" : String(data?.leadsAbandonados ?? 0)} icon={UserX} tone="warn" />
           <KPI label="Reservas confirmadas" value={isLoading ? "—" : String(data?.reservasConfirmadas ?? 0)} icon={Compass} />
         </div>
       </div>
