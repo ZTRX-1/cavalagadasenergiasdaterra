@@ -24,10 +24,12 @@ import {
 } from "@/lib/admin/cargos-api";
 
 export const Route = createFileRoute("/admin/_authenticated/cargos")({
-  beforeLoad: async ({ context }: any) => {
+  beforeLoad: async () => {
      // Apenas Master/Developer podem acessar Cargos agora
-     const { data } = await supabase.auth.getUser();
-     const userId = data.user?.id;
+     const { data: userData } = await supabase.auth.getUser();
+     const userId = userData.user?.id;
+     if (!userId) throw redirect({ to: "/admin/login" });
+
      const isMaster = userId === "20b7839f-b3c3-494c-90df-515ba0a0de4f";
      
      // Se não for master, verificamos o role
