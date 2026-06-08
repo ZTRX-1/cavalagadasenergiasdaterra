@@ -196,7 +196,7 @@ function ExpedicaoEdit() {
         </ul>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,560px)] lg:items-start">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,620px)] lg:items-start">
         <div className="min-w-0">
       <Tabs defaultValue="geral">
 
@@ -288,25 +288,38 @@ function ExpedicaoEdit() {
 
         <TabsContent value="geral" className="mt-6 grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6 order-2 lg:order-1">
-            <AdminSection titulo="Identidade">
-              <AdminField label="Nome" previewTarget="hero" ondeAparece="Título principal (H1) e card nas listagens">
+            <AdminSection 
+              titulo="Identidade" 
+              descricao="Defina o nome e a essência da expedição. O nome é o principal identificador no site e no CRM."
+            >
+              <AdminField 
+                label="Nome da Expedição" 
+                previewTarget="hero" 
+                ondeAparece="Título principal (H1) e card nas listagens"
+                hint="Use um nome curto e impactante."
+              >
                 <input className="admin-input" value={form.nome ?? ""} onChange={(e) => setF({ nome: e.target.value, slug: form.slug || slugify(e.target.value) })} />
               </AdminField>
-              <AdminField label="Subtítulo" previewTarget="hero" ondeAparece="Linha de apoio sob o título (uso interno + SEO)">
+              <AdminField 
+                label="Linha de Apoio / Subtítulo" 
+                previewTarget="hero" 
+                ondeAparece="Frase de destaque sob o título"
+                hint="Ex: 'Edição exclusiva para mulheres' ou 'O coração da Serra da Canastra'."
+              >
                 <input className="admin-input" value={form.subtitulo ?? ""} onChange={(e) => setF({ subtitulo: e.target.value })} />
               </AdminField>
-              <AdminField label="Slug" previewTarget="publicacao" ondeAparece="URL pública: /expedicoes/seu-slug" hint="Endereço da página pública: /expedicoes/seu-slug. Cuidado ao editar depois de publicar.">
+              <AdminField label="Slug (URL Amigável)" previewTarget="publicacao" ondeAparece="Endereço da página: cavalgadas.com.br/expedicoes/seu-slug" hint="Cuidado ao editar depois de publicar.">
                 <input className="admin-input font-mono text-sm" value={form.slug ?? ""} onChange={(e) => setF({ slug: slugify(e.target.value) })} />
               </AdminField>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <AdminField label="Marca" previewTarget="card" ondeAparece="Filtro de marca e card nas listagens">
+                <AdminField label="Marca / Selo" previewTarget="card" ondeAparece="Selo visual no card e filtros do site">
                   <select className="admin-input" value={form.marca ?? "cavalgadas"} onChange={(e) => setF({ marca: e.target.value })}>
                     <option value="cavalgadas">Cavalgadas</option>
                     <option value="canastra-a-cavalo">Canastra a Cavalo</option>
                     <option value="elas-na-sela">Elas na Sela</option>
                   </select>
                 </AdminField>
-                <AdminField label="Dificuldade" previewTarget="meta" ondeAparece="Faixa de meta-dados no topo da página">
+                <AdminField label="Nível de Experiência" previewTarget="meta" ondeAparece="Faixa de informações técnicas">
                   <select className="admin-input" value={form.nivel ?? "Iniciante"} onChange={(e) => setF({ nivel: e.target.value })}>
                     <option>Iniciante</option>
                     <option>Iniciante a intermediário</option>
@@ -316,8 +329,8 @@ function ExpedicaoEdit() {
                   </select>
                 </AdminField>
               </div>
-              <AdminField label="Duração" previewTarget="meta" ondeAparece="Faixa de meta-dados no topo da página">
-                <input className="admin-input" value={form.duracao ?? ""} onChange={(e) => setF({ duracao: e.target.value })} placeholder="4 dias / 3 noites" />
+              <AdminField label="Duração Estimada" previewTarget="meta" ondeAparece="Faixa de informações técnicas">
+                <input className="admin-input" value={form.duracao ?? ""} onChange={(e) => setF({ duracao: e.target.value })} placeholder="Ex: 3 dias / 2 noites" />
               </AdminField>
             </AdminSection>
 
