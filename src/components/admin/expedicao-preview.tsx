@@ -150,10 +150,10 @@ export function ExpedicaoPreview({
           {/* HERO */}
           <section
             data-section="hero"
-            className={`relative min-h-[640px] text-white ${sectionClass("hero")}`}
+            className={`relative min-h-[640px] text-white border-b border-white/10 ${sectionClass("hero")}`}
           >
             {capa ? (
-              <img src={capa} alt={form.nome ?? ""} className="absolute inset-0 h-full w-full object-cover" />
+              <img src={capa} alt={form.nome ?? ""} className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105" />
             ) : (
               <div className="absolute inset-0 grid place-items-center bg-gradient-to-br from-stone-800 to-black text-stone-500">
                 <span className="text-sm">Envie uma capa para ver aqui</span>
@@ -179,9 +179,9 @@ export function ExpedicaoPreview({
           {/* Card simulado de listagem */}
           <section data-section="card" className={`bg-stone-950 px-12 py-10 ${sectionClass("card")}`}>
             <div className="text-[10px] uppercase tracking-[0.22em] text-stone-500">Como aparece nas listagens</div>
-            <div className="mt-4 grid max-w-md grid-cols-[140px_1fr] gap-4 rounded-md border border-stone-800 bg-stone-900 p-4">
+            <div className="mt-4 grid max-w-md grid-cols-[140px_1fr] gap-4 rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm shadow-xl">
               {capa ? (
-                <img src={capa} alt="" className="aspect-[4/3] w-full rounded object-cover" />
+                <img src={capa} alt="" className="aspect-[4/3] w-full rounded-lg object-cover shadow-lg" />
               ) : (
                 <div className="aspect-[4/3] w-full rounded bg-stone-800" />
               )}
