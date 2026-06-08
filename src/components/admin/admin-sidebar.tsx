@@ -76,8 +76,8 @@ function NavLinkItem({ item, onNavigate, active }: { item: NavItem; onNavigate?:
       <Icon className="h-[18px] w-[18px]" strokeWidth={1.6} />
       <span>{item.label}</span>
       {locked && (
-        <span className="ml-auto inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-400/10 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.18em] text-amber-200">
-          <Lock className="h-2.5 w-2.5" /> em breve
+        <span className="ml-auto inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-400/10 px-1.5 py-0.5 text-[8px] uppercase tracking-[0.1em] text-amber-200 whitespace-nowrap min-w-[70px] justify-center">
+          <Lock className="h-2 w-2 shrink-0" /> em breve
         </span>
       )}
     </Link>
@@ -107,7 +107,7 @@ function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: s
           <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)] truncate">Energias da Terra</span>
         </div>
       </div>
-      <nav className="flex-1 overflow-y-auto px-3 py-5 space-y-0.5">
+      <nav className="flex-1 overflow-y-auto px-3 py-5 space-y-0.5 custom-scrollbar">
         <div className="px-3 pb-2 text-[10px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)]">Operação</div>
         {nav.filter((i) => i.group === "operacao").map((item) => (
           <NavLinkItem key={item.to} item={item} onNavigate={onNavigate} active={isActive(item.to, item.exact)} />
@@ -163,7 +163,7 @@ function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: s
 
 export function AdminSidebar({ user }: { user: { email?: string; nome?: string | null } | null }) {
   return (
-    <aside className="hidden md:flex w-[252px] shrink-0 flex-col border-r border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/80 backdrop-blur-xl">
+    <aside className="hidden md:flex w-[252px] shrink-0 flex-col border-r border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/80 backdrop-blur-xl h-screen sticky top-0">
       <SidebarContent user={user} />
     </aside>
   );
