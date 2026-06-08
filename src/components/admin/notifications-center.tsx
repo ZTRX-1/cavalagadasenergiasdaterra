@@ -68,7 +68,6 @@ export function NotificationsCenter() {
     mutationFn: () => excluirNotificacoes(items.map((n) => n.id)),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "notificacoes"] });
-      setOpen(false);
     },
   });
 
