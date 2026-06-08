@@ -124,6 +124,7 @@ function AdminLayout() {
       { prefix: "/admin/cargos", modulo: "cargos" },
       { prefix: "/admin/configuracoes", modulo: "configuracoes" },
       { prefix: "/admin/historico", modulo: "historico" },
+      { prefix: "/admin/equipe", modulo: "equipe" },
     ];
     const match = map.find((m) =>
       m.exact ? pathname === m.prefix : pathname === m.prefix || pathname.startsWith(`${m.prefix}/`),
