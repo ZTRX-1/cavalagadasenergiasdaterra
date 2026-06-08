@@ -359,7 +359,7 @@ function StatItem({ icon: Icon, label, value }: { icon: any; label: string; valu
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
         {label}
       </label>
