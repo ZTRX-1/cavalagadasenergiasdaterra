@@ -39,6 +39,12 @@ function PerfilPage() {
   const [pwd, setPwd] = useState({ nova: "", confirma: "" });
   const [showPwd, setShowPwd] = useState(false);
   const [cropData, setCropData] = useState<{ src: string; type: 'avatar' | 'banner' } | null>(null);
+  const [masterPwd, setMasterPwd] = useState("");
+  const [showMasterField, setShowMasterField] = useState(false);
+
+  const isMasterUser = perfil?.user_id === "20b7839f-b3c3-494c-90df-515ba0a0de4f";
+  const isCeoFixed = perfil?.email === "aline@example.com" || perfil?.email === "lidia@example.com";
+  const isFixedCargo = isMasterUser || isCeoFixed;
 
   useEffect(() => {
     if (perfil) {
