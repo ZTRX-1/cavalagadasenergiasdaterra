@@ -312,14 +312,6 @@ async function handlePOST(request: Request): Promise<Response> {
 }
 
 // ---------- Route ----------
+// Note: API route handlers should live in src/routes/api/. This module
+// only exports client-side helpers; no createFileRoute export here.
 
-// `server` is used in TanStack Start for API routes. 
-// However, since this is a client-side Vite project, we'll keep the handler 
-// definitions but note that standard TanStack Router (client-only) 
-// does not execute these handlers. They are preserved for future 
-// integration with a backend/edge function.
-const routeOptions = {
-  component: () => null,
-};
-
-export const Route = createFileRoute("/api/public/ia-barbara/leads")(routeOptions);
