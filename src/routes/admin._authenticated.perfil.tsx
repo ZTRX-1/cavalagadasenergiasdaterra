@@ -128,7 +128,7 @@ function PerfilPage() {
       <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
         {/* Lado Esquerdo: Avatar e Atividade */}
         <div className="space-y-6">
-          <div className="admin-card overflow-hidden !p-0 shadow-lg ring-1 ring-[color:var(--admin-borda)]">
+          <div className="admin-card overflow-hidden !p-0 shadow-xl ring-1 ring-[color:var(--admin-borda)] transition-all hover:ring-[color:var(--admin-dourado)]/30">
             <div className="group relative h-32 bg-gradient-to-r from-[color:var(--admin-petroleo)] to-[color:var(--admin-carvao-deep)] overflow-hidden">
               {form.banner_url && (
                 <img src={form.banner_url} alt="" className="h-full w-full object-cover opacity-60 transition-transform group-hover:scale-105" />
@@ -191,7 +191,7 @@ function PerfilPage() {
             </div>
           </div>
 
-          <div className="admin-card space-y-4">
+          <div className="admin-card space-y-6 !p-8">
             <h4 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">Estatísticas de Acesso</h4>
             <div className="space-y-4">
               <StatItem 
@@ -215,13 +215,13 @@ function PerfilPage() {
 
         {/* Lado Direito: Formulário e Senha */}
         <div className="space-y-6">
-          <div className="admin-card space-y-6">
+          <div className="admin-card space-y-8 !p-10">
             <div className="flex items-center gap-3 border-b border-[color:var(--admin-borda)] pb-4">
               <UserIcon className="h-5 w-5 text-[color:var(--admin-dourado)]" />
               <h3 className="font-display text-xl text-[color:var(--admin-cinza-1)]">Dados Pessoais</h3>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-8 md:grid-cols-2">
               <Field label="Nome completo">
                 <input 
                   className="admin-input" 
@@ -278,7 +278,7 @@ function PerfilPage() {
             </div>
           </div>
 
-          <div className="admin-card space-y-6 border-t-2 border-t-[color:var(--admin-dourado)]/20">
+          <div className="admin-card space-y-8 !p-10 border-t-2 border-t-[color:var(--admin-dourado)]/20 shadow-xl">
             <div className="flex items-center gap-3">
               <KeyRound className="h-5 w-5 text-[color:var(--admin-dourado)]" />
               <h3 className="font-display text-xl text-[color:var(--admin-cinza-1)]">Segurança e Senha</h3>
@@ -294,7 +294,7 @@ function PerfilPage() {
               </div>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-8 md:grid-cols-2">
               <Field label="Nova senha">
                 <div className="relative">
                   <input
