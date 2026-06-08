@@ -1128,11 +1128,13 @@ export interface MeuPerfil {
   bio: string | null;
   telefone: string | null;
   avatar_url: string | null;
+  banner_url: string | null;
   role: AppRole | null;
   cargo_id: string | null;
   cargo_nome: string | null;
   ultimo_login: string | null;
   data_entrada: string | null;
+  login_attempts: number;
 }
 
 export async function getMeuPerfil(): Promise<MeuPerfil | null> {
@@ -1140,7 +1142,7 @@ export async function getMeuPerfil(): Promise<MeuPerfil | null> {
   if (!u.user) return null;
   const { data: profile } = await supabase
     .from("profiles")
-    .select("user_id, nome, cargo, avatar_url, bio, telefone, cargo_id, ultimo_login, data_entrada")
+    .select("user_id, nome, cargo, avatar_url, banner_url, bio, telefone, cargo_id, ultimo_login, data_entrada, login_attempts")
     .eq("user_id", u.user.id)
     .maybeSingle();
   const { data: role } = await supabase
@@ -1166,16 +1168,18 @@ export async function getMeuPerfil(): Promise<MeuPerfil | null> {
     bio: (p?.bio as string | null) ?? null,
     telefone: (p?.telefone as string | null) ?? null,
     avatar_url: profile?.avatar_url ?? null,
+    banner_url: (p?.banner_url as string | null) ?? null,
     role: (role?.role as AppRole | undefined) ?? null,
     cargo_id: p?.cargo_id ?? null,
     cargo_nome,
     ultimo_login: p?.ultimo_login ?? null,
     data_entrada: p?.data_entrada ?? null,
+    login_attempts: (p?.login_attempts as number) ?? 0,
   };
 }
 
 export async function atualizarMeuPerfil(patch: {
-  nome?: string | null; cargo?: string | null; bio?: string | null; telefone?: string | null; avatar_url?: string | null;
+  nome?: string | null; cargo?: string | null; bio?: string | null; telefone?: string | null; avatar_url?: string | null; banner_url?: string | null;
 }): Promise<void> {
   const { data: u } = await supabase.auth.getUser();
   if (!u.user) throw new Error("Não autenticado");
