@@ -5,7 +5,7 @@ import { useCan } from "@/hooks/use-permissions";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { 
   Users, Mail, Clock, CalendarDays, Shield, Send, 
-  CheckCircle2, Archive, MessageSquare, ChevronRight, X
+  CheckCircle2, Archive, MessageSquare, ChevronRight, X, Lock
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
