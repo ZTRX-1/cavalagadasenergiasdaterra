@@ -6,6 +6,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export type PreReservaInput = {
+  lead_id?: string;
   expedicao_id: string;
   expedicao_nome: string;
   data_id: string;
