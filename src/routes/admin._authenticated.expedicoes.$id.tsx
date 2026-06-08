@@ -196,8 +196,8 @@ function ExpedicaoEdit() {
         </ul>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_640px] lg:items-start">
-        <div className="min-w-0">
+      <div className="grid gap-8 xl:grid-cols-[1fr_640px] lg:items-start">
+        <div className="min-w-0 space-y-8">
       <Tabs defaultValue="geral">
 
         <TabsList className="bg-[color:var(--admin-carvao-deep)]/60 border border-[color:var(--admin-borda)] flex-wrap h-auto gap-1">
@@ -334,8 +334,8 @@ function ExpedicaoEdit() {
               </AdminField>
             </AdminSection>
 
-            <AdminSection titulo="Localização">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <AdminSection titulo="Localização" descricao="Onde a aventura acontece. Estas informações ajudam o cliente a se localizar e aparecem no card de listagem.">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <AdminField label="País" previewTarget="card" ondeAparece="Etiqueta de localização no card">
                   <input className="admin-input" value={form.pais ?? ""} onChange={(e) => setF({ pais: e.target.value })} />
                 </AdminField>
@@ -346,7 +346,7 @@ function ExpedicaoEdit() {
                   <input className="admin-input" value={form.cidade ?? ""} onChange={(e) => setF({ cidade: e.target.value ?? null })} />
                 </AdminField>
               </div>
-              <AdminField label="Região (rótulo público)" previewTarget="card" ondeAparece="Etiqueta de região exibida no card">
+              <AdminField label="Região de Destaque" previewTarget="card" ondeAparece="Rótulo principal de localização no card" hint="Ex: 'Serra da Canastra' ou 'Vale do Paraíba'.">
                 <input className="admin-input" value={form.regiao ?? ""} onChange={(e) => setF({ regiao: e.target.value ?? null })} />
               </AdminField>
             </AdminSection>
