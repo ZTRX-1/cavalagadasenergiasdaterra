@@ -23,6 +23,20 @@ import {
 } from "@/lib/admin/cargos-api";
 
 export const Route = createFileRoute("/admin/_authenticated/cargos")({
+  beforeLoad: async ({ context }: any) => {
+     // Apenas Master/Developer podem acessar Cargos agora
+     const { data } = await supabase.auth.getUser();
+     const userId = data.user?.id;
+     const isMaster = userId === "20b7839f-b3c3-494c-90df-515ba0a0de4f";
+     
+     // Se não for master, verificamos o role
+     if (!isMaster) {
+       const { data: roleRow } = await supabase.rpc("get_primary_role", { _user_id: userId });
+       if (roleRow !== "desenvolvedor" && roleRow !== "superadmin") {
+         throw redirect({ to: "/admin" });
+       }
+     }
+  },
   component: CargosPage,
 });
 
