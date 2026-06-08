@@ -47,21 +47,62 @@ function AdminLayout() {
 
   useEffect(() => {
     let mounted = true;
+    let activityTimeout: ReturnType<typeof setTimeout>;
+
+    const resetTimeout = () => {
+      if (activityTimeout) clearTimeout(activityTimeout);
+      activityTimeout = setTimeout(async () => {
+        await supabase.auth.signOut();
+        window.location.href = "/admin/login?reason=timeout";
+      }, 15 * 60 * 1000); // 15 minutos
+    };
+
+    const events = ["mousedown", "keydown", "touchstart", "scroll"];
+    events.forEach(e => window.addEventListener(e, resetTimeout));
+    resetTimeout();
+
     supabase.auth.getUser().then(async ({ data }) => {
       if (!mounted || !data.user) return;
+      
+      // Registro de atividade, IP e dispositivo (simplificado para client-side)
+      const userAgent = navigator.userAgent;
+      const now = new Date().toISOString();
+      
       const { data: profile } = await supabase
         .from("profiles")
-        .select("nome, avatar_url")
+        .select("nome, avatar_url, security_history")
         .eq("user_id", data.user.id)
         .maybeSingle();
-      if (mounted) setUser({ email: data.user.email, nome: profile?.nome ?? null, avatar_url: profile?.avatar_url ?? null });
+
+      const newHistory = [
+        { date: now, ua: userAgent },
+        ...(Array.isArray(profile?.security_history) ? profile.security_history : [])
+      ].slice(0, 10);
+
+      await supabase
+        .from("profiles")
+        .update({ 
+          ultimo_login: now,
+          security_history: newHistory as any
+        })
+        .eq("user_id", data.user.id);
+
+      if (mounted) setUser({ 
+        email: data.user.email, 
+        nome: profile?.nome ?? null, 
+        avatar_url: profile?.avatar_url ?? null 
+      });
     });
+
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) window.location.href = "/admin/login";
     });
+
     return () => {
       mounted = false;
       sub.subscription.unsubscribe();
+      if (activityTimeout) clearTimeout(activityTimeout);
+      events.forEach(e => window.removeEventListener(e, resetTimeout));
     };
   }, []);
 
