@@ -267,15 +267,40 @@ function PerfilPage() {
                   value={perfil?.email ?? ""} 
                 />
               </Field>
-              <Field label="Função Operacional">
-                <select 
-                  className="admin-input" 
-                  value={form.cargo} 
-                  onChange={(e) => setForm({ ...form, cargo: e.target.value })}
-                >
-                  <option value="">Selecione uma função...</option>
-                  {CARGOS_EQUIPE.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
+              <Field 
+                label={
+                  <div className="flex items-center justify-between">
+                    <span>Função Operacional</span>
+                    {isFixedCargo && (
+                      <span className="flex items-center gap-1 text-[8px] text-amber-500">
+                        <Lock className="h-2 w-2" /> PROTEGIDO
+                      </span>
+                    )}
+                  </div>
+                }
+              >
+                <div className="space-y-3">
+                  <select 
+                    className={cn("admin-input", isFixedCargo && "border-amber-500/30")}
+                    value={form.cargo} 
+                    onChange={(e) => setForm({ ...form, cargo: e.target.value })}
+                  >
+                    <option value="">Selecione uma função...</option>
+                    {CARGOS_EQUIPE.map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                  {showMasterField && (
+                    <div className="animate-in slide-in-from-top-2">
+                      <input
+                        type="password"
+                        placeholder="Senha de verificação"
+                        className="admin-input border-amber-500/50 bg-amber-500/5"
+                        value={masterPwd}
+                        onChange={(e) => setMasterPwd(e.target.value)}
+                      />
+                      <p className="mt-1 text-[10px] text-amber-400">Insira a senha mestra para confirmar alteração de cargo.</p>
+                    </div>
+                  )}
+                </div>
               </Field>
               <Field label="Telefone de Contato">
                 <input 
