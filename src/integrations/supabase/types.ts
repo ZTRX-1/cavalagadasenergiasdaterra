@@ -1349,14 +1349,19 @@ export type Database = {
         Row: {
           ativo: boolean
           avatar_url: string | null
+          banner_url: string | null
           bio: string | null
           cargo: string | null
           cargo_id: string | null
           created_at: string
           data_entrada: string | null
           id: string
+          locked_until: string | null
+          login_attempts: number | null
           nome: string | null
+          password_history: string[] | null
           role: string
+          security_history: Json | null
           telefone: string | null
           ultimo_login: string | null
           updated_at: string
@@ -1365,14 +1370,19 @@ export type Database = {
         Insert: {
           ativo?: boolean
           avatar_url?: string | null
+          banner_url?: string | null
           bio?: string | null
           cargo?: string | null
           cargo_id?: string | null
           created_at?: string
           data_entrada?: string | null
           id?: string
+          locked_until?: string | null
+          login_attempts?: number | null
           nome?: string | null
+          password_history?: string[] | null
           role?: string
+          security_history?: Json | null
           telefone?: string | null
           ultimo_login?: string | null
           updated_at?: string
@@ -1381,14 +1391,19 @@ export type Database = {
         Update: {
           ativo?: boolean
           avatar_url?: string | null
+          banner_url?: string | null
           bio?: string | null
           cargo?: string | null
           cargo_id?: string | null
           created_at?: string
           data_entrada?: string | null
           id?: string
+          locked_until?: string | null
+          login_attempts?: number | null
           nome?: string | null
+          password_history?: string[] | null
           role?: string
+          security_history?: Json | null
           telefone?: string | null
           ultimo_login?: string | null
           updated_at?: string
