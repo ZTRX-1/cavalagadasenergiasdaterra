@@ -1,8 +1,10 @@
-import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { Outlet, createFileRoute, redirect, useRouterState } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminSidebar, AdminSidebarDrawer } from "@/components/admin/admin-sidebar";
 import { AdminTopbar } from "@/components/admin/admin-topbar";
+import { RestrictedAccess } from "@/components/admin/restricted-access";
+import { useCan, type AdminModule } from "@/hooks/use-permissions";
 
 export const Route = createFileRoute("/admin/_authenticated")({
   head: () => ({
