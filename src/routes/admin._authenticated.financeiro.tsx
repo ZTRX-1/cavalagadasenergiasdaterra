@@ -93,8 +93,8 @@ function FinanceiroPage() {
   const totalConfirmado = reservasNoPeriodo
     .reduce((s, r) => {
       if (
-        r.status_operacional === "reserva_confirmada" || 
-        r.status_operacional === "participante_confirmado" ||
+        r.status === "reserva_confirmada" || 
+        r.status === "participante_confirmado" ||
         r.status_pagamento === "confirmado"
       ) {
         return s + Number(r.valor_total ?? 0);
