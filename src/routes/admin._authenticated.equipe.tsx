@@ -71,15 +71,26 @@ function EquipePage() {
   const { data: mensagens, isLoading: loadingMensagens } = useQuery({
     queryKey: ["admin", "mensagens"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: msgs, error } = await supabase
         .from("internal_messages")
-        .select(`
-          *,
-          sender:sender_id(nome, avatar_url)
-        `)
+        .select("*")
         .order("created_at", { ascending: false });
+      
       if (error) throw error;
-      return (data || []) as Mensagem[];
+
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, nome, avatar_url");
+
+      const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
+
+      return (msgs || []).map(m => ({
+        ...m,
+        sender: profileMap.get(m.sender_id) ? {
+          nome: profileMap.get(m.sender_id)!.nome,
+          avatar_url: profileMap.get(m.sender_id)!.avatar_url
+        } : undefined
+      })) as Mensagem[];
     },
   });
 
