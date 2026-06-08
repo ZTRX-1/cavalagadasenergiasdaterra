@@ -13,6 +13,7 @@ const TOKENS: Record<string, { bg: string; fg: string; ring: string; label?: str
   pronto_reserva: { bg: "bg-amber-500/15", fg: "text-amber-300", ring: "ring-amber-500/30", label: "Pronto pra Reserva" },
   convertido: { bg: "bg-emerald-500/15", fg: "text-emerald-300", ring: "ring-emerald-500/30", label: "Convertido" },
   perdido: { bg: "bg-rose-500/15", fg: "text-rose-300", ring: "ring-rose-500/30", label: "Perdido" },
+  abandonado: { bg: "bg-orange-500/15", fg: "text-orange-300", ring: "ring-orange-500/30", label: "Abandonado" },
   // legados (mantidos pra compat de eventos antigos no histórico)
   interessado: { bg: "bg-fuchsia-500/15", fg: "text-fuchsia-300", ring: "ring-fuchsia-500/30", label: "Interessado" },
   encaminhado_financeiro: { bg: "bg-orange-500/15", fg: "text-orange-300", ring: "ring-orange-500/30", label: "No Financeiro" },

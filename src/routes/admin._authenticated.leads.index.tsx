@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
-import { Plus, Sparkles, Trash2, Filter, X, LayoutGrid, List, Star, ArrowRight } from "lucide-react";
+import { Plus, Sparkles, Trash2, Filter, X, LayoutGrid, List, Star, ArrowRight, UserX } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminEmpty } from "@/components/admin/admin-empty";
@@ -14,6 +14,7 @@ import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-b
 import { ConverterLeadModal } from "@/components/admin/converter-lead-modal";
 import { LeadsKanban } from "@/components/admin/leads-kanban";
 import { useCan } from "@/hooks/use-permissions";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   listLeads,
   createLead,
@@ -35,6 +36,7 @@ function LeadsPage() {
   const [del, setDel] = useState<LeadRow | null>(null);
   const [converter, setConverter] = useState<LeadRow | null>(null);
   const [view, setView] = useState<"kanban" | "lista">("kanban");
+  const [tab, setTab] = useState<string>("ativos");
   const [fOrigem, setFOrigem] = useState<string>("todas");
   const [fExpedicao, setFExpedicao] = useState<string>("todas");
   const [fBusca, setFBusca] = useState<string>("");
@@ -78,6 +80,10 @@ function LeadsPage() {
   const leadsFiltrados = useMemo(() => {
     const q = fBusca.trim().toLowerCase();
     return leads.filter((l) => {
+      // Filtragem por Tab (Ativos vs Abandonados)
+      if (tab === "ativos" && l.status === "abandonado") return false;
+      if (tab === "abandonados" && l.status !== "abandonado") return false;
+
       if (fOrigem !== "todas" && l.origem !== fOrigem) return false;
       if (fExpedicao !== "todas" && l.expedicao_interesse !== fExpedicao) return false;
       if (fNivel !== "todos" && String(l.nivel_interesse ?? 3) !== fNivel) return false;
@@ -87,7 +93,10 @@ function LeadsPage() {
       }
       return true;
     });
-  }, [leads, fOrigem, fExpedicao, fBusca, fNivel]);
+  }, [leads, fOrigem, fExpedicao, fBusca, fNivel, tab]);
+
+  const countAtivos = useMemo(() => leads.filter(l => l.status !== "abandonado").length, [leads]);
+  const countAbandonados = useMemo(() => leads.filter(l => l.status === "abandonado").length, [leads]);
 
   const filtrosAtivos = fOrigem !== "todas" || fExpedicao !== "todas" || fNivel !== "todos" || fBusca.trim().length > 0;
   const limparFiltros = () => { setFOrigem("todas"); setFExpedicao("todas"); setFNivel("todos"); setFBusca(""); };
@@ -120,8 +129,25 @@ function LeadsPage() {
 
       {!canEdit ? <EmDesenvolvimentoBanner /> : null}
       <AdminPageIntro>
-        <strong className="text-[color:var(--admin-cinza-1)]">Etapas do Atendimento.</strong> Acompanhe cada contato desde a chegada até virar reserva paga. As cores indicam o <strong>Nível de Interesse</strong> (de 1 a 5) e o <strong>Lead Score</strong> classifica automaticamente quem está mais perto de fechar.
+        <strong className="text-[color:var(--admin-cinza-1)]">CRM de Expedições.</strong> Acompanhe cada contato desde a chegada até virar reserva paga. Os leads <strong className="text-orange-300">Abandonados</strong> são capturados automaticamente quando o cliente inicia o formulário mas não conclui.
       </AdminPageIntro>
+
+      <Tabs defaultValue="ativos" className="mb-6" value={tab} onValueChange={setTab}>
+        <TabsList className="bg-[color:var(--admin-carvao-deep)] border border-[color:var(--admin-borda)] p-1">
+          <TabsTrigger 
+            value="ativos" 
+            className="data-[state=active]:bg-[color:var(--admin-dourado)] data-[state=active]:text-[color:var(--admin-carvao-deep)] text-xs font-medium px-4 py-2"
+          >
+            Leads Ativos ({countAtivos})
+          </TabsTrigger>
+          <TabsTrigger 
+            value="abandonados" 
+            className="data-[state=active]:bg-orange-500 data-[state=active]:text-white text-xs font-medium px-4 py-2"
+          >
+            Abandonados ({countAbandonados})
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
 
       {/* Filtros */}
       <div className="admin-card mb-4 p-4">
@@ -181,10 +207,10 @@ function LeadsPage() {
         <div className="admin-card h-40 animate-pulse" />
       ) : leads.length === 0 ? (
         <AdminEmpty
-          icon={Sparkles}
-          titulo="Sem leads ainda"
-          descricao="Os leads recebidos pelos formulários e pré-reservas aparecerão aqui automaticamente."
-          acao={<button className="admin-btn-primary" onClick={() => setNovo(true)}><Plus className="h-4 w-4" /> Adicionar manualmente</button>}
+          icon={tab === "abandonados" ? UserX : Sparkles}
+          titulo={tab === "abandonados" ? "Nenhum lead abandonado" : "Sem leads ainda"}
+          descricao={tab === "abandonados" ? "Leads capturados durante o início do preenchimento aparecerão aqui." : "Os leads recebidos pelos formulários e pré-reservas aparecerão aqui automaticamente."}
+          acao={tab === "ativos" ? <button className="admin-btn-primary" onClick={() => setNovo(true)}><Plus className="h-4 w-4" /> Adicionar manualmente</button> : null}
         />
       ) : leadsFiltrados.length === 0 ? (
         <AdminEmpty
@@ -193,7 +219,7 @@ function LeadsPage() {
           descricao="Ajuste os filtros acima ou limpe para ver todos os leads novamente."
           acao={<button className="admin-btn-ghost" onClick={limparFiltros}><X className="h-4 w-4" /> Limpar filtros</button>}
         />
-      ) : view === "kanban" ? (
+      ) : view === "kanban" && tab === "ativos" ? (
         <LeadsKanban
           leads={leadsFiltrados}
           onMove={handleMoveLead}
@@ -250,7 +276,7 @@ function LeadsLista({ leads, onDelete, onConverter }: { leads: LeadRow[]; onDele
                 <Link to="/admin/leads/$id" params={{ id: l.id }} className="font-medium hover:text-[color:var(--admin-dourado)]">{l.nome}</Link>
                 <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{l.protocolo ?? "—"}</div>
               </td>
-              <td className="px-4 py-3"><StatusBadge status={l.etapa_atendimento ?? "novo"} /></td>
+              <td className="px-4 py-3"><StatusBadge status={l.status === 'abandonado' ? 'abandonado' : (l.etapa_atendimento ?? "novo")} /></td>
               <td className="px-4 py-3">
                 <div className="flex items-center gap-0.5">
                   {Array.from({ length: 5 }).map((_, i) => (
