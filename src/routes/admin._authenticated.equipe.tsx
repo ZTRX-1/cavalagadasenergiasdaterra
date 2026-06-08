@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useCan } from "@/hooks/use-permissions";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { 
   Users, Mail, Clock, CalendarDays, Shield, Send, 
