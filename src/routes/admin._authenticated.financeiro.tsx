@@ -91,12 +91,18 @@ function FinanceiroPage() {
     [reservas, range],
   );
   const totalConfirmado = reservasNoPeriodo
-    .filter((r) => r.status_pagamento === "confirmado")
-    .reduce((s, r) => s + Number(r.valor_pago || 0), 0);
+    .reduce((s, r) => {
+      if (
+        r.status === "reserva_confirmada" || 
+        r.status === "participante_confirmado" ||
+        r.status_pagamento === "confirmado"
+      ) {
+        return s + Number(r.valor_total ?? 0);
+      }
+      return s + Number(r.valor_pago ?? 0);
+    }, 0);
   const totalEstimado = reservasNoPeriodo.reduce((s, r) => s + Number(r.valor_total || 0), 0);
-  const totalPendente = reservasNoPeriodo
-    .filter((r) => r.status_pagamento !== "confirmado")
-    .reduce((s, r) => s + (Number(r.valor_total || 0) - Number(r.valor_pago || 0)), 0);
+  const totalPendente = totalEstimado - totalConfirmado;
   const totalDespesas = despesas.reduce((s, d) => s + Number(d.valor), 0);
   const lucro = totalConfirmado - totalDespesas;
   const margem = totalConfirmado > 0 ? (lucro / totalConfirmado) * 100 : 0;
