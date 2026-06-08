@@ -2,10 +2,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Save, Upload, Shield, KeyRound, Clock, CalendarDays, Eye, EyeOff, User as UserIcon } from "lucide-react";
+import { Save, Upload, Shield, KeyRound, Clock, CalendarDays, Eye, EyeOff, User as UserIcon, Terminal, Code2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { getMeuPerfil, atualizarMeuPerfil, uploadAvatar, CARGOS_EQUIPE } from "@/lib/admin/api";
+import { ImageCropper } from "@/components/admin/image-cropper";
 
 export const Route = createFileRoute("/admin/_authenticated/perfil")({
   component: PerfilPage,
@@ -37,6 +38,7 @@ function PerfilPage() {
   const [form, setForm] = useState({ nome: "", cargo: "", bio: "", telefone: "", avatar_url: "", banner_url: "" });
   const [pwd, setPwd] = useState({ nova: "", confirma: "" });
   const [showPwd, setShowPwd] = useState(false);
+  const [cropData, setCropData] = useState<{ src: string; type: 'avatar' | 'banner' } | null>(null);
 
   useEffect(() => {
     if (perfil) {
@@ -71,20 +73,25 @@ function PerfilPage() {
   const pwdMut = { isPending: false }; 
 
   const onPickFile = async (file: File) => {
-    try {
-      const url = await uploadAvatar(file);
-      setForm((f) => ({ ...f, avatar_url: url }));
-      toast.info("Foto processada. Salve o perfil para confirmar.");
-    } catch (e) {
-      toast.error((e as Error).message);
-    }
+    const reader = new FileReader();
+    reader.onload = () => setCropData({ src: reader.result as string, type: 'avatar' });
+    reader.readAsDataURL(file);
   };
 
   const onPickBanner = async (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => setCropData({ src: reader.result as string, type: 'banner' });
+    reader.readAsDataURL(file);
+  };
+
+  const handleCropComplete = async (blob: Blob) => {
+    if (!cropData) return;
+    const file = new File([blob], `cropped-${Date.now()}.jpg`, { type: 'image/jpeg' });
     try {
-      const url = await uploadAvatar(file); // Reusing uploadAvatar as it handles standard storage uploads
-      setForm((f) => ({ ...f, banner_url: url }));
-      toast.info("Capa processada. Salve o perfil para confirmar.");
+      const url = await uploadAvatar(file);
+      setForm((f) => ({ ...f, [cropData.type === 'avatar' ? 'avatar_url' : 'banner_url']: url }));
+      setCropData(null);
+      toast.success(`${cropData.type === 'avatar' ? 'Foto' : 'Capa'} ajustada com sucesso!`);
     } catch (e) {
       toast.error((e as Error).message);
     }
@@ -127,7 +134,7 @@ function PerfilPage() {
 
       <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
         {/* Lado Esquerdo: Avatar e Atividade */}
-        <div className="space-y-6">
+        <div className="space-y-6 flex flex-col items-stretch">
           <div className="admin-card overflow-hidden !p-0 shadow-xl ring-1 ring-[color:var(--admin-borda)] transition-all hover:ring-[color:var(--admin-dourado)]/30">
             <div className="group relative h-32 bg-gradient-to-r from-[color:var(--admin-petroleo)] to-[color:var(--admin-carvao-deep)] overflow-hidden">
               {form.banner_url && (
@@ -177,7 +184,10 @@ function PerfilPage() {
               </div>
 
               <div className="mt-4">
-                <h3 className="text-lg font-medium text-[color:var(--admin-cinza-1)] truncate">{form.nome || "Usuário"}</h3>
+                <h3 className="text-lg font-medium text-[color:var(--admin-cinza-1)] truncate flex items-center justify-center gap-2">
+                  {form.nome || "Usuário"}
+                  {form.cargo === "Developer" && <Code2 className="h-4 w-4 text-[color:var(--admin-dourado)] animate-pulse" />}
+                </h3>
                 <p className="text-xs text-[color:var(--admin-cinza-3)] truncate">{perfil?.email}</p>
               </div>
 
@@ -291,8 +301,17 @@ function PerfilPage() {
                   Para sua segurança, as alterações de senha exigem verificação por e-mail. 
                   Você não poderá reutilizar suas últimas 5 senhas.
                 </p>
-              </div>
-            </div>
+      </div>
+
+      {cropData && (
+        <ImageCropper 
+          imageSrc={cropData.src}
+          aspect={cropData.type === 'avatar' ? 1 : 16 / 5}
+          onCropComplete={handleCropComplete}
+          onCancel={() => setCropData(null)}
+        />
+      )}
+    </div>
 
             <div className="grid gap-8 md:grid-cols-2">
               <Field label="Nova senha">
@@ -339,6 +358,15 @@ function PerfilPage() {
           </div>
         </div>
       </div>
+
+      {cropData && (
+        <ImageCropper 
+          imageSrc={cropData.src}
+          aspect={cropData.type === 'avatar' ? 1 : 16 / 5}
+          onCropComplete={handleCropComplete}
+          onCancel={() => setCropData(null)}
+        />
+      )}
     </div>
   );
 }
