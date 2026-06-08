@@ -89,12 +89,14 @@ const CEO_LOCKED: AdminModule[] = [
 export function useCan(modulo: AdminModule) {
   const { data, isLoading } = useMyPermissions();
   const role = data?.role ?? null;
+  const isMaster = data?.userId === "20b7839f-b3c3-494c-90df-515ba0a0de4f"; // Vexson Master ID
 
   if (isLoading || !role) {
     return { canView: false, canEdit: false, locked: false, role, isLoading };
   }
 
-  if (role === "desenvolvedor" || role === "superadmin" || role === "admin") {
+  // Master/Developer/Superadmin bypass
+  if (isMaster || role === "desenvolvedor" || role === "superadmin" || role === "admin") {
     return { canView: true, canEdit: true, locked: false, role, isLoading: false };
   }
 
