@@ -21,6 +21,7 @@ type Membro = {
   cargo: string | null;
   bio: string | null;
   avatar_url: string | null;
+  banner_url: string | null;
   especialidades: string[] | null;
   ultimo_login: string | null;
   created_at?: string;
@@ -67,7 +68,7 @@ function EquipePage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("user_id, nome, cargo, bio, avatar_url, especialidades, ultimo_login, created_at");
+        .select("user_id, nome, cargo, bio, avatar_url, banner_url, especialidades, ultimo_login, created_at");
       if (error) throw error;
       return (data || []) as Membro[];
     },
@@ -347,7 +348,14 @@ function EquipePage() {
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setMembroSelecionado(null)} />
           <div className="relative w-full max-w-2xl animate-in zoom-in-95 duration-200 overflow-hidden rounded-2xl border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)] shadow-2xl">
             {/* Header / Capa */}
-            <div className="h-32 bg-gradient-to-r from-[color:var(--admin-carvao)] to-[color:var(--admin-petroleo)] relative">
+            <div className="h-32 bg-gradient-to-r from-[color:var(--admin-carvao)] to-[color:var(--admin-petroleo)] relative overflow-hidden">
+              {membroSelecionado.banner_url && (
+                <img 
+                  src={membroSelecionado.banner_url} 
+                  alt="" 
+                  className="h-full w-full object-cover opacity-60" 
+                />
+              )}
               <button 
                 onClick={() => setMembroSelecionado(null)}
                 className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/40 text-white/70 hover:text-white hover:bg-black/60 transition-colors"
