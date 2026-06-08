@@ -368,7 +368,6 @@ function PerfilPage() {
         />
       )}
     </div>
-    </div>
   );
 }
 
