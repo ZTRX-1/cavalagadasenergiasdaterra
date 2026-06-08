@@ -189,14 +189,14 @@ async function handleCriar(payload: CriarPayload) {
       .from("leads")
       .update(leadPayload as never)
       .eq("id", leadId);
-    if (leadErr) return json({ error: "Falha ao atualizar lead: " + leadErr.message }, 500);
+    if (leadErr) return json({ error: "Falha ao atualizar lead." }, 500);
   } else {
     const { data: leadRow, error: leadErr } = await admin
       .from("leads")
       .insert(leadPayload as never)
       .select("id")
       .single();
-    if (leadErr) return json({ error: "Falha ao criar lead: " + leadErr.message }, 500);
+    if (leadErr) return json({ error: "Falha ao criar lead." }, 500);
     leadId = leadRow.id;
   }
 
@@ -231,7 +231,7 @@ async function handleCriar(payload: CriarPayload) {
     .insert(reservaPayload as never)
     .select("id, protocolo")
     .single();
-  if (reservaErr) return json({ error: "Falha ao criar reserva: " + reservaErr.message }, 500);
+  if (reservaErr) return json({ error: "Falha ao criar reserva." }, 500);
 
   return json({
     protocolo: reservaRow.protocolo,
@@ -286,7 +286,7 @@ async function handleCapturaProgressiva(payload: any) {
       .select("id")
       .single();
 
-    if (error) return json({ error: "Falha ao atualizar captura: " + error.message }, 500);
+    if (error) return json({ error: "Falha ao atualizar captura." }, 500);
     return json({ lead_id: data.id });
   } else {
     const { data: protoLeadData } = await admin.rpc("gerar_protocolo_lead");
@@ -301,7 +301,7 @@ async function handleCapturaProgressiva(payload: any) {
       .select("id")
       .single();
 
-    if (error) return json({ error: "Falha ao criar captura: " + error.message }, 500);
+    if (error) return json({ error: "Falha ao criar captura." }, 500);
     return json({ lead_id: data.id });
   }
 }
