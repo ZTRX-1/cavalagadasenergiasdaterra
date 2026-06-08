@@ -6,6 +6,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export type PreReservaInput = {
+  lead_id?: string;
   expedicao_id: string;
   expedicao_nome: string;
   data_id: string;
@@ -79,4 +80,23 @@ export async function consultarReservaPorProtocolo(protocolo: string): Promise<R
   if (error) throw new Error(error.message || "Falha ao consultar reserva.");
   if (data?.error) throw new Error(data.error);
   return (data as ReservaConsulta | null) ?? null;
+}
+
+export type CapturaProgressivaInput = {
+  lead_id?: string;
+  nome: string;
+  email: string;
+  telefone: string;
+  expedicao_interesse?: string;
+  etapa_abandono?: string;
+  origem?: string;
+};
+
+export async function capturarLeadProgressivo(input: CapturaProgressivaInput): Promise<{ lead_id: string }> {
+  const { data, error } = await supabase.functions.invoke("pre-reserva", {
+    body: { action: "captura_progressiva", ...input },
+  });
+  if (error) throw new Error(error.message || "Falha na captura progressiva.");
+  if (data?.error) throw new Error(data.error);
+  return data as { lead_id: string };
 }

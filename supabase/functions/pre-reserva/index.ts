@@ -42,6 +42,7 @@ type Participante = {
 };
 
 type CriarPayload = {
+  lead_id?: string;
   expedicao_id: string;
   expedicao_nome: string;
   data_id: string;
@@ -141,7 +142,8 @@ async function handleCriar(payload: CriarPayload) {
     expedicao_interesse: payload.expedicao_nome,
     origem: payload.adicionais.como_conheceu || "pre_reserva_site",
     canal_entrada: "site",
-    status: "novo",
+    status: "novo", // Ao concluir, muda de 'abandonado' para 'novo' ou outro status definido
+    status_atendimento: "novo",
     etapa_atendimento: "novo",
     nivel_interesse: 5,
     lead_score: 80,
@@ -159,16 +161,27 @@ async function handleCriar(payload: CriarPayload) {
     data_nascimento: firstP?.data_nascimento || null,
   };
 
-  const { data: leadRow, error: leadErr } = await admin
-    .from("leads")
-    .insert(leadPayload as never)
-    .select("id")
-    .single();
-  if (leadErr) return json({ error: "Falha ao criar lead: " + leadErr.message }, 500);
+  let leadId = payload.lead_id;
+
+  if (leadId) {
+    const { error: leadErr } = await admin
+      .from("leads")
+      .update(leadPayload as never)
+      .eq("id", leadId);
+    if (leadErr) return json({ error: "Falha ao atualizar lead: " + leadErr.message }, 500);
+  } else {
+    const { data: leadRow, error: leadErr } = await admin
+      .from("leads")
+      .insert(leadPayload as never)
+      .select("id")
+      .single();
+    if (leadErr) return json({ error: "Falha ao criar lead: " + leadErr.message }, 500);
+    leadId = leadRow.id;
+  }
 
   const reservaPayload = {
     protocolo,
-    lead_id: leadRow.id,
+    lead_id: leadId,
     expedicao_id: payload.expedicao_id,
     expedicao_nome: payload.expedicao_nome,
     data_id: payload.data_id,
@@ -202,8 +215,56 @@ async function handleCriar(payload: CriarPayload) {
   return json({
     protocolo: reservaRow.protocolo,
     reserva_id: reservaRow.id,
-    lead_id: leadRow.id,
+    lead_id: leadId,
   });
+}
+
+async function handleCapturaProgressiva(payload: any) {
+  const { lead_id, nome, email, telefone, expedicao_interesse, etapa_abandono, origem } = payload;
+
+  if (!nome || !email || !telefone) {
+    return json({ error: "Nome, email e telefone são obrigatórios para captura." }, 400);
+  }
+
+  const leadPayload = {
+    nome,
+    email,
+    telefone,
+    expedicao_interesse,
+    etapa_abandono,
+    origem: origem || "captura_progressiva_site",
+    status: "abandonado", // Usamos 'abandonado' como status inicial para leads incompletos
+    canal_entrada: "site",
+    etapa_atendimento: "novo",
+    updated_at: new Date().toISOString(),
+  };
+
+  if (lead_id) {
+    const { data, error } = await admin
+      .from("leads")
+      .update(leadPayload as never)
+      .eq("id", lead_id)
+      .select("id")
+      .single();
+
+    if (error) return json({ error: "Falha ao atualizar captura: " + error.message }, 500);
+    return json({ lead_id: data.id });
+  } else {
+    const { data: protoLeadData } = await admin.rpc("gerar_protocolo_lead");
+    
+    const { data, error } = await admin
+      .from("leads")
+      .insert({
+        ...leadPayload,
+        protocolo: (protoLeadData as string | null) ?? null,
+        created_at: new Date().toISOString(),
+      } as never)
+      .select("id")
+      .single();
+
+    if (error) return json({ error: "Falha ao criar captura: " + error.message }, 500);
+    return json({ lead_id: data.id });
+  }
 }
 
 async function handleConsultar(protocolo: unknown) {
@@ -253,6 +314,9 @@ Deno.serve(async (req) => {
     }
     if (action === "consultar") {
       return await handleConsultar(body.protocolo);
+    }
+    if (action === "captura_progressiva") {
+      return await handleCapturaProgressiva(body);
     }
     return json({ error: "Ação desconhecida." }, 400);
   } catch (e) {
