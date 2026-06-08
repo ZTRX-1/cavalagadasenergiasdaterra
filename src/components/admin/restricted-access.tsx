@@ -51,7 +51,7 @@ export function RestrictedAccess({ modulo }: { modulo: AdminModule }) {
   };
 
   return (
-    <div className="relative isolate mx-auto flex min-h-[70vh] w-full max-w-3xl flex-col items-center justify-center overflow-hidden rounded-3xl border border-[color:var(--admin-borda)] bg-gradient-to-br from-[color:var(--admin-carvao-deep)] via-[color:var(--admin-carvao)] to-[color:var(--admin-petroleo)]/40 px-6 py-16 text-center md:px-12 md:py-20">
+    <div className="relative isolate mx-auto flex min-h-[70vh] w-full max-w-3xl flex-col items-center justify-center overflow-hidden rounded-3xl border border-[color:var(--admin-borda)] bg-gradient-to-br from-[color:var(--admin-carvao-deep)]/90 via-[color:var(--admin-carvao)]/95 to-[color:var(--admin-petroleo)]/60 px-6 py-16 text-center shadow-2xl backdrop-blur-md md:px-12 md:py-20">
       <div className="pointer-events-none absolute -top-20 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-[color:var(--admin-dourado)]/10 blur-3xl" />
       <div className="pointer-events-none absolute bottom-0 right-0 h-64 w-64 rounded-full bg-[color:var(--admin-dourado-glow)]/5 blur-3xl" />
 
@@ -81,7 +81,7 @@ export function RestrictedAccess({ modulo }: { modulo: AdminModule }) {
           documental e automações inteligentes.
         </p>
         <p className="text-[color:var(--admin-cinza-3)]">
-          A estrutura desta área já está sendo preparada para a próxima fase do projeto.
+          Esta funcionalidade será liberada e concluída na segunda etapa do projeto.
         </p>
       </div>
 
