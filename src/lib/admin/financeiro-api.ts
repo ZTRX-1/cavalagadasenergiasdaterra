@@ -196,6 +196,7 @@ export async function deleteContaReceber(id: string) {
 export type DREExpedicao = {
   expedicao_id: string;
   expedicao_nome: string;
+  moeda: string;
   receita: number;
   despesa: number;
   lucro: number;
@@ -214,21 +215,23 @@ export async function dreExpedicoes(range: { from: string; to: string }): Promis
       .select("expedicao_id, valor, data")
       .gte("data", range.from.slice(0, 10))
       .lte("data", range.to.slice(0, 10)),
-    supabase.from("expedicoes").select("id, nome"),
+    supabase.from("expedicoes").select("id, nome, moeda"),
   ]);
   if (reservasRes.error) throw reservasRes.error;
   if (despesasRes.error) throw despesasRes.error;
 
-  const nomes = new Map<string, string>();
-  (expedicoesRes.data ?? []).forEach((e: { id: string; nome: string }) => nomes.set(e.id, e.nome));
+  const expedicoesMap = new Map<string, { nome: string; moeda: string }>();
+  (expedicoesRes.data ?? []).forEach((e: any) => expedicoesMap.set(e.id, { nome: e.nome, moeda: e.moeda }));
 
   const map = new Map<string, DREExpedicao>();
   const get = (id: string | null, fallbackNome?: string) => {
     const key = id ?? "_sem_expedicao";
     if (!map.has(key)) {
+      const expInfo = id ? expedicoesMap.get(id) : null;
       map.set(key, {
         expedicao_id: key,
-        expedicao_nome: (id && nomes.get(id)) || fallbackNome || "Sem expedição",
+        expedicao_nome: expInfo?.nome || fallbackNome || "Sem expedição",
+        moeda: expInfo?.moeda || "BRL",
         receita: 0,
         despesa: 0,
         lucro: 0,
