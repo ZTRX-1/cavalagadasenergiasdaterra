@@ -119,9 +119,9 @@ function HomePage() {
 
   return (
     <>
-      {/* HERO — focal points por breakpoint, preservando rosto + cavalo */}
-      <section className="relative min-h-[100svh] overflow-hidden text-areia md:min-h-[720px] md:h-screen bg-black">
-        {/* Mobile Background */}
+      {/* HERO — Experiência Premium de Luxo */}
+      <section className="relative min-h-[100svh] overflow-hidden text-areia md:h-[85vh] lg:h-screen bg-black">
+        {/* Mobile Background: Enquadramento independente para garantir cavalo + amazona */}
         <img
           src={fundoHomeMobile}
           alt="Cavalgadas Energias da Terra"
@@ -129,41 +129,44 @@ function HomePage() {
           fetchPriority="high"
           decoding="async"
         />
-        {/* Tablet/Desktop Background */}
+        {/* Tablet/Desktop Background: Object-cover para preenchimento total premium */}
         <img
           src={fundoHome}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 hidden h-full w-full object-contain md:block"
+          className="absolute inset-0 hidden h-full w-full object-cover object-[center_35%] md:block"
           fetchPriority="high"
           decoding="async"
         />
-        <div className="absolute inset-0 bg-carvao/45 md:bg-carvao/40" />
-        <div className="absolute inset-x-0 bottom-0 h-[85%] bg-gradient-to-t from-carvao via-carvao/82 to-transparent md:h-[72%] md:via-carvao/70" />
-        <div className="absolute inset-y-0 left-0 w-full md:w-[68%] bg-gradient-to-r from-carvao/85 via-carvao/45 to-transparent md:from-carvao/80 md:via-carvao/38" />
 
-        <div className="container-tight relative flex min-h-[100svh] flex-col justify-end pb-14 pt-24 md:min-h-0 md:h-full md:pb-20 md:pt-28 lg:pb-24">
+        {/* Overlay elegante: Gradiente direcional para legibilidade sem blocos pretos */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent md:from-black/70 md:via-black/20" />
+        
+        {/* Sutil gradiente inferior apenas para mobile para garantir contraste do texto inferior */}
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 via-transparent to-transparent md:hidden" />
+
+        <div className="container-tight relative flex h-full flex-col justify-end pb-16 pt-24 md:pb-20 lg:pb-24">
           <div className="max-w-3xl">
             <div className="eyebrow text-areia text-shadow-strong text-[0.62rem] md:text-xs">{t("hero.eyebrow")}</div>
-            <h1 className="mt-4 font-display text-[1.85rem] leading-[1.06] text-balance text-shadow-strong text-areia xs:text-[2.1rem] sm:text-5xl md:mt-5 md:text-6xl md:leading-[0.98] lg:text-7xl">
+            <h1 className="mt-4 font-display text-[2.1rem] leading-[1.02] text-balance text-shadow-strong text-areia xs:text-[2.4rem] sm:text-5xl md:mt-5 md:text-6xl md:leading-[0.98] lg:text-[5rem]">
               {t("hero.titlePart1")} <em className="not-italic text-cobre-soft whitespace-nowrap">{t("hero.titleAccent")}</em> {t("hero.titlePart2")}
             </h1>
-            <p className="mt-4 max-w-xl font-display text-[1.1rem] leading-[1.28] text-areia text-shadow-strong text-balance sm:text-2xl md:mt-5 md:text-[1.7rem] md:leading-[1.2]">
+            <p className="mt-4 max-w-xl font-display text-[1.25rem] leading-[1.2] text-areia text-shadow-strong text-balance sm:text-2xl md:mt-5 md:text-[1.85rem] md:leading-[1.15]">
               {t("hero.subtitle")}
             </p>
-            <p className="mt-3 max-w-lg text-[0.86rem] leading-relaxed text-areia/85 text-shadow-soft text-pretty md:mt-4 md:text-[0.98rem]">
+            <p className="mt-3 max-w-lg text-[0.88rem] leading-relaxed text-areia/90 text-shadow-soft text-pretty md:mt-4 md:text-[1rem]">
               {t("hero.support")}
             </p>
-            <div className="mt-6 flex flex-wrap gap-3 md:mt-7">
-              <Link to="/expedicoes" className="inline-flex items-center gap-2 rounded-full bg-cobre px-6 py-3.5 text-[0.74rem] uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft md:px-7 md:py-4 md:text-sm">
+            <div className="mt-8 flex flex-wrap gap-4 md:mt-10">
+              <Link to="/expedicoes" className="inline-flex items-center gap-2 rounded-full bg-cobre px-7 py-4 text-[0.74rem] uppercase tracking-widest text-areia transition-all hover:bg-cobre-soft hover:scale-105 md:px-8 md:py-4.5 md:text-sm">
                 {t("hero.ctaPrimary")} <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link to="/datas" className="inline-flex items-center gap-2 rounded-full border border-areia/60 bg-carvao/30 px-6 py-3.5 text-[0.74rem] uppercase tracking-widest text-areia backdrop-blur-sm hover:bg-areia/15 md:px-7 md:py-4 md:text-sm">
+              <Link to="/datas" className="inline-flex items-center gap-2 rounded-full border border-areia/40 bg-white/5 px-7 py-4 text-[0.74rem] uppercase tracking-widest text-areia backdrop-blur-md transition-all hover:bg-white/15 md:px-8 md:py-4.5 md:text-sm">
                 {t("hero.ctaSecondary")}
               </Link>
             </div>
 
-            <div className="mt-5 flex items-center gap-3 md:mt-6 xl:hidden">
+            <div className="mt-8 flex items-center gap-3 md:mt-10 xl:hidden">
               <span className="h-px w-8 bg-areia/30" />
               <LanguageSwitcher />
             </div>
