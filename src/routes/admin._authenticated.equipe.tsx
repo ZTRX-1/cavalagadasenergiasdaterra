@@ -46,17 +46,25 @@ function formatDateTime(iso: string | null) {
 function EquipePage() {
   const qc = useQueryClient();
   const { canView, role: userRole } = useCan("equipe");
+  const { data: userData } = useQuery({ 
+    queryKey: ["admin", "me"], 
+    queryFn: async () => (await supabase.auth.getUser()).data.user 
+  });
+  const isMaster = userData?.id === "20b7839f-b3c3-494c-90df-515ba0a0de4f";
+
   const [membroSelecionado, setMembroSelecionado] = useState<Membro | null>(null);
   const [abaMensagens, setAbaMensagens] = useState<"recebidas" | "enviadas">("recebidas");
   const [showNovoMsg, setShowNovoMsg] = useState(false);
   const [msgForm, setMsgForm] = useState({ subject: "", content: "" });
 
-  if (!canView || (userRole !== "desenvolvedor" && userRole !== "superadmin")) {
+  const isDevOrSuper = userRole === "desenvolvedor" || userRole === "superadmin";
+
+  if (!canView || (!isDevOrSuper && !isMaster)) {
     return (
       <div className="flex h-[60vh] flex-col items-center justify-center text-center">
         <Shield className="mb-4 h-12 w-12 text-[color:var(--admin-dourado)] opacity-20" />
         <h2 className="text-xl font-display text-[color:var(--admin-cinza-1)]">Acesso Restrito</h2>
-        <p className="mt-2 text-sm text-[color:var(--admin-cinza-3)]">
+        <p className="mt-2 text-sm text-[color:var(--admin-cinza-2)]">
           O módulo de Equipe está em fase alfa e disponível apenas para Desenvolvedores e Super Administradores.
         </p>
       </div>
