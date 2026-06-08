@@ -252,7 +252,7 @@ function ExpedicoesPage() {
                           </Link>
                           <div className="text-[11px] text-[color:var(--admin-cinza-3)] truncate">{e.regiao ?? e.cidade ?? "—"}</div>
                         </div>
-                        <StatusBadge status={e.status} />
+                        <StatusBadge status={e.status} className="shrink-0 scale-90 origin-top-right" />
                       </div>
                       <div className="mt-1.5 text-[12px] text-[color:var(--admin-cinza-2)]">
                         {e.moeda} {Number(e.preco).toLocaleString("pt-BR")} <span className="text-[color:var(--admin-cinza-3)] capitalize">· {e.marca?.replace(/-/g, " ")}</span>
