@@ -141,7 +141,7 @@ function AdminLayout() {
   const isCeo = role === "ceo";
 
   return (
-    <div className="admin-surface flex h-screen w-full overflow-hidden">
+    <div className="admin-surface flex h-dvh w-full overflow-hidden">
       <AdminSidebar user={user} />
       <AdminSidebarDrawer user={user} open={menuOpen} onClose={() => setMenuOpen(false)} />
       <div className="flex flex-1 flex-col min-w-0 h-full">
