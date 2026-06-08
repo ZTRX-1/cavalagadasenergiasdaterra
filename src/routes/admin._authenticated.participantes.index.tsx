@@ -132,8 +132,11 @@ function ParticipantesPage() {
       }
       
       if (apenasConfirmados) {
-        // Correção do filtro: buscar na reserva o status operacional correto
-        if (!res || !["reserva_confirmada", "participante_confirmado"].includes(res.status_operacional)) return false;
+        // Se p.status for 'confirmado' OU se a reserva estiver confirmada
+        const participanteConfirmado = p.status === "confirmado" || p.status === "pago";
+        const reservaConfirmada = res && ["reserva_confirmada", "participante_confirmado"].includes(res.status_operacional);
+        
+        if (!participanteConfirmado && !reservaConfirmada) return false;
       }
       
       if (q && !(p.nome ?? "").toLowerCase().includes(q) && !(p.email ?? "").toLowerCase().includes(q) && !(p.cpf ?? "").toLowerCase().includes(q)) return false;
@@ -191,37 +194,42 @@ function ParticipantesPage() {
         <strong className="text-[color:var(--admin-cinza-1)]">Quem vai pra cada expedição.</strong> A visão <em>Por expedição</em> mostra vagas, confirmados, pendentes e receita prevista/recebida de cada data. Participantes nascem automaticamente quando o lead vira reserva — você só precisa completar os dados (peso, CPF, restrições).
       </AdminPageIntro>
 
-      <div className="mb-4 flex flex-wrap items-center gap-4">
-        <div className="relative group">
-          <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-[color:var(--admin-cinza-3)] group-focus-within:text-[color:var(--admin-dourado)] transition-colors" />
-          <input
-            className="admin-input pl-7 w-[160px] sm:w-[280px] text-[12px] h-[38px] placeholder:text-[color:var(--admin-cinza-3)] placeholder:text-[11px]"
-            placeholder="Nome, E-mail ou CPF"
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-          />
+      <div className="mb-6 flex flex-wrap items-end gap-3 p-4 rounded-xl bg-[color:var(--admin-carvao-deep)]/30 border border-[color:var(--admin-borda)]/30">
+        <div className="relative group min-w-[160px] sm:min-w-[240px]">
+          <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] mb-1.5 block ml-1">Pesquisar</span>
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--admin-cinza-3)] group-focus-within:text-[color:var(--admin-dourado)] transition-colors" />
+            <input
+              className="admin-input pl-10 w-full text-[13px] h-[42px] placeholder:text-[color:var(--admin-cinza-3)]/60"
+              placeholder="Nome, E-mail ou CPF"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+            />
+          </div>
         </div>
 
-        <div className="flex flex-col gap-1 min-w-[200px] flex-1 sm:flex-none">
+        <div className="flex flex-col gap-1.5 min-w-[200px] flex-1 sm:flex-none">
           <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Filtrar Expedição</span>
-          <select className="admin-input h-[38px] px-2 text-[12px] w-full" value={filtroExp} onChange={(e) => setFiltroExp(e.target.value)}>
+          <select className="admin-input h-[42px] px-3 text-[13px] w-full bg-[color:var(--admin-carvao-deep)]/80" value={filtroExp} onChange={(e) => setFiltroExp(e.target.value)}>
             <option value="">Todas as expedições</option>
             {expedicoes.map((e) => <option key={e.id} value={e.id}>{e.nome}</option>)}
           </select>
         </div>
-        <div className="flex flex-col gap-1 min-w-[140px] flex-1 sm:flex-none">
+
+        <div className="flex flex-col gap-1.5 min-w-[150px] flex-1 sm:flex-none">
           <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Status Participante</span>
-          <select className="admin-input h-[38px] px-2 text-[12px] w-full" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
+          <select className="admin-input h-[42px] px-3 text-[13px] w-full bg-[color:var(--admin-carvao-deep)]/80" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
             <option value="">Todos os status</option>
             <option value="pendente">Pendente</option>
             <option value="confirmado">Confirmado</option>
             <option value="cancelado">Cancelado</option>
           </select>
         </div>
-        <div className="flex flex-col gap-1 min-w-[170px] flex-1 sm:flex-none">
+
+        <div className="flex flex-col gap-1.5 min-w-[180px] flex-1 sm:flex-none">
           <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Situação Financeira</span>
           <select 
-            className="admin-input h-[38px] px-2 text-[12px] w-full" 
+            className="admin-input h-[42px] px-3 text-[13px] w-full bg-[color:var(--admin-carvao-deep)]/80" 
             value={filtroStatusFinanceiro} 
             onChange={(e) => setFiltroStatusFinanceiro(e.target.value)}
           >
@@ -231,21 +239,30 @@ function ParticipantesPage() {
             <option value="pago_integralmente">Pago Integralmente</option>
           </select>
         </div>
-        <div className="flex flex-col gap-1 flex-1 sm:flex-none">
+
+        <div className="flex flex-col gap-1.5 flex-1 sm:flex-none">
           <span className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] ml-1">Filtro Rápido</span>
-          <label className="flex items-center gap-2 cursor-pointer bg-[color:var(--admin-carvao-deep)]/40 border border-[color:var(--admin-borda)] rounded-lg px-3 py-1.5 h-[38px] whitespace-nowrap">
+          <label className={cn(
+            "flex items-center gap-2 cursor-pointer border rounded-lg px-4 h-[42px] transition-all",
+            apenasConfirmados 
+              ? "bg-[color:var(--admin-dourado)]/10 border-[color:var(--admin-dourado)]/40 text-[color:var(--admin-dourado)]" 
+              : "bg-[color:var(--admin-carvao-deep)]/60 border-[color:var(--admin-borda)]/50 text-[color:var(--admin-cinza-2)] hover:border-[color:var(--admin-borda)]"
+          )}>
             <input 
               type="checkbox" 
-              className="accent-[color:var(--admin-dourado)]" 
+              className="accent-[color:var(--admin-dourado)] h-4 w-4" 
               checked={apenasConfirmados} 
               onChange={(e) => setApenasConfirmados(e.target.checked)} 
             />
-            <span className="text-[12px] text-[color:var(--admin-cinza-2)]">Somente Confirmadas</span>
+            <span className="text-[13px] font-medium whitespace-nowrap">Somente Confirmados</span>
           </label>
         </div>
-        <span className="text-[11px] text-[color:var(--admin-cinza-3)] ml-auto">
-          {filtrados.length} de {list.length}
-        </span>
+
+        <div className="ml-auto flex items-center h-[42px]">
+          <span className="text-[11px] font-medium bg-[color:var(--admin-carvao-deep)]/80 border border-[color:var(--admin-borda)]/40 px-3 py-1 rounded-full text-[color:var(--admin-cinza-3)]">
+            {filtrados.length} de {list.length} encontrados
+          </span>
+        </div>
       </div>
 
       {isLoading ? (
