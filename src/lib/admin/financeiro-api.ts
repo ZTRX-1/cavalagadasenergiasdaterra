@@ -110,6 +110,7 @@ export type ExpedicaoIndicador = {
   expedicao_id: string;
   expedicao_nome: string;
   slug: string;
+  moeda: string;
   vagas_totais: number;
   vagas_ocupadas: number;
   vagas_disponiveis: number;
@@ -381,6 +382,10 @@ export async function listReservaHistorico(reservaId: string): Promise<ReservaHi
 
 // ----- Indicadores por expedição (view)
 export async function listIndicadoresExpedicoes(): Promise<ExpedicaoIndicador[]> {
+  const { data: expedicoes } = await supabase.from("expedicoes").select("id, moeda");
+  const moedas = new Map<string, string>();
+  (expedicoes ?? []).forEach(e => moedas.set(e.id, e.moeda));
+
   const { data, error } = await sb
     .from("expedicao_indicadores")
     .select("*")
@@ -388,10 +393,12 @@ export async function listIndicadoresExpedicoes(): Promise<ExpedicaoIndicador[]>
   if (error) throw error;
   return (data ?? []).map((r) => {
     const row = r as Record<string, unknown>;
+    const id = String(row.expedicao_id ?? "");
     return {
-      expedicao_id: String(row.expedicao_id ?? ""),
+      expedicao_id: id,
       expedicao_nome: String(row.expedicao_nome ?? ""),
       slug: String(row.slug ?? ""),
+      moeda: moedas.get(id) || "BRL",
       vagas_totais: Number(row.vagas_totais ?? 0),
       vagas_ocupadas: Number(row.vagas_ocupadas ?? 0),
       vagas_disponiveis: Number(row.vagas_disponiveis ?? 0),
