@@ -261,6 +261,24 @@ async function handleCapturaProgressiva(payload: any) {
   };
 
   if (lead_id) {
+    // SEGURANÇA: Verificar se o lead existe e se ainda está em estado de abandono
+    const { data: currentLead, error: fetchErr } = await admin
+      .from("leads")
+      .select("id, status, email, telefone")
+      .eq("id", lead_id)
+      .maybeSingle();
+
+    if (fetchErr || !currentLead) return json({ error: "Lead não encontrado." }, 404);
+    
+    // Só permite atualização anônima se o lead ainda for 'abandonado'
+    if (currentLead.status !== "abandonado") {
+      return json({ error: "Este lead já foi processado e não pode ser alterado anonimamente." }, 403);
+    }
+
+    // Opcional: Impedir alteração se o e-mail/telefone for diferente do já gravado (se já gravado)
+    // Mas como é "captura progressiva", o usuário pode estar corrigindo um erro de digitação.
+    // O status 'abandonado' já limita bastante o risco.
+
     const { data, error } = await admin
       .from("leads")
       .update(leadPayload as never)

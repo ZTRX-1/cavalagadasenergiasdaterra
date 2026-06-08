@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
     .eq("user_id", userData.user.id);
 
   const isAdmin =
-    (callerRoles ?? []).some((r) => r.role === "admin") || (totalRoles ?? 0) === 0;
+    (callerRoles ?? []).some((r) => ["admin", "superadmin", "desenvolvedor"].includes(r.role)) || (totalRoles ?? 0) === 0;
   if (!isAdmin) return json({ error: "Apenas administradores podem gerenciar usuários." }, 403);
 
   let body: Record<string, unknown> = {};
