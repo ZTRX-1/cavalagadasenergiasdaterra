@@ -42,6 +42,7 @@ type Participante = {
 };
 
 type CriarPayload = {
+  lead_id?: string;
   expedicao_id: string;
   expedicao_nome: string;
   data_id: string;
@@ -160,16 +161,27 @@ async function handleCriar(payload: CriarPayload) {
     data_nascimento: firstP?.data_nascimento || null,
   };
 
-  const { data: leadRow, error: leadErr } = await admin
-    .from("leads")
-    .insert(leadPayload as never)
-    .select("id")
-    .single();
-  if (leadErr) return json({ error: "Falha ao criar lead: " + leadErr.message }, 500);
+  let leadId = payload.lead_id;
+
+  if (leadId) {
+    const { error: leadErr } = await admin
+      .from("leads")
+      .update(leadPayload as never)
+      .eq("id", leadId);
+    if (leadErr) return json({ error: "Falha ao atualizar lead: " + leadErr.message }, 500);
+  } else {
+    const { data: leadRow, error: leadErr } = await admin
+      .from("leads")
+      .insert(leadPayload as never)
+      .select("id")
+      .single();
+    if (leadErr) return json({ error: "Falha ao criar lead: " + leadErr.message }, 500);
+    leadId = leadRow.id;
+  }
 
   const reservaPayload = {
     protocolo,
-    lead_id: leadRow.id,
+    lead_id: leadId,
     expedicao_id: payload.expedicao_id,
     expedicao_nome: payload.expedicao_nome,
     data_id: payload.data_id,
@@ -203,7 +215,7 @@ async function handleCriar(payload: CriarPayload) {
   return json({
     protocolo: reservaRow.protocolo,
     reserva_id: reservaRow.id,
-    lead_id: leadRow.id,
+    lead_id: leadId,
   });
 }
 
