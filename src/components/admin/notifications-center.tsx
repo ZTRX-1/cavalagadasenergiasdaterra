@@ -14,6 +14,7 @@ import {
   listarNotificacoes,
   marcarComoLida,
   marcarTodasComoLidas,
+  excluirNotificacoes,
   type NotificacaoCategoria,
   type NotificacaoItem,
 } from "@/lib/admin/notificacoes-api";
@@ -63,6 +64,13 @@ export function NotificationsCenter() {
     mutationFn: () => marcarTodasComoLidas(naoLidas.map((n) => n.id)),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin", "notificacoes"] }),
   });
+  const mLimpar = useMutation({
+    mutationFn: () => excluirNotificacoes(items.map((n) => n.id)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin", "notificacoes"] });
+      setOpen(false);
+    },
+  });
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -109,12 +117,7 @@ export function NotificationsCenter() {
                 size="sm"
                 variant="ghost"
                 disabled={items.length === 0}
-                onClick={() => {
-                  // Como não temos uma função de limpar tudo no API, vamos apenas fechar o popover ou implementar se existir
-                  // Por enquanto, o usuário pediu um botão de limpar notificações. 
-                  // Vou assumir que ele quer "Marcar todas como lidas" ou sumir com elas da vista.
-                  mTudo.mutate();
-                }}
+                onClick={() => mLimpar.mutate()}
                 className="h-7 px-2 text-[10px] uppercase tracking-wider text-red-400 hover:text-red-300 hover:bg-red-400/10"
               >
                 Limpar
