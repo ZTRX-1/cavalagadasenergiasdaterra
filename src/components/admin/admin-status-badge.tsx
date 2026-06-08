@@ -6,8 +6,7 @@ const TOKENS: Record<string, { bg: string; fg: string; ring: string; label?: str
   publicado: { bg: "bg-emerald-500/15", fg: "text-emerald-300", ring: "ring-emerald-500/30", label: "Publicado" },
   pausado: { bg: "bg-amber-500/15", fg: "text-amber-300", ring: "ring-amber-500/30", label: "Pausado" },
   arquivado: { bg: "bg-zinc-700/30", fg: "text-zinc-400", ring: "ring-zinc-600/40", label: "Arquivado" },
-  // leads — etapas do atendimento (modelo simplificado: 7 etapas)
-  incompleto: { bg: "bg-zinc-500/15", fg: "text-zinc-400", ring: "ring-zinc-500/30", label: "Incompleto" },
+  // leads — etapas do atendimento (modelo simplificado: 6 etapas)
   novo: { bg: "bg-sky-500/15", fg: "text-sky-300", ring: "ring-sky-500/30", label: "Novo" },
   em_atendimento: { bg: "bg-indigo-500/15", fg: "text-indigo-300", ring: "ring-indigo-500/30", label: "Atendimento" },
   qualificado: { bg: "bg-violet-500/15", fg: "text-violet-300", ring: "ring-violet-500/30", label: "Qualificado" },

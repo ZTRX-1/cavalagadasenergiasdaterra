@@ -23,9 +23,6 @@ import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
 import { useCan } from "@/hooks/use-permissions";
 import { DashboardAnalytics } from "@/components/admin/dashboard-analytics";
-import { getFinancialSummary } from "@/lib/admin/finance-utils";
-import { type ReservaRow } from "@/lib/admin/api";
-import { type Despesa } from "@/lib/admin/financeiro-api";
 
 export const Route = createFileRoute("/admin/_authenticated/")({
   component: DashboardPage,
@@ -71,25 +68,21 @@ async function fetchDashboard(range: { from: string; to: string }) {
   const [
     leadsTotal,
     leadsQualificados,
-    leadsAbandonados,
     leadsConvertidos,
     reservasCriadas,
     reservasConfirmadas,
     reservasFinanceiro,
-    despesas,
     participantesConfirmados,
     expedicoes,
     datas,
     proximas,
   ] = await Promise.all([
-    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).neq("status", "incompleto"),
+    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
     supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("etapa_atendimento", ["qualificado", "pronto_reserva", "convertido"]),
-    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).eq("status", "incompleto"),
     supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).eq("etapa_atendimento", "convertido"),
-    supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).neq("status_operacional", "cancelada"),
+    supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
     supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("status_operacional", ["reserva_confirmada", "participante_confirmado"]),
-    supabase.from("reservas").select("*").gte("created_at", range.from).lte("created_at", range.to),
-    supabase.from("despesas").select("*").gte("data", range.from.slice(0, 10)).lte("data", range.to.slice(0, 10)),
+    supabase.from("reservas").select("valor_total, valor_pago, saldo_restante, status_financeiro, status_pagamento, status_operacional, created_at").gte("created_at", range.from).lte("created_at", range.to),
     supabase.from("participantes").select("id", { count: "exact", head: true }).eq("status", "confirmado"),
     supabase.from("expedicoes").select("id", { count: "exact", head: true }).eq("ativo", true).eq("status", "publicado"),
     supabase.from("datas").select("vagas_disponiveis, vagas_total, preco_pix, preco_cartao, expedicoes(preco)").eq("status", "disponivel").gte("data_inicio", today),
@@ -102,17 +95,23 @@ async function fetchDashboard(range: { from: string; to: string }) {
       .limit(5),
   ]);
 
-  // Cálculos consolidados via central de inteligência financeira
-  const fin = getFinancialSummary(
-    (reservasFinanceiro.data ?? []) as unknown as ReservaRow[],
-    (despesas.data ?? []) as unknown as Despesa[]
+  // Faturamento previsto: soma de valor_total das reservas no período
+  const receitaPrevista = (reservasFinanceiro.data ?? []).reduce(
+    (s: number, r: { valor_total?: number | null }) => s + Number(r.valor_total ?? 0),
+    0,
   );
+  const receitaRecebida = (reservasFinanceiro.data ?? []).reduce(
+    (s: number, r: { valor_total?: number | null; valor_pago?: number | null; status_pagamento?: string; status_operacional?: string }) => {
+      // Se a reserva está confirmada operacionalmente, o financeiro deve contar como recebido (regra de negócio solicitada)
+      if (r.status_operacional === "reserva_confirmada" || r.status_operacional === "participante_confirmado") {
+        return s + Number(r.valor_total ?? 0);
+      }
+      return s + (r.status_pagamento === "confirmado" ? Number(r.valor_pago ?? 0) : 0);
 
-  const receitaPrevista = fin.receitaPrevista;
-  const receitaRecebida = fin.receitaConfirmada;
-  const receitaPendente = fin.receitaPendente;
-  const lucroLiquido = fin.lucroLiquido;
-  const margem = fin.margem;
+    },
+    0,
+  );
+  const receitaPendente = receitaPrevista - receitaRecebida;
 
   // Faturamento estimado das vagas restantes (50/50 Pix+Cartão)
   const faturamentoEstimadoVagas = (datas.data || []).reduce((acc, d: any) => {
@@ -129,10 +128,8 @@ async function fetchDashboard(range: { from: string; to: string }) {
   return {
     leadsTotal: leadsTotal.count ?? 0,
     leadsQualificados: leadsQualificados.count ?? 0,
-    leadsAbandonados: leadsAbandonados.count ?? 0,
     leadsConvertidos: leadsConvertidos.count ?? 0,
     reservasCriadas: reservasCriadas.count ?? 0,
-
     reservasConfirmadas: reservasConfirmadas.count ?? 0,
     participantesConfirmados: participantesConfirmados.count ?? 0,
     expedicoesAtivas: expedicoes.count ?? 0,
@@ -141,8 +138,6 @@ async function fetchDashboard(range: { from: string; to: string }) {
     receitaPrevista,
     receitaRecebida,
     receitaPendente,
-    lucroLiquido,
-    margem,
     faturamentoEstimadoVagas,
     proximas: proximas.data || [],
   };
@@ -224,9 +219,8 @@ function DashboardPage() {
       {/* KPIs operacionais — funil de vendas */}
       <div>
         <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">Funil no período</p>
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <KPI label="Leads recebidos" value={isLoading ? "—" : String(data?.leadsTotal ?? 0)} icon={Sparkles} />
-          <KPI label="Leads abandonados" value={isLoading ? "—" : String(data?.leadsAbandonados ?? 0)} icon={Users} tone="warn" />
           <KPI label="Leads qualificados" value={isLoading ? "—" : String(data?.leadsQualificados ?? 0)} icon={Users} />
           <KPI label="Reservas criadas" value={isLoading ? "—" : String(data?.reservasCriadas ?? 0)} icon={CalendarCheck} />
           <KPI label="Reservas confirmadas" value={isLoading ? "—" : String(data?.reservasConfirmadas ?? 0)} icon={Compass} />
@@ -236,11 +230,10 @@ function DashboardPage() {
       {/* KPIs receita */}
       <div>
         <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-[color:var(--admin-cinza-3)]">Receita no período</p>
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <KPI label="Receita prevista" value={isLoading ? "—" : formatBRL(data?.receitaPrevista ?? 0)} icon={TrendingUp} tone="warn" />
           <KPI label="Receita recebida" value={isLoading ? "—" : formatBRL(data?.receitaRecebida ?? 0)} icon={TrendingUp} tone="ok" />
           <KPI label="Receita pendente" value={isLoading ? "—" : formatBRL(data?.receitaPendente ?? 0)} icon={TrendingUp} tone="danger" />
-          <KPI label="Lucro líquido" value={isLoading ? "—" : formatBRL(data?.lucroLiquido ?? 0)} icon={TrendingUp} tone={data?.lucroLiquido && data.lucroLiquido >= 0 ? "ok" : "danger"} />
           <KPI label="Participantes confirmados" value={isLoading ? "—" : String(data?.participantesConfirmados ?? 0)} icon={Users} />
         </div>
       </div>

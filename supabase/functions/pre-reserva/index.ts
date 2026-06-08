@@ -120,54 +120,7 @@ function validarCriar(b: any): { ok: true; data: CriarPayload } | { ok: false; e
   return { ok: true, data: b as CriarPayload };
 }
 
-async function handleCapturaInicial(payload: any) {
-  const { nome, email, telefone, expedicao_id, expedicao_nome, data_id, etapa_abandono, lead_id } = payload;
-  
-  if (!nome || !email || !telefone) {
-    return json({ error: "Dados incompletos para captura inicial." }, 400);
-  }
-
-  const data = {
-    nome,
-    email,
-    telefone,
-    expedicao_id,
-    expedicao_interesse: expedicao_nome,
-    data_expedicao_id: data_id,
-    etapa_abandono,
-    status: "incompleto",
-    etapa_atendimento: "incompleto",
-    origem: "captura_progressiva",
-    canal_entrada: "site",
-    updated_at: new Date().toISOString(),
-  };
-
-  let result;
-  if (lead_id) {
-    result = await admin.from("leads").update(data).eq("id", lead_id).select("id").single();
-  } else {
-    // Tenta encontrar por email/telefone recente se não tiver ID
-    const { data: existing } = await admin
-      .from("leads")
-      .select("id")
-      .eq("email", email)
-      .eq("status", "incompleto")
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    if (existing) {
-      result = await admin.from("leads").update(data).eq("id", existing.id).select("id").single();
-    } else {
-      result = await admin.from("leads").insert([{ ...data, created_at: new Date().toISOString() }]).select("id").single();
-    }
-  }
-
-  if (result.error) return json({ error: result.error.message }, 500);
-  return json({ lead_id: result.data.id });
-}
-
-async function handleCriar(payload: CriarPayload & { lead_id?: string }) {
+async function handleCriar(payload: CriarPayload) {
   const qtd = payload.participantes.length;
   const valor_total = payload.preco_unitario * qtd;
 
@@ -188,7 +141,7 @@ async function handleCriar(payload: CriarPayload & { lead_id?: string }) {
     expedicao_interesse: payload.expedicao_nome,
     origem: payload.adicionais.como_conheceu || "pre_reserva_site",
     canal_entrada: "site",
-    status: "novo", // Ao concluir, vira 'novo' (qualificado)
+    status: "novo",
     etapa_atendimento: "novo",
     nivel_interesse: 5,
     lead_score: 80,
@@ -204,27 +157,18 @@ async function handleCriar(payload: CriarPayload & { lead_id?: string }) {
     peso: firstP?.peso,
     experiencia_equestre: firstP?.experiencia,
     data_nascimento: firstP?.data_nascimento || null,
-    etapa_abandono: "concluido",
-    updated_at: new Date().toISOString(),
   };
 
-  let leadId = payload.lead_id;
-  if (leadId) {
-    const { error: updErr } = await admin.from("leads").update(leadPayload).eq("id", leadId);
-    if (updErr) return json({ error: "Falha ao atualizar lead: " + updErr.message }, 500);
-  } else {
-    const { data: leadRow, error: leadErr } = await admin
-      .from("leads")
-      .insert({ ...leadPayload, created_at: new Date().toISOString() })
-      .select("id")
-      .single();
-    if (leadErr) return json({ error: "Falha ao criar lead: " + leadErr.message }, 500);
-    leadId = leadRow.id;
-  }
+  const { data: leadRow, error: leadErr } = await admin
+    .from("leads")
+    .insert(leadPayload as never)
+    .select("id")
+    .single();
+  if (leadErr) return json({ error: "Falha ao criar lead: " + leadErr.message }, 500);
 
   const reservaPayload = {
     protocolo,
-    lead_id: leadId,
+    lead_id: leadRow.id,
     expedicao_id: payload.expedicao_id,
     expedicao_nome: payload.expedicao_nome,
     data_id: payload.data_id,
@@ -246,7 +190,6 @@ async function handleCriar(payload: CriarPayload & { lead_id?: string }) {
     observacoes_importantes: payload.adicionais.observacoes_importantes,
     forma_pagamento: payload.adicionais.forma_pagamento,
     valor_total,
-    created_at: new Date().toISOString(),
   };
 
   const { data: reservaRow, error: reservaErr } = await admin
@@ -259,7 +202,7 @@ async function handleCriar(payload: CriarPayload & { lead_id?: string }) {
   return json({
     protocolo: reservaRow.protocolo,
     reserva_id: reservaRow.id,
-    lead_id: leadId,
+    lead_id: leadRow.id,
   });
 }
 
@@ -307,9 +250,6 @@ Deno.serve(async (req) => {
       const v = validarCriar(body);
       if (!v.ok) return json({ error: v.error }, 400);
       return await handleCriar(v.data);
-    }
-    if (action === "captura-inicial") {
-      return await handleCapturaInicial(body);
     }
     if (action === "consultar") {
       return await handleConsultar(body.protocolo);

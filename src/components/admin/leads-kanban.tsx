@@ -30,11 +30,8 @@ export function LeadsKanban({ leads, onMove, onDelete, onConverter }: Props) {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const grouped: Record<LeadEtapaId, LeadRow[]> = useMemo(() => {
-    // Regra de Auditoria: Leads abandonados (status incompleto) são ocultados do CRM operacional
-    const filteredLeads = leads.filter(l => l.status !== "incompleto");
-    
     return LEAD_ETAPAS.reduce((acc, s) => {
-      acc[s.id] = filteredLeads.filter((l) => (l.etapa_atendimento ?? "novo") === s.id);
+      acc[s.id] = leads.filter((l) => (l.etapa_atendimento ?? "novo") === s.id);
       return acc;
     }, {} as Record<LeadEtapaId, LeadRow[]>);
   }, [leads]);
@@ -66,15 +63,15 @@ export function LeadsKanban({ leads, onMove, onDelete, onConverter }: Props) {
     >
       <div
         className="grid gap-3 overflow-x-auto pb-4"
-        style={{ gridTemplateColumns: `repeat(${LEAD_ETAPAS.length - 1}, minmax(260px, 1fr))` }}
+        style={{ gridTemplateColumns: `repeat(${LEAD_ETAPAS.length}, minmax(260px, 1fr))` }}
       >
-        {LEAD_ETAPAS.filter(s => s.id !== "incompleto").map((s) => (
+        {LEAD_ETAPAS.map((s) => (
           <KanbanColumn
             key={s.id}
             id={s.id}
             label={s.label}
             descricao={s.descricao}
-            leads={grouped[s.id] || []}
+            leads={grouped[s.id]}
             onDelete={onDelete}
             onConverter={onConverter}
           />

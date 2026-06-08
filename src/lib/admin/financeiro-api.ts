@@ -238,10 +238,10 @@ export async function dreExpedicoes(range: { from: string; to: string }): Promis
     return map.get(key)!;
   };
   for (const r of reservasRes.data ?? []) {
-    const isConfirmado = r.status_pagamento === "confirmado";
+    const isConfirmado = r.status_pagamento === "confirmado" || ["reserva_confirmada", "participante_confirmado"].includes(r.status_operacional);
     if (!isConfirmado) continue;
     const row = get(r.expedicao_id, r.expedicao_nome);
-    row.receita += Number(r.valor_total ?? 0);
+    row.receita += Number(isConfirmado && ["reserva_confirmada", "participante_confirmado"].includes(r.status_operacional) ? (r.valor_total ?? r.valor_pago ?? 0) : (r.valor_pago ?? 0));
   }
   for (const d of despesasRes.data ?? []) {
     const row = get(d.expedicao_id);
@@ -279,10 +279,10 @@ export async function fluxoCaixa(range: { from: string; to: string }) {
     return map.get(dia)!;
   };
   for (const r of reservasRes.data ?? []) {
-    const isConfirmado = r.status_pagamento === "confirmado";
+    const isConfirmado = r.status_pagamento === "confirmado" || ["reserva_confirmada", "participante_confirmado"].includes(r.status_operacional);
     if (!isConfirmado) continue;
     const dia = r.created_at.slice(0, 10);
-    ensure(dia).entrada += Number(r.valor_total ?? 0);
+    ensure(dia).entrada += Number(isConfirmado && ["reserva_confirmada", "participante_confirmado"].includes(r.status_operacional) ? (r.valor_total ?? r.valor_pago ?? 0) : (r.valor_pago ?? 0));
   }
   for (const d of despesasRes.data ?? []) {
     ensure(d.data).saida += Number(d.valor ?? 0);

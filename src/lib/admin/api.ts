@@ -381,7 +381,6 @@ export async function deleteData(id: string): Promise<void> {
 
 /** Etapas do Atendimento — coluna do Kanban e progresso do lead. */
 export const LEAD_ETAPAS = [
-  { id: "incompleto", label: "Incompleto", descricao: "Iniciou mas não concluiu o formulário" },
   { id: "novo", label: "Novo", descricao: "Acabou de chegar" },
   { id: "em_atendimento", label: "Atendimento", descricao: "IA ou equipe iniciou conversa" },
   { id: "qualificado", label: "Qualificado", descricao: "Tem perfil para a viagem" },
@@ -445,7 +444,6 @@ export interface LeadRow {
   interesses: string | null;
   restricoes: string | null;
   orcamento: string | null;
-  etapa_abandono: string | null;
 }
 
 // ---------- TEMPERATURA / STATUS DE ATENDIMENTO / MOTIVO DE PERDA ----------
@@ -806,8 +804,6 @@ export interface ReservaRow {
   data_id: string | null;
   data_label: string;
   status: string;
-  status_operacional: string;
-  status_financeiro: string;
   quantidade_participantes: number;
   responsavel: Record<string, unknown>;
   grupo_nome: string | null;

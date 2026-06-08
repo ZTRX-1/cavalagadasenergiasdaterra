@@ -173,7 +173,7 @@ function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: s
 
 export function AdminSidebar({ user }: { user: { email?: string; nome?: string | null } | null }) {
   return (
-    <aside className="hidden md:flex w-[252px] shrink-0 flex-col border-r border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/80 backdrop-blur-xl h-full">
+    <aside className="hidden md:flex w-[252px] shrink-0 flex-col border-r border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/80 backdrop-blur-xl">
       <SidebarContent user={user} />
     </aside>
   );
