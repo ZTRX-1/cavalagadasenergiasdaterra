@@ -785,6 +785,42 @@ export type Database = {
         }
         Relationships: []
       }
+      internal_messages: {
+        Row: {
+          archived: boolean
+          content: string
+          created_at: string
+          id: string
+          read: boolean
+          recipient_id: string
+          sender_id: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          archived?: boolean
+          content: string
+          created_at?: string
+          id?: string
+          read?: boolean
+          recipient_id: string
+          sender_id: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          archived?: boolean
+          content?: string
+          created_at?: string
+          id?: string
+          read?: boolean
+          recipient_id?: string
+          sender_id?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       lead_atividades: {
         Row: {
           autor_id: string | null
@@ -1355,6 +1391,7 @@ export type Database = {
           cargo_id: string | null
           created_at: string
           data_entrada: string | null
+          especialidades: string[] | null
           id: string
           locked_until: string | null
           login_attempts: number | null
@@ -1376,6 +1413,7 @@ export type Database = {
           cargo_id?: string | null
           created_at?: string
           data_entrada?: string | null
+          especialidades?: string[] | null
           id?: string
           locked_until?: string | null
           login_attempts?: number | null
@@ -1397,6 +1435,7 @@ export type Database = {
           cargo_id?: string | null
           created_at?: string
           data_entrada?: string | null
+          especialidades?: string[] | null
           id?: string
           locked_until?: string | null
           login_attempts?: number | null

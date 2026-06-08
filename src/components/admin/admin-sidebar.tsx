@@ -48,6 +48,7 @@ const nav: NavItem[] = [
   { to: "/admin/leads", label: "Leads", icon: Sparkles, modulo: "leads", group: "operacao" },
   { to: "/admin/reservas", label: "Reservas", icon: BookOpen, modulo: "reservas", group: "operacao" },
   { to: "/admin/participantes", label: "Participantes", icon: Users, modulo: "participantes", group: "operacao" },
+  { to: "/admin/equipe", label: "Equipe", icon: Users, modulo: "equipe", group: "operacao" },
   { to: "/admin/financeiro", label: "Financeiro", icon: Wallet, modulo: "financeiro", group: "operacao" },
   { to: "/admin/midia", label: "Mídia", icon: ImageIcon, modulo: "midia", group: "operacao" },
   { to: "/admin/documentos", label: "Documentos", icon: FileText, modulo: "documentos", group: "operacao" },
