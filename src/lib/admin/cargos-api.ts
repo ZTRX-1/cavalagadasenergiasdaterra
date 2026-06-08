@@ -1,18 +1,25 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export const MODULOS_PERMISSAO = [
+  // Operação
   { chave: "dashboard",    nome: "Dashboard" },
+  { chave: "expedicoes",   nome: "Expedições" },
   { chave: "leads",        nome: "Leads" },
   { chave: "crm",          nome: "CRM" },
   { chave: "reservas",     nome: "Reservas" },
+  { chave: "participantes",nome: "Participantes" },
+  { chave: "equipe",       nome: "Equipe" },
   { chave: "financeiro",   nome: "Financeiro" },
-  { chave: "expedicoes",   nome: "Expedições" },
+  { chave: "midia",        nome: "Mídia" },
   { chave: "documentos",   nome: "Documentos" },
-  { chave: "configuracoes",nome: "Configurações" },
+  // Governança
+  { chave: "ia",           nome: "IA" },
+  { chave: "automacoes",   nome: "Automações" },
+  { chave: "historico",    nome: "Histórico" },
+  { chave: "integracoes",  nome: "Integrações" },
   { chave: "usuarios",     nome: "Usuários" },
   { chave: "cargos",       nome: "Cargos" },
-  { chave: "integracoes",  nome: "Integrações" },
-  { chave: "historico",    nome: "Histórico" },
+  { chave: "configuracoes",nome: "Configurações" },
 ] as const;
 
 export const ACOES_PERMISSAO = ["visualizar", "criar", "editar", "excluir"] as const;
