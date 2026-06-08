@@ -1029,6 +1029,8 @@ export const CARGOS_EQUIPE = [
   "Atendimento / Reservas",
   "Suporte",
   "Developer",
+  "Estrategista Digital",
+  "Arquiteto de Operações",
 ] as const;
 
 export type AppRole =
