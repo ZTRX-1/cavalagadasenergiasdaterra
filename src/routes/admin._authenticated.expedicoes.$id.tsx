@@ -196,7 +196,7 @@ function ExpedicaoEdit() {
         </ul>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,620px)] lg:items-start">
+      <div className="grid gap-6 lg:grid-cols-[1fr_640px] lg:items-start">
         <div className="min-w-0">
       <Tabs defaultValue="geral">
 
