@@ -601,7 +601,7 @@
 
 /* Defesa mínima contra overflow horizontal acidental — só no body,
    sem mexer em html (preserva sticky/fixed em ancestrais). */
-body { overflow-x: clip; overscroll-behavior-y: none; }
+body { overflow-x: clip; }
 
 /* Admin table fallback — evita tabela "nua" extrapolar viewport. */
 .admin-surface table { max-width: 100%; }
