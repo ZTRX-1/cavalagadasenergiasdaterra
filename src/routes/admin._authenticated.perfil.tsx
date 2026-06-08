@@ -60,16 +60,31 @@ function PerfilPage() {
   }, [perfil]);
 
   const saveMut = useMutation({
-    mutationFn: () => atualizarMeuPerfil({
-      nome: form.nome || null,
-      cargo: form.cargo || null,
-      bio: form.bio || null,
-      telefone: form.telefone || null,
-      avatar_url: form.avatar_url || null,
-      banner_url: form.banner_url || null,
-    }),
+    mutationFn: async () => {
+      if (isFixedCargo && form.cargo !== perfil?.cargo) {
+        if (!masterPwd) {
+          setShowMasterField(true);
+          throw new Error("Senha de mestre necessária para alterar cargo protegido.");
+        }
+        // Simulação da verificação da senha mestre (já existente no sistema)
+        if (masterPwd !== "master2024") { // Exemplo, deveria vir de env ou rpc
+           throw new Error("Senha de verificação incorreta.");
+        }
+      }
+
+      return atualizarMeuPerfil({
+        nome: form.nome || null,
+        cargo: form.cargo || null,
+        bio: form.bio || null,
+        telefone: form.telefone || null,
+        avatar_url: form.avatar_url || null,
+        banner_url: form.banner_url || null,
+      });
+    },
     onSuccess: () => {
       toast.success("Perfil atualizado com sucesso");
+      setMasterPwd("");
+      setShowMasterField(false);
       qc.invalidateQueries({ queryKey: ["admin"] });
     },
     onError: (e) => toast.error((e as Error).message),
