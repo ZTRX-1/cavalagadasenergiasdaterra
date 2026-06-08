@@ -65,31 +65,21 @@ function NavLinkItem({ item, onNavigate, active }: { item: NavItem; onNavigate?:
   if (!canView) return null;
   const Icon = item.icon;
 
-  if (locked) {
-    return (
-      <div
-        className="admin-nav-item cursor-not-allowed opacity-60"
-        title="Em desenvolvimento — acesso bloqueado para seu papel"
-        aria-disabled="true"
-      >
-        <Icon className="h-[18px] w-[18px]" strokeWidth={1.6} />
-        <span>{item.label}</span>
-        <span className="ml-auto inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-400/10 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.18em] text-amber-200">
-          <Lock className="h-2.5 w-2.5" /> dev
-        </span>
-      </div>
-    );
-  }
-
   return (
     <Link
       to={item.to as never}
       onClick={onNavigate}
       className="admin-nav-item"
       data-active={active}
+      title={locked ? "Em desenvolvimento — próxima etapa" : undefined}
     >
       <Icon className="h-[18px] w-[18px]" strokeWidth={1.6} />
       <span>{item.label}</span>
+      {locked && (
+        <span className="ml-auto inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-400/10 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.18em] text-amber-200">
+          <Lock className="h-2.5 w-2.5" /> em breve
+        </span>
+      )}
     </Link>
   );
 }
