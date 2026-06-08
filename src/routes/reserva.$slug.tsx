@@ -141,6 +141,12 @@ function ReservaPage() {
   }, [responsavelParticipa, resp.nome]);
 
 
+
+
+
+  if (!data) return null;
+  const { expedicao, datas } = data;
+
   // Captura progressiva de leads abandonados
   const watchedResponsavel = form.watch("responsavel");
   const currentStepLabel = STEPS[step];
@@ -179,11 +185,6 @@ function ReservaPage() {
       return () => clearTimeout(timer);
     }
   }, [watchedResponsavel.nome, watchedResponsavel.email, watchedResponsavel.telefone, currentStepLabel, leadId, lastCapturedData, expedicao.nome]);
-
-
-
-  if (!data) return null;
-  const { expedicao, datas } = data;
 
   if (submitted) {
     const dt = datas.find((d) => d.id === form.getValues("data_id"));
