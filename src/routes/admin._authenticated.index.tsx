@@ -105,12 +105,15 @@ async function fetchDashboard(range: { from: string; to: string }) {
   );
   const receitaRecebida = (reservasFinanceiro.data ?? []).reduce(
     (s: number, r: { valor_total?: number | null; valor_pago?: number | null; status_pagamento?: string; status_operacional?: string }) => {
-      // Se a reserva está confirmada operacionalmente, o financeiro deve contar como recebido (regra de negócio solicitada)
-      if (r.status_operacional === "reserva_confirmada" || r.status_operacional === "participante_confirmado") {
+      // Regra de negócio: Se a reserva está confirmada operacionalmente ou marcada como paga, conta o valor total como recebido.
+      if (
+        r.status_operacional === "reserva_confirmada" || 
+        r.status_operacional === "participante_confirmado" ||
+        r.status_pagamento === "confirmado"
+      ) {
         return s + Number(r.valor_total ?? 0);
       }
-      return s + (r.status_pagamento === "confirmado" ? Number(r.valor_pago ?? 0) : 0);
-
+      return s + Number(r.valor_pago ?? 0);
     },
     0,
   );
