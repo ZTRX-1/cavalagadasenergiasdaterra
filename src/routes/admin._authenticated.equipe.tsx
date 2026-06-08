@@ -59,17 +59,8 @@ function EquipePage() {
 
   const isDevOrSuper = userRole === "desenvolvedor" || userRole === "superadmin";
 
-  if (!canView || (!isDevOrSuper && !isMaster)) {
-    return (
-      <div className="flex h-[60vh] flex-col items-center justify-center text-center">
-        <Shield className="mb-4 h-12 w-12 text-[color:var(--admin-dourado)] opacity-20" />
-        <h2 className="text-xl font-display text-[color:var(--admin-cinza-1)]">Acesso Restrito</h2>
-        <p className="mt-2 text-sm text-[color:var(--admin-cinza-2)]">
-          O módulo de Equipe está em fase alfa e disponível apenas para Desenvolvedores e Super Administradores.
-        </p>
-      </div>
-    );
-  }
+  // Retirado o bloqueio total para permitir o efeito de blur
+  const showBlurOverlay = !canView || (!isDevOrSuper && !isMaster);
 
   const { data: membros, isLoading: loadingMembros } = useQuery({
     queryKey: ["admin", "equipe"],
