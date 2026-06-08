@@ -78,9 +78,9 @@ export function ExpedicaoPreview({
   const requisitos = (form.requisitos ?? []) as string[];
 
   const stageWidth = device === "desktop" ? 1280 : 390;
-  const containerW = device === "desktop" ? 560 : 360;
+  const containerW = device === "desktop" ? 620 : 360;
   const scale = containerW / stageWidth;
-  const stageHeight = device === "desktop" ? 1600 : 2200;
+  const stageHeight = device === "desktop" ? 1200 : 2200;
 
   const sectionClass = (id: string) =>
     `transition-all duration-500 ${highlight === id ? "ring-4 ring-[color:var(--admin-dourado-glow)]/80 ring-offset-2 ring-offset-black rounded-lg" : ""}`;
