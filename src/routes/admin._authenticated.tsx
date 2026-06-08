@@ -19,6 +19,22 @@ export const Route = createFileRoute("/admin/_authenticated")({
         search: { redirect: location.href } as never,
       });
     }
+    const { data: roles } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", data.user.id);
+    const internalRoles = new Set([
+      "admin","operador","financeiro","midia","operacional",
+      "atendimento","superadmin","ceo","socia","desenvolvedor","ceo_preview",
+    ]);
+    const hasInternal = (roles ?? []).some((r) => internalRoles.has(r.role as string));
+    if (!hasInternal) {
+      await supabase.auth.signOut();
+      throw redirect({
+        to: "/admin/login",
+        search: { redirect: location.href } as never,
+      });
+    }
   },
   component: AdminLayout,
 });
