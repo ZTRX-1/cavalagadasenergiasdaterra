@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Save, Upload, Shield, KeyRound, Clock, CalendarDays, Eye, EyeOff } from "lucide-react";
+import { Save, Upload, Shield, KeyRound, Clock, CalendarDays, Eye, EyeOff, User as UserIcon } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { getMeuPerfil, atualizarMeuPerfil, uploadAvatar, alterarMinhaSenha, CARGOS_EQUIPE } from "@/lib/admin/api";
 
@@ -328,11 +328,3 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block">
-      <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">{label}</span>
-      <div className="mt-1.5">{children}</div>
-    </label>
-  );
-}
