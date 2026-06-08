@@ -7,7 +7,7 @@ import { z } from "zod";
 import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
-import { criarPreReserva } from "@/lib/pre-reserva";
+import { criarPreReserva, capturarLeadProgressivo } from "@/lib/pre-reserva";
 import { buildReservaWhatsappUrl } from "@/lib/whatsapp";
 import { formatDateRange, formatPrice } from "@/lib/format";
 import { getExpedicaoImage } from "@/lib/expedicao-images";
@@ -87,6 +87,8 @@ function ReservaPage() {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState<null | { protocolo: string; expedicao_nome: string; quantidade_participantes: number; nome_responsavel: string }>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [leadId, setLeadId] = useState<string | null>(null);
+  const [lastCapturedData, setLastCapturedData] = useState<string>("");
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -139,6 +141,47 @@ function ReservaPage() {
   }, [responsavelParticipa, resp.nome]);
 
 
+  // Captura progressiva de leads abandonados
+  const watchedResponsavel = form.watch("responsavel");
+  const currentStepLabel = STEPS[step];
+
+  useEffect(() => {
+    const { nome, email, telefone } = watchedResponsavel;
+    
+    // Só tenta capturar se tiver os 3 dados básicos
+    if (nome?.length > 3 && email?.includes("@") && telefone?.length > 8) {
+      const dataString = `${nome}|${email}|${telefone}|${currentStepLabel}`;
+      
+      // Evita chamadas duplicadas se os dados não mudaram
+      if (dataString === lastCapturedData) return;
+
+      const timer = setTimeout(async () => {
+        try {
+          const res = await capturarLeadProgressivo({
+            lead_id: leadId || undefined,
+            nome,
+            email,
+            telefone,
+            expedicao_interesse: expedicao.nome,
+            etapa_abandono: currentStepLabel,
+            origem: "reserva_site_progressivo"
+          });
+          
+          if (res.lead_id) {
+            setLeadId(res.lead_id);
+            setLastCapturedData(dataString);
+          }
+        } catch (error) {
+          console.error("Erro na captura progressiva:", error);
+        }
+      }, 2000); // Debounce de 2 segundos
+
+      return () => clearTimeout(timer);
+    }
+  }, [watchedResponsavel.nome, watchedResponsavel.email, watchedResponsavel.telefone, currentStepLabel, leadId, lastCapturedData, expedicao.nome]);
+
+
+
   if (!data) return null;
   const { expedicao, datas } = data;
 
@@ -182,6 +225,7 @@ function ReservaPage() {
       const dataLabel = dt ? formatDateRange(dt.data_inicio, dt.data_fim) : "";
 
       const resp = await criarPreReserva({
+        lead_id: leadId || undefined,
         expedicao_id: expedicao.id,
         expedicao_nome: expedicao.nome,
         data_id: values.data_id,
