@@ -39,6 +39,7 @@ function PerfilPage() {
   const [pwd, setPwd] = useState({ nova: "", confirma: "" });
   const [showPwd, setShowPwd] = useState(false);
   const [cropData, setCropData] = useState<{ src: string; type: 'avatar' | 'banner' } | null>(null);
+  const [cropData, setCropData] = useState<{ src: string; type: 'avatar' | 'banner' } | null>(null);
 
   useEffect(() => {
     if (perfil) {
@@ -354,8 +355,17 @@ function PerfilPage() {
                 <KeyRound className="h-4 w-4" />
                 {pwdMut.isPending ? "Alterando..." : "Redefinir Senha"}
               </button>
-            </div>
-          </div>
+      </div>
+
+      {cropData && (
+        <ImageCropper 
+          imageSrc={cropData.src}
+          aspect={cropData.type === 'avatar' ? 1 : 16 / 5}
+          onCropComplete={handleCropComplete}
+          onCancel={() => setCropData(null)}
+        />
+      )}
+    </div>
         </div>
       </div>
     </div>
