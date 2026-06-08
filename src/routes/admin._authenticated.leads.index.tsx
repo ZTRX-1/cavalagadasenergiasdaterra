@@ -276,7 +276,7 @@ function LeadsLista({ leads, onDelete, onConverter }: { leads: LeadRow[]; onDele
                 <Link to="/admin/leads/$id" params={{ id: l.id }} className="font-medium hover:text-[color:var(--admin-dourado)]">{l.nome}</Link>
                 <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{l.protocolo ?? "—"}</div>
               </td>
-              <td className="px-4 py-3"><StatusBadge status={l.etapa_atendimento ?? "novo"} /></td>
+              <td className="px-4 py-3"><StatusBadge status={l.status === 'abandonado' ? 'abandonado' : (l.etapa_atendimento ?? "novo")} /></td>
               <td className="px-4 py-3">
                 <div className="flex items-center gap-0.5">
                   {Array.from({ length: 5 }).map((_, i) => (
