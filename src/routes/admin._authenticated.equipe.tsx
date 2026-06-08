@@ -44,10 +44,23 @@ function formatDateTime(iso: string | null) {
 
 function EquipePage() {
   const qc = useQueryClient();
+  const { canView, role: userRole } = useCan("equipe");
   const [membroSelecionado, setMembroSelecionado] = useState<Membro | null>(null);
   const [abaMensagens, setAbaMensagens] = useState<"recebidas" | "enviadas">("recebidas");
   const [showNovoMsg, setShowNovoMsg] = useState(false);
   const [msgForm, setMsgForm] = useState({ subject: "", content: "" });
+
+  if (!canView || (userRole !== "desenvolvedor" && userRole !== "superadmin")) {
+    return (
+      <div className="flex h-[60vh] flex-col items-center justify-center text-center">
+        <Shield className="mb-4 h-12 w-12 text-[color:var(--admin-dourado)] opacity-20" />
+        <h2 className="text-xl font-display text-[color:var(--admin-cinza-1)]">Acesso Restrito</h2>
+        <p className="mt-2 text-sm text-[color:var(--admin-cinza-3)]">
+          O módulo de Equipe está em fase alfa e disponível apenas para Desenvolvedores e Super Administradores.
+        </p>
+      </div>
+    );
+  }
 
   const { data: membros, isLoading: loadingMembros } = useQuery({
     queryKey: ["admin", "equipe"],
@@ -145,7 +158,7 @@ function EquipePage() {
   };
 
   return (
-    <div className="space-y-8 pb-20">
+    <div className="space-y-8 pb-20 animate-in fade-in duration-500">
       <AdminPageHeader
         eyebrow="Operação"
         title={
