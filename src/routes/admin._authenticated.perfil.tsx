@@ -3,8 +3,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Save, Upload, Shield, KeyRound, Clock, CalendarDays, Eye, EyeOff, User as UserIcon } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
-import { getMeuPerfil, atualizarMeuPerfil, uploadAvatar, alterarMinhaSenha, CARGOS_EQUIPE } from "@/lib/admin/api";
+import { getMeuPerfil, atualizarMeuPerfil, uploadAvatar, CARGOS_EQUIPE } from "@/lib/admin/api";
 
 export const Route = createFileRoute("/admin/_authenticated/perfil")({
   component: PerfilPage,
@@ -32,7 +33,8 @@ function PerfilPage() {
   const qc = useQueryClient();
   const { data: perfil, isLoading } = useQuery({ queryKey: ["admin", "meu-perfil"], queryFn: getMeuPerfil });
   const fileRef = useRef<HTMLInputElement>(null);
-  const [form, setForm] = useState({ nome: "", cargo: "", bio: "", telefone: "", avatar_url: "" });
+  const bannerRef = useRef<HTMLInputElement>(null);
+  const [form, setForm] = useState({ nome: "", cargo: "", bio: "", telefone: "", avatar_url: "", banner_url: "" });
   const [pwd, setPwd] = useState({ nova: "", confirma: "" });
   const [showPwd, setShowPwd] = useState(false);
 
@@ -44,6 +46,7 @@ function PerfilPage() {
         bio: perfil.bio ?? "",
         telefone: perfil.telefone ?? "",
         avatar_url: perfil.avatar_url ?? "",
+        banner_url: perfil.banner_url ?? "",
       });
     }
   }, [perfil]);
@@ -55,6 +58,7 @@ function PerfilPage() {
       bio: form.bio || null,
       telefone: form.telefone || null,
       avatar_url: form.avatar_url || null,
+      banner_url: form.banner_url || null,
     }),
     onSuccess: () => {
       toast.success("Perfil atualizado com sucesso");
@@ -63,14 +67,8 @@ function PerfilPage() {
     onError: (e) => toast.error((e as Error).message),
   });
 
-  const pwdMut = useMutation({
-    mutationFn: () => alterarMinhaSenha(pwd.nova),
-    onSuccess: () => {
-      toast.success("Senha alterada com sucesso");
-      setPwd({ nova: "", confirma: "" });
-    },
-    onError: (e) => toast.error((e as Error).message),
-  });
+  // Removed pwdMut as password resets now happen via email verification
+  const pwdMut = { isPending: false }; 
 
   const onPickFile = async (file: File) => {
     try {
@@ -82,7 +80,17 @@ function PerfilPage() {
     }
   };
 
-  const handleChangePassword = () => {
+  const onPickBanner = async (file: File) => {
+    try {
+      const url = await uploadAvatar(file); // Reusing uploadAvatar as it handles standard storage uploads
+      setForm((f) => ({ ...f, banner_url: url }));
+      toast.info("Capa processada. Salve o perfil para confirmar.");
+    } catch (e) {
+      toast.error((e as Error).message);
+    }
+  };
+
+  const handleChangePassword = async () => {
     if (pwd.nova.length < 8) {
       toast.error("A nova senha deve ter pelo menos 8 caracteres.");
       return;
@@ -91,7 +99,17 @@ function PerfilPage() {
       toast.error("As senhas não conferem.");
       return;
     }
-    pwdMut.mutate();
+
+    // New verification logic: Send recovery email for password reset
+    const { error } = await supabase.auth.resetPasswordForEmail(perfil?.email ?? "", {
+      redirectTo: `${window.location.origin}/admin/reset-password`,
+    });
+
+    if (error) {
+      toast.error("Erro ao enviar e-mail de verificação: " + error.message);
+    } else {
+      toast.success("E-mail de verificação enviado! Confira sua caixa de entrada.");
+    }
   };
 
   if (isLoading) return <div className="animate-pulse space-y-4 pt-10">
@@ -110,9 +128,28 @@ function PerfilPage() {
       <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
         {/* Lado Esquerdo: Avatar e Atividade */}
         <div className="space-y-6">
-          <div className="admin-card overflow-hidden !p-0">
-            <div className="h-24 bg-gradient-to-r from-[color:var(--admin-petroleo)] to-[color:var(--admin-carvao-deep)]" />
-            <div className="relative -mt-12 px-6 pb-6 text-center">
+          <div className="admin-card overflow-hidden !p-0 shadow-lg ring-1 ring-[color:var(--admin-borda)]">
+            <div className="group relative h-32 bg-gradient-to-r from-[color:var(--admin-petroleo)] to-[color:var(--admin-carvao-deep)] overflow-hidden">
+              {form.banner_url && (
+                <img src={form.banner_url} alt="" className="h-full w-full object-cover opacity-60 transition-transform group-hover:scale-105" />
+              )}
+              <button 
+                onClick={() => bannerRef.current?.click()}
+                className="absolute inset-0 z-10 grid place-items-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100"
+              >
+                <div className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-medium text-white backdrop-blur-md border border-white/20">
+                  <Upload className="h-3 w-3" /> Alterar Capa
+                </div>
+              </button>
+              <input 
+                ref={bannerRef} 
+                type="file" 
+                accept="image/jpeg,image/png,image/webp" 
+                className="hidden" 
+                onChange={(e) => e.target.files?.[0] && onPickBanner(e.target.files[0])} 
+              />
+            </div>
+            <div className="relative -mt-16 px-6 pb-6 text-center">
               <div className="relative mx-auto inline-block">
                 <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-[color:var(--admin-carvao)] bg-[color:var(--admin-petroleo)] shadow-xl ring-1 ring-[color:var(--admin-borda)]">
                   {form.avatar_url ? (
@@ -247,11 +284,14 @@ function PerfilPage() {
               <h3 className="font-display text-xl text-[color:var(--admin-cinza-1)]">Segurança e Senha</h3>
             </div>
             
-            <div className="rounded-lg bg-[color:var(--admin-petroleo)]/30 p-4 ring-1 ring-[color:var(--admin-borda)]">
-              <p className="text-xs leading-relaxed text-[color:var(--admin-cinza-2)]">
-                Para sua segurança, utilize uma combinação de letras maiúsculas, minúsculas, números e símbolos. 
-                Sua senha deve ter no mínimo 8 caracteres.
-              </p>
+            <div className="rounded-xl bg-amber-500/5 p-4 ring-1 ring-amber-500/20">
+              <div className="flex gap-3">
+                <Shield className="h-5 w-5 shrink-0 text-amber-500/80" />
+                <p className="text-xs leading-relaxed text-amber-200/70">
+                  Para sua segurança, as alterações de senha exigem verificação por e-mail. 
+                  Você não poderá reutilizar suas últimas 5 senhas.
+                </p>
+              </div>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
