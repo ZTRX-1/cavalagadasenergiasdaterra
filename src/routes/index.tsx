@@ -14,7 +14,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 
 import hero from "@/assets/founders/ligia-rio.jpg";
 import fundoHome from "/uploads/fundo-home.png";
-import fundoHomeMobile from "/uploads/9.jfif";
+import fundoHomeMobile from "/uploads/mobile.png";
 import manifestoImg from "@/assets/fotos/home/experiencia.jpg";
 import ctaFinal from "@/assets/fotos/canastra/26.jpg";
 import acampamento from "@/assets/acampamento.jpg";
@@ -140,28 +140,34 @@ function HomePage() {
         />
 
         {/* Overlay elegante: Gradiente direcional para legibilidade sem blocos pretos */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent md:from-black/70 md:via-black/20" />
+        <div className="absolute inset-0 bg-black/60 md:bg-transparent md:bg-gradient-to-r md:from-black/85 md:via-black/40 md:to-transparent" />
         
-        {/* Sutil gradiente inferior apenas para mobile para garantir contraste do texto inferior */}
-        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 via-transparent to-transparent md:hidden" />
+        {/* Camada adicional de sombra inferior para mobile (proteção para botões e rodapé mobile) */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70 md:hidden" />
 
-        <div className="container-tight relative flex h-full flex-col justify-end pb-16 pt-24 md:pb-20 lg:pb-24">
-          <div className="max-w-3xl">
-            <div className="eyebrow text-areia text-shadow-strong text-[0.62rem] md:text-xs">{t("hero.eyebrow")}</div>
-            <h1 className="mt-4 font-display text-[2.1rem] leading-[1.02] text-balance text-shadow-strong text-areia xs:text-[2.4rem] sm:text-5xl md:mt-5 md:text-6xl md:leading-[0.98] lg:text-[5rem]">
-              {t("hero.titlePart1")} <em className="not-italic text-cobre-soft whitespace-nowrap">{t("hero.titleAccent")}</em> {t("hero.titlePart2")}
+        <div className="container-tight relative flex h-full flex-col justify-center pb-12 pt-28 md:justify-end md:pb-20 lg:pb-24">
+          <div className="flex flex-col items-center text-center md:items-start md:text-left">
+            <div className="eyebrow text-areia text-shadow-strong text-[0.62rem] md:text-xs">
+              {t("hero.eyebrow")}
+            </div>
+            
+            <h1 className="mt-6 font-display text-[2.4rem] leading-[1.05] text-balance text-shadow-strong text-areia xs:text-[2.6rem] sm:text-5xl md:mt-5 md:text-6xl md:leading-[0.98] lg:text-[5rem]">
+              {t("hero.titlePart1")} <em className="not-italic text-cobre-soft block md:inline">{t("hero.titleAccent")}</em> {t("hero.titlePart2")}
             </h1>
-            <p className="mt-4 max-w-xl font-display text-[1.25rem] leading-[1.2] text-areia text-shadow-strong text-balance sm:text-2xl md:mt-5 md:text-[1.85rem] md:leading-[1.15]">
+            
+            <p className="mt-6 max-w-xl font-display text-[1.35rem] leading-[1.2] text-areia text-shadow-strong text-balance sm:text-2xl md:mt-5 md:text-[1.85rem] md:leading-[1.15]">
               {t("hero.subtitle")}
             </p>
-            <p className="mt-3 max-w-lg text-[0.88rem] leading-relaxed text-areia/90 text-shadow-soft text-pretty md:mt-4 md:text-[1rem]">
+            
+            <p className="mt-5 max-w-lg text-[0.95rem] leading-relaxed text-areia/95 text-shadow-soft text-pretty md:mt-4 md:text-[1rem]">
               {t("hero.support")}
             </p>
-            <div className="mt-8 flex flex-wrap gap-4 md:mt-10">
-              <Link to="/expedicoes" className="inline-flex items-center gap-2 rounded-full bg-cobre px-7 py-4 text-[0.74rem] uppercase tracking-widest text-areia transition-all hover:bg-cobre-soft hover:scale-105 md:px-8 md:py-4.5 md:text-sm">
+            
+            <div className="mt-10 flex flex-col w-full gap-4 xs:flex-row xs:justify-center md:mt-12 md:justify-start">
+              <Link to="/expedicoes" className="inline-flex items-center justify-center gap-2 rounded-full bg-cobre px-7 py-4.5 text-[0.74rem] uppercase tracking-widest text-areia transition-all hover:bg-cobre-soft hover:scale-105 md:px-8 md:py-4.5 md:text-sm">
                 {t("hero.ctaPrimary")} <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link to="/datas" className="inline-flex items-center gap-2 rounded-full border border-areia/40 bg-white/5 px-7 py-4 text-[0.74rem] uppercase tracking-widest text-areia backdrop-blur-md transition-all hover:bg-white/15 md:px-8 md:py-4.5 md:text-sm">
+              <Link to="/datas" className="inline-flex items-center justify-center gap-2 rounded-full border border-areia/40 bg-white/5 px-7 py-4.5 text-[0.74rem] uppercase tracking-widest text-areia backdrop-blur-md transition-all hover:bg-white/15 md:px-8 md:py-4.5 md:text-sm">
                 {t("hero.ctaSecondary")}
               </Link>
             </div>
