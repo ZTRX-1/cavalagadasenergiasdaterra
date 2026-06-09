@@ -130,16 +130,16 @@ function ReservaPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tipoGrupo]);
 
-  // "Você também participa?" · copia dados do responsável para participante 1
+  // "Você também participa?" · copia todos os dados do responsável para participante 1
   const resp = form.watch("responsavel");
   useEffect(() => {
     if (!responsavelParticipa) return;
-    if (resp.nome) form.setValue("participantes.0.nome", resp.nome, { shouldValidate: false });
-    if (resp.cpf) form.setValue("participantes.0.cpf", resp.cpf, { shouldValidate: false });
-    if (resp.email) form.setValue("participantes.0.email", resp.email, { shouldValidate: false });
-    if (resp.telefone) form.setValue("participantes.0.telefone", resp.telefone, { shouldValidate: false });
+    if (resp.nome) form.setValue("participantes.0.nome", resp.nome, { shouldValidate: true });
+    if (resp.cpf) form.setValue("participantes.0.cpf", resp.cpf, { shouldValidate: true });
+    if (resp.email) form.setValue("participantes.0.email", resp.email, { shouldValidate: true });
+    if (resp.telefone) form.setValue("participantes.0.telefone", resp.telefone, { shouldValidate: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [responsavelParticipa, resp.nome]);
+  }, [responsavelParticipa, resp.nome, resp.cpf, resp.email, resp.telefone]);
 
 
 
