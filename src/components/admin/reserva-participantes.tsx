@@ -110,6 +110,7 @@ export function ReservaParticipantes({ reservaId, expedicaoId, dataId }: { reser
               key={p.id}
               index={idx + 1}
               participante={p}
+              isResponsavel={p.responsavel_reserva}
               onChanged={() => qc.invalidateQueries({ queryKey: ["admin", "reserva", reservaId, "participantes"] })}
               onDelete={() => {
                 if (confirm(`Excluir participante ${p.nome}?`)) {
@@ -127,11 +128,13 @@ export function ReservaParticipantes({ reservaId, expedicaoId, dataId }: { reser
 function ParticipanteCard({
   index,
   participante,
+  isResponsavel,
   onChanged,
   onDelete,
 }: {
   index: number;
   participante: ParticipanteRow;
+  isResponsavel?: boolean;
   onChanged: () => void;
   onDelete: () => void;
 }) {
@@ -169,6 +172,11 @@ function ParticipanteCard({
             {participante.status === "confirmado" ? <CheckCircle2 className="h-3 w-3" /> : <Clock className="h-3 w-3" />}
             {STATUS_OPTS.find((s) => s.id === participante.status)?.label ?? participante.status}
           </span>
+          {isResponsavel && (
+            <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] ring-1 uppercase tracking-[0.12em] bg-amber-500/15 text-amber-300 ring-amber-500/30">
+              Líder do Grupo
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <select
