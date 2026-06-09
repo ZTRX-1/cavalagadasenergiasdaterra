@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -83,6 +84,7 @@ type FormValues = z.infer<typeof schema>;
 const STEPS = ["Responsável", "Participantes", "Adicionais", "Aceites", "Confirmação"];
 
 function ReservaPage() {
+  const { t } = useTranslation();
   const { slug } = Route.useParams();
   const search = Route.useSearch();
   const { data } = useSuspenseQuery(qo(slug));
@@ -324,7 +326,7 @@ function ReservaPage() {
               <span className="rounded-full bg-cobre/90 px-3 py-1 font-eyebrow text-[0.62rem] uppercase tracking-[0.22em] text-areia">Últimas vagas</span>
             )}
           </div>
-          <p className="mt-6 max-w-xl text-areia/80">{expedicao.mensagem_comercial_publica || `A partir de ${formatPrice(expedicao.preco, expedicao.moeda)} por participante · concierge dedicado em todas as etapas.`}</p>
+          <p className="mt-6 max-w-xl text-areia/80">{expedicao.mensagem_comercial_publica || "Concierge dedicado em todas as etapas."}</p>
         </div>
       </section>
 
@@ -348,14 +350,11 @@ function ReservaPage() {
                 <div className="mt-5 border-t border-border pt-4">
                   <div className="flex items-baseline justify-between">
                     <span className="text-[0.65rem] uppercase tracking-widest text-muted-foreground">Total</span>
-                    <span className="font-display text-3xl text-cobre">{expedicao.mensagem_comercial_publica ? "—" : formatPrice(formaPag === "cartao" ? totalCartao : totalBase, expedicao.moeda)}</span>
+                    <span className="font-display text-3xl text-cobre">—</span>
                   </div>
-                  {formaPag === "cartao" && (
-                    <div className="mt-1 text-right text-xs text-muted-foreground">{!expedicao.mensagem_comercial_publica && `6x de ${formatPrice(parcelas6x, expedicao.moeda)} · acréscimo de cartão incluso`}</div>
-                  )}
-                  {formaPag === "pix" && qtdParts > 0 && (
-                    <div className="mt-1 text-right text-xs text-muted-foreground">{qtdParts} × {formatPrice(expedicao.preco, expedicao.moeda)}</div>
-                  )}
+                  <div className="mt-2 text-right text-xs text-muted-foreground">
+                    {t("expedicoes.consulteValores")}
+                  </div>
                 </div>
               </div>
             </div>
@@ -655,8 +654,7 @@ function ReservaPage() {
                               >
                                 <div className="font-display text-lg">{opt.t}</div>
                                 <div className="text-xs text-muted-foreground">{opt.d}</div>
-                                <div className="mt-1 font-eyebrow text-[0.7rem] uppercase tracking-[0.18em] text-cobre">{formatPrice(opt.price, expedicao.moeda)}</div>
-                                {opt.v === "cartao" && <div className="text-[0.7rem] text-muted-foreground">6× {formatPrice(parcelas6x, expedicao.moeda)}</div>}
+                                <div className="mt-1 font-eyebrow text-[0.7rem] uppercase tracking-[0.18em] text-cobre">{t("expedicoes.consulteValores")}</div>
                               </button>
                             ))}
                           </div>

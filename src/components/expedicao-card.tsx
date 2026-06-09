@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import type { Expedicao } from "@/lib/expedicoes.functions";
 import { getExpedicaoImage } from "@/lib/expedicao-images";
 import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
-import { formatPriceWithBRL } from "@/lib/format";
 
 export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
   const { t } = useTranslation();
@@ -37,12 +36,10 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
           className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
         />
 
-        {/* Overlay em camadas: leitura garantida em qualquer foto, sem virar bloco escuro */}
         <div className="pointer-events-none absolute inset-0 bg-carvao/15" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[80%] bg-[linear-gradient(to_top,rgba(20,18,15,0.94)_0%,rgba(20,18,15,0.78)_30%,rgba(20,18,15,0.42)_60%,transparent_100%)]" />
 
         <div className="absolute inset-x-0 bottom-0 flex flex-col p-4 sm:p-5 md:p-6 text-areia [text-shadow:0_1px_3px_rgb(0_0_0/0.55)]">
-          {/* Badge encaixado na hierarquia (logo acima da região) — sem flutuar longe */}
           {isElas && (
             <span className="mb-2.5 inline-flex w-fit items-center gap-1.5 rounded-full border border-areia/25 bg-carvao/45 px-2.5 py-1 text-[0.55rem] uppercase tracking-[0.22em] text-areia/95 backdrop-blur-md">
               <span className="h-[3px] w-[3px] rounded-full bg-cobre-soft" />
@@ -70,10 +67,7 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
           <div className="mt-4 flex items-end justify-between gap-3">
             <div className="min-w-0">
               <div className="truncate text-[0.58rem] uppercase tracking-[0.2em] text-areia/65">
-                {expedicao.mensagem_comercial_publica ? t("expedicoes.vagasDisponiveis", "Vagas & Disponibilidade") : t("expedicoes.aPartirDe", "A partir de")}
-              </div>
-              <div className="mt-0.5 font-display text-lg sm:text-xl text-cobre-soft">
-                {expedicao.mensagem_comercial_publica || formatPriceWithBRL(expedicao.preco, expedicao.moeda)}
+                {t("expedicoes.cardAPartirDe", "Consulte disponibilidade")}
               </div>
             </div>
             <span className="inline-flex h-9 w-9 sm:h-10 sm:w-10 flex-none items-center justify-center rounded-full border border-areia/40 text-areia transition-all group-hover:bg-cobre group-hover:border-cobre">
