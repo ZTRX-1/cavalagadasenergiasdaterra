@@ -460,14 +460,23 @@ function VistaAgrupada({
                             {res ? fmtBRL(Number(res.valor_total || 0)) : "—"}
                           </span>
                         </div>
-                        <div className="text-right">
+                        <div className="text-right hidden sm:block">
                           <span className="block text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">Financeiro</span>
                           <StatusBadge status={res?.status_financeiro || '—'} />
                         </div>
-                        <div className="text-right">
+                        <div className="text-right hidden sm:block">
                           <span className="block text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">Operação</span>
                           <StatusBadge status={res?.status_operacional || '—'} />
                         </div>
+                        {res?.id && (
+                          <Link 
+                            to="/admin/reservas/$id" 
+                            params={{ id: res.id }}
+                            className="p-1.5 rounded-md hover:bg-[color:var(--admin-dourado)]/10 text-[color:var(--admin-dourado)] transition-colors"
+                          >
+                            <ArrowRight className="h-4 w-4" />
+                          </Link>
+                        )}
                       </div>
                     </div>
 
