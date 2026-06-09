@@ -23,6 +23,7 @@ export interface Expedicao {
   como_chegar_aeroporto?: string | null;
   como_chegar_referencia?: string | null;
   como_chegar_observacoes?: string | null;
+  mensagem_comercial_publica?: string | null;
 }
 
 export interface DataExpedicao {
