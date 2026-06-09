@@ -664,7 +664,7 @@ function ReservaPage() {
                     </Field>
                     <Field label="Observações adicionais" className="sm:col-span-2">
                       <textarea className="input min-h-[110px]" {...form.register("adicionais.observacoes")} placeholder="Algo mais que devamos saber?" />
-                    </div>
+                    </Field>
                   </div>
                 </div>
               </Step>
