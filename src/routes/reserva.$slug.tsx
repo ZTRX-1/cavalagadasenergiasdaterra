@@ -604,32 +604,34 @@ function ReservaPage() {
                       control={form.control}
                       name="adicionais.forma_pagamento"
                       render={({ field }) => (
-                        <div className="grid gap-3 sm:grid-cols-3">
-                          {[
-                            { v: "pix", t: "PIX à vista", d: "Sem acréscimo · 5% de desconto possível", price: totalBase },
-                            { v: "sinal", t: "Sinal + Saldo", d: "30% sinal + saldo até 30 dias antes", price: totalBase },
-                            { v: "cartao", t: "Cartão em 6x", d: `Acréscimo ~5,99% incluso`, price: totalCartao },
-                          ].map((opt) => (
-                            <button
-                              key={opt.v}
-                              type="button"
-                              onClick={() => field.onChange(opt.v)}
-                              data-active={field.value === opt.v}
-                              className={cn(
-                                "option-card",
-                                form.formState.errors.adicionais?.forma_pagamento && "border-destructive ring-1 ring-destructive"
-                              )}
-                            >
-                              <div className="font-display text-lg">{opt.t}</div>
-                              <div className="text-xs text-muted-foreground">{opt.d}</div>
-                              <div className="mt-1 font-eyebrow text-[0.7rem] uppercase tracking-[0.18em] text-cobre">{formatPrice(opt.price, expedicao.moeda)}</div>
-                              {opt.v === "cartao" && <div className="text-[0.7rem] text-muted-foreground">6× {formatPrice(parcelas6x, expedicao.moeda)}</div>}
-                            </button>
-                          ))}
-                        </div>
-                        {form.formState.errors.adicionais?.forma_pagamento && (
-                          <p className="mt-2 text-xs text-destructive">{form.formState.errors.adicionais.forma_pagamento.message}</p>
-                        )}
+                        <>
+                          <div className="grid gap-3 sm:grid-cols-3">
+                            {[
+                              { v: "pix", t: "PIX à vista", d: "Sem acréscimo · 5% de desconto possível", price: totalBase },
+                              { v: "sinal", t: "Sinal + Saldo", d: "30% sinal + saldo até 30 dias antes", price: totalBase },
+                              { v: "cartao", t: "Cartão em 6x", d: `Acréscimo ~5,99% incluso`, price: totalCartao },
+                            ].map((opt) => (
+                              <button
+                                key={opt.v}
+                                type="button"
+                                onClick={() => field.onChange(opt.v)}
+                                data-active={field.value === opt.v}
+                                className={cn(
+                                  "option-card",
+                                  form.formState.errors.adicionais?.forma_pagamento && "border-destructive ring-1 ring-destructive"
+                                )}
+                              >
+                                <div className="font-display text-lg">{opt.t}</div>
+                                <div className="text-xs text-muted-foreground">{opt.d}</div>
+                                <div className="mt-1 font-eyebrow text-[0.7rem] uppercase tracking-[0.18em] text-cobre">{formatPrice(opt.price, expedicao.moeda)}</div>
+                                {opt.v === "cartao" && <div className="text-[0.7rem] text-muted-foreground">6× {formatPrice(parcelas6x, expedicao.moeda)}</div>}
+                              </button>
+                            ))}
+                          </div>
+                          {form.formState.errors.adicionais?.forma_pagamento && (
+                            <p className="mt-2 text-xs text-destructive">{form.formState.errors.adicionais.forma_pagamento.message}</p>
+                          )}
+                        </>
                       )}
                     />
                   </div>
