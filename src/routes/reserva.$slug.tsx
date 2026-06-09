@@ -348,7 +348,7 @@ function ReservaPage() {
                 <div className="mt-5 border-t border-border pt-4">
                   <div className="flex items-baseline justify-between">
                     <span className="text-[0.65rem] uppercase tracking-widest text-muted-foreground">Total</span>
-                    <span className="font-display text-3xl text-cobre">{expedicao.mensagem_comercial_publica ? "—" : formatPrice(formaPag === "cartao" ? totalCartao : totalBase, expedicao.moeda)}</span>
+                    <span className="font-display text-3xl text-cobre">—</span>
                   </div>
                   {formaPag === "cartao" && (
                     <div className="mt-1 text-right text-xs text-muted-foreground">{!expedicao.mensagem_comercial_publica && `6x de ${formatPrice(parcelas6x, expedicao.moeda)} · acréscimo de cartão incluso`}</div>
