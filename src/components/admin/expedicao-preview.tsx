@@ -169,7 +169,7 @@ export function ExpedicaoPreview({
                 <span className="h-1 w-1 rounded-full bg-amber-500" />
                 <span>{form.nivel || "Nível"}</span>
                 <span className="h-1 w-1 rounded-full bg-amber-500" />
-                <span>{form.mensagem_comercial_publica || `A partir de ${formatBRL(form.preco)}`} {!form.mensagem_comercial_publica && <span className="text-white/60">por pessoa</span>}</span>
+                <span>{formatBRL(form.preco)} {form.mensagem_comercial_publica && <span className="text-amber-400 text-[9px] lowercase ml-1">(Público: {form.mensagem_comercial_publica})</span>} {!form.mensagem_comercial_publica && <span className="text-white/60">por pessoa</span>}</span>
               </div>
               <h1 className="mt-5 max-w-3xl font-serif text-6xl">{form.nome || "Nome da expedição"}</h1>
               <p className="mt-5 max-w-2xl text-lg text-white/85 leading-relaxed">{form.descricao_curta || "Resumo curto da expedição"}</p>
@@ -189,7 +189,12 @@ export function ExpedicaoPreview({
                 <div className="text-[10px] uppercase tracking-wider text-amber-400/80">{form.regiao || form.estado || form.pais || "Localização"}</div>
                 <div className="mt-1 font-serif text-lg leading-tight text-white">{form.nome || "Nome"}</div>
                 <div className="mt-1 line-clamp-2 text-xs text-stone-400">{form.descricao_curta || "Resumo curto"}</div>
-                <div className="mt-2 text-xs text-amber-300">{form.mensagem_comercial_publica || formatBRL(form.preco)}</div>
+                <div className="mt-2 text-xs text-amber-300">
+                  {formatBRL(form.preco)}
+                  {form.mensagem_comercial_publica && (
+                    <div className="text-[9px] text-white/50 lowercase mt-0.5">Público: {form.mensagem_comercial_publica}</div>
+                  )}
+                </div>
               </div>
             </div>
           </section>
@@ -227,7 +232,14 @@ export function ExpedicaoPreview({
                 </div>
                 <div data-section="preco" className={`rounded border border-stone-200 bg-white p-6 shadow-sm ${sectionClass("preco")}`}>
                   <div className="text-[10px] uppercase tracking-[0.22em] text-amber-700">Condições de pagamento</div>
-                  <div className="mt-3 font-serif text-2xl text-amber-700">{form.mensagem_comercial_publica || `A partir de ${formatBRL(form.preco)}`}</div>
+                  <div className="mt-3 font-serif text-2xl text-amber-700">
+                    {formatBRL(form.preco)}
+                    {form.mensagem_comercial_publica && (
+                      <div className="text-[10px] text-stone-500 font-sans font-normal mt-1 italic">
+                        Público verá: "{form.mensagem_comercial_publica}"
+                      </div>
+                    )}
+                  </div>
                   <p className="mt-2 text-xs text-stone-500">Até {form.parcelamento_max ?? 1}x no cartão.</p>
                 </div>
               </aside>

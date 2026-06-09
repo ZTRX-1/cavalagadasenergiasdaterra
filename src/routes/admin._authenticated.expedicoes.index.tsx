@@ -151,6 +151,7 @@ function ExpedicoesPage() {
                   <th className="px-5 py-3.5 font-medium">Expedição</th>
                   <th className="px-3 py-3.5 font-medium">Marca</th>
                   <th className="px-3 py-3.5 font-medium">Status</th>
+                  <th className="px-3 py-3.5 font-medium">Estratégia</th>
                   <th className="px-3 py-3.5 font-medium">Valor</th>
                   <th className="px-5 py-3.5 font-medium text-right">Ações</th>
                 </tr>
@@ -189,6 +190,15 @@ function ExpedicoesPage() {
                     </td>
                     <td className="px-3 py-4 text-[color:var(--admin-cinza-2)] capitalize">{e.marca?.replace(/-/g, " ")}</td>
                     <td className="px-3 py-4"><StatusBadge status={e.status} /></td>
+                    <td className="px-3 py-4">
+                      {e.mensagem_comercial_publica ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-2 py-1 text-[10px] font-medium text-amber-300 ring-1 ring-amber-500/20" title={e.mensagem_comercial_publica}>
+                          Preço oculto
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-[color:var(--admin-cinza-3)]">Preço público</span>
+                      )}
+                    </td>
                     <td className="px-3 py-4 text-[color:var(--admin-cinza-2)]">{e.moeda} {Number(e.preco).toLocaleString("pt-BR")}</td>
                     <td className="px-5 py-4">
                       <div className="flex items-center justify-end gap-1">
