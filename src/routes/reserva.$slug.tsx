@@ -660,7 +660,11 @@ function ReservaPage() {
 
                   <div className="grid gap-5 sm:grid-cols-2">
                     <Field label="Motivação da viagem" error={form.formState.errors.adicionais?.motivacao_viagem?.message} className="sm:col-span-2">
-                      <textarea className="input min-h-[110px]" {...form.register("adicionais.motivacao_viagem")} placeholder="O que te motiva a fazer esta expedição?" />
+                      <textarea 
+                        className={cn("input min-h-[110px]", form.formState.errors.adicionais?.motivacao_viagem && "border-destructive ring-1 ring-destructive")} 
+                        {...form.register("adicionais.motivacao_viagem")} 
+                        placeholder="O que te motiva a fazer esta expedição?" 
+                      />
                     </Field>
                     <Field label="Observações adicionais" className="sm:col-span-2">
                       <textarea className="input min-h-[110px]" {...form.register("adicionais.observacoes")} placeholder="Algo mais que devamos saber?" />
