@@ -147,9 +147,15 @@ async function handleCriar(payload: CriarPayload) {
   const qtd = payload.participantes.length;
   const valor_total = precoFinal * qtd;
 
-  const { data: protoData, error: protoErr } = await admin.rpc("gerar_protocolo");
-  if (protoErr || !protoData) return json({ error: "Não foi possível gerar protocolo." }, 500);
-  const protocolo = String(protoData);
+  let protocolo = "";
+  try {
+    const { data: protoData, error: protoErr } = await admin.rpc("gerar_protocolo");
+    if (protoErr || !protoData) throw new Error("Falha no RPC");
+    protocolo = String(protoData);
+  } catch (err) {
+    console.error("Erro ao gerar protocolo via RPC:", err);
+    protocolo = `RES-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+  }
 
   const { data: protoLeadData } = await admin.rpc("gerar_protocolo_lead");
 
