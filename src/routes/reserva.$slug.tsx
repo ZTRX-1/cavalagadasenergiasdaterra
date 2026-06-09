@@ -56,12 +56,12 @@ const schema = z.object({
     peso: z.coerce.number({ invalid_type_error: "Informe o peso" })
       .min(20, "Peso mínimo 20 kg")
       .max(110, "Por bem-estar dos cavalos, o peso máximo permitido é 110 kg."),
-    experiencia: z.enum(["nunca", "algumas", "frequente"]),
+    experiencia: z.enum(["nenhuma", "iniciante", "intermediario", "avancado"]),
     telefone: z.string().optional(),
     email: z.string().optional(),
   })).min(1),
   adicionais: z.object({
-    tipo_grupo: z.enum(["sozinho", "casal", "familia", "grupo"]),
+    tipo_grupo: z.enum(["individual", "casal", "grupo", "personalizada"]),
     forma_pagamento: z.string().min(2, "Selecione"),
     como_conheceu: z.string().min(2, "Selecione"),
     motivacao_viagem: z.string().min(1, "Obrigatório").max(250, "Máximo 250 caracteres"),
@@ -95,8 +95,8 @@ function ReservaPage() {
     defaultValues: {
       data_id: search.data ?? "",
       responsavel: { nome: "", cpf: "", telefone: "", email: "", cidade: "", estado: "" },
-      participantes: [{ nome: "", cpf: "", data_nascimento: "", peso: 70, experiencia: "nunca" }],
-      adicionais: { tipo_grupo: "sozinho", forma_pagamento: "pix", como_conheceu: "instagram", motivacao_viagem: "", observacoes_importantes: "", observacoes: "" },
+      participantes: [{ nome: "", cpf: "", data_nascimento: "", peso: 70, experiencia: "nenhuma" }],
+      adicionais: { tipo_grupo: "individual", forma_pagamento: "pix", como_conheceu: "instagram", motivacao_viagem: "", observacoes_importantes: "", observacoes: "" },
       aceites: { responsabilidade: false as unknown as true, cancelamento: false as unknown as true, riscos: false as unknown as true },
     },
     mode: "onTouched",
@@ -112,7 +112,7 @@ function ReservaPage() {
     if (qtdTotal === current.length) return;
     if (qtdTotal > current.length) {
       const toAdd = qtdTotal - current.length;
-      for (let i = 0; i < toAdd; i++) append({ nome: "", cpf: "", data_nascimento: "", peso: 70, experiencia: "nunca" });
+      for (let i = 0; i < toAdd; i++) append({ nome: "", cpf: "", data_nascimento: "", peso: 70, experiencia: "nenhuma" });
     } else {
       replace(current.slice(0, qtdTotal));
     }
@@ -122,10 +122,10 @@ function ReservaPage() {
   // Sugere quantidade conforme tipo de grupo (sem travar o usuário)
   const tipoGrupo = form.watch("adicionais.tipo_grupo");
   useEffect(() => {
-    if (tipoGrupo === "sozinho" && qtdTotal !== 1) setQtdTotal(1);
+    if (tipoGrupo === "individual" && qtdTotal !== 1) setQtdTotal(1);
     else if (tipoGrupo === "casal" && qtdTotal < 2) setQtdTotal(2);
-    else if (tipoGrupo === "familia" && qtdTotal < 3) setQtdTotal(4);
-    else if (tipoGrupo === "grupo" && qtdTotal < 3) setQtdTotal(5);
+    else if (tipoGrupo === "grupo" && qtdTotal < 3) setQtdTotal(3);
+    else if (tipoGrupo === "personalizada" && qtdTotal < 1) setQtdTotal(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tipoGrupo]);
 
@@ -210,6 +210,13 @@ function ReservaPage() {
     const ok = await form.trigger(fieldsByStep[step] as any, { shouldFocus: true });
     if (!ok) {
       toast.error("Revise os campos destacados.");
+      // Pequeno delay para o DOM atualizar com os erros
+      setTimeout(() => {
+        const firstError = document.querySelector('[aria-invalid="true"], .text-destructive');
+        if (firstError) {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
       return;
     }
     setStep((s) => Math.min(s + 1, STEPS.length - 1));
@@ -425,9 +432,8 @@ function ReservaPage() {
                     <select className="input" {...form.register("adicionais.tipo_grupo")}>
                       <option value="individual">Individual</option>
                       <option value="casal">Casal</option>
-                      <option value="familia">Família</option>
-                      <option value="amigos">Grupo de amigos</option>
-                      <option value="corporativo">Corporativo</option>
+                      <option value="grupo">Em Grupo</option>
+                      <option value="personalizada">Personalizada</option>
                     </select>
                   </Field>
                   <Field label="Quantidade total de participantes">
@@ -537,7 +543,10 @@ function ReservaPage() {
                                     type="button"
                                     onClick={() => field.onChange(o.v)}
                                     data-active={field.value === o.v}
-                                    className="option-card items-center text-center"
+                                    className={cn(
+                                      "option-card items-center text-center",
+                                      form.formState.errors.participantes?.[i]?.experiencia && "border-destructive ring-1 ring-destructive"
+                                    )}
                                   >
                                     <span className="font-eyebrow text-[0.7rem] uppercase tracking-[0.2em]">{o.t}</span>
                                   </button>
