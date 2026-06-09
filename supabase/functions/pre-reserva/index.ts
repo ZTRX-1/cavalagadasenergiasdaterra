@@ -170,6 +170,7 @@ async function handleCriar(payload: CriarPayload) {
     protocoloLead = `LD-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
   }
 
+  const firstP = payload.participantes[0];
   const leadPayload = {
     nome: payload.responsavel.nome,
     email: payload.responsavel.email,
