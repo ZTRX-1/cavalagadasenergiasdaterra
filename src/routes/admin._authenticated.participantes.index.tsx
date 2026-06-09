@@ -284,6 +284,7 @@ function ParticipantesPage() {
           expedicoes={expedicoes}
           onEdit={(p) => setEdit(p)}
           onDelete={(p) => setDel(p)}
+          ocultarVazios={apenasConfirmados || busca.length > 0 || filtroExp !== "" || filtroStatus !== "" || filtroStatusFinanceiro !== ""}
         />
       ) : (
         <VistaLista
@@ -326,6 +327,7 @@ function VistaAgrupada({
   expedicoes,
   onEdit,
   onDelete,
+  ocultarVazios = false,
 }: {
   participantes: ParticipanteRow[];
   reservas: ReservaSlim[];
@@ -333,6 +335,7 @@ function VistaAgrupada({
   expedicoes: { id: string; nome: string }[];
   onEdit: (p: ParticipanteRow) => void;
   onDelete: (p: ParticipanteRow) => void;
+  ocultarVazios?: boolean;
 }) {
   // Agrupa participantes por (expedicao_id, data_id)
   const grupos = useMemo(() => {
@@ -354,12 +357,14 @@ function VistaAgrupada({
       map.get(key)!.participantes.push(p);
     });
 
-    return Array.from(map.values()).sort((a, b) => {
-      const da = datas.find((d) => d.id === a.data_id)?.data_inicio ?? "9999-12-31";
-      const db = datas.find((d) => d.id === b.data_id)?.data_inicio ?? "9999-12-31";
-      return da.localeCompare(db);
-    });
-  }, [participantes, datas]);
+    return Array.from(map.values())
+      .filter((g) => !ocultarVazios || g.participantes.length > 0)
+      .sort((a, b) => {
+        const da = datas.find((d) => d.id === a.data_id)?.data_inicio ?? "9999-12-31";
+        const db = datas.find((d) => d.id === b.data_id)?.data_inicio ?? "9999-12-31";
+        return da.localeCompare(db);
+      });
+  }, [participantes, datas, ocultarVazios]);
 
   return (
     <div className="space-y-6">
