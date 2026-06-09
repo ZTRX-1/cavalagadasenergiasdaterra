@@ -16,6 +16,7 @@ import {
   type LeadTemperaturaId, type LeadStatusAtendimentoId, type LeadMotivoPerdaId,
 } from "@/lib/admin/api";
 import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/_authenticated/leads/$id")({
   component: LeadEdit,
