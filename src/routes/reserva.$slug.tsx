@@ -428,13 +428,34 @@ function ReservaPage() {
             {step === 1 && (
               <Step title="Participantes" desc="Informe quantas pessoas embarcam nesta expedição.">
                 <div className="grid gap-5 sm:grid-cols-2">
-                  <Field label="Tipo de grupo">
-                    <select className="input" {...form.register("adicionais.tipo_grupo")}>
-                      <option value="individual">Individual</option>
-                      <option value="casal">Casal</option>
-                      <option value="grupo">Em Grupo</option>
-                      <option value="personalizada">Personalizada</option>
-                    </select>
+                  <Field label="Tipo de experiência" error={form.formState.errors.adicionais?.tipo_grupo?.message} className="sm:col-span-2">
+                    <Controller
+                      control={form.control}
+                      name="adicionais.tipo_grupo"
+                      render={({ field }) => (
+                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                          {[
+                            { v: "individual", t: "Individual" },
+                            { v: "casal", t: "Casal" },
+                            { v: "grupo", t: "Em Grupo" },
+                            { v: "personalizada", t: "Personalizada" },
+                          ].map((o) => (
+                            <button
+                              key={o.v}
+                              type="button"
+                              onClick={() => field.onChange(o.v)}
+                              data-active={field.value === o.v}
+                              className={cn(
+                                "option-card items-center text-center",
+                                form.formState.errors.adicionais?.tipo_grupo && "border-destructive ring-1 ring-destructive"
+                              )}
+                            >
+                              <span className="font-eyebrow text-[0.7rem] uppercase tracking-[0.2em]">{o.t}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    />
                   </Field>
                   <Field label="Quantidade total de participantes">
                     <select
