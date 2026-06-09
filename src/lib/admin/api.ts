@@ -382,11 +382,13 @@ export async function deleteData(id: string): Promise<void> {
 /** Etapas do Atendimento — coluna do Kanban e progresso do lead. */
 export const LEAD_ETAPAS = [
   { id: "novo", label: "Novo", descricao: "Acabou de chegar" },
-  { id: "em_atendimento", label: "Atendimento", descricao: "IA ou equipe iniciou conversa" },
+  { id: "triagem_ia", label: "Triagem / IA", descricao: "IA ou equipe inicializando contato" },
   { id: "qualificado", label: "Qualificado", descricao: "Tem perfil para a viagem" },
-  { id: "pronto_reserva", label: "Pronto pra Reserva", descricao: "Quer reservar agora" },
-  { id: "convertido", label: "Convertido", descricao: "Virou reserva" },
-  { id: "perdido", label: "Perdido", descricao: "Não avançou" },
+  { id: "proposta_enviada", label: "Proposta Enviada", descricao: "Proposta de viagem enviada" },
+  { id: "reserva_pendente", label: "Reserva Pendente", descricao: "Aguardando sinal ou reserva" },
+  { id: "participante_confirmado", label: "Participante Confirmado", descricao: "Reserva e pagamentos validados" },
+  { id: "concluido", label: "Pós-venda / Concluído", descricao: "Expedição realizada com sucesso" },
+  { id: "perdido", label: "Perdido", descricao: "Não avançou no processo" },
 ] as const;
 export type LeadEtapaId = (typeof LEAD_ETAPAS)[number]["id"];
 
@@ -408,6 +410,8 @@ export interface LeadRow {
   origem: string | null;
   status: string;
   etapa_atendimento: LeadEtapaId;
+  etapa_operacional: string;
+  reserva_id?: string | null;
   nivel_interesse: number;
   lead_score: number;
   responsavel_id: string | null;
