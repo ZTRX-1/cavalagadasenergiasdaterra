@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { ArrowRight, Check, Plane, MapPin, Info, Car } from "lucide-react";
+import { ArrowRight, Check, Plane, MapPin, Info, Car, UserPlus, GlassWater, Bus, Hotel, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
@@ -9,7 +9,8 @@ import { CarrosselNarrativo } from "@/components/carrossel-narrativo";
 import { GaleriaEditorial } from "@/components/galeria-editorial";
 import { VideoCinematic } from "@/components/video-cinematic";
 import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
-import { formatDateRange, formatPrice, formatPriceWithBRL } from "@/lib/format";
+import { formatDateRange } from "@/lib/format";
+import { ExpeditionMetaCard } from "@/components/expedition-meta-card";
 import { DataCard } from "@/components/data-card";
 import { buildContactWhatsappUrl } from "@/lib/whatsapp";
 import canastraVideoPoster from "@/assets/fotos/canastra/video-poster.jpg";
