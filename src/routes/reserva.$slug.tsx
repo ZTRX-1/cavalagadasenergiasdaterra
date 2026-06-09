@@ -659,17 +659,12 @@ function ReservaPage() {
                   </div>
 
                   <div className="grid gap-5 sm:grid-cols-2">
-                    <Field label="Como nos conheceu?" error={form.formState.errors.adicionais?.como_conheceu?.message}>
-                      <select className={cn("input", form.formState.errors.adicionais?.como_conheceu && "border-destructive ring-1 ring-destructive")} {...form.register("adicionais.como_conheceu")} aria-invalid={!!form.formState.errors.adicionais?.como_conheceu}>
-                        <option value="instagram">Instagram</option>
-                        <option value="google">Google</option>
-                        <option value="indicacao">Indicação</option>
-                        <option value="outro">Outro</option>
-                      </select>
+                    <Field label="Motivação da viagem" error={form.formState.errors.adicionais?.motivacao_viagem?.message} className="sm:col-span-2">
+                      <textarea className="input min-h-[110px]" {...form.register("adicionais.motivacao_viagem")} placeholder="O que te motiva a fazer esta expedição?" />
                     </Field>
                     <Field label="Observações adicionais" className="sm:col-span-2">
                       <textarea className="input min-h-[110px]" {...form.register("adicionais.observacoes")} placeholder="Algo mais que devamos saber?" />
-                    </Field>
+                    </div>
                   </div>
                 </div>
               </Step>
