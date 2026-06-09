@@ -54,7 +54,7 @@ function LeadsPage() {
   function handleMoveLead(id: string, etapa: LeadEtapaId) {
     const lead = leads.find((l) => l.id === id);
     if (!lead) return toast.error("Lead não encontrado.");
-    if (etapa === "convertido") {
+    if (etapa === "reserva_pendente" || etapa === "participante_confirmado") {
       setConverter(lead);
       return;
     }
@@ -289,7 +289,7 @@ function LeadsLista({ leads, onDelete, onConverter }: { leads: LeadRow[]; onDele
               <td className="px-4 py-3 text-xs text-amber-200/80">{l.proxima_acao ?? "—"}</td>
               <td className="px-4 py-3 text-right">
                 <div className="inline-flex items-center gap-2">
-                  {l.etapa_atendimento === "pronto_reserva" ? (
+                  {l.etapa_atendimento === "reserva_pendente" ? (
                     <button
                       onClick={() => onConverter(l)}
                       className="text-[11px] text-[color:var(--admin-dourado)] hover:underline inline-flex items-center gap-1"

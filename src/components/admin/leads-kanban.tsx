@@ -183,7 +183,7 @@ function LeadCardInner({
 }) {
   const nivel = lead.nivel_interesse ?? 3;
   const score = lead.lead_score ?? 0;
-  const ehProntoReserva = lead.etapa_atendimento === "pronto_reserva";
+  const ehReservaPendente = lead.etapa_atendimento === "reserva_pendente";
   const temperatura = LEAD_TEMPERATURAS.find((t) => t.id === (lead.temperatura_lead ?? "frio")) ?? LEAD_TEMPERATURAS[0];
 
   const content = (
@@ -265,7 +265,7 @@ function LeadCardInner({
         )}
       </div>
 
-      {!dragging && ehProntoReserva && onConverter ? (
+      {!dragging && ehReservaPendente && onConverter ? (
         <button
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => {
