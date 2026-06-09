@@ -732,6 +732,8 @@ export interface ParticipanteRow {
   contrato_assinado: boolean;
   ficha_medica_enviada: boolean;
   documentacao_aprovada: boolean;
+  responsavel_reserva: boolean;
+  documento_validado: boolean;
 }
 
 export async function listParticipantes(): Promise<ParticipanteRow[]> {
