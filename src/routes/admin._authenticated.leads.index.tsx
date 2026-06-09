@@ -329,31 +329,6 @@ function NovoLeadDialog({ open, onOpenChange, onCreated }: { open: boolean; onOp
             <AdminField label="E-mail"><input className="admin-input" value={form.email ?? ""} onChange={(e) => setForm({ ...form, email: e.target.value })} /></AdminField>
             <AdminField label="Telefone"><input className="admin-input" value={form.telefone ?? ""} onChange={(e) => setForm({ ...form, telefone: e.target.value })} /></AdminField>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <AdminField label="Cidade"><input className="admin-input" value={form.cidade ?? ""} onChange={(e) => setForm({ ...form, cidade: e.target.value })} /></AdminField>
-            <AdminField label="Estado"><input className="admin-input" value={form.estado ?? ""} onChange={(e) => setForm({ ...form, estado: e.target.value })} /></AdminField>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <AdminField label="Canal de entrada (de onde veio)">
-              <select className="admin-input" value={form.canal_entrada ?? ""} onChange={(e) => setForm({ ...form, canal_entrada: e.target.value || null })}>
-                <option value="">Não informado</option>
-                <option value="site">Site</option>
-                <option value="instagram">Instagram</option>
-                <option value="google">Google</option>
-                <option value="indicacao">Indicação</option>
-                <option value="outro">Outro</option>
-              </select>
-            </AdminField>
-            <AdminField label="Canal de atendimento (por onde fala)">
-              <select className="admin-input" value={form.canal_atendimento ?? ""} onChange={(e) => setForm({ ...form, canal_atendimento: e.target.value || null })}>
-                <option value="">Não informado</option>
-                <option value="whatsapp">WhatsApp</option>
-                <option value="telefone">Telefone</option>
-                <option value="email">E-mail</option>
-                <option value="presencial">Presencial</option>
-              </select>
-            </AdminField>
-          </div>
           <AdminField label="Expedição de interesse"><input className="admin-input" value={form.expedicao_interesse ?? ""} onChange={(e) => setForm({ ...form, expedicao_interesse: e.target.value })} /></AdminField>
           <div className="grid grid-cols-3 gap-3">
             <AdminField label="Pessoas"><input type="number" className="admin-input" value={form.quantidade_pessoas ?? 1} onChange={(e) => setForm({ ...form, quantidade_pessoas: Number(e.target.value) })} /></AdminField>
@@ -368,6 +343,11 @@ function NovoLeadDialog({ open, onOpenChange, onCreated }: { open: boolean; onOp
               </select>
             </AdminField>
           </div>
+          <AdminField label="Etapa Inicial">
+            <select className="admin-input" value={form.etapa_atendimento ?? "novo"} onChange={(e) => setForm({ ...form, etapa_atendimento: e.target.value as LeadEtapaId })}>
+              {LEAD_ETAPAS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+            </select>
+          </AdminField>
           <AdminField label="Observações da equipe"><textarea className="admin-input min-h-[60px]" value={form.observacoes ?? ""} onChange={(e) => setForm({ ...form, observacoes: e.target.value })} /></AdminField>
           <div className="flex justify-end gap-2 pt-2">
             <button className="admin-btn-ghost" onClick={() => onOpenChange(false)}>Cancelar</button>
