@@ -92,7 +92,7 @@ function validarCriar(b: any): { ok: true; data: CriarPayload } | { ok: false; e
 
   const r = b.responsavel;
   if (!r || typeof r !== "object") return { ok: false, error: "responsavel obrigatório." };
-  for (const k of ["nome", "cpf", "telefone", "email", "cidade", "estado"]) {
+  for (const k of ["nome", "cpf", "telefone", "email", "cidade", "estado", "data_nascimento"]) {
     if (typeof r[k] !== "string" || r[k].trim().length < 2) return { ok: false, error: `responsavel.${k} inválido.` };
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email)) return { ok: false, error: "responsavel.email inválido." };
