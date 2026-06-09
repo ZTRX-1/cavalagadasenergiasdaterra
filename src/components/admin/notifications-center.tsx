@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Bell, CheckCheck, Sparkles, Wallet, FileText, Settings } from "lucide-react";
+import { Bell, CheckCheck, Sparkles, Wallet, FileText, Settings, Trash2 } from "lucide-react";
 import {
   Popover,
   PopoverContent,
