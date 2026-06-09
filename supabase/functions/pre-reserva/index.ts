@@ -301,7 +301,11 @@ async function handleCriar(payload: CriarPayload) {
 }
 
 async function handleCapturaProgressiva(payload: any) {
-  const { lead_id, nome, email, telefone, expedicao_interesse, etapa_abandono, origem } = payload;
+  const { 
+    lead_id, nome, email, telefone, expedicao_interesse, etapa_abandono, origem,
+    cidade, estado, tipo_grupo, motivacao_viagem, observacoes_importantes,
+    quantidade_pessoas, data_interesse, canal_atendimento, experiencia_equestre, idade
+  } = payload;
 
   if (!nome || !email || !telefone) {
     return json({ error: "Nome, email e telefone são obrigatórios para captura." }, 400);
@@ -314,9 +318,19 @@ async function handleCapturaProgressiva(payload: any) {
     expedicao_interesse,
     etapa_abandono,
     origem: origem || "captura_progressiva_site",
-    status: "abandonado", // Usamos 'abandonado' como status inicial para leads incompletos
+    status: "abandonado",
     canal_entrada: "site",
     etapa_atendimento: "novo",
+    cidade,
+    estado,
+    tipo_grupo,
+    motivacao_viagem,
+    observacoes_importantes,
+    quantidade_pessoas,
+    data_interesse,
+    canal_atendimento: canal_atendimento || "whatsapp",
+    experiencia_equestre,
+    idade,
     updated_at: new Date().toISOString(),
   };
 

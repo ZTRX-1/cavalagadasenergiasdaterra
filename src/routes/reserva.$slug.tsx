@@ -65,10 +65,10 @@ const schema = z.object({
   })).min(1),
   adicionais: z.object({
     tipo_grupo: z.enum(["individual", "casal", "grupo", "personalizada"]),
-    forma_pagamento: z.string().min(2, "Selecione"),
-    como_conheceu: z.string().min(2, "Selecione"),
-    motivacao_viagem: z.string().min(1, "Obrigatório").max(250, "Máximo 250 caracteres"),
-    observacoes_importantes: z.string().optional(),
+    forma_pagamento: z.string().min(2, "Selecione a forma de pagamento"),
+    como_conheceu: z.string().min(2, "Selecione como nos conheceu"),
+    motivacao_viagem: z.string().trim().min(5, "Por favor, conte-nos um pouco sobre suas expectativas"),
+    observacoes_importantes: z.string().trim().min(2, "Por favor, informe se há alergias, restrições ou outras informações importantes"),
     observacoes: z.string().optional(),
   }),
   aceites: z.object({
@@ -158,14 +158,16 @@ function ReservaPage() {
 
   // Captura progressiva de leads abandonados
   const watchedResponsavel = form.watch("responsavel");
+  const watchedAdicionais = form.watch("adicionais");
+  const watchedParticipantes = form.watch("participantes");
   const currentStepLabel = STEPS[step];
 
   useEffect(() => {
-    const { nome, email, telefone } = watchedResponsavel;
+    const { nome, email, telefone, cidade, estado } = watchedResponsavel;
     
     // Só tenta capturar se tiver os 3 dados básicos
     if (nome?.length > 3 && email?.includes("@") && telefone?.length > 8) {
-      const dataString = `${nome}|${email}|${telefone}|${currentStepLabel}`;
+      const dataString = `${nome}|${email}|${telefone}|${currentStepLabel}|${watchedAdicionais.tipo_grupo}|${watchedAdicionais.motivacao_viagem}|${watchedParticipantes.length}`;
       
       // Evita chamadas duplicadas se os dados não mudaram
       if (dataString === lastCapturedData) return;
@@ -179,7 +181,17 @@ function ReservaPage() {
             telefone,
             expedicao_interesse: expedicao.nome,
             etapa_abandono: currentStepLabel,
-            origem: "reserva_site_progressivo"
+            origem: "reserva_site_progressivo",
+            cidade,
+            estado,
+            tipo_grupo: watchedAdicionais.tipo_grupo,
+            motivacao_viagem: watchedAdicionais.motivacao_viagem,
+            observacoes_importantes: watchedAdicionais.observacoes_importantes,
+            quantidade_pessoas: watchedParticipantes.length,
+            data_interesse: selectedDate?.data_inicio,
+            canal_atendimento: "whatsapp",
+            experiencia_equestre: watchedParticipantes[0]?.experiencia,
+            idade: watchedParticipantes[0]?.idade || ageFromDateString(watchedResponsavel.data_nascimento) || undefined
           });
           
           if (res.lead_id) {
@@ -193,7 +205,7 @@ function ReservaPage() {
 
       return () => clearTimeout(timer);
     }
-  }, [watchedResponsavel.nome, watchedResponsavel.email, watchedResponsavel.telefone, currentStepLabel, leadId, lastCapturedData, expedicao.nome]);
+  }, [watchedResponsavel, watchedAdicionais, watchedParticipantes.length, currentStepLabel, leadId, lastCapturedData, expedicao.nome, selectedDate]);
 
   if (submitted) {
     const dt = datas.find((d) => d.id === form.getValues("data_id"));
