@@ -59,6 +59,8 @@ type CriarPayload = {
     email: string;
     cidade: string;
     estado: string;
+    data_nascimento?: string;
+    peso?: number;
   };
   participantes: Participante[];
   adicionais: {
@@ -90,7 +92,7 @@ function validarCriar(b: any): { ok: true; data: CriarPayload } | { ok: false; e
 
   const r = b.responsavel;
   if (!r || typeof r !== "object") return { ok: false, error: "responsavel obrigatório." };
-  for (const k of ["nome", "cpf", "telefone", "email", "cidade", "estado"]) {
+  for (const k of ["nome", "cpf", "telefone", "email", "cidade", "estado", "data_nascimento"]) {
     if (typeof r[k] !== "string" || r[k].trim().length < 2) return { ok: false, error: `responsavel.${k} inválido.` };
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email)) return { ok: false, error: "responsavel.email inválido." };
@@ -123,25 +125,29 @@ function validarCriar(b: any): { ok: true; data: CriarPayload } | { ok: false; e
 }
 
 async function handleCriar(payload: CriarPayload) {
-  // SEGURANÇA: Validar preço unitário a partir do banco de dados, nunca confiar no valor vindo do client-side.
+  console.log("Iniciando handleCriar para expedição:", payload.expedicao_nome);
+  
+  // SEGURANÇA: Validar preço unitário a partir do banco de dados
   const { data: realData, error: dataErr } = await admin
     .from("datas")
     .select("preco_pix, preco_cartao, status, vagas_disponiveis")
     .eq("id", payload.data_id)
     .single();
 
-  if (dataErr || !realData) return json({ error: "Data da expedição não encontrada ou inválida." }, 404);
+  if (dataErr || !realData) {
+    console.error("Data não encontrada:", payload.data_id, dataErr);
+    return json({ error: "Data da expedição não encontrada ou inválida." }, 404);
+  }
 
   // Verifica se ainda há vagas
   if (realData.status !== "disponivel" || (realData.vagas_disponiveis ?? 0) < payload.participantes.length) {
+    console.warn("Vagas insuficientes ou status indisponível:", realData);
     return json({ error: "Não há vagas suficientes para esta data." }, 400);
   }
 
   // Define o preço unitário real baseado na forma de pagamento
   const isPix = payload.adicionais.forma_pagamento?.toLowerCase().includes("pix");
   const precoReal = isPix ? realData.preco_pix : realData.preco_cartao;
-  
-  // Se o preço real estiver configurado (não nulo), usamos ele. Caso contrário, usamos o do payload (fallback legado).
   const precoFinal = (precoReal !== null && precoReal !== undefined) ? Number(precoReal) : payload.preco_unitario;
 
   const qtd = payload.participantes.length;
@@ -150,7 +156,7 @@ async function handleCriar(payload: CriarPayload) {
   let protocolo = "";
   try {
     const { data: protoData, error: protoErr } = await admin.rpc("gerar_protocolo");
-    if (protoErr || !protoData) throw new Error("Falha no RPC");
+    if (protoErr || !protoData) throw protoErr || new Error("Falha no RPC");
     protocolo = String(protoData);
   } catch (err) {
     console.error("Erro ao gerar protocolo via RPC:", err);
@@ -175,25 +181,28 @@ async function handleCriar(payload: CriarPayload) {
     cidade: payload.responsavel.cidade,
     estado: payload.responsavel.estado,
     expedicao_interesse: payload.expedicao_nome,
+    expedicao_id: payload.expedicao_id,
+    data_expedicao_id: payload.data_id,
     origem: payload.adicionais.como_conheceu || "pre_reserva_site",
     canal_entrada: "site",
-    status: "novo", // Ao concluir, muda de 'abandonado' para 'novo' ou outro status definido
-    status_atendimento: "novo",
+    status: "novo",
+    status_atendimento: "humano", // Ajustado para respeitar a constraint [ia, humano, transferido, encerrado]
     etapa_atendimento: "novo",
     nivel_interesse: 5,
     lead_score: 80,
     quantidade_pessoas: qtd,
     valor_estimado: valor_total,
-    data_interesse: payload.data_inicio ?? null,
-    observacoes: payload.adicionais.observacoes ?? null,
-    observacoes_importantes: payload.adicionais.observacoes_importantes ?? null,
-    motivacao_viagem: payload.adicionais.motivacao_viagem ?? null,
-    tipo_grupo: payload.adicionais.tipo_grupo ?? null,
+    data_interesse: payload.data_inicio || null,
+    observacoes: payload.adicionais.observacoes || null,
+    observacoes_importantes: payload.adicionais.observacoes_importantes || null,
+    motivacao_viagem: payload.adicionais.motivacao_viagem || null,
+    tipo_grupo: payload.adicionais.tipo_grupo || null,
     protocolo: protocoloLead || null,
     forma_pagamento: payload.adicionais.forma_pagamento,
-    peso: firstP?.peso,
+    peso: payload.responsavel.peso || firstP?.peso,
     experiencia_equestre: firstP?.experiencia,
-    data_nascimento: firstP?.data_nascimento || null,
+    data_nascimento: payload.responsavel.data_nascimento || firstP?.data_nascimento || null,
+    idade: firstP?.idade || null, // A idade calculada do primeiro participante
   };
 
   let leadId = payload.lead_id;
@@ -203,14 +212,20 @@ async function handleCriar(payload: CriarPayload) {
       .from("leads")
       .update(leadPayload as never)
       .eq("id", leadId);
-    if (leadErr) return json({ error: "Falha ao atualizar lead." }, 500);
+    if (leadErr) {
+      console.error("Erro ao atualizar lead:", JSON.stringify(leadErr));
+      return json({ error: `Falha ao atualizar lead: ${leadErr.message}` }, 500);
+    }
   } else {
     const { data: leadRow, error: leadErr } = await admin
       .from("leads")
       .insert(leadPayload as never)
       .select("id")
       .single();
-    if (leadErr) return json({ error: "Falha ao criar lead." }, 500);
+    if (leadErr) {
+      console.error("Erro ao criar lead:", JSON.stringify(leadErr));
+      return json({ error: `Falha ao criar lead: ${leadErr.message}` }, 500);
+    }
     leadId = leadRow.id;
   }
 
@@ -230,7 +245,7 @@ async function handleCriar(payload: CriarPayload) {
     cliente_telefone: payload.responsavel.telefone,
     cliente_cpf: payload.responsavel.cpf,
     responsavel: payload.responsavel,
-    participantes: payload.participantes,
+    participantes: payload.participantes, // Mantém JSONB para compatibilidade
     adicionais: payload.adicionais,
     aceites: payload.aceites,
     tipo_grupo: payload.adicionais.tipo_grupo,
@@ -238,6 +253,7 @@ async function handleCriar(payload: CriarPayload) {
     observacoes_importantes: payload.adicionais.observacoes_importantes,
     forma_pagamento: payload.adicionais.forma_pagamento,
     valor_total,
+    moeda: payload.moeda || "BRL",
   };
 
   const { data: reservaRow, error: reservaErr } = await admin
@@ -245,7 +261,37 @@ async function handleCriar(payload: CriarPayload) {
     .insert(reservaPayload as never)
     .select("id, protocolo")
     .single();
-  if (reservaErr) return json({ error: "Falha ao criar reserva." }, 500);
+
+  if (reservaErr) {
+    console.error("Erro ao criar reserva:", reservaErr);
+    return json({ error: "Falha ao criar reserva." }, 500);
+  }
+
+  // Inserir participantes na tabela individual
+  const participantesParaInserir = payload.participantes.map((p, idx) => ({
+    reserva_id: reservaRow.id,
+    expedicao_id: payload.expedicao_id,
+    data_id: payload.data_id,
+    nome: p.nome,
+    cpf: p.cpf,
+    data_nascimento: p.data_nascimento,
+    idade: p.idade || null,
+    peso: p.peso,
+    experiencia_equestre: p.experiencia,
+    telefone: p.telefone || null,
+    email: p.email || null,
+    status: "pendente",
+    responsavel_reserva: idx === 0, // Primeiro participante costuma ser o responsável se ele marcar que participa
+  }));
+
+  const { error: partsErr } = await admin
+    .from("participantes")
+    .insert(participantesParaInserir as never);
+
+  if (partsErr) {
+    console.error("Erro ao inserir participantes individuais:", partsErr);
+    // Não barramos a conclusão se falhar apenas aqui, mas logamos
+  }
 
   return json({
     protocolo: reservaRow.protocolo,
@@ -366,10 +412,14 @@ Deno.serve(async (req) => {
   }
 
   const action = String(body.action ?? "");
+  console.log(`Action: ${action}`, body);
   try {
     if (action === "criar") {
       const v = validarCriar(body);
-      if (!v.ok) return json({ error: v.error }, 400);
+      if (!v.ok) {
+        console.error("Erro de validação:", v.error);
+        return json({ error: v.error }, 400);
+      }
       return await handleCriar(v.data);
     }
     if (action === "consultar") {
@@ -380,6 +430,7 @@ Deno.serve(async (req) => {
     }
     return json({ error: "Ação desconhecida." }, 400);
   } catch (e) {
+    console.error("Erro interno na função:", e);
     return json({ error: (e as Error)?.message ?? "Erro interno." }, 500);
   }
 });

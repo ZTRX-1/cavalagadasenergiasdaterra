@@ -963,6 +963,7 @@ export type Database = {
           experiencia_equestre: string | null
           forma_pagamento: string | null
           id: string
+          idade: number | null
           lead_score: number
           motivacao_viagem: string | null
           motivo_perda: string | null
@@ -1022,6 +1023,7 @@ export type Database = {
           experiencia_equestre?: string | null
           forma_pagamento?: string | null
           id?: string
+          idade?: number | null
           lead_score?: number
           motivacao_viagem?: string | null
           motivo_perda?: string | null
@@ -1081,6 +1083,7 @@ export type Database = {
           experiencia_equestre?: string | null
           forma_pagamento?: string | null
           id?: string
+          idade?: number | null
           lead_score?: number
           motivacao_viagem?: string | null
           motivo_perda?: string | null
@@ -1165,6 +1168,7 @@ export type Database = {
       notificacoes_lidas: {
         Row: {
           created_at: string
+          excluida: boolean | null
           id: string
           lida_em: string
           user_id: string
@@ -1172,6 +1176,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          excluida?: boolean | null
           id?: string
           lida_em?: string
           user_id: string
@@ -1179,6 +1184,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          excluida?: boolean | null
           id?: string
           lida_em?: string
           user_id?: string
@@ -1310,6 +1316,7 @@ export type Database = {
           experiencia_equestre: string | null
           ficha_medica_enviada: boolean | null
           id: string
+          idade: number | null
           nome: string
           observacoes_medicas: string | null
           pagamento_recebido: boolean | null
@@ -1341,6 +1348,7 @@ export type Database = {
           experiencia_equestre?: string | null
           ficha_medica_enviada?: boolean | null
           id?: string
+          idade?: number | null
           nome: string
           observacoes_medicas?: string | null
           pagamento_recebido?: boolean | null
@@ -1372,6 +1380,7 @@ export type Database = {
           experiencia_equestre?: string | null
           ficha_medica_enviada?: boolean | null
           id?: string
+          idade?: number | null
           nome?: string
           observacoes_medicas?: string | null
           pagamento_recebido?: boolean | null
