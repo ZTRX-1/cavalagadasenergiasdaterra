@@ -598,6 +598,7 @@ export type Database = {
           imagem_url: string | null
           inclui: Json
           marca: string
+          mensagem_comercial_publica: string | null
           moeda: string
           nivel: string
           nome: string
@@ -637,6 +638,7 @@ export type Database = {
           imagem_url?: string | null
           inclui?: Json
           marca?: string
+          mensagem_comercial_publica?: string | null
           moeda?: string
           nivel: string
           nome: string
@@ -676,6 +678,7 @@ export type Database = {
           imagem_url?: string | null
           inclui?: Json
           marca?: string
+          mensagem_comercial_publica?: string | null
           moeda?: string
           nivel?: string
           nome?: string
