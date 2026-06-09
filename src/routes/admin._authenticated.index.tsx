@@ -80,15 +80,15 @@ async function fetchDashboard(range: { from: string; to: string }) {
     proximas,
   ] = await Promise.all([
     supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
-    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("etapa_atendimento", ["qualificado", "pronto_reserva", "convertido"]),
-    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).eq("etapa_atendimento", "convertido"),
+    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("etapa_atendimento", ["qualificado", "proposta_enviada", "reserva_pendente", "participante_confirmado", "concluido"]),
+    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("etapa_atendimento", ["reserva_pendente", "participante_confirmado", "concluido"]),
     supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
     supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).eq("status", "abandonado"),
     supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("status_operacional", ["reserva_confirmada", "participante_confirmado"]),
-    supabase.from("reservas").select("valor_total, valor_pago, saldo_restante, status_financeiro, status_pagamento, status_operacional, created_at").gte("created_at", range.from).lte("created_at", range.to),
-    supabase.from("participantes").select("id", { count: "exact", head: true }).eq("status", "confirmado"),
+    supabase.from("reservas").select("valor_total, valor_pago, saldo_restante, status_financeiro, status_pagamento, status_operacional, moeda, created_at").gte("created_at", range.from).lte("created_at", range.to),
+    supabase.from("participantes").select("id, cpf, peso, ficha_medica_enviada", { count: "exact" }).eq("status", "confirmado"),
     supabase.from("expedicoes").select("id", { count: "exact", head: true }).eq("ativo", true).eq("status", "publicado"),
-    supabase.from("datas").select("vagas_disponiveis, vagas_total, preco_pix, preco_cartao, expedicoes(preco)").eq("status", "disponivel").gte("data_inicio", today),
+    supabase.from("datas").select("vagas_disponiveis, vagas_total, preco_pix, preco_cartao, expedicoes(preco, moeda)").eq("status", "disponivel").gte("data_inicio", today),
     supabase
       .from("datas")
       .select("id, data_inicio, data_fim, vagas_disponiveis, vagas_total, expedicao_id, expedicoes(nome)")
@@ -96,6 +96,8 @@ async function fetchDashboard(range: { from: string; to: string }) {
       .gte("data_inicio", today)
       .order("data_inicio", { ascending: true })
       .limit(5),
+    supabase.from("reservas").select("id, protocolo, cliente_nome, status_operacional, status_financeiro, contrato_assinado").in("status_operacional", ["pre_reserva", "reserva_confirmada"]).limit(10),
+  ]);
   ]);
 
   // Faturamento previsto: soma de valor_total das reservas no período
