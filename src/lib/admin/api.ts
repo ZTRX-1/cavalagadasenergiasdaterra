@@ -1291,6 +1291,7 @@ export async function converterLeadEmReserva(
   if (reservaExistente) {
     if (lead.etapa_atendimento !== "reserva_pendente" && lead.etapa_atendimento !== "participante_confirmado") {
       await updateLead(leadId, { etapa_atendimento: "reserva_pendente" });
+      await logActivity({ modulo: "leads", acao: "converter_lead", descricao: "Convertido em reserva pendente", metadata: { lead_id: leadId, reserva_id: reservaExistente.id } });
     }
     return { reserva_id: reservaExistente.id, protocolo: reservaExistente.protocolo };
   }
@@ -1389,9 +1390,9 @@ export async function converterLeadEmReserva(
   } as never);
 
   await logActivity({
-    modulo: "reservas",
+    modulo: "leads",
     acao: "converter_lead",
-    descricao: `${lead.nome} → ${protocolo}`,
+    descricao: `Lead convertido em reserva ${reservaRow.protocolo}`,
     metadata: { lead_id: leadId, reserva_id: reservaRow.id },
   });
 
