@@ -131,8 +131,8 @@ export function ConverterLeadModal({ open, onOpenChange, lead, onConverted }: Pr
         <DialogHeader>
           <DialogTitle className="font-display text-2xl">Converter em reserva</DialogTitle>
           <DialogDescription className="text-[color:var(--admin-cinza-3)]">
-            Esse lead vira uma reserva com participantes prontos pra completar. O lead vai automaticamente
-            pra etapa <strong className="text-[color:var(--admin-cinza-1)]">Convertido</strong>.
+            Esse lead vira uma reserva com participantes prontos pra completar. O lead será movido para
+            <strong className="text-[color:var(--admin-cinza-1)]">Reserva Pendente</strong>.
           </DialogDescription>
         </DialogHeader>
 
