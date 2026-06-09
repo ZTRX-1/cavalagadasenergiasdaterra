@@ -364,7 +364,7 @@ function ReservaPage() {
               <Step title="Dados do responsável" desc="Quem ficará como contato principal pela reserva.">
                 <div className="grid gap-5 sm:grid-cols-2">
                   <Field label="Nome completo" error={form.formState.errors.responsavel?.nome?.message} className="sm:col-span-2">
-                    <Input {...form.register("responsavel.nome")} placeholder="Como aparece no documento" />
+                    <Input {...form.register("responsavel.nome")} hasError={!!form.formState.errors.responsavel?.nome} placeholder="Como aparece no documento" />
                   </Field>
                   <Field label="CPF" error={form.formState.errors.responsavel?.cpf?.message}>
                     <Controller
@@ -397,7 +397,7 @@ function ReservaPage() {
                     />
                   </Field>
                   <Field label="E-mail" error={form.formState.errors.responsavel?.email?.message} className="sm:col-span-2">
-                    <Input type="email" inputMode="email" placeholder="voce@exemplo.com" {...form.register("responsavel.email")} />
+                    <Input type="email" inputMode="email" hasError={!!form.formState.errors.responsavel?.email} placeholder="voce@exemplo.com" {...form.register("responsavel.email")} />
                   </Field>
                   <Field label="Estado" error={form.formState.errors.responsavel?.estado?.message}>
                     <select className="input" {...form.register("responsavel.estado")}>
@@ -408,10 +408,10 @@ function ReservaPage() {
                     </select>
                   </Field>
                   <Field label="Cidade" error={form.formState.errors.responsavel?.cidade?.message}>
-                    <Input {...form.register("responsavel.cidade")} placeholder="Sua cidade" />
+                    <Input {...form.register("responsavel.cidade")} hasError={!!form.formState.errors.responsavel?.cidade} placeholder="Sua cidade" />
                   </Field>
                   <Field label="Data desejada" error={form.formState.errors.data_id?.message} className="sm:col-span-2">
-                    <select className="input" {...form.register("data_id")}>
+                    <select className={cn("input", form.formState.errors.data_id && "border-destructive ring-1 ring-destructive")} {...form.register("data_id")} aria-invalid={!!form.formState.errors.data_id}>
                       <option value="">Selecione a data</option>
                       {datas.map((d) => (
                         <option key={d.id} value={d.id} disabled={d.status === "esgotado"}>
