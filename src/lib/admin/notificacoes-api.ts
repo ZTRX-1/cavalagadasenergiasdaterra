@@ -65,26 +65,30 @@ export async function listarNotificacoes(limit = 50): Promise<NotificacaoItem[]>
 
   const { data: lidas } = await supabase
     .from("notificacoes_lidas")
-    .select("webhook_evento_id")
+    .select("webhook_evento_id, excluida")
     .eq("user_id", userId);
-  const lidasSet = new Set((lidas ?? []).map((x) => x.webhook_evento_id));
+    
+  const lidasSet = new Set((lidas ?? []).filter(x => !x.excluida).map((x) => x.webhook_evento_id));
+  const excluidasSet = new Set((lidas ?? []).filter(x => x.excluida).map((x) => x.webhook_evento_id));
 
-  return eventos.map((e) => {
-    const meta = CATEGORIAS[e.evento] ?? { cat: "sistema" as NotificacaoCategoria, titulo: e.evento };
-    const payload = (e.payload as Record<string, unknown>) ?? {};
-    return {
-      id: e.id,
-      evento: e.evento,
-      entidade: e.entidade,
-      entidade_id: e.entidade_id,
-      payload,
-      created_at: e.created_at,
-      categoria: meta.cat,
-      titulo: meta.titulo,
-      descricao: descreverPayload(e.evento, payload),
-      lida: lidasSet.has(e.id),
-    };
-  });
+  return eventos
+    .filter(e => !excluidasSet.has(e.id)) // Filtra notificações que foram "limpas" pelo usuário
+    .map((e) => {
+      const meta = CATEGORIAS[e.evento] ?? { cat: "sistema" as NotificacaoCategoria, titulo: e.evento };
+      const payload = (e.payload as Record<string, unknown>) ?? {};
+      return {
+        id: e.id,
+        evento: e.evento,
+        entidade: e.entidade,
+        entidade_id: e.entidade_id,
+        payload,
+        created_at: e.created_at,
+        categoria: meta.cat,
+        titulo: meta.titulo,
+        descricao: descreverPayload(e.evento, payload),
+        lida: lidasSet.has(e.id),
+      };
+    });
 }
 
 export async function marcarComoLida(eventoId: string): Promise<void> {
@@ -110,14 +114,12 @@ export async function excluirNotificacoes(ids: string[]): Promise<void> {
   const userId = userRes.user?.id;
   if (!userId || ids.length === 0) return;
 
-  // A exclusão física das notificações no banco para este usuário
-  // Como as notificações vêm da tabela webhooks_eventos e a lida é controlada por outra tabela,
-  // vamos adicionar à tabela notificacoes_lidas com um flag de excluída se existir,
-  // ou simplesmente marcar como lida e filtrar no frontend se não houver coluna 'excluida'.
-  // Para ser real, o usuário quer que "desapareça". Se as notificações são globais,
-  // cada usuário tem sua "visão". Vamos usar a mesma lógica de marcar lidas, 
-  // mas se tivéssemos uma tabela de 'notificacoes_excluidas' seria ideal.
-  // No momento, vamos apenas marcar como lidas todas as existentes.
-  const rows = ids.map((id) => ({ user_id: userId, webhook_evento_id: id }));
+  const rows = ids.map((id) => ({ 
+    user_id: userId, 
+    webhook_evento_id: id,
+    lida_em: new Date().toISOString(),
+    excluida: true 
+  }));
+  
   await supabase.from("notificacoes_lidas").upsert(rows, { onConflict: "user_id,webhook_evento_id" });
 }
