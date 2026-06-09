@@ -14,6 +14,11 @@ async function currentUserId(): Promise<string | null> {
   return data.user?.id ?? null;
 }
 
+export async function getMe() {
+  const { data } = await supabase.auth.getUser();
+  return data.user ?? null;
+}
+
 export async function logActivity(args: {
   modulo: string;
   acao: string;
@@ -404,6 +409,7 @@ export interface LeadRow {
   cpf: string | null;
   peso: number | null;
   data_nascimento: string | null;
+  idade: number | null;
   cidade: string | null;
   estado: string | null;
   expedicao_interesse: string | null;

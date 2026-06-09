@@ -42,7 +42,7 @@ function LeadEdit() {
       return data as { id: string; protocolo: string } | null;
     },
   });
-  const [form, setForm] = useState<Partial<LeadRow & { tipo_grupo: string | null }> | null>(null);
+  const [form, setForm] = useState<Partial<LeadRow> | null>(null);
   const [nota, setNota] = useState("");
   const [tipoNota, setTipoNota] = useState<LeadConversaTipo>("observacao_interna");
   const [converter, setConverter] = useState(false);
