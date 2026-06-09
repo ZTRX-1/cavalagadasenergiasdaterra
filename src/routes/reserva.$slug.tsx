@@ -734,8 +734,8 @@ function Field({ label, error, children, className }: { label: string; error?: s
   );
 }
 
-function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  return <input {...props} className="input" />;
+function Input({ className, hasError, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { hasError?: boolean }) {
+  return <input {...props} className={cn("input", hasError && "border-destructive ring-1 ring-destructive", className)} aria-invalid={hasError} />;
 }
 
 function AceiteItem({ name, control, title, text, error }: any) {
