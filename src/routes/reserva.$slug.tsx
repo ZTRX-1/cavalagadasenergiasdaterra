@@ -642,13 +642,18 @@ function ReservaPage() {
                       control={form.control}
                       name="adicionais.como_conheceu"
                       render={({ field }) => (
-                        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
-                          {["instagram","facebook","tiktok","indicacao","google","outros"].map((v) => (
-                            <button key={v} type="button" onClick={() => field.onChange(v)} data-active={field.value === v} className="option-card items-center text-center capitalize">
-                              <span className="font-eyebrow text-[0.72rem] uppercase tracking-[0.2em]">{v === "outros" ? "Outro" : v}</span>
-                            </button>
-                          ))}
-                        </div>
+                        <>
+                          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
+                            {["instagram","facebook","tiktok","indicacao","google","outros"].map((v) => (
+                              <button key={v} type="button" onClick={() => field.onChange(v)} data-active={field.value === v} className="option-card items-center text-center capitalize">
+                                <span className="font-eyebrow text-[0.72rem] uppercase tracking-[0.2em]">{v === "outros" ? "Outro" : v}</span>
+                              </button>
+                            ))}
+                          </div>
+                          {form.formState.errors.adicionais?.como_conheceu && (
+                            <p className="mt-2 text-xs text-destructive">{form.formState.errors.adicionais.como_conheceu.message}</p>
+                          )}
+                        </>
                       )}
                     />
                   </div>
