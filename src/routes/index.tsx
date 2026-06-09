@@ -83,7 +83,7 @@ const INCLUI_TXT: Record<string, Record<string, { label: string; desc: string }>
 const PASSOS_TXT: Record<string, Array<{ n: string; t: string; d: string }>> = {
   pt: [
     { n: "01", t: "Escolha sua expedição", d: "Encontre a expedição que mais combina com você." },
-    { n: "02", t: "Conheça os detalhes", d: "Veja roteiro, datas, valores e o que está incluído." },
+    { n: "02", t: "Conheça os detalhes", d: "Veja roteiro, datas, disponibilidade e o que está incluído." },
     { n: "03", t: "Garanta sua vaga via WhatsApp", d: "Nossa equipe entra em contato para alinhar detalhes e confirmar sua vaga." },
     { n: "04", t: "Viva a experiência", d: "Chegue, monte e aproveite cada momento da sua expedição." },
   ],
