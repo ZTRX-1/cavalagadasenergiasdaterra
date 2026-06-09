@@ -157,7 +157,14 @@ async function handleCriar(payload: CriarPayload) {
     protocolo = `RES-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
   }
 
-  const { data: protoLeadData } = await admin.rpc("gerar_protocolo_lead");
+  let protocoloLead = "";
+  try {
+    const { data: protoLeadData } = await admin.rpc("gerar_protocolo_lead");
+    protocoloLead = (protoLeadData as string | null) ?? "";
+  } catch (err) {
+    console.error("Erro ao gerar protocolo lead via RPC:", err);
+    protocoloLead = `LD-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+  }
 
   const firstP = payload.participantes[0];
   const leadPayload = {
