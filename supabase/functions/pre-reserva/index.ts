@@ -311,6 +311,22 @@ async function handleCapturaProgressiva(payload: any) {
     return json({ error: "Nome, email e telefone são obrigatórios para captura." }, 400);
   }
 
+  let valor_estimado = payload.valor_estimado || 0;
+  if (!valor_estimado && expedicao_interesse && quantidade_pessoas) {
+    try {
+      const { data: exp } = await admin
+        .from("expedicoes")
+        .select("preco")
+        .ilike("nome", expedicao_interesse)
+        .maybeSingle();
+      if (exp?.preco) {
+        valor_estimado = exp.preco * Number(quantidade_pessoas);
+      }
+    } catch (e) {
+      console.error("Erro ao estimar valor do lead:", e);
+    }
+  }
+
   const leadPayload = {
     nome,
     email,
@@ -326,7 +342,8 @@ async function handleCapturaProgressiva(payload: any) {
     tipo_grupo,
     motivacao_viagem,
     observacoes_importantes,
-    quantidade_pessoas,
+    quantidade_pessoas: quantidade_pessoas || 1,
+    valor_estimado,
     data_interesse,
     canal_atendimento: canal_atendimento || "whatsapp",
     experiencia_equestre,
