@@ -366,10 +366,14 @@ Deno.serve(async (req) => {
   }
 
   const action = String(body.action ?? "");
+  console.log(`Action: ${action}`, body);
   try {
     if (action === "criar") {
       const v = validarCriar(body);
-      if (!v.ok) return json({ error: v.error }, 400);
+      if (!v.ok) {
+        console.error("Erro de validação:", v.error);
+        return json({ error: v.error }, 400);
+      }
       return await handleCriar(v.data);
     }
     if (action === "consultar") {
@@ -380,6 +384,7 @@ Deno.serve(async (req) => {
     }
     return json({ error: "Ação desconhecida." }, 400);
   } catch (e) {
+    console.error("Erro interno na função:", e);
     return json({ error: (e as Error)?.message ?? "Erro interno." }, 500);
   }
 });
