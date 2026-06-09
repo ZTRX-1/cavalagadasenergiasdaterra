@@ -179,11 +179,37 @@ function LeadEdit() {
               <textarea className="admin-input min-h-[80px]" value={form.resumo_atendimento ?? ""} onChange={(e) => setForm({ ...form, resumo_atendimento: e.target.value })} />
             </AdminField>
             {form.resumo_ia ? (
-              <div className="rounded-lg border border-violet-400/20 bg-violet-400/5 p-3">
-                <div className="mb-1 flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-violet-300/80">
-                  <Brain className="h-3 w-3" /> Resumo gerado por IA
+              <div className="rounded-lg border border-violet-400/20 bg-violet-400/5 p-4">
+                <div className="mb-2 flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-violet-300/80">
+                  <Brain className="h-4 w-4" /> Memórias & Recomendações da IA
                 </div>
-                <p className="text-sm text-[color:var(--admin-cinza-1)] whitespace-pre-wrap">{form.resumo_ia}</p>
+                <div className="space-y-3">
+                  <p className="text-sm text-[color:var(--admin-cinza-1)] whitespace-pre-wrap leading-relaxed">
+                    {form.resumo_ia}
+                  </p>
+                  
+                  {/* Recomendações baseadas nos dados reais */}
+                  <div className="pt-3 border-t border-violet-400/10 grid gap-3 sm:grid-cols-2">
+                    <div className="bg-violet-400/10 rounded-lg p-2.5">
+                      <div className="text-[10px] text-violet-300/60 uppercase tracking-wider mb-1">Perfil do Lead</div>
+                      <div className="text-xs text-violet-200">
+                        {form.tipo_grupo === 'casal' ? '👫 Casal buscando experiência romântica' : 
+                         form.tipo_grupo === 'grupo' ? '👥 Grupo buscando aventura coletiva' : 
+                         form.tipo_grupo === 'individual' ? '👤 Viajante solo em busca de conexão' : 
+                         'Experiência personalizada'}
+                      </div>
+                    </div>
+                    <div className="bg-violet-400/10 rounded-lg p-2.5">
+                      <div className="text-[10px] text-violet-300/60 uppercase tracking-wider mb-1">Nível Técnico</div>
+                      <div className="text-xs text-violet-200">
+                        Nível {form.experiencia_equestre || 'não informado'} — 
+                        {form.experiencia_equestre === 'avancado' ? ' Requer cavalos mais ativos.' : 
+                         form.experiencia_equestre === 'iniciante' ? ' Precisa de cavalos mansos e suporte.' : 
+                         ' Cavalos padrão de trilha.'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : null}
           </AdminSection>
@@ -191,10 +217,19 @@ function LeadEdit() {
           <AdminSection titulo="Dados do lead">
             <AdminField label="Nome"><input className="admin-input" value={form.nome ?? ""} onChange={(e) => setForm({ ...form, nome: e.target.value })} /></AdminField>
             <div className="grid grid-cols-2 gap-3">
-              <AdminField label="E-mail"><input className="admin-input" value={form.email ?? ""} onChange={(e) => setForm({ ...form, email: e.target.value })} /></AdminField>
-              <AdminField label="Telefone"><input className="admin-input" value={form.telefone ?? ""} onChange={(e) => setForm({ ...form, telefone: e.target.value })} /></AdminField>
+              <AdminField label="E-mail">
+                <div className="flex gap-2">
+                  <input className="admin-input flex-1" value={form.email ?? ""} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                </div>
+              </AdminField>
+              <AdminField label="Telefone">
+                <div className="flex gap-2">
+                  <input className="admin-input flex-1" value={form.telefone ?? ""} onChange={(e) => setForm({ ...form, telefone: e.target.value })} />
+                </div>
+              </AdminField>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-3">
+              <AdminField label="Idade"><input type="number" className="admin-input" value={form.idade ?? ""} onChange={(e) => setForm({ ...form, idade: e.target.value ? Number(e.target.value) : null })} /></AdminField>
               <AdminField label="Cidade"><input className="admin-input" value={form.cidade ?? ""} onChange={(e) => setForm({ ...form, cidade: e.target.value })} /></AdminField>
               <AdminField label="Estado"><input className="admin-input" value={form.estado ?? ""} onChange={(e) => setForm({ ...form, estado: e.target.value })} /></AdminField>
             </div>

@@ -691,15 +691,22 @@ function ReservaPage() {
                   </div>
 
                   <div className="grid gap-5 sm:grid-cols-2">
-                    <Field label="Motivação da viagem" error={form.formState.errors.adicionais?.motivacao_viagem?.message} className="sm:col-span-2">
+                    <Field label="O que espera viver na experiência? *" error={form.formState.errors.adicionais?.motivacao_viagem?.message} className="sm:col-span-2">
                       <textarea 
                         className={cn("input min-h-[110px]", form.formState.errors.adicionais?.motivacao_viagem && "border-destructive ring-1 ring-destructive")} 
                         {...form.register("adicionais.motivacao_viagem")} 
-                        placeholder="O que te motiva a fazer esta expedição?" 
+                        placeholder="Conte-nos um pouco sobre suas expectativas, o que te motivou a escolher essa expedição..." 
                       />
                     </Field>
-                    <Field label="Observações adicionais" className="sm:col-span-2">
-                      <textarea className="input min-h-[110px]" {...form.register("adicionais.observacoes")} placeholder="Algo mais que devamos saber?" />
+                    <Field label="Informações importantes (Alergias, Restrições, etc.) *" error={form.formState.errors.adicionais?.observacoes_importantes?.message} className="sm:col-span-2">
+                      <textarea 
+                        className={cn("input min-h-[110px]", form.formState.errors.adicionais?.observacoes_importantes && "border-destructive ring-1 ring-destructive")} 
+                        {...form.register("adicionais.observacoes_importantes")} 
+                        placeholder="Informe alergias, restrições alimentares, problemas de saúde ou qualquer observação que devemos saber..." 
+                      />
+                    </Field>
+                    <Field label="Observações adicionais (Opcional)" className="sm:col-span-2">
+                      <textarea className="input min-h-[80px]" {...form.register("adicionais.observacoes")} placeholder="Alguma outra informação?" />
                     </Field>
                   </div>
                 </div>
