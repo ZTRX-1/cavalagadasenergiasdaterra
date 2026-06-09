@@ -402,7 +402,7 @@ function ReservaPage() {
                     <Input type="email" inputMode="email" hasError={!!form.formState.errors.responsavel?.email} placeholder="voce@exemplo.com" {...form.register("responsavel.email")} />
                   </Field>
                   <Field label="Estado" error={form.formState.errors.responsavel?.estado?.message}>
-                    <select className="input" {...form.register("responsavel.estado")}>
+                    <select className={cn("input", form.formState.errors.responsavel?.estado && "border-destructive ring-1 ring-destructive")} {...form.register("responsavel.estado")} aria-invalid={!!form.formState.errors.responsavel?.estado}>
                       <option value="">Selecione</option>
                       {ESTADOS_BR.map((e) => (
                         <option key={e.sigla} value={e.sigla}>{e.sigla} · {e.nome}</option>
@@ -638,7 +638,7 @@ function ReservaPage() {
 
                   <div className="grid gap-5 sm:grid-cols-2">
                     <Field label="Como nos conheceu?" error={form.formState.errors.adicionais?.como_conheceu?.message}>
-                      <select className="input" {...form.register("adicionais.como_conheceu")}>
+                      <select className={cn("input", form.formState.errors.adicionais?.como_conheceu && "border-destructive ring-1 ring-destructive")} {...form.register("adicionais.como_conheceu")} aria-invalid={!!form.formState.errors.adicionais?.como_conheceu}>
                         <option value="instagram">Instagram</option>
                         <option value="google">Google</option>
                         <option value="indicacao">Indicação</option>
