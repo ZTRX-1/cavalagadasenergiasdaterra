@@ -372,7 +372,8 @@ function ReservaPage() {
                       name="responsavel.cpf"
                       render={({ field }) => (
                         <input
-                          className="input"
+                          className={cn("input", form.formState.errors.responsavel?.cpf && "border-destructive ring-1 ring-destructive")}
+                          aria-invalid={!!form.formState.errors.responsavel?.cpf}
                           inputMode="numeric"
                           placeholder="000.000.000-00"
                           value={field.value}
@@ -387,7 +388,8 @@ function ReservaPage() {
                       name="responsavel.telefone"
                       render={({ field }) => (
                         <input
-                          className="input"
+                          className={cn("input", form.formState.errors.responsavel?.telefone && "border-destructive ring-1 ring-destructive")}
+                          aria-invalid={!!form.formState.errors.responsavel?.telefone}
                           inputMode="tel"
                           placeholder="(11) 99999-9999"
                           value={field.value}
