@@ -189,7 +189,7 @@ async function handleCriar(payload: CriarPayload) {
     observacoes_importantes: payload.adicionais.observacoes_importantes ?? null,
     motivacao_viagem: payload.adicionais.motivacao_viagem ?? null,
     tipo_grupo: payload.adicionais.tipo_grupo ?? null,
-    protocolo: (protoLeadData as string | null) ?? null,
+    protocolo: protocoloLead || null,
     forma_pagamento: payload.adicionais.forma_pagamento,
     peso: firstP?.peso,
     experiencia_equestre: firstP?.experiencia,
