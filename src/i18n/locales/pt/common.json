@@ -39,7 +39,9 @@
     "eyebrow": "Expedições",
     "title": "Destinos selecionados, roteiros assinados.",
     "verTodas": "Ver todas",
-    "aPartirDe": "A partir de",
+    "consulteValores": "Consulte valores e disponibilidade",
+    "entreEmContato": "Entre em contato para receber condições da expedição",
+    "aPartirDe": "Consulte valores",
     "duracao": "Duração",
     "regiao": "Região",
     "proximasDatas": "Próximas datas",
@@ -58,8 +60,21 @@
     "ctaTitle": "Pronto para reservar sua vaga?",
     "ctaSubtitle": "Fale com nossa equipe pelo WhatsApp para alinhar detalhes e confirmar sua vaga.",
     "badgeElas": "Exclusiva para mulheres",
-    "cardAPartirDe": "A partir de · acomodação dupla",
+    "cardAPartirDe": "Consulte disponibilidade",
     "abrirExperiencia": "Abrir experiência",
+    "vagasDisponiveis": "Vagas & Disponibilidade",
+    "logistica": {
+      "titulo": "Logística",
+      "referencia": "Cidade de referência",
+      "aeroporto": "Aeroporto mais próximo",
+      "distancia": "Distâncias das capitais",
+      "idade": "Idade mínima recomendada",
+      "bebidas": "Bebidas não incluídas",
+      "deslocamento": "Deslocamento",
+      "pousada": "Pousada não incluída",
+      "checkin": "Check-in",
+      "observacoes": "Observações"
+    },
     "cards": {
       "serra-da-canastra": {
         "nome": "Serra da Canastra",
