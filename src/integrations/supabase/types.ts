@@ -988,6 +988,7 @@ export type Database = {
           status_atendimento: string
           telefone: string | null
           temperatura_lead: string
+          tipo_grupo: string | null
           ultima_interacao_at: string | null
           ultima_pagina_visitada: string | null
           updated_at: string
@@ -1046,6 +1047,7 @@ export type Database = {
           status_atendimento?: string
           telefone?: string | null
           temperatura_lead?: string
+          tipo_grupo?: string | null
           ultima_interacao_at?: string | null
           ultima_pagina_visitada?: string | null
           updated_at?: string
@@ -1104,6 +1106,7 @@ export type Database = {
           status_atendimento?: string
           telefone?: string | null
           temperatura_lead?: string
+          tipo_grupo?: string | null
           ultima_interacao_at?: string | null
           ultima_pagina_visitada?: string | null
           updated_at?: string
@@ -1631,6 +1634,7 @@ export type Database = {
           status_financeiro: string
           status_operacional: string
           status_pagamento: string
+          tipo_grupo: string | null
           updated_at: string
           valor_entrada: number | null
           valor_pago: number
@@ -1672,6 +1676,7 @@ export type Database = {
           status_financeiro?: string
           status_operacional?: string
           status_pagamento?: string
+          tipo_grupo?: string | null
           updated_at?: string
           valor_entrada?: number | null
           valor_pago?: number
@@ -1713,6 +1718,7 @@ export type Database = {
           status_financeiro?: string
           status_operacional?: string
           status_pagamento?: string
+          tipo_grupo?: string | null
           updated_at?: string
           valor_entrada?: number | null
           valor_pago?: number
