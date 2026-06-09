@@ -56,12 +56,12 @@ const schema = z.object({
     peso: z.coerce.number({ invalid_type_error: "Informe o peso" })
       .min(20, "Peso mínimo 20 kg")
       .max(110, "Por bem-estar dos cavalos, o peso máximo permitido é 110 kg."),
-    experiencia: z.enum(["nunca", "algumas", "frequente"]),
+    experiencia: z.enum(["nenhuma", "iniciante", "intermediario", "avancado"]),
     telefone: z.string().optional(),
     email: z.string().optional(),
   })).min(1),
   adicionais: z.object({
-    tipo_grupo: z.enum(["sozinho", "casal", "familia", "grupo"]),
+    tipo_grupo: z.enum(["individual", "casal", "grupo", "personalizada"]),
     forma_pagamento: z.string().min(2, "Selecione"),
     como_conheceu: z.string().min(2, "Selecione"),
     motivacao_viagem: z.string().min(1, "Obrigatório").max(250, "Máximo 250 caracteres"),
@@ -95,8 +95,8 @@ function ReservaPage() {
     defaultValues: {
       data_id: search.data ?? "",
       responsavel: { nome: "", cpf: "", telefone: "", email: "", cidade: "", estado: "" },
-      participantes: [{ nome: "", cpf: "", data_nascimento: "", peso: 70, experiencia: "nunca" }],
-      adicionais: { tipo_grupo: "sozinho", forma_pagamento: "pix", como_conheceu: "instagram", motivacao_viagem: "", observacoes_importantes: "", observacoes: "" },
+      participantes: [{ nome: "", cpf: "", data_nascimento: "", peso: 70, experiencia: "nenhuma" }],
+      adicionais: { tipo_grupo: "individual", forma_pagamento: "pix", como_conheceu: "instagram", motivacao_viagem: "", observacoes_importantes: "", observacoes: "" },
       aceites: { responsabilidade: false as unknown as true, cancelamento: false as unknown as true, riscos: false as unknown as true },
     },
     mode: "onTouched",
@@ -112,7 +112,7 @@ function ReservaPage() {
     if (qtdTotal === current.length) return;
     if (qtdTotal > current.length) {
       const toAdd = qtdTotal - current.length;
-      for (let i = 0; i < toAdd; i++) append({ nome: "", cpf: "", data_nascimento: "", peso: 70, experiencia: "nunca" });
+      for (let i = 0; i < toAdd; i++) append({ nome: "", cpf: "", data_nascimento: "", peso: 70, experiencia: "nenhuma" });
     } else {
       replace(current.slice(0, qtdTotal));
     }
@@ -122,10 +122,10 @@ function ReservaPage() {
   // Sugere quantidade conforme tipo de grupo (sem travar o usuário)
   const tipoGrupo = form.watch("adicionais.tipo_grupo");
   useEffect(() => {
-    if (tipoGrupo === "sozinho" && qtdTotal !== 1) setQtdTotal(1);
+    if (tipoGrupo === "individual" && qtdTotal !== 1) setQtdTotal(1);
     else if (tipoGrupo === "casal" && qtdTotal < 2) setQtdTotal(2);
-    else if (tipoGrupo === "familia" && qtdTotal < 3) setQtdTotal(4);
-    else if (tipoGrupo === "grupo" && qtdTotal < 3) setQtdTotal(5);
+    else if (tipoGrupo === "grupo" && qtdTotal < 3) setQtdTotal(3);
+    else if (tipoGrupo === "personalizada" && qtdTotal < 1) setQtdTotal(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tipoGrupo]);
 
@@ -210,6 +210,13 @@ function ReservaPage() {
     const ok = await form.trigger(fieldsByStep[step] as any, { shouldFocus: true });
     if (!ok) {
       toast.error("Revise os campos destacados.");
+      // Pequeno delay para o DOM atualizar com os erros
+      setTimeout(() => {
+        const firstError = document.querySelector('[aria-invalid="true"], .text-destructive');
+        if (firstError) {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
       return;
     }
     setStep((s) => Math.min(s + 1, STEPS.length - 1));
@@ -357,7 +364,7 @@ function ReservaPage() {
               <Step title="Dados do responsável" desc="Quem ficará como contato principal pela reserva.">
                 <div className="grid gap-5 sm:grid-cols-2">
                   <Field label="Nome completo" error={form.formState.errors.responsavel?.nome?.message} className="sm:col-span-2">
-                    <Input {...form.register("responsavel.nome")} placeholder="Como aparece no documento" />
+                    <Input {...form.register("responsavel.nome")} hasError={!!form.formState.errors.responsavel?.nome} placeholder="Como aparece no documento" />
                   </Field>
                   <Field label="CPF" error={form.formState.errors.responsavel?.cpf?.message}>
                     <Controller
@@ -365,7 +372,8 @@ function ReservaPage() {
                       name="responsavel.cpf"
                       render={({ field }) => (
                         <input
-                          className="input"
+                          className={cn("input", form.formState.errors.responsavel?.cpf && "border-destructive ring-1 ring-destructive")}
+                          aria-invalid={!!form.formState.errors.responsavel?.cpf}
                           inputMode="numeric"
                           placeholder="000.000.000-00"
                           value={field.value}
@@ -380,7 +388,8 @@ function ReservaPage() {
                       name="responsavel.telefone"
                       render={({ field }) => (
                         <input
-                          className="input"
+                          className={cn("input", form.formState.errors.responsavel?.telefone && "border-destructive ring-1 ring-destructive")}
+                          aria-invalid={!!form.formState.errors.responsavel?.telefone}
                           inputMode="tel"
                           placeholder="(11) 99999-9999"
                           value={field.value}
@@ -390,10 +399,10 @@ function ReservaPage() {
                     />
                   </Field>
                   <Field label="E-mail" error={form.formState.errors.responsavel?.email?.message} className="sm:col-span-2">
-                    <Input type="email" inputMode="email" placeholder="voce@exemplo.com" {...form.register("responsavel.email")} />
+                    <Input type="email" inputMode="email" hasError={!!form.formState.errors.responsavel?.email} placeholder="voce@exemplo.com" {...form.register("responsavel.email")} />
                   </Field>
                   <Field label="Estado" error={form.formState.errors.responsavel?.estado?.message}>
-                    <select className="input" {...form.register("responsavel.estado")}>
+                    <select className={cn("input", form.formState.errors.responsavel?.estado && "border-destructive ring-1 ring-destructive")} {...form.register("responsavel.estado")} aria-invalid={!!form.formState.errors.responsavel?.estado}>
                       <option value="">Selecione</option>
                       {ESTADOS_BR.map((e) => (
                         <option key={e.sigla} value={e.sigla}>{e.sigla} · {e.nome}</option>
@@ -401,10 +410,10 @@ function ReservaPage() {
                     </select>
                   </Field>
                   <Field label="Cidade" error={form.formState.errors.responsavel?.cidade?.message}>
-                    <Input {...form.register("responsavel.cidade")} placeholder="Sua cidade" />
+                    <Input {...form.register("responsavel.cidade")} hasError={!!form.formState.errors.responsavel?.cidade} placeholder="Sua cidade" />
                   </Field>
                   <Field label="Data desejada" error={form.formState.errors.data_id?.message} className="sm:col-span-2">
-                    <select className="input" {...form.register("data_id")}>
+                    <select className={cn("input", form.formState.errors.data_id && "border-destructive ring-1 ring-destructive")} {...form.register("data_id")} aria-invalid={!!form.formState.errors.data_id}>
                       <option value="">Selecione a data</option>
                       {datas.map((d) => (
                         <option key={d.id} value={d.id} disabled={d.status === "esgotado"}>
@@ -421,14 +430,34 @@ function ReservaPage() {
             {step === 1 && (
               <Step title="Participantes" desc="Informe quantas pessoas embarcam nesta expedição.">
                 <div className="grid gap-5 sm:grid-cols-2">
-                  <Field label="Tipo de grupo">
-                    <select className="input" {...form.register("adicionais.tipo_grupo")}>
-                      <option value="individual">Individual</option>
-                      <option value="casal">Casal</option>
-                      <option value="familia">Família</option>
-                      <option value="amigos">Grupo de amigos</option>
-                      <option value="corporativo">Corporativo</option>
-                    </select>
+                  <Field label="Tipo de experiência" error={form.formState.errors.adicionais?.tipo_grupo?.message} className="sm:col-span-2">
+                    <Controller
+                      control={form.control}
+                      name="adicionais.tipo_grupo"
+                      render={({ field }) => (
+                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                          {[
+                            { v: "individual", t: "Individual" },
+                            { v: "casal", t: "Casal" },
+                            { v: "grupo", t: "Em Grupo" },
+                            { v: "personalizada", t: "Personalizada" },
+                          ].map((o) => (
+                            <button
+                              key={o.v}
+                              type="button"
+                              onClick={() => field.onChange(o.v)}
+                              data-active={field.value === o.v}
+                              className={cn(
+                                "option-card items-center text-center",
+                                form.formState.errors.adicionais?.tipo_grupo && "border-destructive ring-1 ring-destructive"
+                              )}
+                            >
+                              <span className="font-eyebrow text-[0.7rem] uppercase tracking-[0.2em]">{o.t}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    />
                   </Field>
                   <Field label="Quantidade total de participantes">
                     <select
@@ -537,7 +566,10 @@ function ReservaPage() {
                                     type="button"
                                     onClick={() => field.onChange(o.v)}
                                     data-active={field.value === o.v}
-                                    className="option-card items-center text-center"
+                                    className={cn(
+                                      "option-card items-center text-center",
+                                      form.formState.errors.participantes?.[i]?.experiencia && "border-destructive ring-1 ring-destructive"
+                                    )}
                                   >
                                     <span className="font-eyebrow text-[0.7rem] uppercase tracking-[0.2em]">{o.t}</span>
                                   </button>
@@ -606,7 +638,7 @@ function ReservaPage() {
 
                   <div className="grid gap-5 sm:grid-cols-2">
                     <Field label="Como nos conheceu?" error={form.formState.errors.adicionais?.como_conheceu?.message}>
-                      <select className="input" {...form.register("adicionais.como_conheceu")}>
+                      <select className={cn("input", form.formState.errors.adicionais?.como_conheceu && "border-destructive ring-1 ring-destructive")} {...form.register("adicionais.como_conheceu")} aria-invalid={!!form.formState.errors.adicionais?.como_conheceu}>
                         <option value="instagram">Instagram</option>
                         <option value="google">Google</option>
                         <option value="indicacao">Indicação</option>
@@ -704,8 +736,8 @@ function Field({ label, error, children, className }: { label: string; error?: s
   );
 }
 
-function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  return <input {...props} className="input" />;
+function Input({ className, hasError, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { hasError?: boolean }) {
+  return <input {...props} className={cn("input", hasError && "border-destructive ring-1 ring-destructive", className)} aria-invalid={hasError} />;
 }
 
 function AceiteItem({ name, control, title, text, error }: any) {

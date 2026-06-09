@@ -204,18 +204,19 @@ function LeadEdit() {
               <AdminField label="Tipo de viagem">
                 <select className="admin-input" value={form.tipo_grupo ?? ""} onChange={(e) => setForm({ ...form, tipo_grupo: e.target.value || null })}>
                   <option value="">—</option>
-                  <option value="sozinho">Sozinho(a)</option>
+                  <option value="individual">Individual</option>
                   <option value="casal">Casal</option>
-                  <option value="familia">Família</option>
                   <option value="grupo">Grupo</option>
+                  <option value="personalizada">Personalizada</option>
                 </select>
               </AdminField>
               <AdminField label="Nível equestre">
                 <select className="admin-input" value={form.experiencia_equestre ?? ""} onChange={(e) => setForm({ ...form, experiencia_equestre: e.target.value || null })}>
                   <option value="">—</option>
-                  <option value="nunca">Nunca montei</option>
-                  <option value="algumas">Já montei algumas vezes</option>
-                  <option value="frequente">Experiência frequente</option>
+                  <option value="nenhuma">Nenhuma</option>
+                  <option value="iniciante">Iniciante</option>
+                  <option value="intermediario">Intermediário</option>
+                  <option value="avancado">Avançado</option>
                 </select>
               </AdminField>
             </div>
