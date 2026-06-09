@@ -256,6 +256,19 @@ function ExpedicaoEdit() {
                   placeholder="Ex.: Cruzília (MG)"
                 />
               </AdminField>
+              <AdminField
+                label="Distâncias das capitais"
+                previewTarget="como-chegar"
+                ondeAparece="Card 'Distâncias' na seção Como chegar"
+                hint="Informe as distâncias das principais capitais (ex: SP 200km, BH 300km)."
+              >
+                <input
+                  className="admin-input"
+                  value={form.como_chegar_distancias ?? ""}
+                  onChange={(e) => setF({ como_chegar_distancias: e.target.value || null })}
+                  placeholder="Ex.: São Paulo: 240km | Belo Horizonte: 310km"
+                />
+              </AdminField>
             </div>
             <AdminField
               label="Texto principal"
