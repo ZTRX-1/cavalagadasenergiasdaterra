@@ -276,7 +276,14 @@ function LeadEdit() {
             <div className="grid grid-cols-3 gap-3">
               <AdminField label="Data de interesse"><input type="date" className="admin-input" value={form.data_interesse ?? ""} onChange={(e) => setForm({ ...form, data_interesse: e.target.value || null })} /></AdminField>
               <AdminField label="Pessoas"><input type="number" className="admin-input" value={form.quantidade_pessoas ?? 1} onChange={(e) => setForm({ ...form, quantidade_pessoas: Number(e.target.value) })} /></AdminField>
-              <AdminField label="Valor estimado"><input type="number" className="admin-input" value={form.valor_estimado ?? ""} onChange={(e) => setForm({ ...form, valor_estimado: e.target.value ? Number(e.target.value) : null })} /></AdminField>
+              <AdminField label="Valor estimado">
+                <div className="relative">
+                  <input type="number" className={cn("admin-input pr-8", (form.valor_estimado ?? 0) === 0 && "border-amber-500/50")} value={form.valor_estimado ?? ""} onChange={(e) => setForm({ ...form, valor_estimado: e.target.value ? Number(e.target.value) : null })} />
+                  {(form.valor_estimado ?? 0) === 0 && (
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-amber-400" title="Valor não calculado ou zero">⚠️</span>
+                  )}
+                </div>
+              </AdminField>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <AdminField label="Canal de entrada">
