@@ -309,7 +309,7 @@ function DashboardPage() {
                 >
                   <div className="flex justify-between items-center">
                     <span className="text-xs font-medium text-[color:var(--admin-cinza-1)] group-hover:text-[color:var(--admin-dourado)] transition-colors">{r.cliente_nome || "Reserva"}</span>
-                    {!r.contrato_assinado && <FileText className="h-3 w-3 text-rose-400" title="Contrato pendente" />}
+                    {!r.contrato_assinado && <FileText className="h-3 w-3 text-rose-400" />}
                   </div>
                   <div className="text-[10px] text-[color:var(--admin-cinza-3)] mt-1">{r.protocolo} · {r.status_financeiro}</div>
                 </Link>
