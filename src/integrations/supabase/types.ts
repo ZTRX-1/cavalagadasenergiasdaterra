@@ -944,6 +944,7 @@ export type Database = {
           canal_entrada: string | null
           canal_venda: string | null
           cidade: string | null
+          cliente_id: string | null
           cpf: string | null
           created_at: string
           data_conversao: string | null
@@ -956,6 +957,7 @@ export type Database = {
           estado: string | null
           etapa_abandono: string | null
           etapa_atendimento: string
+          etapa_operacional: string | null
           expedicao_id: string | null
           expedicao_interesse: string | null
           experiencia_equestre: string | null
@@ -1000,6 +1002,7 @@ export type Database = {
           canal_entrada?: string | null
           canal_venda?: string | null
           cidade?: string | null
+          cliente_id?: string | null
           cpf?: string | null
           created_at?: string
           data_conversao?: string | null
@@ -1012,6 +1015,7 @@ export type Database = {
           estado?: string | null
           etapa_abandono?: string | null
           etapa_atendimento?: string
+          etapa_operacional?: string | null
           expedicao_id?: string | null
           expedicao_interesse?: string | null
           experiencia_equestre?: string | null
@@ -1056,6 +1060,7 @@ export type Database = {
           canal_entrada?: string | null
           canal_venda?: string | null
           cidade?: string | null
+          cliente_id?: string | null
           cpf?: string | null
           created_at?: string
           data_conversao?: string | null
@@ -1068,6 +1073,7 @@ export type Database = {
           estado?: string | null
           etapa_abandono?: string | null
           etapa_atendimento?: string
+          etapa_operacional?: string | null
           expedicao_id?: string | null
           expedicao_interesse?: string | null
           experiencia_equestre?: string | null
@@ -1295,6 +1301,7 @@ export type Database = {
           data_nascimento: string | null
           documentacao_aprovada: boolean | null
           documento: string | null
+          documento_validado: boolean | null
           email: string | null
           expedicao_id: string | null
           experiencia_equestre: string | null
@@ -1305,6 +1312,7 @@ export type Database = {
           pagamento_recebido: boolean | null
           peso: number | null
           reserva_id: string | null
+          responsavel_reserva: boolean | null
           restricoes: string | null
           restricoes_alimentares: string | null
           status: string
@@ -1324,6 +1332,7 @@ export type Database = {
           data_nascimento?: string | null
           documentacao_aprovada?: boolean | null
           documento?: string | null
+          documento_validado?: boolean | null
           email?: string | null
           expedicao_id?: string | null
           experiencia_equestre?: string | null
@@ -1334,6 +1343,7 @@ export type Database = {
           pagamento_recebido?: boolean | null
           peso?: number | null
           reserva_id?: string | null
+          responsavel_reserva?: boolean | null
           restricoes?: string | null
           restricoes_alimentares?: string | null
           status?: string
@@ -1353,6 +1363,7 @@ export type Database = {
           data_nascimento?: string | null
           documentacao_aprovada?: boolean | null
           documento?: string | null
+          documento_validado?: boolean | null
           email?: string | null
           expedicao_id?: string | null
           experiencia_equestre?: string | null
@@ -1363,6 +1374,7 @@ export type Database = {
           pagamento_recebido?: boolean | null
           peso?: number | null
           reserva_id?: string | null
+          responsavel_reserva?: boolean | null
           restricoes?: string | null
           restricoes_alimentares?: string | null
           status?: string
@@ -1603,6 +1615,7 @@ export type Database = {
           grupo_nome: string | null
           id: string
           lead_id: string | null
+          moeda: string | null
           motivacao_viagem: string | null
           observacoes_importantes: string | null
           observacoes_internas: string | null
@@ -1614,6 +1627,7 @@ export type Database = {
           responsavel_id: string | null
           saldo_restante: number | null
           status: string
+          status_documentacao: string | null
           status_financeiro: string
           status_operacional: string
           status_pagamento: string
@@ -1642,6 +1656,7 @@ export type Database = {
           grupo_nome?: string | null
           id?: string
           lead_id?: string | null
+          moeda?: string | null
           motivacao_viagem?: string | null
           observacoes_importantes?: string | null
           observacoes_internas?: string | null
@@ -1653,6 +1668,7 @@ export type Database = {
           responsavel_id?: string | null
           saldo_restante?: number | null
           status?: string
+          status_documentacao?: string | null
           status_financeiro?: string
           status_operacional?: string
           status_pagamento?: string
@@ -1681,6 +1697,7 @@ export type Database = {
           grupo_nome?: string | null
           id?: string
           lead_id?: string | null
+          moeda?: string | null
           motivacao_viagem?: string | null
           observacoes_importantes?: string | null
           observacoes_internas?: string | null
@@ -1692,6 +1709,7 @@ export type Database = {
           responsavel_id?: string | null
           saldo_restante?: number | null
           status?: string
+          status_documentacao?: string | null
           status_financeiro?: string
           status_operacional?: string
           status_pagamento?: string
