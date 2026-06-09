@@ -235,35 +235,35 @@ function DetalhesExpedicao() {
               <ExpeditionMetaCard
                 icon={UserPlus}
                 label={t("expedicoes.logistica.idade")}
-                value={idadeMin.replace(/[👧👦]|Idade mínima recomendada: /g, "")}
+                value={idadeMin.replace(/[👧👦]|Idade mínima recomendada: /g, "").trim() || "8 anos"}
               />
             )}
             {bebidas && (
               <ExpeditionMetaCard
                 icon={GlassWater}
                 label={t("expedicoes.logistica.bebidas")}
-                value={bebidas}
+                value="Não incluídas"
               />
             )}
             {deslocamento && (
               <ExpeditionMetaCard
                 icon={Bus}
                 label={t("expedicoes.logistica.deslocamento")}
-                value={deslocamento}
+                value="Não incluso"
               />
             )}
             {pousada && (
               <ExpeditionMetaCard
                 icon={Hotel}
                 label={t("expedicoes.logistica.pousada")}
-                value={pousada}
+                value="Não incluída"
               />
             )}
-            {expedicao.roteiro?.[0]?.titulo?.toLowerCase().includes("check-in") && (
+            {(expedicao.roteiro?.[0]?.desc?.toLowerCase().includes("check-in") || expedicao.roteiro?.[0]?.titulo?.toLowerCase().includes("check-in")) && (
               <ExpeditionMetaCard
                 icon={Clock}
                 label={t("expedicoes.logistica.checkin")}
-                value={expedicao.roteiro[0].desc.match(/check-in a partir das \d+h/i)?.[0] || "A partir das 14h"}
+                value={expedicao.roteiro[0].desc.match(/check-in a partir das \d+h/i)?.[0].replace(/check-in /i, "") || "A partir das 14h"}
               />
             )}
           </div>
