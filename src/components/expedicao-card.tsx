@@ -70,10 +70,10 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
           <div className="mt-4 flex items-end justify-between gap-3">
             <div className="min-w-0">
               <div className="truncate text-[0.58rem] uppercase tracking-[0.2em] text-areia/65">
-                {t("expedicoes.aPartirDe", "A partir de")}
+                {expedicao.mensagem_comercial_publica ? t("expedicoes.vagasDisponiveis", "Vagas & Disponibilidade") : t("expedicoes.aPartirDe", "A partir de")}
               </div>
               <div className="mt-0.5 font-display text-lg sm:text-xl text-cobre-soft">
-                {formatPriceWithBRL(expedicao.preco, expedicao.moeda)}
+                {expedicao.mensagem_comercial_publica || formatPriceWithBRL(expedicao.preco, expedicao.moeda)}
               </div>
             </div>
             <span className="inline-flex h-9 w-9 sm:h-10 sm:w-10 flex-none items-center justify-center rounded-full border border-areia/40 text-areia transition-all group-hover:bg-cobre group-hover:border-cobre">
