@@ -382,11 +382,13 @@ export async function deleteData(id: string): Promise<void> {
 /** Etapas do Atendimento — coluna do Kanban e progresso do lead. */
 export const LEAD_ETAPAS = [
   { id: "novo", label: "Novo", descricao: "Acabou de chegar" },
-  { id: "em_atendimento", label: "Atendimento", descricao: "IA ou equipe iniciou conversa" },
+  { id: "triagem_ia", label: "Triagem / IA", descricao: "IA ou equipe inicializando contato" },
   { id: "qualificado", label: "Qualificado", descricao: "Tem perfil para a viagem" },
-  { id: "pronto_reserva", label: "Pronto pra Reserva", descricao: "Quer reservar agora" },
-  { id: "convertido", label: "Convertido", descricao: "Virou reserva" },
-  { id: "perdido", label: "Perdido", descricao: "Não avançou" },
+  { id: "proposta_enviada", label: "Proposta Enviada", descricao: "Proposta de viagem enviada" },
+  { id: "reserva_pendente", label: "Reserva Pendente", descricao: "Aguardando sinal ou reserva" },
+  { id: "participante_confirmado", label: "Participante Confirmado", descricao: "Reserva e pagamentos validados" },
+  { id: "concluido", label: "Pós-venda / Concluído", descricao: "Expedição realizada com sucesso" },
+  { id: "perdido", label: "Perdido", descricao: "Não avançou no processo" },
 ] as const;
 export type LeadEtapaId = (typeof LEAD_ETAPAS)[number]["id"];
 
@@ -408,6 +410,8 @@ export interface LeadRow {
   origem: string | null;
   status: string;
   etapa_atendimento: LeadEtapaId;
+  etapa_operacional: string;
+  reserva_id?: string | null;
   nivel_interesse: number;
   lead_score: number;
   responsavel_id: string | null;
@@ -728,6 +732,8 @@ export interface ParticipanteRow {
   contrato_assinado: boolean;
   ficha_medica_enviada: boolean;
   documentacao_aprovada: boolean;
+  responsavel_reserva: boolean;
+  documento_validado: boolean;
 }
 
 export async function listParticipantes(): Promise<ParticipanteRow[]> {
@@ -1285,8 +1291,9 @@ export async function converterLeadEmReserva(
     .maybeSingle();
   if (reservaExistenteErr) throw new Error("Falha ao verificar reserva existente: " + reservaExistenteErr.message);
   if (reservaExistente) {
-    if (lead.etapa_atendimento !== "convertido" || lead.status !== "convertido") {
-      await updateLead(leadId, { etapa_atendimento: "convertido", status: "convertido" });
+    if (lead.etapa_atendimento !== "reserva_pendente" && lead.etapa_atendimento !== "participante_confirmado") {
+      await updateLead(leadId, { etapa_atendimento: "reserva_pendente" });
+      await logActivity({ modulo: "leads", acao: "converter_lead", descricao: "Convertido em reserva pendente", metadata: { lead_id: leadId, reserva_id: reservaExistente.id } });
     }
     return { reserva_id: reservaExistente.id, protocolo: reservaExistente.protocolo };
   }
@@ -1371,10 +1378,9 @@ export async function converterLeadEmReserva(
     throw new Error("Falha ao criar participantes: " + partErr.message);
   }
 
-  // 4) move lead para convertido
+  // 4) move lead para reserva_pendente
   await updateLead(leadId, {
-    etapa_atendimento: "convertido",
-    status: "convertido",
+    etapa_atendimento: "reserva_pendente",
   });
 
   // 5) registra na timeline da reserva
@@ -1386,9 +1392,9 @@ export async function converterLeadEmReserva(
   } as never);
 
   await logActivity({
-    modulo: "reservas",
+    modulo: "leads",
     acao: "converter_lead",
-    descricao: `${lead.nome} → ${protocolo}`,
+    descricao: `Lead convertido em reserva ${reservaRow.protocolo}`,
     metadata: { lead_id: leadId, reserva_id: reservaRow.id },
   });
 

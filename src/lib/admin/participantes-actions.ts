@@ -7,6 +7,7 @@ export async function addParticipanteManual(input: {
   nome: string;
   email?: string | null;
   telefone?: string | null;
+  responsavel?: boolean;
 }) {
   const { data, error } = await supabase
     .from("participantes")
@@ -18,6 +19,7 @@ export async function addParticipanteManual(input: {
       email: input.email ?? null,
       telefone: input.telefone ?? null,
       status: "confirmado",
+      responsavel_reserva: input.responsavel ?? false,
     })
     .select()
     .single();

@@ -505,6 +505,7 @@ export async function updateReservaCampo(
     responsavel_id: string | null;
     motivacao_viagem: string;
     observacoes_importantes: string;
+    lead_id: string | null;
   }>,
 ) {
   const { error } = await sb.from("reservas").update(patch as never).eq("id", id);
@@ -535,7 +536,7 @@ export async function deleteReservaDocumento(id: string) {
 
 /**
  * Situação visível da reserva — derivada dos status/contrato/pagamento.
- * Valores possíveis: "confirmado" | "pagamento_pendente" | "contrato_pendente" | "em_risco" | "concluido"
+ * Valores possíveis: "confirmado" | "pagamento_pendente" | "contrato_pendente" | "em_risco" | "concluido" | "pre_reserva"
  */
 export function calcularSituacaoReserva(r: {
   status_operacional: string;
@@ -544,6 +545,9 @@ export function calcularSituacaoReserva(r: {
   contrato_assinado: boolean;
   data_label?: string | null;
 }): { id: string; label: string; tone: "ok" | "warn" | "danger" | "info" } {
+  if (r.status_operacional === "pre_reserva") {
+    return { id: "pre_reserva", label: "Pré-reserva", tone: "info" };
+  }
   if (r.status_operacional === "expedicao_concluida") {
     return { id: "concluido", label: "Concluído", tone: "info" };
   }

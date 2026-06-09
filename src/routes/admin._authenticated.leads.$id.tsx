@@ -69,7 +69,9 @@ function LeadEdit() {
 
   const podeConverter =
     !reservaExistente &&
-    form.etapa_atendimento !== "convertido" &&
+    form.etapa_atendimento !== "reserva_pendente" &&
+    form.etapa_atendimento !== "participante_confirmado" &&
+    form.etapa_atendimento !== "concluido" &&
     form.etapa_atendimento !== "perdido";
 
   return (
@@ -128,7 +130,7 @@ function LeadEdit() {
           <AdminSection titulo="Atendimento" descricao="Onde está esse lead na jornada e o que precisa acontecer agora.">
             <div className="grid grid-cols-2 gap-3">
               <AdminField label="Etapa do Atendimento">
-                <select className="admin-input" value={form.etapa_atendimento ?? "novo"} onChange={(e) => setForm({ ...form, etapa_atendimento: e.target.value as LeadEtapaId, status: e.target.value })}>
+                <select className="admin-input" value={form.etapa_atendimento ?? "novo"} onChange={(e) => setForm({ ...form, etapa_atendimento: e.target.value as LeadEtapaId, status: e.target.value, etapa_operacional: e.target.value })}>
                   {LEAD_ETAPAS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
                 </select>
               </AdminField>
