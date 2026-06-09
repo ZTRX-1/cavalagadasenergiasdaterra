@@ -303,7 +303,14 @@ async function handleCapturaProgressiva(payload: any) {
     if (error) return json({ error: "Falha ao atualizar captura." }, 500);
     return json({ lead_id: data.id });
   } else {
-    const { data: protoLeadData } = await admin.rpc("gerar_protocolo_lead");
+    let protocoloLeadCap = "";
+    try {
+      const { data: protoLeadData } = await admin.rpc("gerar_protocolo_lead");
+      protocoloLeadCap = (protoLeadData as string | null) ?? "";
+    } catch (err) {
+      console.error("Erro ao gerar protocolo lead captura via RPC:", err);
+      protocoloLeadCap = `LD-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+    }
     
     const { data, error } = await admin
       .from("leads")
