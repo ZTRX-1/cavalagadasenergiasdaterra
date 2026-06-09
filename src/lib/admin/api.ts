@@ -449,6 +449,7 @@ export interface LeadRow {
   data_expedicao_id: string | null;
   motivacao_viagem: string | null;
   observacoes_importantes: string | null;
+  tipo_grupo: string | null;
   perfil: string | null;
   objetivos: string | null;
   interesses: string | null;
