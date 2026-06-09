@@ -69,7 +69,9 @@ function LeadEdit() {
 
   const podeConverter =
     !reservaExistente &&
-    form.etapa_atendimento !== "convertido" &&
+    form.etapa_atendimento !== "reserva_pendente" &&
+    form.etapa_atendimento !== "participante_confirmado" &&
+    form.etapa_atendimento !== "concluido" &&
     form.etapa_atendimento !== "perdido";
 
   return (

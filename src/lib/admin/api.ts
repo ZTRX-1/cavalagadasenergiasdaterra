@@ -1289,8 +1289,8 @@ export async function converterLeadEmReserva(
     .maybeSingle();
   if (reservaExistenteErr) throw new Error("Falha ao verificar reserva existente: " + reservaExistenteErr.message);
   if (reservaExistente) {
-    if (lead.etapa_atendimento !== "convertido" || lead.status !== "convertido") {
-      await updateLead(leadId, { etapa_atendimento: "convertido", status: "convertido" });
+    if (lead.etapa_atendimento !== "reserva_pendente" && lead.etapa_atendimento !== "participante_confirmado") {
+      await updateLead(leadId, { etapa_atendimento: "reserva_pendente" });
     }
     return { reserva_id: reservaExistente.id, protocolo: reservaExistente.protocolo };
   }
@@ -1375,10 +1375,9 @@ export async function converterLeadEmReserva(
     throw new Error("Falha ao criar participantes: " + partErr.message);
   }
 
-  // 4) move lead para convertido
+  // 4) move lead para reserva_pendente
   await updateLead(leadId, {
-    etapa_atendimento: "convertido",
-    status: "convertido",
+    etapa_atendimento: "reserva_pendente",
   });
 
   // 5) registra na timeline da reserva
