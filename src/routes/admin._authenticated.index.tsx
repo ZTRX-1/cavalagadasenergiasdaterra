@@ -86,9 +86,9 @@ async function fetchDashboard(range: { from: string; to: string }) {
     proximas,
     alertasReservas,
   ] = await Promise.all([
-    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
-    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("etapa_atendimento", ["qualificado", "proposta_enviada", "reserva_pendente", "participante_confirmado", "concluido"]),
-    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("etapa_atendimento", ["reserva_pendente", "participante_confirmado", "concluido"]),
+    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).neq("status", "abandonado"),
+    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("etapa_atendimento", ["qualificado", "proposta_enviada", "reserva_pendente", "participante_confirmado", "convertido", "concluido"]),
+    supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("etapa_atendimento", ["reserva_pendente", "participante_confirmado", "convertido", "concluido"]),
     supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to),
     supabase.from("leads").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).eq("status", "abandonado"),
     supabase.from("reservas").select("id", { count: "exact", head: true }).gte("created_at", range.from).lte("created_at", range.to).in("status_operacional", ["reserva_confirmada", "participante_confirmado"]),

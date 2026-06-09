@@ -207,6 +207,24 @@ async function handleCriar(payload: CriarPayload) {
 
   let leadId = payload.lead_id;
 
+  // Se não temos leadId, tentamos encontrar um lead 'abandonado' com o mesmo email/telefone
+  // para evitar duplicidade caso o estado do frontend tenha sido perdido
+  if (!leadId) {
+    const { data: existingLead } = await admin
+      .from("leads")
+      .select("id")
+      .eq("status", "abandonado")
+      .or(`email.eq.${payload.responsavel.email},telefone.eq.${payload.responsavel.telefone}`)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    
+    if (existingLead) {
+      console.log("Reutilizando lead abandonado encontrado:", existingLead.id);
+      leadId = existingLead.id;
+    }
+  }
+
   if (leadId) {
     const { error: leadErr } = await admin
       .from("leads")

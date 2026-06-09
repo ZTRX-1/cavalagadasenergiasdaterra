@@ -396,6 +396,7 @@ export const LEAD_ETAPAS = [
   { id: "proposta_enviada", label: "Proposta Enviada", descricao: "Proposta de viagem enviada" },
   { id: "reserva_pendente", label: "Reserva Pendente", descricao: "Aguardando sinal ou reserva" },
   { id: "participante_confirmado", label: "Participante Confirmado", descricao: "Reserva e pagamentos validados" },
+  { id: "convertido", label: "Convertido", descricao: "Lead transformado em reserva" },
   { id: "concluido", label: "Pós-venda / Concluído", descricao: "Expedição realizada com sucesso" },
   { id: "perdido", label: "Perdido", descricao: "Não avançou no processo" },
 ] as const;
