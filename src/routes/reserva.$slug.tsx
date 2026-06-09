@@ -83,6 +83,7 @@ type FormValues = z.infer<typeof schema>;
 const STEPS = ["Responsável", "Participantes", "Adicionais", "Aceites", "Confirmação"];
 
 function ReservaPage() {
+  const { t } = useTranslation();
   const { slug } = Route.useParams();
   const search = Route.useSearch();
   const { data } = useSuspenseQuery(qo(slug));
