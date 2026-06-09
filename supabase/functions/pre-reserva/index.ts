@@ -147,11 +147,24 @@ async function handleCriar(payload: CriarPayload) {
   const qtd = payload.participantes.length;
   const valor_total = precoFinal * qtd;
 
-  const { data: protoData, error: protoErr } = await admin.rpc("gerar_protocolo");
-  if (protoErr || !protoData) return json({ error: "Não foi possível gerar protocolo." }, 500);
-  const protocolo = String(protoData);
+  let protocolo = "";
+  try {
+    const { data: protoData, error: protoErr } = await admin.rpc("gerar_protocolo");
+    if (protoErr || !protoData) throw new Error("Falha no RPC");
+    protocolo = String(protoData);
+  } catch (err) {
+    console.error("Erro ao gerar protocolo via RPC:", err);
+    protocolo = `RES-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+  }
 
-  const { data: protoLeadData } = await admin.rpc("gerar_protocolo_lead");
+  let protocoloLead = "";
+  try {
+    const { data: protoLeadData } = await admin.rpc("gerar_protocolo_lead");
+    protocoloLead = (protoLeadData as string | null) ?? "";
+  } catch (err) {
+    console.error("Erro ao gerar protocolo lead via RPC:", err);
+    protocoloLead = `LD-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+  }
 
   const firstP = payload.participantes[0];
   const leadPayload = {
@@ -176,7 +189,7 @@ async function handleCriar(payload: CriarPayload) {
     observacoes_importantes: payload.adicionais.observacoes_importantes ?? null,
     motivacao_viagem: payload.adicionais.motivacao_viagem ?? null,
     tipo_grupo: payload.adicionais.tipo_grupo ?? null,
-    protocolo: (protoLeadData as string | null) ?? null,
+    protocolo: protocoloLead || null,
     forma_pagamento: payload.adicionais.forma_pagamento,
     peso: firstP?.peso,
     experiencia_equestre: firstP?.experiencia,
@@ -290,13 +303,20 @@ async function handleCapturaProgressiva(payload: any) {
     if (error) return json({ error: "Falha ao atualizar captura." }, 500);
     return json({ lead_id: data.id });
   } else {
-    const { data: protoLeadData } = await admin.rpc("gerar_protocolo_lead");
+    let protocoloLeadCap = "";
+    try {
+      const { data: protoLeadData } = await admin.rpc("gerar_protocolo_lead");
+      protocoloLeadCap = (protoLeadData as string | null) ?? "";
+    } catch (err) {
+      console.error("Erro ao gerar protocolo lead captura via RPC:", err);
+      protocoloLeadCap = `LD-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+    }
     
     const { data, error } = await admin
       .from("leads")
       .insert({
         ...leadPayload,
-        protocolo: (protoLeadData as string | null) ?? null,
+        protocolo: protocoloLeadCap || null,
         created_at: new Date().toISOString(),
       } as never)
       .select("id")
