@@ -226,8 +226,8 @@ function ParticipanteCard({
         </Field>
         <Field label="Nível Equestre">
           <select
-            value={participante.experiencia ?? ""}
-            onChange={(e) => updMut.mutate({ experiencia: e.target.value as any })}
+            value={participante.experiencia_equestre ?? ""}
+            onChange={(e) => updMut.mutate({ experiencia_equestre: e.target.value })}
             className="w-full rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao)] px-2 py-1.5 text-sm"
           >
             <option value="">—</option>
