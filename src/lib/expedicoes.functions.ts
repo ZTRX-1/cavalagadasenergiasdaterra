@@ -34,6 +34,7 @@ function normalizeExpedicao(row: Record<string, unknown>): Expedicao {
     nivel: (row.nivel as string) ?? "",
     preco: Number(row.preco ?? 0),
     moeda: (row.moeda as string) ?? "BRL",
+    mensagem_comercial_publica: (row.mensagem_comercial_publica as string | null) ?? null,
     marca: (row.marca as string) ?? "cavalgadas",
     pais: (row.pais as string) ?? "brasil",
     regiao: ((row.regiao as string) || (row.cidade as string) || (row.estado as string)) ?? null,
