@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Check, MapPin, Plane, Info, Calendar, Monitor, Smartphone, ExternalLink } from "lucide-react";
+import { Check, MapPin, Plane, Info, Calendar, Monitor, Smartphone, ExternalLink, Car } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import type { ExpedicaoRow } from "@/lib/admin/api";
 
@@ -169,7 +169,7 @@ export function ExpedicaoPreview({
                 <span className="h-1 w-1 rounded-full bg-amber-500" />
                 <span>{form.nivel || "Nível"}</span>
                 <span className="h-1 w-1 rounded-full bg-amber-500" />
-                <span>A partir de {formatBRL(form.preco)} <span className="text-white/60">por pessoa</span></span>
+                <span>{form.mensagem_comercial_publica || `A partir de ${formatBRL(form.preco)}`} {!form.mensagem_comercial_publica && <span className="text-white/60">por pessoa</span>}</span>
               </div>
               <h1 className="mt-5 max-w-3xl font-serif text-6xl">{form.nome || "Nome da expedição"}</h1>
               <p className="mt-5 max-w-2xl text-lg text-white/85 leading-relaxed">{form.descricao_curta || "Resumo curto da expedição"}</p>
@@ -189,7 +189,7 @@ export function ExpedicaoPreview({
                 <div className="text-[10px] uppercase tracking-wider text-amber-400/80">{form.regiao || form.estado || form.pais || "Localização"}</div>
                 <div className="mt-1 font-serif text-lg leading-tight text-white">{form.nome || "Nome"}</div>
                 <div className="mt-1 line-clamp-2 text-xs text-stone-400">{form.descricao_curta || "Resumo curto"}</div>
-                <div className="mt-2 text-xs text-amber-300">{formatBRL(form.preco)}</div>
+                <div className="mt-2 text-xs text-amber-300">{form.mensagem_comercial_publica || formatBRL(form.preco)}</div>
               </div>
             </div>
           </section>
@@ -227,7 +227,7 @@ export function ExpedicaoPreview({
                 </div>
                 <div data-section="preco" className={`rounded border border-stone-200 bg-white p-6 shadow-sm ${sectionClass("preco")}`}>
                   <div className="text-[10px] uppercase tracking-[0.22em] text-amber-700">Condições de pagamento</div>
-                  <div className="mt-3 font-serif text-2xl text-amber-700">A partir de {formatBRL(form.preco)}</div>
+                  <div className="mt-3 font-serif text-2xl text-amber-700">{form.mensagem_comercial_publica || `A partir de ${formatBRL(form.preco)}`}</div>
                   <p className="mt-2 text-xs text-stone-500">Até {form.parcelamento_max ?? 1}x no cartão.</p>
                 </div>
               </aside>
@@ -252,14 +252,14 @@ export function ExpedicaoPreview({
           )}
 
           {/* Como chegar */}
-          {(form.como_chegar_aeroporto || form.como_chegar_referencia || form.como_chegar_conteudo || form.como_chegar_observacoes) && (
+          {(form.como_chegar_aeroporto || form.como_chegar_referencia || form.como_chegar_distancias || form.como_chegar_conteudo || form.como_chegar_observacoes) && (
             <section data-section="como-chegar" className={`bg-[#f8f5ef] px-12 py-16 text-stone-900 ${sectionClass("como-chegar")}`}>
               <div className="text-[10px] uppercase tracking-[0.22em] text-amber-700">Logística</div>
               <h2 className="mt-3 font-serif text-3xl">{form.como_chegar_titulo?.trim() || "Como chegar"}</h2>
               <div className="mt-8 grid gap-8 md:grid-cols-12">
                 <div className="md:col-span-7 space-y-5">
-                  {(form.como_chegar_aeroporto || form.como_chegar_referencia) && (
-                    <div className="grid gap-3 sm:grid-cols-2">
+                  {(form.como_chegar_aeroporto || form.como_chegar_referencia || form.como_chegar_distancias) && (
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                       {form.como_chegar_aeroporto && (
                         <div className="rounded border border-stone-200 bg-white p-5">
                           <div className="flex items-center gap-2 text-amber-700"><Plane className="h-4 w-4" /><span className="text-[10px] uppercase tracking-wider">Aeroporto</span></div>
@@ -270,6 +270,12 @@ export function ExpedicaoPreview({
                         <div className="rounded border border-stone-200 bg-white p-5">
                           <div className="flex items-center gap-2 text-amber-700"><MapPin className="h-4 w-4" /><span className="text-[10px] uppercase tracking-wider">Cidade</span></div>
                           <p className="mt-2 font-serif text-lg">{form.como_chegar_referencia}</p>
+                        </div>
+                      )}
+                      {form.como_chegar_distancias && (
+                        <div className="rounded border border-stone-200 bg-white p-5">
+                          <div className="flex items-center gap-2 text-amber-700"><Car className="h-4 w-4" /><span className="text-[10px] uppercase tracking-wider">Distâncias</span></div>
+                          <p className="mt-2 font-serif text-lg">{form.como_chegar_distancias}</p>
                         </div>
                       )}
                     </div>
