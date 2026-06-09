@@ -585,6 +585,7 @@ export type Database = {
           cidade: string | null
           como_chegar_aeroporto: string | null
           como_chegar_conteudo: string | null
+          como_chegar_distancias: string | null
           como_chegar_observacoes: string | null
           como_chegar_referencia: string | null
           como_chegar_titulo: string | null
@@ -598,6 +599,7 @@ export type Database = {
           imagem_url: string | null
           inclui: Json
           marca: string
+          mensagem_comercial_publica: string | null
           moeda: string
           nivel: string
           nome: string
@@ -624,6 +626,7 @@ export type Database = {
           cidade?: string | null
           como_chegar_aeroporto?: string | null
           como_chegar_conteudo?: string | null
+          como_chegar_distancias?: string | null
           como_chegar_observacoes?: string | null
           como_chegar_referencia?: string | null
           como_chegar_titulo?: string | null
@@ -637,6 +640,7 @@ export type Database = {
           imagem_url?: string | null
           inclui?: Json
           marca?: string
+          mensagem_comercial_publica?: string | null
           moeda?: string
           nivel: string
           nome: string
@@ -663,6 +667,7 @@ export type Database = {
           cidade?: string | null
           como_chegar_aeroporto?: string | null
           como_chegar_conteudo?: string | null
+          como_chegar_distancias?: string | null
           como_chegar_observacoes?: string | null
           como_chegar_referencia?: string | null
           como_chegar_titulo?: string | null
@@ -676,6 +681,7 @@ export type Database = {
           imagem_url?: string | null
           inclui?: Json
           marca?: string
+          mensagem_comercial_publica?: string | null
           moeda?: string
           nivel?: string
           nome?: string

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { ArrowRight, Check, Plane, MapPin, Info } from "lucide-react";
+import { ArrowRight, Check, Plane, MapPin, Info, Car } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
@@ -36,6 +36,20 @@ export const Route = createFileRoute("/expedicoes/$slug")({
   },
   component: DetalhesExpedicao,
 });
+
+function LogisticaCard({ icon: Icon, label, value }: { icon: any, label: string, value: string }) {
+  return (
+    <div className="rounded-sm border border-border bg-card p-6 shadow-card transition-all hover:border-cobre/30">
+      <div className="flex items-center gap-2 text-cobre">
+        <Icon className="h-4 w-4" strokeWidth={1.6} />
+        <span className="font-eyebrow text-[0.62rem] uppercase tracking-[0.22em] !mt-0">{label}</span>
+      </div>
+      <p className="mt-3 font-display text-xl leading-snug text-foreground">
+        {value}
+      </p>
+    </div>
+  );
+}
 
 function DetalhesExpedicao() {
   const { t } = useTranslation();
@@ -75,7 +89,7 @@ function DetalhesExpedicao() {
             <span className="h-1 w-1 rounded-full bg-cobre" />
             <span>{expedicao.nivel}</span>
             <span className="h-1 w-1 rounded-full bg-cobre" />
-            <span>A partir de {formatPriceWithBRL(expedicao.preco, expedicao.moeda)} <span className="text-areia/60">por pessoa em acomodação dupla</span></span>
+            <span>{expedicao.mensagem_comercial_publica || `A partir de ${formatPriceWithBRL(expedicao.preco, expedicao.moeda)}`} {!expedicao.mensagem_comercial_publica && <span className="text-areia/60">por pessoa em acomodação dupla</span>}</span>
           </div>
           <h1 className="mt-5 max-w-3xl font-display text-5xl text-balance md:text-7xl">{expedicao.nome}</h1>
           <p className="mt-5 max-w-2xl text-lg text-areia/85 text-pretty">{expedicao.descricao_curta}</p>
@@ -160,7 +174,7 @@ function DetalhesExpedicao() {
             <div className="rounded-sm border border-border bg-card p-8 shadow-card">
               <div className="eyebrow">Condições de pagamento</div>
               <div className="mt-4 font-display text-3xl text-cobre">
-                A partir de {formatPriceWithBRL(expedicao.preco, expedicao.moeda)}
+                {expedicao.mensagem_comercial_publica || `A partir de ${formatPriceWithBRL(expedicao.preco, expedicao.moeda)}`}
               </div>
               <ul className="mt-5 space-y-3 text-sm text-foreground/85">
                 <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />À vista no Pix/transferência</li>
@@ -214,29 +228,28 @@ function DetalhesExpedicao() {
 
             <div className="mt-12 grid gap-10 md:grid-cols-12">
               <div className="md:col-span-7 space-y-6">
-                {(expedicao.como_chegar_aeroporto || expedicao.como_chegar_referencia) && (
-                  <div className="grid gap-3 sm:grid-cols-2">
+                {(expedicao.como_chegar_aeroporto || expedicao.como_chegar_referencia || expedicao.como_chegar_distancias) && (
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {expedicao.como_chegar_aeroporto && (
-                      <div className="rounded-sm border border-border bg-card p-6 shadow-card">
-                        <div className="flex items-center gap-2 text-cobre">
-                          <Plane className="h-4 w-4" strokeWidth={1.6} />
-                          <span className="eyebrow !mt-0">Aeroporto mais próximo</span>
-                        </div>
-                        <p className="mt-3 font-display text-xl leading-snug text-foreground">
-                          {expedicao.como_chegar_aeroporto}
-                        </p>
-                      </div>
+                      <LogisticaCard
+                        icon={Plane}
+                        label="Aeroporto mais próximo"
+                        value={expedicao.como_chegar_aeroporto}
+                      />
                     )}
                     {expedicao.como_chegar_referencia && (
-                      <div className="rounded-sm border border-border bg-card p-6 shadow-card">
-                        <div className="flex items-center gap-2 text-cobre">
-                          <MapPin className="h-4 w-4" strokeWidth={1.6} />
-                          <span className="eyebrow !mt-0">Cidade de referência</span>
-                        </div>
-                        <p className="mt-3 font-display text-xl leading-snug text-foreground">
-                          {expedicao.como_chegar_referencia}
-                        </p>
-                      </div>
+                      <LogisticaCard
+                        icon={MapPin}
+                        label="Cidade de referência"
+                        value={expedicao.como_chegar_referencia}
+                      />
+                    )}
+                    {expedicao.como_chegar_distancias && (
+                      <LogisticaCard
+                        icon={Car}
+                        label="Distâncias das capitais"
+                        value={expedicao.como_chegar_distancias}
+                      />
                     )}
                   </div>
                 )}

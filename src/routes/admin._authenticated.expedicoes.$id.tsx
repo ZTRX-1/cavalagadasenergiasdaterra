@@ -256,6 +256,19 @@ function ExpedicaoEdit() {
                   placeholder="Ex.: Cruzília (MG)"
                 />
               </AdminField>
+              <AdminField
+                label="Distâncias das capitais"
+                previewTarget="como-chegar"
+                ondeAparece="Card 'Distâncias' na seção Como chegar"
+                hint="Informe as distâncias das principais capitais (ex: SP 200km, BH 300km)."
+              >
+                <input
+                  className="admin-input"
+                  value={form.como_chegar_distancias ?? ""}
+                  onChange={(e) => setF({ como_chegar_distancias: e.target.value || null })}
+                  placeholder="Ex.: São Paulo: 240km | Belo Horizonte: 310km"
+                />
+              </AdminField>
             </div>
             <AdminField
               label="Texto principal"
@@ -667,6 +680,21 @@ function ExpedicaoEdit() {
               </AdminField>
               <AdminField label="Máximo parcelas" previewTarget="preco" ondeAparece="Caixa 'Condições de pagamento'">
                 <input type="number" className="admin-input" value={form.parcelamento_max ?? 1} onChange={(e) => setF({ parcelamento_max: Number(e.target.value) })} />
+              </AdminField>
+            </div>
+            <div className="mt-4">
+              <AdminField
+                label="Mensagem Comercial Pública"
+                previewTarget="preco"
+                ondeAparece="Substitui o preço nas listagens e na página pública"
+                hint="Ex: 'Consulte valores e disponibilidade'. Se preenchido, o preço real não será exibido publicamente."
+              >
+                <textarea
+                  className="admin-input min-h-[80px]"
+                  value={form.mensagem_comercial_publica ?? ""}
+                  onChange={(e) => setF({ mensagem_comercial_publica: e.target.value })}
+                  placeholder="Ex: Consulte valores e disponibilidade"
+                />
               </AdminField>
             </div>
           </AdminSection>

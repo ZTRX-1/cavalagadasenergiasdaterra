@@ -324,7 +324,7 @@ function ReservaPage() {
               <span className="rounded-full bg-cobre/90 px-3 py-1 font-eyebrow text-[0.62rem] uppercase tracking-[0.22em] text-areia">Últimas vagas</span>
             )}
           </div>
-          <p className="mt-6 max-w-xl text-areia/80">A partir de <span className="font-display text-xl text-areia">{formatPrice(expedicao.preco, expedicao.moeda)}</span> por participante · concierge dedicado em todas as etapas.</p>
+          <p className="mt-6 max-w-xl text-areia/80">{expedicao.mensagem_comercial_publica || `A partir de ${formatPrice(expedicao.preco, expedicao.moeda)} por participante · concierge dedicado em todas as etapas.`}</p>
         </div>
       </section>
 
@@ -348,10 +348,10 @@ function ReservaPage() {
                 <div className="mt-5 border-t border-border pt-4">
                   <div className="flex items-baseline justify-between">
                     <span className="text-[0.65rem] uppercase tracking-widest text-muted-foreground">Total</span>
-                    <span className="font-display text-3xl text-cobre">{formatPrice(formaPag === "cartao" ? totalCartao : totalBase, expedicao.moeda)}</span>
+                    <span className="font-display text-3xl text-cobre">{expedicao.mensagem_comercial_publica ? "—" : formatPrice(formaPag === "cartao" ? totalCartao : totalBase, expedicao.moeda)}</span>
                   </div>
                   {formaPag === "cartao" && (
-                    <div className="mt-1 text-right text-xs text-muted-foreground">6x de {formatPrice(parcelas6x, expedicao.moeda)} · acréscimo de cartão incluso</div>
+                    <div className="mt-1 text-right text-xs text-muted-foreground">{!expedicao.mensagem_comercial_publica && `6x de ${formatPrice(parcelas6x, expedicao.moeda)} · acréscimo de cartão incluso`}</div>
                   )}
                   {formaPag === "pix" && qtdParts > 0 && (
                     <div className="mt-1 text-right text-xs text-muted-foreground">{qtdParts} × {formatPrice(expedicao.preco, expedicao.moeda)}</div>
