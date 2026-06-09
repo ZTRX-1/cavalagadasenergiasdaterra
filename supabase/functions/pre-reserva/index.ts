@@ -59,6 +59,8 @@ type CriarPayload = {
     email: string;
     cidade: string;
     estado: string;
+    data_nascimento?: string;
+    peso?: number;
   };
   participantes: Participante[];
   adicionais: {
@@ -197,10 +199,10 @@ async function handleCriar(payload: CriarPayload) {
     tipo_grupo: payload.adicionais.tipo_grupo || null,
     protocolo: protocoloLead || null,
     forma_pagamento: payload.adicionais.forma_pagamento,
-    peso: firstP?.peso,
+    peso: payload.responsavel.peso || firstP?.peso,
     experiencia_equestre: firstP?.experiencia,
-    data_nascimento: firstP?.data_nascimento || null,
-    idade: firstP?.idade || null,
+    data_nascimento: payload.responsavel.data_nascimento || firstP?.data_nascimento || null,
+    idade: firstP?.idade || null, // A idade calculada do primeiro participante
   };
 
   let leadId = payload.lead_id;
