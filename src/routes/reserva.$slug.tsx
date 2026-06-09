@@ -130,16 +130,16 @@ function ReservaPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tipoGrupo]);
 
-  // "Você também participa?" · copia dados do responsável para participante 1
+  // "Você também participa?" · copia todos os dados do responsável para participante 1
   const resp = form.watch("responsavel");
   useEffect(() => {
     if (!responsavelParticipa) return;
-    if (resp.nome) form.setValue("participantes.0.nome", resp.nome, { shouldValidate: false });
-    if (resp.cpf) form.setValue("participantes.0.cpf", resp.cpf, { shouldValidate: false });
-    if (resp.email) form.setValue("participantes.0.email", resp.email, { shouldValidate: false });
-    if (resp.telefone) form.setValue("participantes.0.telefone", resp.telefone, { shouldValidate: false });
+    if (resp.nome) form.setValue("participantes.0.nome", resp.nome, { shouldValidate: true });
+    if (resp.cpf) form.setValue("participantes.0.cpf", resp.cpf, { shouldValidate: true });
+    if (resp.email) form.setValue("participantes.0.email", resp.email, { shouldValidate: true });
+    if (resp.telefone) form.setValue("participantes.0.telefone", resp.telefone, { shouldValidate: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [responsavelParticipa, resp.nome]);
+  }, [responsavelParticipa, resp.nome, resp.cpf, resp.email, resp.telefone]);
 
 
 
@@ -604,26 +604,34 @@ function ReservaPage() {
                       control={form.control}
                       name="adicionais.forma_pagamento"
                       render={({ field }) => (
-                        <div className="grid gap-3 sm:grid-cols-3">
-                          {[
-                            { v: "pix", t: "PIX à vista", d: "Sem acréscimo · 5% de desconto possível", price: totalBase },
-                            { v: "sinal", t: "Sinal + Saldo", d: "30% sinal + saldo até 30 dias antes", price: totalBase },
-                            { v: "cartao", t: "Cartão em 6x", d: `Acréscimo ~5,99% incluso`, price: totalCartao },
-                          ].map((opt) => (
-                            <button
-                              key={opt.v}
-                              type="button"
-                              onClick={() => field.onChange(opt.v)}
-                              data-active={field.value === opt.v}
-                              className="option-card"
-                            >
-                              <div className="font-display text-lg">{opt.t}</div>
-                              <div className="text-xs text-muted-foreground">{opt.d}</div>
-                              <div className="mt-1 font-eyebrow text-[0.7rem] uppercase tracking-[0.18em] text-cobre">{formatPrice(opt.price, expedicao.moeda)}</div>
-                              {opt.v === "cartao" && <div className="text-[0.7rem] text-muted-foreground">6× {formatPrice(parcelas6x, expedicao.moeda)}</div>}
-                            </button>
-                          ))}
-                        </div>
+                        <>
+                          <div className="grid gap-3 sm:grid-cols-3">
+                            {[
+                              { v: "pix", t: "PIX à vista", d: "Sem acréscimo · 5% de desconto possível", price: totalBase },
+                              { v: "sinal", t: "Sinal + Saldo", d: "30% sinal + saldo até 30 dias antes", price: totalBase },
+                              { v: "cartao", t: "Cartão em 6x", d: `Acréscimo ~5,99% incluso`, price: totalCartao },
+                            ].map((opt) => (
+                              <button
+                                key={opt.v}
+                                type="button"
+                                onClick={() => field.onChange(opt.v)}
+                                data-active={field.value === opt.v}
+                                className={cn(
+                                  "option-card",
+                                  form.formState.errors.adicionais?.forma_pagamento && "border-destructive ring-1 ring-destructive"
+                                )}
+                              >
+                                <div className="font-display text-lg">{opt.t}</div>
+                                <div className="text-xs text-muted-foreground">{opt.d}</div>
+                                <div className="mt-1 font-eyebrow text-[0.7rem] uppercase tracking-[0.18em] text-cobre">{formatPrice(opt.price, expedicao.moeda)}</div>
+                                {opt.v === "cartao" && <div className="text-[0.7rem] text-muted-foreground">6× {formatPrice(parcelas6x, expedicao.moeda)}</div>}
+                              </button>
+                            ))}
+                          </div>
+                          {form.formState.errors.adicionais?.forma_pagamento && (
+                            <p className="mt-2 text-xs text-destructive">{form.formState.errors.adicionais.forma_pagamento.message}</p>
+                          )}
+                        </>
                       )}
                     />
                   </div>
@@ -634,25 +642,25 @@ function ReservaPage() {
                       control={form.control}
                       name="adicionais.como_conheceu"
                       render={({ field }) => (
-                        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
-                          {["instagram","facebook","tiktok","indicacao","google","outros"].map((v) => (
-                            <button key={v} type="button" onClick={() => field.onChange(v)} data-active={field.value === v} className="option-card items-center text-center capitalize">
-                              <span className="font-eyebrow text-[0.72rem] uppercase tracking-[0.2em]">{v === "outros" ? "Outro" : v}</span>
-                            </button>
-                          ))}
-                        </div>
+                        <>
+                          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
+                            {["instagram","facebook","tiktok","indicacao","google","outros"].map((v) => (
+                              <button key={v} type="button" onClick={() => field.onChange(v)} data-active={field.value === v} className="option-card items-center text-center capitalize">
+                                <span className="font-eyebrow text-[0.72rem] uppercase tracking-[0.2em]">{v === "outros" ? "Outro" : v}</span>
+                              </button>
+                            ))}
+                          </div>
+                          {form.formState.errors.adicionais?.como_conheceu && (
+                            <p className="mt-2 text-xs text-destructive">{form.formState.errors.adicionais.como_conheceu.message}</p>
+                          )}
+                        </>
                       )}
                     />
                   </div>
 
                   <div className="grid gap-5 sm:grid-cols-2">
-                    <Field label="Como nos conheceu?" error={form.formState.errors.adicionais?.como_conheceu?.message}>
-                      <select className={cn("input", form.formState.errors.adicionais?.como_conheceu && "border-destructive ring-1 ring-destructive")} {...form.register("adicionais.como_conheceu")} aria-invalid={!!form.formState.errors.adicionais?.como_conheceu}>
-                        <option value="instagram">Instagram</option>
-                        <option value="google">Google</option>
-                        <option value="indicacao">Indicação</option>
-                        <option value="outro">Outro</option>
-                      </select>
+                    <Field label="Motivação da viagem" error={form.formState.errors.adicionais?.motivacao_viagem?.message} className="sm:col-span-2">
+                      <textarea className="input min-h-[110px]" {...form.register("adicionais.motivacao_viagem")} placeholder="O que te motiva a fazer esta expedição?" />
                     </Field>
                     <Field label="Observações adicionais" className="sm:col-span-2">
                       <textarea className="input min-h-[110px]" {...form.register("adicionais.observacoes")} placeholder="Algo mais que devamos saber?" />
