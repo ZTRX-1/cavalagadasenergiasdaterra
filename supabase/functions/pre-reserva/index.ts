@@ -210,8 +210,8 @@ async function handleCriar(payload: CriarPayload) {
       .update(leadPayload as never)
       .eq("id", leadId);
     if (leadErr) {
-      console.error("Erro ao atualizar lead:", leadErr);
-      return json({ error: "Falha ao atualizar lead." }, 500);
+      console.error("Erro ao atualizar lead:", JSON.stringify(leadErr));
+      return json({ error: `Falha ao atualizar lead: ${leadErr.message}` }, 500);
     }
   } else {
     const { data: leadRow, error: leadErr } = await admin
@@ -220,8 +220,8 @@ async function handleCriar(payload: CriarPayload) {
       .select("id")
       .single();
     if (leadErr) {
-      console.error("Erro ao criar lead:", leadErr);
-      return json({ error: "Falha ao criar lead." }, 500);
+      console.error("Erro ao criar lead:", JSON.stringify(leadErr));
+      return json({ error: `Falha ao criar lead: ${leadErr.message}` }, 500);
     }
     leadId = leadRow.id;
   }
