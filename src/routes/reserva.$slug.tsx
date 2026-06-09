@@ -615,7 +615,10 @@ function ReservaPage() {
                               type="button"
                               onClick={() => field.onChange(opt.v)}
                               data-active={field.value === opt.v}
-                              className="option-card"
+                              className={cn(
+                                "option-card",
+                                form.formState.errors.adicionais?.forma_pagamento && "border-destructive ring-1 ring-destructive"
+                              )}
                             >
                               <div className="font-display text-lg">{opt.t}</div>
                               <div className="text-xs text-muted-foreground">{opt.d}</div>
@@ -624,6 +627,9 @@ function ReservaPage() {
                             </button>
                           ))}
                         </div>
+                        {form.formState.errors.adicionais?.forma_pagamento && (
+                          <p className="mt-2 text-xs text-destructive">{form.formState.errors.adicionais.forma_pagamento.message}</p>
+                        )}
                       )}
                     />
                   </div>
