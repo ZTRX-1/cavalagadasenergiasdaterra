@@ -526,14 +526,22 @@ function ReservaPage() {
                             max={new Date().toISOString().slice(0, 10)}
                             min="1920-01-01"
                             {...form.register(`participantes.${i}.data_nascimento`)}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              form.setValue(`participantes.${i}.data_nascimento`, val, { shouldValidate: true });
+                              const age = ageFromDateString(val);
+                              if (age !== null) {
+                                form.setValue(`participantes.${i}.idade`, age);
+                              }
+                            }}
                           />
                           <span className="text-[0.7rem] text-muted-foreground">
                             Idade calculada: {ageFromDateString(form.watch(`participantes.${i}.data_nascimento`)) || "—"} anos
                           </span>
                         </Field>
-                        <Field label="Peso (kg) · máx. 110 kg" error={form.formState.errors.participantes?.[i]?.peso?.message}>
-                          <Input type="number" inputMode="decimal" step="0.1" min={20} max={110} {...form.register(`participantes.${i}.peso`)} />
-                          <span className="text-[0.7rem] text-muted-foreground">Por bem-estar e segurança dos cavalos, o peso máximo permitido por cavaleiro é <strong>110 kg</strong>.</span>
+                        <Field label="Peso (kg) · máx. 120 kg" error={form.formState.errors.participantes?.[i]?.peso?.message}>
+                          <Input type="number" inputMode="decimal" step="0.1" min={20} max={120} {...form.register(`participantes.${i}.peso`)} />
+                          <span className="text-[0.7rem] text-muted-foreground">Por bem-estar e segurança dos cavalos, o peso máximo permitido por cavaleiro é <strong>120 kg</strong>.</span>
                         </Field>
                         <Field label="WhatsApp (opcional)" error={form.formState.errors.participantes?.[i]?.telefone?.message}>
                           <Controller
