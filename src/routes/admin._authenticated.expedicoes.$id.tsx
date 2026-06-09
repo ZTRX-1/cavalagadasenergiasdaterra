@@ -669,6 +669,21 @@ function ExpedicaoEdit() {
                 <input type="number" className="admin-input" value={form.parcelamento_max ?? 1} onChange={(e) => setF({ parcelamento_max: Number(e.target.value) })} />
               </AdminField>
             </div>
+            <div className="mt-4">
+              <AdminField
+                label="Mensagem Comercial Pública"
+                previewTarget="preco"
+                ondeAparece="Substitui o preço nas listagens e na página pública"
+                hint="Ex: 'Consulte valores e disponibilidade'. Se preenchido, o preço real não será exibido publicamente."
+              >
+                <textarea
+                  className="admin-input min-h-[80px]"
+                  value={form.mensagem_comercial_publica ?? ""}
+                  onChange={(e) => setF({ mensagem_comercial_publica: e.target.value })}
+                  placeholder="Ex: Consulte valores e disponibilidade"
+                />
+              </AdminField>
+            </div>
           </AdminSection>
           <AdminSection titulo="O que inclui" descricao="Uma linha por item.">
             <textarea className="admin-input min-h-[140px]" value={(form.inclui ?? []).join("\n")} onChange={(e) => setF({ inclui: e.target.value.split("\n").filter(Boolean) })} />
