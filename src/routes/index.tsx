@@ -89,7 +89,7 @@ const PASSOS_TXT: Record<string, Array<{ n: string; t: string; d: string }>> = {
   ],
   en: [
     { n: "01", t: "Choose your expedition", d: "Find the expedition that fits you best." },
-    { n: "02", t: "Discover the details", d: "Explore the itinerary, dates, prices and what's included." },
+    { n: "02", t: "Discover the details", d: "Explore the itinerary, dates, availability and what's included." },
     { n: "03", t: "Secure your spot via WhatsApp", d: "Our team gets in touch to align details and confirm your spot." },
     { n: "04", t: "Live the experience", d: "Arrive, mount up and enjoy every moment of your expedition." },
   ],
