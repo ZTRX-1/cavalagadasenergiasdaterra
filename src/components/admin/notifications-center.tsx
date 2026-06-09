@@ -115,11 +115,17 @@ export function NotificationsCenter() {
                 type="button"
                 size="sm"
                 variant="ghost"
-                disabled={items.length === 0}
-                onClick={() => mLimpar.mutate()}
+                disabled={items.length === 0 || mLimpar.isPending}
+                onClick={() => {
+                  if (confirm("Deseja realmente excluir todas as notificações definitivamente?")) {
+                    mTudo.mutate(undefined, {
+                      onSuccess: () => mLimpar.mutate()
+                    });
+                  }
+                }}
                 className="h-7 px-2 text-[10px] uppercase tracking-wider text-red-400 hover:text-red-300 hover:bg-red-400/10"
               >
-                Limpar
+                <Trash2 className="h-3.5 w-3.5 mr-1" /> Limpar tudo
               </Button>
             </div>
           </div>

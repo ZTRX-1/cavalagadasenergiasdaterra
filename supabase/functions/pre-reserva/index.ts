@@ -39,6 +39,7 @@ type Participante = {
   experiencia: "nenhuma" | "iniciante" | "intermediario" | "avancado";
   telefone?: string;
   email?: string;
+  idade?: number;
 };
 
 type CriarPayload = {
@@ -103,7 +104,7 @@ function validarCriar(b: any): { ok: true; data: CriarPayload } | { ok: false; e
     if (typeof p.data_nascimento !== "string" || p.data_nascimento.length < 10) return { ok: false, error: "participante.data_nascimento obrigatória." };
     const age = (new Date().getFullYear()) - (new Date(p.data_nascimento).getFullYear());
     if (age < 8) return { ok: false, error: "Idade mínima permitida é 8 anos." };
-    if (typeof p.peso !== "number" || p.peso < 20 || p.peso > 110) return { ok: false, error: "participante.peso inválido." };
+    if (typeof p.peso !== "number" || p.peso < 20 || p.peso > 120) return { ok: false, error: "participante.peso inválido." };
     if (!["nenhuma", "iniciante", "intermediario", "avancado"].includes(p.experiencia)) return { ok: false, error: "participante.experiencia inválida." };
   }
 

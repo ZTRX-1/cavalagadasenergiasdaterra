@@ -55,10 +55,11 @@ const schema = z.object({
     }, "Idade mínima permitida é 8 anos."),
     peso: z.coerce.number({ invalid_type_error: "Informe o peso" })
       .min(20, "Peso mínimo 20 kg")
-      .max(110, "Por bem-estar dos cavalos, o peso máximo permitido é 110 kg."),
+      .max(120, "Por bem-estar dos cavalos, o peso máximo permitido é 120 kg."),
     experiencia: z.enum(["nenhuma", "iniciante", "intermediario", "avancado"]),
     telefone: z.string().optional(),
     email: z.string().optional(),
+    idade: z.coerce.number().optional(),
   })).min(1),
   adicionais: z.object({
     tipo_grupo: z.enum(["individual", "casal", "grupo", "personalizada"]),

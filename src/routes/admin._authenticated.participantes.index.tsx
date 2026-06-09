@@ -133,8 +133,8 @@ function ParticipantesPage() {
       
       if (apenasConfirmados) {
         // Se p.status for 'confirmado' OU se a reserva estiver confirmada
-        const participanteConfirmado = p.status === "confirmado" || p.status === "pago";
-        const reservaConfirmada = res && ["reserva_confirmada", "participante_confirmado"].includes(res.status_operacional);
+        const participanteConfirmado = ["confirmado", "pago", "ativo"].includes((p.status ?? "").toLowerCase());
+        const reservaConfirmada = res && (["reserva_confirmada", "participante_confirmado", "paga_integralmente"].includes(res.status_operacional) || res.status_financeiro === "pago_integralmente");
         
         if (!participanteConfirmado && !reservaConfirmada) return false;
       }
