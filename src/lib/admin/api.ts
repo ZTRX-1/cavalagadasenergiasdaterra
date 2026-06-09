@@ -85,6 +85,7 @@ export interface ExpedicaoRow {
   como_chegar_aeroporto: string | null;
   como_chegar_referencia: string | null;
   como_chegar_observacoes: string | null;
+  mensagem_comercial_publica: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -170,6 +171,7 @@ export async function createExpedicao(input: Partial<ExpedicaoRow>): Promise<Exp
     video_url: input.video_url ?? null,
     vagas_total_padrao: input.vagas_total_padrao ?? 10,
     parcelamento_max: input.parcelamento_max ?? 1,
+    mensagem_comercial_publica: input.mensagem_comercial_publica ?? null,
   };
   const { data, error } = await supabase.from("expedicoes").insert(payload).select().single();
   if (error) {
