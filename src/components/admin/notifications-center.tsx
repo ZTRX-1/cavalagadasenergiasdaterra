@@ -10,6 +10,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { ConfirmDialog } from "@/components/admin/admin-confirm";
 import {
   listarNotificacoes,
   marcarComoLida,
@@ -41,6 +42,7 @@ function timeAgo(iso: string): string {
 
 export function NotificationsCenter() {
   const [open, setOpen] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [tab, setTab] = useState<NotificacaoCategoria | "todas">("todas");
   const qc = useQueryClient();
 
@@ -126,16 +128,7 @@ export function NotificationsCenter() {
                 size="sm"
                 variant="ghost"
                 disabled={items.length === 0 || mLimpar.isPending}
-                onClick={() => {
-                  if (items.length > 0) {
-                    const confirmClear = window.confirm("Deseja realmente excluir todas as notificações definitivamente?");
-                    if (confirmClear) {
-                      mLer.mutate(items[0].id, {
-                        onSuccess: () => mLimpar.mutate()
-                      });
-                    }
-                  }
-                }}
+                onClick={() => setShowConfirm(true)}
                 className="h-7 px-2 text-[10px] uppercase tracking-wider text-red-400 hover:text-red-300 hover:bg-red-400/10"
               >
                 <Trash2 className="h-3.5 w-3.5 mr-1" /> Limpar tudo
@@ -173,6 +166,21 @@ export function NotificationsCenter() {
             </ScrollArea>
           </TabsContent>
         </Tabs>
+        <ConfirmDialog
+          open={showConfirm}
+          onOpenChange={setShowConfirm}
+          title="Limpar notificações"
+          description="Deseja realmente excluir todas as notificações definitivamente?"
+          onConfirm={() => {
+            mLimpar.mutate(undefined, {
+              onSuccess: () => {
+                setShowConfirm(false);
+                setOpen(false);
+              }
+            });
+          }}
+          destructive
+        />
       </PopoverContent>
     </Popover>
   );

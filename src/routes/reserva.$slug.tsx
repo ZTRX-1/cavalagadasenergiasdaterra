@@ -204,7 +204,7 @@ function ReservaPage() {
         } catch (error) {
           console.error("Erro na captura progressiva:", error);
         }
-      }, 2000); // Debounce de 2 segundos
+      }, 5000); // Aumentado para 5 segundos para ser menos intrusivo
 
       return () => clearTimeout(timer);
     }
