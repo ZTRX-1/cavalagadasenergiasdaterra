@@ -350,12 +350,9 @@ function ReservaPage() {
                     <span className="text-[0.65rem] uppercase tracking-widest text-muted-foreground">Total</span>
                     <span className="font-display text-3xl text-cobre">—</span>
                   </div>
-                  {formaPag === "cartao" && (
-                    <div className="mt-1 text-right text-xs text-muted-foreground">{!expedicao.mensagem_comercial_publica && `6x de ${formatPrice(parcelas6x, expedicao.moeda)} · acréscimo de cartão incluso`}</div>
-                  )}
-                  {formaPag === "pix" && qtdParts > 0 && (
-                    <div className="mt-1 text-right text-xs text-muted-foreground">{qtdParts} × {formatPrice(expedicao.preco, expedicao.moeda)}</div>
-                  )}
+                  <div className="mt-2 text-right text-xs text-muted-foreground">
+                    {t("expedicoes.consulteValores")}
+                  </div>
                 </div>
               </div>
             </div>
