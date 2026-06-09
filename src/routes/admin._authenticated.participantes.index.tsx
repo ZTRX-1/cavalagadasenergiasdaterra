@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
-import { Plus, Users, Trash2, FileDown, Search, LayoutGrid, List, Calendar, Wallet, UserCheck, AlertCircle } from "lucide-react";
+import { Plus, Users, Trash2, FileDown, Search, LayoutGrid, List, Calendar, Wallet, UserCheck, AlertCircle, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminEmpty } from "@/components/admin/admin-empty";
