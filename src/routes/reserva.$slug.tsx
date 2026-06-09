@@ -155,6 +155,7 @@ function ReservaPage() {
 
   if (!data) return null;
   const { expedicao, datas } = data;
+  const selectedDate = datas.find((d) => d.id === form.watch("data_id"));
 
   // Captura progressiva de leads abandonados
   const watchedResponsavel = form.watch("responsavel");
@@ -297,7 +298,6 @@ function ReservaPage() {
     }
   });
 
-  const selectedDate = datas.find((d) => d.id === form.watch("data_id"));
   const formaPag = form.watch("adicionais.forma_pagamento");
   const qtdParts = form.watch("participantes")?.length ?? 1;
   const totalBase = expedicao.preco * qtdParts;
