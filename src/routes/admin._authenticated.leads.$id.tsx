@@ -232,14 +232,16 @@ function LeadEdit() {
             <div className="grid grid-cols-3 gap-3">
               <AdminField label="Idade"><input type="number" className="admin-input" value={form.idade ?? ""} onChange={(e) => setForm({ ...form, idade: e.target.value ? Number(e.target.value) : null })} /></AdminField>
               <AdminField label="Cidade"><input className="admin-input" value={form.cidade ?? ""} onChange={(e) => setForm({ ...form, cidade: e.target.value })} /></AdminField>
+              <AdminField label="Estado"><input className="admin-input" value={form.estado ?? ""} onChange={(e) => setForm({ ...form, estado: e.target.value })} /></AdminField>
+            </div>
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <AdminField label="Expedição de interesse">
                 <input className="admin-input" value={form.expedicao_interesse ?? ""} onChange={(e) => setForm({ ...form, expedicao_interesse: e.target.value })} />
               </AdminField>
-              <AdminField label="Estratégia de preço (referência)">
-                <div className="flex h-10 items-center px-3 rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 text-[11px] text-[color:var(--admin-cinza-3)]">
-                  {/* Este campo é apenas informativo no lead, vindo da expedição */}
-                  Consulte a expedição para ver se o preço está oculto publicamente.
+              <AdminField label="Estratégia de preço">
+                <div className="flex h-10 items-center px-3 rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 text-[11px] text-[color:var(--admin-cinza-3)] italic">
+                   Real price always visible in CRM. Check Expedition settings for public visibility.
                 </div>
               </AdminField>
             </div>
