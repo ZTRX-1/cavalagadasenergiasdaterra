@@ -170,7 +170,6 @@ async function handleCriar(payload: CriarPayload) {
     protocoloLead = `LD-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
   }
 
-  const firstP = payload.participantes[0];
   const leadPayload = {
     nome: payload.responsavel.nome,
     email: payload.responsavel.email,
@@ -179,10 +178,12 @@ async function handleCriar(payload: CriarPayload) {
     cidade: payload.responsavel.cidade,
     estado: payload.responsavel.estado,
     expedicao_interesse: payload.expedicao_nome,
+    expedicao_id: payload.expedicao_id,
+    data_expedicao_id: payload.data_id,
     origem: payload.adicionais.como_conheceu || "pre_reserva_site",
     canal_entrada: "site",
     status: "novo",
-    status_atendimento: "novo",
+    status_atendimento: "humano", // Ajustado para respeitar a constraint [ia, humano, transferido, encerrado]
     etapa_atendimento: "novo",
     nivel_interesse: 5,
     lead_score: 80,
