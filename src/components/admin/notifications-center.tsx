@@ -44,11 +44,21 @@ export function NotificationsCenter() {
   const [tab, setTab] = useState<NotificacaoCategoria | "todas">("todas");
   const qc = useQueryClient();
 
-  const { data: items = [] } = useQuery({
+  const { data: allItems = [] } = useQuery({
     queryKey: ["admin", "notificacoes"],
     queryFn: () => listarNotificacoes(50),
     refetchInterval: open ? 15000 : 60000,
   });
+
+  // Somente mostrar notificações se for o usuário principal vexocompany@gmail.com
+  // Em um sistema real, isso seria feito no backend via RLS ou filtros.
+  const { data: user } = useQuery({
+    queryKey: ["admin", "me"],
+    queryFn: async () => (await import("@/lib/admin/api")).getMe(),
+  });
+
+  const isMainUser = user?.email === "vexocompany@gmail.com";
+  const items = isMainUser ? allItems : [];
 
   const naoLidas = items.filter((i) => !i.lida);
   const filtrados = useMemo(
@@ -117,10 +127,13 @@ export function NotificationsCenter() {
                 variant="ghost"
                 disabled={items.length === 0 || mLimpar.isPending}
                 onClick={() => {
-                  if (confirm("Deseja realmente excluir todas as notificações definitivamente?")) {
-                    mTudo.mutate(undefined, {
-                      onSuccess: () => mLimpar.mutate()
-                    });
+                  if (items.length > 0) {
+                    const confirmClear = window.confirm("Deseja realmente excluir todas as notificações definitivamente?");
+                    if (confirmClear) {
+                      mLer.mutate(items[0].id, {
+                        onSuccess: () => mLimpar.mutate()
+                      });
+                    }
                   }
                 }}
                 className="h-7 px-2 text-[10px] uppercase tracking-wider text-red-400 hover:text-red-300 hover:bg-red-400/10"

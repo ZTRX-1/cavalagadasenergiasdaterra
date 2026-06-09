@@ -90,6 +90,16 @@ export type CapturaProgressivaInput = {
   expedicao_interesse?: string;
   etapa_abandono?: string;
   origem?: string;
+  cidade?: string;
+  estado?: string;
+  tipo_grupo?: string;
+  motivacao_viagem?: string;
+  observacoes_importantes?: string;
+  quantidade_pessoas?: number;
+  data_interesse?: string;
+  canal_atendimento?: string;
+  experiencia_equestre?: string;
+  idade?: number;
 };
 
 export async function capturarLeadProgressivo(input: CapturaProgressivaInput): Promise<{ lead_id: string }> {
