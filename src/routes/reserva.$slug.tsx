@@ -40,11 +40,13 @@ const schema = z.object({
   data_id: z.string().uuid({ message: "Selecione uma data" }),
   responsavel: z.object({
     nome: z.string().trim().min(2, "Informe o nome completo"),
-    cpf: z.string().trim().min(11, "CPF inválido"),
+    cpf: z.string().trim().refine((v) => isValidCPF(v), { message: "CPF inválido" }),
     telefone: z.string().trim().min(10, "Telefone inválido"),
     email: z.string().trim().email("E-mail inválido"),
     cidade: z.string().trim().min(2, "Informe a cidade"),
     estado: z.string().trim().min(2, "Informe o estado"),
+    data_nascimento: z.string().min(10, "Data obrigatória"),
+    peso: z.coerce.number().min(20).max(120).optional(),
   }),
   participantes: z.array(z.object({
     nome: z.string().trim().min(2, "Nome obrigatório"),
@@ -95,7 +97,7 @@ function ReservaPage() {
     resolver: zodResolver(schema),
     defaultValues: {
       data_id: search.data ?? "",
-      responsavel: { nome: "", cpf: "", telefone: "", email: "", cidade: "", estado: "" },
+      responsavel: { nome: "", cpf: "", telefone: "", email: "", cidade: "", estado: "", data_nascimento: "", peso: 70 },
       participantes: [{ nome: "", cpf: "", data_nascimento: "", peso: 70, experiencia: "nenhuma" }],
       adicionais: { tipo_grupo: "individual", forma_pagamento: "pix", como_conheceu: "instagram", motivacao_viagem: "", observacoes_importantes: "", observacoes: "" },
       aceites: { responsabilidade: false as unknown as true, cancelamento: false as unknown as true, riscos: false as unknown as true },
@@ -138,8 +140,14 @@ function ReservaPage() {
     if (resp.cpf) form.setValue("participantes.0.cpf", resp.cpf, { shouldValidate: true });
     if (resp.email) form.setValue("participantes.0.email", resp.email, { shouldValidate: true });
     if (resp.telefone) form.setValue("participantes.0.telefone", resp.telefone, { shouldValidate: true });
+    if (resp.data_nascimento) {
+      form.setValue("participantes.0.data_nascimento", resp.data_nascimento, { shouldValidate: true });
+      const age = ageFromDateString(resp.data_nascimento);
+      if (age !== null) form.setValue("participantes.0.idade", age);
+    }
+    if (resp.peso) form.setValue("participantes.0.peso", resp.peso, { shouldValidate: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [responsavelParticipa, resp.nome, resp.cpf, resp.email, resp.telefone]);
+  }, [responsavelParticipa, resp.nome, resp.cpf, resp.email, resp.telefone, resp.data_nascimento, resp.peso]);
 
 
 
@@ -412,6 +420,18 @@ function ReservaPage() {
                   </Field>
                   <Field label="Cidade" error={form.formState.errors.responsavel?.cidade?.message}>
                     <Input {...form.register("responsavel.cidade")} hasError={!!form.formState.errors.responsavel?.cidade} placeholder="Sua cidade" />
+                  </Field>
+                  <Field label="Data de nascimento" error={form.formState.errors.responsavel?.data_nascimento?.message}>
+                    <Input
+                      type="date"
+                      className="input"
+                      max={new Date().toISOString().slice(0, 10)}
+                      min="1920-01-01"
+                      {...form.register("responsavel.data_nascimento")}
+                    />
+                  </Field>
+                  <Field label="Peso (kg) · máx. 120 kg" error={form.formState.errors.responsavel?.peso?.message}>
+                    <Input type="number" inputMode="decimal" step="0.1" min={20} max={120} {...form.register("responsavel.peso")} />
                   </Field>
                   <Field label="Data desejada" error={form.formState.errors.data_id?.message} className="sm:col-span-2">
                     <select className={cn("input", form.formState.errors.data_id && "border-destructive ring-1 ring-destructive")} {...form.register("data_id")} aria-invalid={!!form.formState.errors.data_id}>
