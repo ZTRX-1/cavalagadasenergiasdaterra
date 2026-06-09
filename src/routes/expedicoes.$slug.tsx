@@ -12,11 +12,8 @@ import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
 import { formatDateRange } from "@/lib/format";
 import { DataCard } from "@/components/data-card";
 import { ExpeditionMetaCard } from "@/components/expedicao-meta-card";
-import { DataCard } from "@/components/data-card";
 import { buildContactWhatsappUrl } from "@/lib/whatsapp";
 import canastraVideoPoster from "@/assets/fotos/canastra/video-poster.jpg";
-import elasLogo from "@/assets/logo-elas-na-sela.jpg";
-
 
 const qo = (slug: string) =>
   queryOptions({
@@ -39,20 +36,6 @@ export const Route = createFileRoute("/expedicoes/$slug")({
   component: DetalhesExpedicao,
 });
 
-function LogisticaCard({ icon: Icon, label, value }: { icon: any, label: string, value: string }) {
-  return (
-    <div className="rounded-sm border border-border bg-card p-6 shadow-card transition-all hover:border-cobre/30">
-      <div className="flex items-center gap-2 text-cobre">
-        <Icon className="h-4 w-4" strokeWidth={1.6} />
-        <span className="font-eyebrow text-[0.62rem] uppercase tracking-[0.22em] !mt-0">{label}</span>
-      </div>
-      <p className="mt-3 font-display text-xl leading-snug text-foreground">
-        {value}
-      </p>
-    </div>
-  );
-}
-
 function DetalhesExpedicao() {
   const { t } = useTranslation();
   const { slug } = Route.useParams();
@@ -68,6 +51,17 @@ function DetalhesExpedicao() {
   const isJeri = expedicao.slug === "jericoacoara";
   const isElas = expedicao.marca === "elas-na-sela";
 
+  // Helper para extrair informações dos requisitos
+  const findInRequisitos = (keywords: string[]) => {
+    return expedicao.requisitos?.find((r: string) => 
+      keywords.some(kw => r.toLowerCase().includes(kw.toLowerCase()))
+    );
+  };
+
+  const idadeMin = findInRequisitos(["idade mínima", "idade recomendada"]);
+  const bebidas = findInRequisitos(["bebidas não incluídas", "bebidas à parte"]);
+  const pousada = findInRequisitos(["pousada não incluída", "hospedagem não inclusa"]);
+  const deslocamento = findInRequisitos(["deslocamento", "shuttle", "transfer"]);
 
   return (
     <>
@@ -77,11 +71,10 @@ function DetalhesExpedicao() {
         <div className="absolute inset-0 bg-gradient-to-t from-carvao via-carvao/50 to-carvao/30" />
         <div className="container-tight relative flex flex-col justify-end pb-14 pt-32 min-h-[78svh] md:min-h-[62svh] lg:min-h-[64svh]">
           {isElas && (
-
             <div className="mb-6 inline-flex w-fit items-center gap-2.5 rounded-full border border-areia/25 bg-carvao/40 px-3.5 py-1.5 backdrop-blur-sm">
               <span className="h-1 w-1 rounded-full bg-cobre-soft" />
               <span className="font-eyebrow text-[0.6rem] uppercase tracking-[0.32em] text-areia/85">
-                Exclusivo para mulheres
+                {t("expedicoes.badgeElas")}
               </span>
             </div>
           )}
@@ -91,7 +84,7 @@ function DetalhesExpedicao() {
             <span className="h-1 w-1 rounded-full bg-cobre" />
             <span>{expedicao.nivel}</span>
             <span className="h-1 w-1 rounded-full bg-cobre" />
-            <span>{expedicao.mensagem_comercial_publica || `A partir de ${formatPriceWithBRL(expedicao.preco, expedicao.moeda)}`} {!expedicao.mensagem_comercial_publica && <span className="text-areia/60">por pessoa em acomodação dupla</span>}</span>
+            <span>{t("expedicoes.consulteValores")}</span>
           </div>
           <h1 className="mt-5 max-w-3xl font-display text-5xl text-balance md:text-7xl">{expedicao.nome}</h1>
           <p className="mt-5 max-w-2xl text-lg text-areia/85 text-pretty">{expedicao.descricao_curta}</p>
@@ -108,7 +101,7 @@ function DetalhesExpedicao() {
         </div>
       </section>
 
-      {/* Carrossel editorial — narrativa visual da expedição */}
+      {/* Carrossel editorial */}
       {narrativa.length > 0 && (
         <section className="bg-background py-16 md:py-20">
           <div className="container-tight mb-10 max-w-2xl md:mb-14">
@@ -124,9 +117,7 @@ function DetalhesExpedicao() {
         </section>
       )}
 
-
-
-      {/* Vídeo cinematográfico — destaque Serra da Canastra */}
+      {/* Vídeo cinematográfico */}
       {expedicao.slug === "serra-da-canastra" && (
         <section className="bg-carvao py-16 md:py-20">
           <div className="container-tight">
@@ -141,9 +132,6 @@ function DetalhesExpedicao() {
         </section>
       )}
 
-
-
-
       {/* Descrição + Inclui */}
       <section className={`bg-background py-20 md:py-24`}>
         <div className="container-tight grid gap-16 md:grid-cols-12">
@@ -154,21 +142,20 @@ function DetalhesExpedicao() {
 
             {expedicao.requisitos?.length > 0 && (
               <div className="mt-12">
-                <div className="eyebrow">Informações importantes</div>
+                <div className="eyebrow">{t("expedicoes.requisitos")}</div>
                 <ul className="mt-4 space-y-2 text-sm text-foreground/80">
-                  {expedicao.requisitos.map((r) => (
+                  {expedicao.requisitos.map((r: string) => (
                     <li key={r} className="flex items-start gap-2"><span className="mt-2 h-1 w-1 rounded-full bg-cobre" />{r}</li>
                   ))}
                 </ul>
               </div>
             )}
-
           </div>
           <aside className="md:col-span-5 space-y-6">
             <div className="rounded-sm border border-border bg-card p-8 shadow-card">
-              <div className="eyebrow">O que está incluso</div>
+              <div className="eyebrow">{t("expedicoes.inclui")}</div>
               <ul className="mt-5 space-y-3 text-sm text-foreground/85">
-                {expedicao.inclui.map((i) => (
+                {expedicao.inclui?.map((i: string) => (
                   <li key={i} className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />{i}</li>
                 ))}
               </ul>
@@ -176,7 +163,7 @@ function DetalhesExpedicao() {
             <div className="rounded-sm border border-border bg-card p-8 shadow-card">
               <div className="eyebrow">Condições de pagamento</div>
               <div className="mt-4 font-display text-3xl text-cobre">
-                {expedicao.mensagem_comercial_publica || `A partir de ${formatPriceWithBRL(expedicao.preco, expedicao.moeda)}`}
+                {t("expedicoes.consulteValores")}
               </div>
               <ul className="mt-5 space-y-3 text-sm text-foreground/85">
                 <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />À vista no Pix/transferência</li>
@@ -184,7 +171,7 @@ function DetalhesExpedicao() {
                 <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Parcelamento via Pix (consulte nossa equipe para conhecer as opções)</li>
               </ul>
               <p className="mt-6 border-t border-border pt-4 text-xs text-muted-foreground">
-                Valores por pessoa em acomodação dupla.
+                {t("expedicoes.entreEmContato")}
               </p>
             </div>
           </aside>
@@ -196,11 +183,11 @@ function DetalhesExpedicao() {
         <section className={`bg-secondary/40 py-20 md:py-24`}>
           <div className="container-tight">
             <div className="max-w-2xl">
-              <div className="eyebrow">Roteiro resumido</div>
+              <div className="eyebrow">{t("expedicoes.roteiro")}</div>
               <h2 className="mt-4 font-display text-3xl md:text-4xl">Como cada dia se desenrola</h2>
             </div>
             <div className="mt-12 grid gap-px overflow-hidden rounded-sm border border-border bg-border md:grid-cols-2">
-              {expedicao.roteiro.map((d) => (
+              {expedicao.roteiro.map((d: any) => (
                 <div key={d.dia + d.titulo} className="bg-background p-7">
                   <div className="font-display text-2xl text-cobre">{d.dia}</div>
                   <div className="mt-2 font-display text-xl">{d.titulo}</div>
@@ -212,75 +199,96 @@ function DetalhesExpedicao() {
         </section>
       )}
 
-
-
-      {/* Como Chegar */}
-      {(expedicao.como_chegar_aeroporto ||
-        expedicao.como_chegar_referencia ||
-        expedicao.como_chegar_conteudo ||
-        expedicao.como_chegar_observacoes) && (
-        <section className="bg-background py-20 md:py-24">
-          <div className="container-tight">
-            <div className="max-w-2xl">
-              <div className="eyebrow">Logística</div>
-              <h2 className="mt-4 font-display text-3xl md:text-4xl">
-                {expedicao.como_chegar_titulo?.trim() || "Como chegar"}
-              </h2>
-            </div>
-
-            <div className="mt-12 grid gap-10 md:grid-cols-12">
-              <div className="md:col-span-7 space-y-6">
-                {(expedicao.como_chegar_aeroporto || expedicao.como_chegar_referencia || expedicao.como_chegar_distancias) && (
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {expedicao.como_chegar_aeroporto && (
-                      <LogisticaCard
-                        icon={Plane}
-                        label="Aeroporto mais próximo"
-                        value={expedicao.como_chegar_aeroporto}
-                      />
-                    )}
-                    {expedicao.como_chegar_referencia && (
-                      <LogisticaCard
-                        icon={MapPin}
-                        label="Cidade de referência"
-                        value={expedicao.como_chegar_referencia}
-                      />
-                    )}
-                    {expedicao.como_chegar_distancias && (
-                      <LogisticaCard
-                        icon={Car}
-                        label="Distâncias das capitais"
-                        value={expedicao.como_chegar_distancias}
-                      />
-                    )}
-                  </div>
-                )}
-
-                {expedicao.como_chegar_conteudo && (
-                  <p className="whitespace-pre-line text-lg leading-relaxed text-foreground/80 text-pretty">
-                    {expedicao.como_chegar_conteudo}
-                  </p>
-                )}
-              </div>
-
-              {expedicao.como_chegar_observacoes && (
-                <aside className="md:col-span-5">
-                  <div className="rounded-sm border border-border bg-secondary/40 p-7">
-                    <div className="flex items-center gap-2 text-cobre">
-                      <Info className="h-4 w-4" strokeWidth={1.6} />
-                      <span className="eyebrow !mt-0">Observações</span>
-                    </div>
-                    <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-foreground/80">
-                      {expedicao.como_chegar_observacoes}
-                    </p>
-                  </div>
-                </aside>
-              )}
-            </div>
+      {/* Logística */}
+      <section className="bg-background py-20 md:py-24">
+        <div className="container-tight">
+          <div className="max-w-2xl">
+            <div className="eyebrow">{t("expedicoes.logistica.titulo")}</div>
+            <h2 className="mt-4 font-display text-3xl md:text-4xl">
+              Informações importantes
+            </h2>
           </div>
-        </section>
-      )}
 
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {expedicao.como_chegar_referencia && (
+              <ExpeditionMetaCard
+                icon={MapPin}
+                label={t("expedicoes.logistica.referencia")}
+                value={expedicao.como_chegar_referencia}
+              />
+            )}
+            {expedicao.como_chegar_aeroporto && (
+              <ExpeditionMetaCard
+                icon={Plane}
+                label={t("expedicoes.logistica.aeroporto")}
+                value={expedicao.como_chegar_aeroporto}
+              />
+            )}
+            {expedicao.como_chegar_distancias && (
+              <ExpeditionMetaCard
+                icon={Car}
+                label={t("expedicoes.logistica.distancia")}
+                value={expedicao.como_chegar_distancias}
+              />
+            )}
+            {idadeMin && (
+              <ExpeditionMetaCard
+                icon={UserPlus}
+                label={t("expedicoes.logistica.idade")}
+                value={idadeMin.replace(/[👧👦]|Idade mínima recomendada: /g, "")}
+              />
+            )}
+            {bebidas && (
+              <ExpeditionMetaCard
+                icon={GlassWater}
+                label={t("expedicoes.logistica.bebidas")}
+                value={bebidas}
+              />
+            )}
+            {deslocamento && (
+              <ExpeditionMetaCard
+                icon={Bus}
+                label={t("expedicoes.logistica.deslocamento")}
+                value={deslocamento}
+              />
+            )}
+            {pousada && (
+              <ExpeditionMetaCard
+                icon={Hotel}
+                label={t("expedicoes.logistica.pousada")}
+                value={pousada}
+              />
+            )}
+            {expedicao.roteiro?.[0]?.titulo?.toLowerCase().includes("check-in") && (
+              <ExpeditionMetaCard
+                icon={Clock}
+                label={t("expedicoes.logistica.checkin")}
+                value={expedicao.roteiro[0].desc.match(/check-in a partir das \d+h/i)?.[0] || "A partir das 14h"}
+              />
+            )}
+          </div>
+
+          {expedicao.como_chegar_conteudo && (
+            <div className="mt-12">
+              <p className="whitespace-pre-line text-lg leading-relaxed text-foreground/80 text-pretty">
+                {expedicao.como_chegar_conteudo}
+              </p>
+            </div>
+          )}
+
+          {expedicao.como_chegar_observacoes && (
+            <div className="mt-8 rounded-sm border border-border bg-secondary/40 p-7">
+              <div className="flex items-center gap-2 text-cobre">
+                <Info className="h-4 w-4" strokeWidth={1.6} />
+                <span className="eyebrow !mt-0">{t("expedicoes.logistica.observacoes")}</span>
+              </div>
+              <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-foreground/80">
+                {expedicao.como_chegar_observacoes}
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* Galeria */}
       {galeria.length > 0 && narrativa.length === 0 && (
@@ -300,17 +308,16 @@ function DetalhesExpedicao() {
         </section>
       )}
 
-
       {/* Próximas datas */}
       <section className={`bg-secondary/40 py-20 md:py-24`}>
         <div className="container-tight">
-          <div className="eyebrow">Próximas datas</div>
+          <div className="eyebrow">{t("expedicoes.proximasDatas")}</div>
           <h2 className="mt-4 font-display text-3xl md:text-4xl">Escolha seu período</h2>
           {datas.length === 0 ? (
             <p className="mt-6 text-muted-foreground">Em breve novas datas. Fale conosco para reservar antecipadamente.</p>
           ) : (
             <div className="mt-10 space-y-3">
-              {datas.map((d) => (
+              {datas.map((d: any) => (
                 <DataCard key={d.id} data={{ ...d, expedicao_nome: expedicao.nome, expedicao_slug: publicSlug }} variant="reservar" />
               ))}
             </div>
@@ -333,7 +340,6 @@ function DetalhesExpedicao() {
           </a>
         </div>
       </section>
-
     </>
   );
 }
