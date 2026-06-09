@@ -196,7 +196,7 @@ function ParticipanteCard({
         </div>
       </div>
 
-      <div className="grid sm:grid-cols-3 gap-2">
+      <div className="grid sm:grid-cols-4 gap-2">
         <Field label="Nome">
           <input
             value={nome}
@@ -223,6 +223,19 @@ function ParticipanteCard({
             }}
             className="w-full rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao)] px-2 py-1.5 text-sm"
           />
+        </Field>
+        <Field label="Nível Equestre">
+          <select
+            value={participante.experiencia ?? ""}
+            onChange={(e) => updMut.mutate({ experiencia: e.target.value as any })}
+            className="w-full rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao)] px-2 py-1.5 text-sm"
+          >
+            <option value="">—</option>
+            <option value="nenhuma">Nenhuma</option>
+            <option value="iniciante">Iniciante</option>
+            <option value="intermediario">Intermediário</option>
+            <option value="avancado">Avançado</option>
+          </select>
         </Field>
       </div>
 
