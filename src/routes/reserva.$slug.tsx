@@ -654,8 +654,7 @@ function ReservaPage() {
                               >
                                 <div className="font-display text-lg">{opt.t}</div>
                                 <div className="text-xs text-muted-foreground">{opt.d}</div>
-                                <div className="mt-1 font-eyebrow text-[0.7rem] uppercase tracking-[0.18em] text-cobre">{formatPrice(opt.price, expedicao.moeda)}</div>
-                                {opt.v === "cartao" && <div className="text-[0.7rem] text-muted-foreground">6× {formatPrice(parcelas6x, expedicao.moeda)}</div>}
+                                <div className="mt-1 font-eyebrow text-[0.7rem] uppercase tracking-[0.18em] text-cobre">{t("expedicoes.consulteValores")}</div>
                               </button>
                             ))}
                           </div>
