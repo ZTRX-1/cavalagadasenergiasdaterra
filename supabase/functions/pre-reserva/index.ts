@@ -316,7 +316,7 @@ async function handleCapturaProgressiva(payload: any) {
       .from("leads")
       .insert({
         ...leadPayload,
-        protocolo: (protoLeadData as string | null) ?? null,
+        protocolo: protocoloLeadCap || null,
         created_at: new Date().toISOString(),
       } as never)
       .select("id")
