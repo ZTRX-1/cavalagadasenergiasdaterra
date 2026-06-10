@@ -158,7 +158,7 @@ function QuemSomosPage() {
             <h3 className="mt-4 font-display text-3xl leading-[1.04] text-balance md:text-5xl">
               O cavalo veio primeiro como cura. Depois, como destino.
             </h3>
-            <div className="mt-8 space-y-7 text-[1rem] leading-relaxed text-foreground/84">
+            <div className="mt-8 space-y-7 text-[1rem] leading-relaxed text-foreground/84 font-sans font-light">
               <p className="text-pretty">
                 Aos 38 anos, Lígia reúne duas dimensões que definem a marca: é cirurgiã-dentista formada há 17 anos
                 e também a idealizadora do projeto Cavalgadas Energias da Terra. Sócia-proprietária das empresas do
