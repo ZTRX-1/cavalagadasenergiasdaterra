@@ -225,7 +225,7 @@ function HomePage() {
           <div className="md:col-span-7 flex flex-col justify-center">
             <div className="eyebrow">{t("manifesto.eyebrow")}</div>
             <h2 className="mt-5 font-display text-4xl text-balance leading-[1.05] md:text-5xl lg:text-[3.5rem]">{t("manifesto.title")}</h2>
-            <p className="mt-8 text-lg leading-relaxed text-foreground/80 text-pretty">
+            <p className="mt-8 text-lg leading-relaxed text-foreground/80 text-pretty font-sans font-light">
               {t("manifesto.body")}
             </p>
           </div>
