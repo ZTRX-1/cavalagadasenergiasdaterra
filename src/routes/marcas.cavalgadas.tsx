@@ -47,7 +47,7 @@ function Page() {
             <div className="eyebrow">Manifesto</div>
             <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">Uma forma antiga de prestar atenção ao mundo.</h2>
           </div>
-          <div className="md:col-span-7 text-lg leading-relaxed text-foreground/85 space-y-5">
+          <div className="md:col-span-7 text-lg leading-relaxed text-foreground/85 space-y-5 font-sans font-light">
             <p>Cavalgar é mais lento que dirigir, mais íntimo que caminhar. É o ritmo certo para atravessar uma paisagem sem violá-la.</p>
             <p>Nossas expedições nascem de uma manada própria de Mangalarga Marchador, criada com tempo e afeto. Não alugada, não improvisada.</p>
             <p>Cada roteiro é desenhado como um filme: fotografia, ritmo, hospedagem, gastronomia. Tudo cuidado para que você apenas chegue, monte, e se entregue à expedição.</p>
