@@ -47,6 +47,69 @@ export interface DataExpedicao {
 
 const EXPEDICOES: Expedicao[] = [
     {
+        "id": "rota-dos-tropeiros-id",
+        "nome": "Rota dos Tropeiros da Canastra",
+        "pais": "brasil",
+        "slug": "rota-dos-tropeiros-da-canastra",
+        "marca": "canastra-a-cavalo",
+        "moeda": "BRL",
+        "nivel": "Intermediário e Avançado",
+        "preco": 0,
+        "inclui": [
+            "Cavalos próprios Mangalarga Marchador",
+            "Material completo de montaria (selas, cabeçadas, mantas e alforjes)",
+            "Guias experientes",
+            "Carro de apoio",
+            "Alimentação completa (café da manhã, almoço e jantar)",
+            "Hospedagens ao longo do percurso",
+            "Seguro aventura"
+        ],
+        "regiao": "Vargem Bonita, MG",
+        "duracao": "5 dias / 4 noites",
+        "galeria": [],
+        "roteiro": [
+            {
+                "dia": "DIA 1",
+                "titulo": "Recepção em Vargem Bonita",
+                "desc": "Check-in a partir das 14h. Integração do grupo. Jantar de boas-vindas."
+            },
+            {
+                "dia": "DIA 2",
+                "titulo": "Vargem Bonita → São José do Barreiro",
+                "desc": "18 a 20 km pelos antigos caminhos tropeiros. Almoço preparado pela equipe. Pernoite em pousada local."
+            },
+            {
+                "dia": "DIA 3",
+                "titulo": "São José do Barreiro → Delfinópolis",
+                "desc": "23 km por estradas históricas e áreas rurais preservadas. Almoço tropeiro. Pernoite."
+            },
+            {
+                "dia": "DIA 4",
+                "titulo": "Delfinópolis → Vargem Bonita",
+                "desc": "20 km de cavalgada. Encerramento da travessia. Jantar especial com celebração."
+            },
+            {
+                "dia": "DIA 5",
+                "titulo": "Despedida",
+                "desc": "Café da manhã. Check-out. Encerramento oficial da expedição."
+            }
+        ],
+        "imagem_url": "/uploads/macbook-air-vexxonlabs.online.webp",
+        "requisitos": [
+            "Idade mínima recomendada: 8 anos",
+            "Acomodação: Dupla",
+            "Participantes: Máximo de 10 pessoas",
+            "Modalidade: Travessia Equestre"
+        ],
+        "descricao_curta": "Percorra os antigos caminhos tropeiros da Serra da Canastra em uma travessia exclusiva.",
+        "descricao_longa": "Uma verdadeira travessia a cavalo pelos antigos caminhos tropeiros da Serra da Canastra.\n\nDurante cinco dias percorremos estradas rurais, serras, vales e paisagens preservadas que durante décadas serviram de passagem para homens e tropas responsáveis por conectar comunidades de todo o interior mineiro.\n\nA jornada acontece em formato de travessia, com deslocamentos diários, hospedagens ao longo do percurso e almoços preparados pela própria equipe da expedição, resgatando tradições que marcaram a história dos tropeiros.\n\nMais do que uma cavalgada, esta is uma imersão na cultura tropeira, na história de Minas Gerais e na experiência de percorrer caminhos que ajudaram a construir o estado.",
+        "como_chegar_referencia": "Vargem Bonita (MG)",
+        "como_chegar_aeroporto": "Ribeirão Preto (SP)\nUberaba (MG)\nBelo Horizonte / Confins (MG)",
+        "como_chegar_distancias": "São Paulo (SP) — 540 km\nBelo Horizonte (MG) — 320 km\nRio de Janeiro (RJ) — 580 km\nBrasília (DF) — 820 km",
+        "como_chegar_conteudo": "Aeroportos próximos\n• Ribeirão Preto (SP)\n• Uberaba (MG)\n• Belo Horizonte / Confins (MG)\n\nRodoviárias próximas\n• São Roque de Minas (MG)\n• Piumhi (MG)\n• Passos (MG)\n\nLocação de veículos\nTodos os aeroportos acima contam com locadoras. Recomendamos veículo próprio ou alugado para maior conforto.",
+        "como_chegar_observacoes": "Destino: Vargem Bonita (MG). Portal da Serra da Canastra."
+    },
+    {
         "id": "c9e9f1dd-039d-4301-9181-ab26b30b9f2f",
         "nome": "Serra da Canastra",
         "pais": "brasil",
