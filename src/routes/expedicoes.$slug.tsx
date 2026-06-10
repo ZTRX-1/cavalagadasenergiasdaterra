@@ -141,7 +141,7 @@ function DetalhesExpedicao() {
           <div className="md:col-span-7">
             <div className="eyebrow">A experiência</div>
             <h2 className="mt-4 font-display text-3xl md:text-4xl">Sobre a expedição</h2>
-            <p className="mt-6 whitespace-pre-line text-lg leading-relaxed text-foreground/80 text-pretty">{expedicao.descricao_longa}</p>
+            <p className="mt-6 whitespace-pre-line text-[1.1rem] leading-relaxed text-foreground/80 text-pretty font-sans font-light">{expedicao.descricao_longa}</p>
 
             {expedicao.requisitos?.length > 0 && (
               <div className="mt-12">
