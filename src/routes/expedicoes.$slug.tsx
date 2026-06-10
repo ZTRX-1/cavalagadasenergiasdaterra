@@ -84,7 +84,7 @@ function DetalhesExpedicao() {
             <span className="h-1 w-1 rounded-full bg-cobre" />
             <span>{expedicao.nivel}</span>
             <span className="h-1 w-1 rounded-full bg-cobre" />
-            <span>{t("expedicoes.consulteValores")}</span>
+            <span>{expedicao.mensagem_comercial_publica || t("expedicoes.consulteValores")}</span>
           </div>
           <h1 className="mt-5 max-w-3xl font-display text-5xl text-balance md:text-7xl">{expedicao.nome}</h1>
           <p className="mt-5 max-w-2xl text-lg text-areia/85 text-pretty">{expedicao.descricao_curta}</p>
@@ -161,14 +161,14 @@ function DetalhesExpedicao() {
               </ul>
             </div>
             <div className="rounded-sm border border-border bg-card p-8 shadow-card">
-              <div className="eyebrow">Condições de pagamento</div>
+              <div className="eyebrow">Formas de pagamento</div>
               <div className="mt-4 font-display text-3xl text-cobre">
-                {t("expedicoes.consulteValores")}
+                {expedicao.mensagem_comercial_publica || t("expedicoes.consulteValores")}
               </div>
-              <ul className="mt-5 space-y-3 text-sm text-foreground/85">
-                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />À vista no Pix/transferência</li>
-                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Cartão de crédito em até 6x sem juros, via link de pagamento seguro</li>
-                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Parcelamento via Pix (consulte nossa equipe para conhecer as opções)</li>
+              <ul className="mt-6 space-y-4 text-sm text-foreground/85">
+                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Cartão: 1x sem juros</li>
+                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Cartão em até 10x, com os juros por conta do cliente</li>
+                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Pix: parcelamento mediante consulta</li>
               </ul>
               <p className="mt-6 border-t border-border pt-4 text-xs text-muted-foreground">
                 {t("expedicoes.entreEmContato")}
