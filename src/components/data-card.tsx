@@ -42,7 +42,7 @@ export function DataCard({ data, variant = "link" }: { data: DataExpedicao; vari
 
       <div className="hidden md:block md:flex-1">
         <div className="font-eyebrow text-[0.72rem] uppercase tracking-[0.22em] text-cobre">{data.expedicao_nome}</div>
-        <div className="mt-1.5 font-display text-xl text-foreground">{formatDateRange(data.data_inicio, data.data_fim)}</div>
+        <div className="mt-1.5 font-sans text-xl text-foreground font-light">{formatDateRange(data.data_inicio, data.data_fim)}</div>
       </div>
 
 
