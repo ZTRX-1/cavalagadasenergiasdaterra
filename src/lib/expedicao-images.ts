@@ -366,7 +366,16 @@ export const SLUG_NARRATIVA: Record<string, CenaNarrativa[]> = {
     { src: sant07, eyebrow: "", titulo: "Finisterra, o lendário “Fim do Mundo”, marca o encontro entre a terra, o oceano e a sensação de missão cumprida." },
     { src: sant08, eyebrow: "", titulo: "Mais do que uma expedição, Santiago deixa memórias, amizades e histórias que acompanham cada participante por toda a vida." },
   ],
-
+  "rota-dos-tropeiros-da-canastra": [
+    { src: "/uploads/1-capa.jfif", eyebrow: "", titulo: "Serra da Canastra não se visita. Se vive a cavalo." },
+    { src: "/uploads/2.jfif", eyebrow: "", titulo: "Entre cânions, cachoeiras e estradas de terra, a Canastra revela um Brasil raro." },
+    { src: "/uploads/3.jfif", eyebrow: "", titulo: "Dias guiados pelo ritmo do cavalo e pelo silêncio da natureza." },
+    { src: "/uploads/4.jfif", eyebrow: "", titulo: "Alguns lugares não ficam nas fotos. Ficam na gente." },
+    { src: "/uploads/5.jfif", eyebrow: "", titulo: "Almoços ao ar livre, sabores mineiros e pausas que fazem parte da jornada." },
+    { src: "/uploads/6.jfif", eyebrow: "", titulo: "Estranhos no primeiro dia. Manada no último." },
+    { src: "/uploads/7.jfif", eyebrow: "", titulo: "Café mineiro, hospitalidade local e o tempo correndo mais devagar." },
+    { src: "/uploads/8.jfif", eyebrow: "", titulo: "E quando a expedição termina… uma parte sua ainda fica na Canastra." },
+  ],
 };
 
 /**
