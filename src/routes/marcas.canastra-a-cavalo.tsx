@@ -46,7 +46,7 @@ function Page() {
             <div className="eyebrow">O território</div>
             <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">Nosso ponto de origem.</h2>
           </div>
-          <div className="md:col-span-7 text-lg leading-relaxed text-foreground/85 space-y-5">
+          <div className="md:col-span-7 text-lg leading-relaxed text-foreground/85 space-y-5 font-sans font-light">
             <p>A Canastra é o nosso ponto de origem. Conhecemos cada trilha, cada paisagem, cada história que fazem desta região um dos destinos equestres mais especiais do Brasil.</p>
             <p>Trabalhamos ao lado de parceiros locais selecionados, que compartilham dos mesmos valores de cuidado, autenticidade e respeito à cultura da Serra da Canastra.</p>
           </div>
