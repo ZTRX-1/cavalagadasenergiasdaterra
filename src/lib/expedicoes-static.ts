@@ -603,6 +603,19 @@ const DATAS: DataExpedicao[] = [
         "vagas_disponiveis": 5
     },
     {
+        "id": "mantiqueira-4-dias-data-1",
+        "status": "disponivel",
+        "data_fim": "2027-06-07",
+        "preco_pix": 3600,
+        "data_inicio": "2027-06-04",
+        "vagas_total": 12,
+        "expedicao_id": "mantiqueira-4-dias-id",
+        "preco_cartao": 3960,
+        "expedicao_nome": "Serra da Mantiqueira · 4 dias",
+        "expedicao_slug": "mantiqueira-4-dias",
+        "vagas_disponiveis": 12
+    },
+    {
         "id": "696d31b1-ed97-4e5f-bf7f-3453f058dda4",
         "status": "disponivel",
         "data_fim": "2026-08-07",
