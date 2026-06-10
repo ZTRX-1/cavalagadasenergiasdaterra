@@ -146,7 +146,7 @@ function DetalhesExpedicao() {
             {expedicao.requisitos?.length > 0 && (
               <div className="mt-12">
                 <div className="eyebrow">{t("expedicoes.requisitos")}</div>
-                <ul className="mt-4 space-y-2 text-sm text-foreground/80">
+                <ul className="mt-4 space-y-2 text-sm text-foreground/80 font-sans font-light">
                   {expedicao.requisitos.map((r: string) => (
                     <li key={r} className="flex items-start gap-2"><span className="mt-2 h-1 w-1 rounded-full bg-cobre" />{r}</li>
                   ))}
