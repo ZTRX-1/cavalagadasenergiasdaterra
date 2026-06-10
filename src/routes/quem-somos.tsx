@@ -279,7 +279,7 @@ function QuemSomosPage() {
               </div>
               <div className="border border-areia/15 p-5">
                 <div className="font-display text-xl text-cobre-soft">Condução</div>
-                <p className="mt-2 text-sm leading-relaxed text-areia/72">Guias, parceiros e operação alinhados com segurança e sofisticação discreta.</p>
+                <p className="mt-2 text-sm leading-relaxed text-areia/72 font-sans font-light">Guias, parceiros e operação alinhados com segurança e sofisticação discreta.</p>
               </div>
             </div>
           </div>
