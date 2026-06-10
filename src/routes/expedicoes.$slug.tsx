@@ -212,7 +212,7 @@ function DetalhesExpedicao() {
             </h2>
           </div>
 
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 font-sans font-light">
             {expedicao.como_chegar_referencia && (
               <ExpeditionMetaCard
                 icon={MapPin}
