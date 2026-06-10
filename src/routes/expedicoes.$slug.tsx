@@ -273,7 +273,7 @@ function DetalhesExpedicao() {
 
           {expedicao.como_chegar_conteudo && (
             <div className="mt-12">
-              <p className="whitespace-pre-line text-lg leading-relaxed text-foreground/80 text-pretty">
+              <p className="whitespace-pre-line text-lg leading-relaxed text-foreground/80 text-pretty font-sans font-light">
                 {expedicao.como_chegar_conteudo}
               </p>
             </div>
