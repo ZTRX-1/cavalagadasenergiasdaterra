@@ -123,7 +123,7 @@ function QuemSomosPage() {
             <div key={item.title} className="border border-border/70 bg-background/70 p-6">
               <item.icon className="h-6 w-6 text-cobre" strokeWidth={1.5} />
               <div className="mt-4 font-display text-xl">{item.title}</div>
-              <p className="mt-3 text-sm leading-relaxed text-foreground/68">{item.desc}</p>
+              <p className="mt-3 text-sm leading-relaxed text-foreground/68 font-sans font-light">{item.desc}</p>
             </div>
           ))}
         </div>
