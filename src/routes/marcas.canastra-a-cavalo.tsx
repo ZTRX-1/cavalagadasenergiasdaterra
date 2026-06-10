@@ -33,7 +33,7 @@ function Page() {
           <h1 className="mt-3 font-display text-5xl text-balance md:text-7xl text-shadow-strong">
             Canastra <em className="not-italic text-cobre-soft">a Cavalo</em>
           </h1>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-areia text-shadow-soft text-pretty">
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-areia text-shadow-soft text-pretty font-sans font-light">
             Explore a Serra da Canastra a cavalo, por rotas cuidadosamente selecionadas.
           </p>
         </div>
