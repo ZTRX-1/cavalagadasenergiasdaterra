@@ -176,9 +176,9 @@ function DetalhesExpedicao() {
                 {expedicao.mensagem_comercial_publica || t("expedicoes.consulteValores")}
               </div>
               <ul className="mt-6 space-y-4 text-sm text-foreground/85 ">
-                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Cartão: 1x sem juros</li>
-                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Cartão em até 10x, com os juros por conta do cliente</li>
-                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Pix: parcelamento mediante consulta</li>
+                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Cartão 1x sem juros.</li>
+                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Cartão parcelado com juros do cliente.</li>
+                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Pix parcelado mediante consulta.</li>
               </ul>
               <p className="mt-6 border-t border-border pt-4 text-xs text-muted-foreground">
                 {t("expedicoes.entreEmContato")}
