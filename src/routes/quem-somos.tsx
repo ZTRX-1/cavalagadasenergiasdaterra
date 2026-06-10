@@ -335,7 +335,7 @@ function QuemSomosPage() {
           <h2 className="mx-auto mt-5 max-w-3xl font-display text-4xl text-balance md:text-6xl">
             {t("quemSomos.ctaTitle")}
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-pretty text-areia/82">
+          <p className="mx-auto mt-6 max-w-2xl text-pretty text-areia/82 font-sans font-light">
             {t("quemSomos.ctaSubtitle")}
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
