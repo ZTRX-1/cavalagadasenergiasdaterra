@@ -126,7 +126,7 @@ function DetalhesExpedicao() {
       )}
 
       {/* Vídeo cinematográfico */}
-      {(expedicao.slug === "serra-da-canastra" || expedicao.slug === "rota-dos-tropeiros-da-canastra") && (
+      {expedicao.slug === "serra-da-canastra" && (
         <section className="bg-carvao py-16 md:py-20">
           <div className="container-tight">
             <VideoCinematic
