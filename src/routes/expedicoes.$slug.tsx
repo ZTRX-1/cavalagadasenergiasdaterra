@@ -354,7 +354,7 @@ function DetalhesExpedicao() {
       <section className={`bg-floresta-deep py-20 text-areia md:py-24`}>
         <div className="container-tight text-center">
           <h2 className="font-display text-3xl text-balance md:text-5xl">{t("expedicoes.ctaTitle")}</h2>
-          <p className="mx-auto mt-4 max-w-xl text-areia/75">{t("expedicoes.ctaSubtitle")}</p>
+          <p className="mx-auto mt-4 max-w-xl text-areia/75 font-sans font-light">{t("expedicoes.ctaSubtitle")}</p>
           <a
             href={whatsappUrl}
             target="_blank"
