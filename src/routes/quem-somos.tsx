@@ -271,7 +271,7 @@ function QuemSomosPage() {
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
               <div className="border border-areia/15 p-5">
                 <div className="font-display text-xl text-cobre-soft">Criação</div>
-                <p className="mt-2 text-sm leading-relaxed text-areia/72">Cavalos próprios preparados com método, descanso e respeito.</p>
+                <p className="mt-2 text-sm leading-relaxed text-areia/72 font-sans font-light">Cavalos próprios preparados com método, descanso e respeito.</p>
               </div>
               <div className="border border-areia/15 p-5">
                 <div className="font-display text-xl text-cobre-soft">Hospitalidade</div>
