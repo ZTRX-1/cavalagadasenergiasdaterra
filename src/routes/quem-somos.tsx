@@ -275,7 +275,7 @@ function QuemSomosPage() {
               </div>
               <div className="border border-areia/15 p-5">
                 <div className="font-display text-xl text-cobre-soft">Hospitalidade</div>
-                <p className="mt-2 text-sm leading-relaxed text-areia/72">Refúgio, acolhimento e roteiro pensados como uma experiência completa.</p>
+                <p className="mt-2 text-sm leading-relaxed text-areia/72 font-sans font-light">Refúgio, acolhimento e roteiro pensados como uma experiência completa.</p>
               </div>
               <div className="border border-areia/15 p-5">
                 <div className="font-display text-xl text-cobre-soft">Condução</div>
