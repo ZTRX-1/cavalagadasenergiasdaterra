@@ -83,11 +83,18 @@
         "duracao": "4 dias / 3 noites",
         "nivel": "Intermediário"
       },
-      "mantiqueira-refugio": {
-        "nome": "Serra da Mantiqueira",
+      "mantiqueira-5-dias": {
+        "nome": "Serra da Mantiqueira · 5 dias",
         "regiao": "Maria da Fé, MG",
         "descricao": "Expedição a cavalo entre montanhas, natureza e conexão. Para quem busca desacelerar, viver o presente e se reconectar.",
         "duracao": "5 dias / 4 noites",
+        "nivel": "Iniciante a intermediário"
+      },
+      "mantiqueira-4-dias": {
+        "nome": "Serra da Mantiqueira · 4 dias",
+        "regiao": "Maria da Fé, MG",
+        "descricao": "Expedição a cavalo entre montanhas, natureza e conexão. Uma versão compacta para quem busca desconectar na Mantiqueira.",
+        "duracao": "4 dias / 3 noites",
         "nivel": "Iniciante a intermediário"
       },
       "berco-do-marchador": {

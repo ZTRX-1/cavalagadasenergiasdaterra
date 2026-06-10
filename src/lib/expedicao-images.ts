@@ -177,14 +177,14 @@ export const IMAGES: Record<string, string> = {
 // ============================================================
 export const SLUG_IMAGE: Record<string, string> = {
   "serra-da-canastra": canNew01,     // cavaleira no rio — capa da expedição
-  "mantiqueira-refugio": manNew01,   // tropa em movimento na estrada de terra
+  "mantiqueira-5-dias": manNew01,   // tropa em movimento na estrada de terra
+  "mantiqueira-4-dias": manNew01,   // tropa em movimento na estrada de terra
   "berco-do-marchador": berco01,     // cavaleiros no berço do Marchador — Cruzília/MG
   "jericoacoara": jeri01,            // cavaleira ao nascer do sol nas dunas
   "peru-vale-do-colca": peruNew01,   // cavaleiros nos cânions do Peru — capa da expedição
   "patagonia-gaucha": patNew01,      // tropa nas montanhas nevadas da Patagônia
   "caminho-de-santiago": sant01,     // chegada à Catedral de Santiago — capa da jornada
   "canastra-elas-na-sela": elasNew01,   // edição especial feminina na Canastra
-
 };
 
 // ============================================================
@@ -192,14 +192,14 @@ export const SLUG_IMAGE: Record<string, string> = {
 // ============================================================
 export const SLUG_GALERIA: Record<string, string[]> = {
   "serra-da-canastra": [canNew01, canNew02, canNew03, canNew04, canNew05, canNew06, canNew07, canNew08],
-  "mantiqueira-refugio": [manNew01, manNew02, manNew03, manNew04, manNew05, manNew06, manNew07, manNew08],
+  "mantiqueira-5-dias": [manNew01, manNew02, manNew03, manNew04, manNew05, manNew06, manNew07, manNew08],
+  "mantiqueira-4-dias": [manNew01, manNew02, manNew03, manNew04, manNew05, manNew06, manNew07, manNew08],
   "berco-do-marchador": [berco01, berco02, berco03, berco04, berco05, berco06, berco07, berco08],
   "peru-vale-do-colca": [peruNew01, peruNew02, peruNew03, peruNew04, peruNew05, peruNew06, peruNew07, peruNew08],
   "patagonia-gaucha": [patNew01, patNew02, patNew03, patNew04, patNew05, patNew06, patNew07, patNew08],
   "jericoacoara": [],
   "caminho-de-santiago": [sant01, sant02, sant03, sant04, sant05, sant06, sant07, sant08],
   "canastra-elas-na-sela": [elasNew01, elasNew02, elasNew03, elasNew04, elasNew05, elasNew06, elasNew07, elasNew08],
-
 };
 
 
@@ -306,7 +306,17 @@ export const SLUG_NARRATIVA: Record<string, CenaNarrativa[]> = {
     { src: jeri07, eyebrow: "", titulo: "Conforto, curadoria e hospitalidade pensados para fazer parte da jornada." },
     { src: jeri08, eyebrow: "", titulo: "Algumas experiências terminam. Outras permanecem para sempre na memória." },
   ],
-  "mantiqueira-refugio": [
+  "mantiqueira-5-dias": [
+    { src: manNew01, eyebrow: "", titulo: "Onde o tempo desacelera e a alma volta a respirar." },
+    { src: manNew02, eyebrow: "", titulo: "Entre montanhas, cavalos e silêncio, a Mantiqueira revela outro ritmo de vida." },
+    { src: manNew03, eyebrow: "", titulo: "Mais do que uma cavalgada: uma experiência para sentir a natureza de verdade." },
+    { src: manNew04, eyebrow: "", titulo: "Caminhos que conectam pessoas, cavalos e paisagens inesquecíveis." },
+    { src: manNew05, eyebrow: "", titulo: "A liberdade tem som de casco na terra e horizonte sem fim." },
+    { src: manNew06, eyebrow: "", titulo: "Dias vividos a cavalo, cercados pelas montanhas da Serra da Mantiqueira." },
+    { src: manNew07, eyebrow: "", titulo: "Existem lugares que não se explicam. Apenas se vivem." },
+    { src: manNew08, eyebrow: "", titulo: "Uma expedição para quem deseja voltar diferente." },
+  ],
+  "mantiqueira-4-dias": [
     { src: manNew01, eyebrow: "", titulo: "Onde o tempo desacelera e a alma volta a respirar." },
     { src: manNew02, eyebrow: "", titulo: "Entre montanhas, cavalos e silêncio, a Mantiqueira revela outro ritmo de vida." },
     { src: manNew03, eyebrow: "", titulo: "Mais do que uma cavalgada: uma experiência para sentir a natureza de verdade." },

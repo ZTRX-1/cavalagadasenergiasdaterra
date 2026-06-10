@@ -103,9 +103,9 @@ const EXPEDICOES: Expedicao[] = [
     },
     {
         "id": "9dd91b11-3ce3-4368-ab3c-4d441da8d34d",
-        "nome": "Serra da Mantiqueira",
+        "nome": "Serra da Mantiqueira · 5 dias",
         "pais": "brasil",
-        "slug": "mantiqueira-refugio",
+        "slug": "mantiqueira-5-dias",
         "marca": "cavalgadas",
         "moeda": "BRL",
         "nivel": "Iniciante a intermediário",
@@ -159,6 +159,60 @@ const EXPEDICOES: Expedicao[] = [
         ],
         "descricao_curta": "Expedição a cavalo entre montanhas, natureza e conexão. Para quem busca desacelerar, viver o presente e se reconectar.",
         "descricao_longa": "Cinco dias no Refúgio Energias da Terra, em Maria da Fé (MG), no coração da Serra da Mantiqueira. Cavalgadas leves de adaptação, travessias mais longas, vivência na fazenda de azeite Monasto e piquenique ao pôr do sol.\n\nCavalos do nosso próprio criatório Mangalarga Marchador, hospedagem premium no refúgio e gastronomia regional cuidada."
+    },
+    {
+        "id": "mantiqueira-4-dias-id",
+        "nome": "Serra da Mantiqueira · 4 dias",
+        "pais": "brasil",
+        "slug": "mantiqueira-4-dias",
+        "marca": "cavalgadas",
+        "moeda": "BRL",
+        "nivel": "Iniciante a intermediário",
+        "preco": 3600.00,
+        "inclui": [
+            "Cavalos próprios Mangalarga Marchador e toda a estrutura de montaria",
+            "Guias experientes",
+            "Hospedagem no Refúgio Energias da Terra",
+            "Alimentação completa",
+            "Logística e transfers internos"
+        ],
+        "regiao": "Maria da Fé, MG",
+        "duracao": "4 dias / 3 noites",
+        "galeria": [
+            "expedicao-cipo",
+            "cavalo-closeup",
+            "acampamento"
+        ],
+        "roteiro": [
+            {
+                "dia": "Dia 1",
+                "desc": "Check-in a partir das 14h. Recepção, acomodação, apresentação do programa e jantar de boas-vindas.",
+                "titulo": "Chegada"
+            },
+            {
+                "dia": "Dia 2",
+                "desc": "Cavalgada leve de cerca de 10 km por trilhas da Mantiqueira, ritmo tranquilo para adaptação. Almoço e jantar inclusos.",
+                "titulo": "Adaptação"
+            },
+            {
+                "dia": "Dia 3",
+                "desc": "Cavalgada passando pelo centro de Maria da Fé até a fazenda de azeite Monasto. Almoço no local, piquenique ao pôr do sol e coquetel. Jantar com música ao vivo.",
+                "titulo": "Experiência Monasto"
+            },
+            {
+                "dia": "Dia 4",
+                "desc": "Café da manhã e check-out até as 12h.",
+                "titulo": "Encerramento"
+            }
+        ],
+        "imagem_url": "expedicao-cipo",
+        "requisitos": [
+            "Bebidas não incluídas",
+            "Deslocamento até a pousada não incluído",
+            "Crianças até 10 anos têm 20% de desconto; acima de 10 anos pagam valor integral"
+        ],
+        "descricao_curta": "Expedição a cavalo entre montanhas, natureza e conexão. Uma versão compacta para quem busca desconectar na Mantiqueira.",
+        "descricao_longa": "Quatro dias no Refúgio Energias da Terra, em Maria da Fé (MG), no coração da Serra da Mantiqueira. Uma jornada intensa de conexão com a natureza e com o cavalo, focada na essência da vida no campo."
     },
     {
         "id": "aa0ddccc-6b9a-4c84-99c7-69b722b8cd6f",
@@ -544,9 +598,22 @@ const DATAS: DataExpedicao[] = [
         "vagas_total": 12,
         "expedicao_id": "9dd91b11-3ce3-4368-ab3c-4d441da8d34d",
         "preco_cartao": 4600,
-        "expedicao_nome": "Serra da Mantiqueira",
-        "expedicao_slug": "mantiqueira-refugio",
+        "expedicao_nome": "Serra da Mantiqueira · 5 dias",
+        "expedicao_slug": "mantiqueira-5-dias",
         "vagas_disponiveis": 5
+    },
+    {
+        "id": "mantiqueira-4-dias-data-1",
+        "status": "disponivel",
+        "data_fim": "2027-06-07",
+        "preco_pix": 3600,
+        "data_inicio": "2027-06-04",
+        "vagas_total": 12,
+        "expedicao_id": "mantiqueira-4-dias-id",
+        "preco_cartao": 3960,
+        "expedicao_nome": "Serra da Mantiqueira · 4 dias",
+        "expedicao_slug": "mantiqueira-4-dias",
+        "vagas_disponiveis": 12
     },
     {
         "id": "696d31b1-ed97-4e5f-bf7f-3453f058dda4",

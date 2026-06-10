@@ -1,6 +1,8 @@
 const PUBLIC_SLUG_BY_CANONICAL: Record<string, string> = {
   "berco-do-marchador": "cruzilia",
   "peru-vale-do-colca": "peru",
+  "mantiqueira-5-dias": "mantiqueira-5-dias",
+  "mantiqueira-4-dias": "mantiqueira-4-dias",
 };
 
 const CANONICAL_SLUG_BY_PUBLIC: Record<string, string> = Object.fromEntries(
