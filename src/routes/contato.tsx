@@ -81,7 +81,7 @@ function ContatoPage() {
             <div className="eyebrow">{t("contato.diferencialEyebrow")}</div>
             <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">{t("contato.diferencialTitle")}</h2>
           </div>
-          <div className="md:col-span-8 space-y-6 text-lg leading-relaxed text-foreground/80 text-pretty">
+          <div className="md:col-span-8 space-y-6 text-lg leading-relaxed text-foreground/80 text-pretty font-sans font-light">
             <p>
               Criamos experiências equestres para pequenos grupos, acompanhando pessoalmente cada etapa da jornada e cuidando de cada detalhe para que nossos clientes possam simplesmente viver o momento.
             </p>
