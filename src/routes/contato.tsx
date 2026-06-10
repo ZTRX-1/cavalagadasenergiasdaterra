@@ -25,7 +25,7 @@ function ContatoPage() {
           <div className="md:col-span-7">
             <div className="eyebrow">{t("contato.eyebrow")}</div>
             <h1 className="mt-4 font-display text-5xl text-balance md:text-7xl">{t("contato.title")}</h1>
-            <p className="mt-6 max-w-xl text-lg text-muted-foreground text-pretty font-sans font-light">
+            <p className="mt-6 max-w-xl text-lg text-muted-foreground text-pretty ">
               {t("contato.intro")}
             </p>
             <div className="mt-10 space-y-4">
@@ -64,7 +64,7 @@ function ContatoPage() {
             <div className="eyebrow text-cobre-soft">{t("contato.quemSomosEyebrow")}</div>
             <h2 className="mt-4 font-display text-4xl md:text-5xl">{t("contato.quemSomosTitle")}</h2>
           </div>
-          <div className="md:col-span-8 space-y-6 text-lg leading-relaxed text-areia/85 text-pretty font-sans font-light">
+          <div className="md:col-span-8 space-y-6 text-lg leading-relaxed text-areia/85 text-pretty ">
             <p>
               A Cavalgadas Energias da Terra foi criada por quem vive o universo equestre todos os dias. Somos criadores de cavalos, anfitriões e especialistas em expedições a cavalo.
             </p>
@@ -81,7 +81,7 @@ function ContatoPage() {
             <div className="eyebrow">{t("contato.diferencialEyebrow")}</div>
             <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">{t("contato.diferencialTitle")}</h2>
           </div>
-          <div className="md:col-span-8 space-y-6 text-lg leading-relaxed text-foreground/80 text-pretty font-sans font-light">
+          <div className="md:col-span-8 space-y-6 text-lg leading-relaxed text-foreground/80 text-pretty ">
             <p>
               Criamos experiências equestres para pequenos grupos, acompanhando pessoalmente cada etapa da jornada e cuidando de cada detalhe para que nossos clientes possam simplesmente viver o momento.
             </p>

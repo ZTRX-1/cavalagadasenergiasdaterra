@@ -33,7 +33,7 @@ function Page() {
           <h1 className="mt-3 font-display text-5xl text-balance md:text-7xl text-shadow-strong">
             Cavalgadas <em className="not-italic text-cobre-soft">Energias da Terra</em>
           </h1>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-areia text-shadow-soft text-pretty font-sans font-light">
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-areia text-shadow-soft text-pretty ">
             Expedições a cavalo, conduzidas com curadoria, cuidado e profundo conhecimento do território.
             Brasil e mundo, em pequenos grupos, com a alma de quem cria seus próprios cavalos.
           </p>
@@ -47,7 +47,7 @@ function Page() {
             <div className="eyebrow">Manifesto</div>
             <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">Uma forma antiga de prestar atenção ao mundo.</h2>
           </div>
-          <div className="md:col-span-7 text-lg leading-relaxed text-foreground/85 space-y-5 font-sans font-light">
+          <div className="md:col-span-7 text-lg leading-relaxed text-foreground/85 space-y-5 ">
             <p>Cavalgar é mais lento que dirigir, mais íntimo que caminhar. É o ritmo certo para atravessar uma paisagem sem violá-la.</p>
             <p>Nossas expedições nascem de uma manada própria de Mangalarga Marchador, criada com tempo e afeto. Não alugada, não improvisada.</p>
             <p>Cada roteiro é desenhado como um filme: fotografia, ritmo, hospedagem, gastronomia. Tudo cuidado para que você apenas chegue, monte, e se entregue à expedição.</p>

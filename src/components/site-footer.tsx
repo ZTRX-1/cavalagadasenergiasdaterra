@@ -26,7 +26,7 @@ export function SiteFooter() {
                 <div className="font-eyebrow mt-1 text-[0.6rem] uppercase tracking-[0.32em] text-cobre-soft">Energias da Terra</div>
               </div>
             </div>
-            <p className="mt-6 max-w-md leading-relaxed text-areia/85 text-pretty font-sans font-light">
+            <p className="mt-6 max-w-md leading-relaxed text-areia/85 text-pretty ">
               {t("footer.tagline")}
             </p>
             <div className="mt-8 flex items-center gap-3">

@@ -72,7 +72,7 @@ export function DepoimentosShorts() {
           </div>
           <div className="md:col-span-5">
             <div className="hidden h-px w-full bg-gradient-to-r from-transparent via-cobre/40 to-transparent md:block" />
-            <p className="mt-6 max-w-md text-pretty text-[0.98rem] leading-relaxed text-areia/70 font-sans font-light">
+            <p className="mt-6 max-w-md text-pretty text-[0.98rem] leading-relaxed text-areia/70 ">
               Três capítulos breves — filmados no calor do encontro. A voz, o vento, o passo. O que fica quando se desce do cavalo.
             </p>
           </div>
