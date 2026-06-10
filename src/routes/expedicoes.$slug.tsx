@@ -82,7 +82,7 @@ function DetalhesExpedicao() {
             </div>
           )}
 
-          <div className="flex items-center gap-3 text-[0.7rem] uppercase tracking-[0.22em] text-areia/80">
+          <div className="flex items-center gap-3 font-eyebrow text-[0.7rem] uppercase tracking-[0.22em] text-areia/80">
             <span>{expedicao.duracao}</span>
             <span className="h-1 w-1 rounded-full bg-cobre" />
             <span>{expedicao.nivel}</span>
@@ -212,7 +212,7 @@ function DetalhesExpedicao() {
             </h2>
           </div>
 
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 font-sans font-light">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {expedicao.como_chegar_referencia && (
               <ExpeditionMetaCard
                 icon={MapPin}
@@ -273,7 +273,7 @@ function DetalhesExpedicao() {
 
           {expedicao.como_chegar_conteudo && (
             <div className="mt-12">
-              <p className="whitespace-pre-line text-[1rem] leading-relaxed text-foreground/90 text-pretty font-sans font-light">
+              <p className="whitespace-pre-line text-[1rem] leading-relaxed text-foreground/90 text-pretty">
                 {expedicao.como_chegar_conteudo}
               </p>
             </div>
@@ -285,7 +285,7 @@ function DetalhesExpedicao() {
                 <Info className="h-4 w-4" strokeWidth={1.6} />
                 <span className="eyebrow !mt-0">{t("expedicoes.logistica.observacoes")}</span>
               </div>
-              <p className="mt-4 whitespace-pre-line text-[0.95rem] leading-relaxed text-foreground/90 font-sans font-light">
+              <p className="mt-4 whitespace-pre-line text-[0.95rem] leading-relaxed text-foreground/90">
                 {expedicao.como_chegar_observacoes}
               </p>
             </div>
