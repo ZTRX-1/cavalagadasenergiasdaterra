@@ -326,7 +326,7 @@ function ReservaPage() {
               <span className="rounded-full bg-cobre/90 px-3 py-1 font-eyebrow text-[0.62rem] uppercase tracking-[0.22em] text-areia">Últimas vagas</span>
             )}
           </div>
-          <p className="mt-6 max-w-xl text-areia/80">{expedicao.mensagem_comercial_publica || "Concierge dedicado em todas as etapas."}</p>
+          <p className="mt-6 max-w-xl text-areia/80 font-sans font-light">{expedicao.mensagem_comercial_publica || "Concierge dedicado em todas as etapas."}</p>
         </div>
       </section>
 
