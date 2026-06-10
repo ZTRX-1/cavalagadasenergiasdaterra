@@ -384,7 +384,7 @@ function HomePage() {
           <h2 className="mx-auto mt-7 max-w-3xl font-display text-5xl text-balance leading-[1.02] md:text-7xl">
             {t("ctaFinal.title")}
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-pretty text-areia/82 text-lg">
+          <p className="mx-auto mt-6 max-w-2xl text-pretty text-areia/82 text-lg font-sans font-light">
             {t("ctaFinal.subtitle")}
           </p>
           <Link to="/expedicoes" className="mt-12 inline-flex items-center gap-3 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">
