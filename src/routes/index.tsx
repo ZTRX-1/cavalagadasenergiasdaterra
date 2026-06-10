@@ -343,7 +343,7 @@ function HomePage() {
               {t("faq.title")}
             </h2>
             <span aria-hidden className="mt-8 block h-px w-16 bg-cobre" />
-            <p className="mt-8 max-w-sm text-pretty text-base leading-relaxed text-muted-foreground">
+            <p className="mt-8 max-w-sm text-pretty text-base leading-relaxed text-muted-foreground font-sans font-light">
               {t("faq.intro")}
             </p>
           </div>
