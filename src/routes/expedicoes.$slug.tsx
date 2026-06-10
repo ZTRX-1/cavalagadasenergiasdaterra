@@ -67,7 +67,9 @@ function DetalhesExpedicao() {
   const deslocamento = findInRequisitos(["deslocamento", "shuttle", "transfer"]);
   const acomodacao = findInRequisitos(["acomodação"]);
   const participantes = findInRequisitos(["participantes"]);
-  const tipo = findInRequisitos(["tipo"]);
+  const nivel = findInRequisitos(["nível de equitação"]);
+  const modalidade = findInRequisitos(["modalidade"]);
+  const duracao = findInRequisitos(["duração"]);
 
 
 
@@ -266,7 +268,7 @@ function DetalhesExpedicao() {
             {idadeMin && (
               <ExpeditionMetaCard
                 icon={UserPlus}
-                label={t("expedicoes.logistica.idade")}
+                label="Idade mínima recomendada"
                 value={idadeMin.replace(/[👧👦]|Idade mínima recomendada: /g, "").trim() || "8 anos"}
               />
             )}
@@ -302,16 +304,14 @@ function DetalhesExpedicao() {
               <ExpeditionMetaCard
                 icon={BedSingle}
                 label="Acomodação"
-                value={acomodacao.split(":")[1]?.trim() || acomodacao.split("/")[1]?.trim() || "Dupla"}
+                value={acomodacao.replace(/[🛏️]|Acomodação: /g, "").trim() || "Dupla"}
               />
             )}
-            {participantes && (
-              <ExpeditionMetaCard
-                icon={Users}
-                label="Participantes"
-                value={participantes.split(":")[1]?.trim() || participantes.split("/")[1]?.trim() || "Máximo 10"}
-              />
-            )}
+            <ExpeditionMetaCard
+              icon={Users}
+              label="Participantes"
+              value={participantes?.replace(/[👥]|Participantes: /g, "").trim() || "Máximo 10 pessoas"}
+            />
             <ExpeditionMetaCard
               icon={UserPlus}
               label="Grupo Exclusivo"
