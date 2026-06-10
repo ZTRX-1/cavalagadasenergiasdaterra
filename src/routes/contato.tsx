@@ -25,7 +25,7 @@ function ContatoPage() {
           <div className="md:col-span-7">
             <div className="eyebrow">{t("contato.eyebrow")}</div>
             <h1 className="mt-4 font-display text-5xl text-balance md:text-7xl">{t("contato.title")}</h1>
-            <p className="mt-6 max-w-xl text-lg text-muted-foreground text-pretty">
+            <p className="mt-6 max-w-xl text-lg text-muted-foreground text-pretty font-sans font-light">
               {t("contato.intro")}
             </p>
             <div className="mt-10 space-y-4">
