@@ -200,7 +200,24 @@ function DetalhesExpedicao() {
             </div>
           </div>
         </section>
-      )}
+
+204:       {/* Bloco "A Experiência" */}
+205:       {expedicao.observacoes && (
+206:         <section className="bg-background py-20 md:py-24 border-t border-border">
+207:           <div className="container-tight">
+208:             <div className="eyebrow">A Experiência</div>
+209:             <h2 className="mt-4 font-display text-3xl md:text-4xl text-balance">
+210:               Uma jornada pela história
+211:             </h2>
+212:             <div className="mt-10 max-w-3xl">
+213:               <p className="whitespace-pre-line text-[1.15rem] leading-relaxed text-foreground/80 text-pretty font-display">
+214:                 {expedicao.observacoes}
+215:               </p>
+216:             </div>
+217:           </div>
+218:         </section>
+219:       )}
+
 
       {/* Logística */}
       <section className="bg-background py-20 md:py-24">
