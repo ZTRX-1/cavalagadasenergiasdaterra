@@ -78,7 +78,7 @@ function QuemSomosPage() {
             <h1 className="mt-5 font-display text-4xl leading-[1.01] text-balance md:text-6xl lg:text-[4.5rem]">
               {t("quemSomos.heroTitleStart")} <em className="not-italic text-cobre-soft">{t("quemSomos.heroTitleEm")}</em>.
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-relaxed text-areia/82 md:text-lg">
+            <p className="mt-6 max-w-2xl text-base leading-relaxed text-areia/82 md:text-lg font-sans font-light">
               {t("quemSomos.heroIntro")}
             </p>
 
