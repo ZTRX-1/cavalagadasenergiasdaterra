@@ -33,7 +33,7 @@ function Page() {
           <h1 className="mt-3 font-display text-5xl text-balance md:text-7xl text-shadow-strong">
             Canastra <em className="not-italic text-cobre-soft">a Cavalo</em>
           </h1>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-areia text-shadow-soft text-pretty font-sans font-light">
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-areia text-shadow-soft text-pretty ">
             Explore a Serra da Canastra a cavalo, por rotas cuidadosamente selecionadas.
           </p>
         </div>
@@ -46,7 +46,7 @@ function Page() {
             <div className="eyebrow">O território</div>
             <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">Nosso ponto de origem.</h2>
           </div>
-          <div className="md:col-span-7 text-lg leading-relaxed text-foreground/85 space-y-5 font-sans font-light">
+          <div className="md:col-span-7 text-lg leading-relaxed text-foreground/85 space-y-5 ">
             <p>A Canastra é o nosso ponto de origem. Conhecemos cada trilha, cada paisagem, cada história que fazem desta região um dos destinos equestres mais especiais do Brasil.</p>
             <p>Trabalhamos ao lado de parceiros locais selecionados, que compartilham dos mesmos valores de cuidado, autenticidade e respeito à cultura da Serra da Canastra.</p>
           </div>
@@ -71,7 +71,7 @@ function Page() {
           <div>
             <div className="eyebrow">Quem conduz</div>
             <h2 className="mt-4 font-display text-3xl md:text-4xl">A equipe que vive a Canastra.</h2>
-            <p className="mt-5 text-lg leading-relaxed text-foreground/80 text-pretty font-sans font-light">
+            <p className="mt-5 text-lg leading-relaxed text-foreground/80 text-pretty ">
               Amazonas, guias e amigos. Gente que nasceu aqui, monta há décadas e conhece o terreno como ninguém.
             </p>
           </div>

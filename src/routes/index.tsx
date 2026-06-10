@@ -155,7 +155,7 @@ function HomePage() {
             <p className="mt-4 max-w-xl font-display text-[1.1rem] leading-[1.28] text-areia text-shadow-strong text-balance sm:text-2xl md:mt-5 md:text-[1.7rem] md:leading-[1.2]">
               {t("hero.subtitle")}
             </p>
-            <p className="mt-3 max-w-lg text-[0.86rem] leading-relaxed text-areia/85 text-shadow-soft text-pretty md:mt-4 md:text-[0.98rem] font-sans font-light">
+            <p className="mt-3 max-w-lg text-[0.86rem] leading-relaxed text-areia/85 text-shadow-soft text-pretty md:mt-4 md:text-[0.98rem] ">
               {t("hero.support")}
             </p>
             <div className="mt-6 flex flex-wrap gap-3 md:mt-7">
@@ -182,7 +182,7 @@ function HomePage() {
           <div className="max-w-2xl">
             <div className="eyebrow">{t("marcas.eyebrow")}</div>
             <h2 className="mt-5 font-display text-4xl text-balance md:text-5xl">{t("marcas.title")}</h2>
-            <p className="mt-5 text-lg leading-relaxed text-foreground/75 text-pretty font-sans font-light">
+            <p className="mt-5 text-lg leading-relaxed text-foreground/75 text-pretty ">
               {t("marcas.subtitle")}
             </p>
           </div>
@@ -225,7 +225,7 @@ function HomePage() {
           <div className="md:col-span-7 flex flex-col justify-center">
             <div className="eyebrow">{t("manifesto.eyebrow")}</div>
             <h2 className="mt-5 font-display text-4xl text-balance leading-[1.05] md:text-5xl lg:text-[3.5rem]">{t("manifesto.title")}</h2>
-            <p className="mt-8 text-lg leading-relaxed text-foreground/80 text-pretty font-sans font-light">
+            <p className="mt-8 text-lg leading-relaxed text-foreground/80 text-pretty ">
               {t("manifesto.body")}
             </p>
           </div>
@@ -259,7 +259,7 @@ function HomePage() {
               <div key={key}>
                 <Icon className="h-7 w-7 text-cobre-soft" />
                 <div className="mt-5 font-display text-xl">{incluiCopy[key].label}</div>
-                <p className="mt-2 text-sm leading-relaxed text-areia/70 font-sans font-light">{incluiCopy[key].desc}</p>
+                <p className="mt-2 text-sm leading-relaxed text-areia/70 ">{incluiCopy[key].desc}</p>
               </div>
             ))}
           </div>
@@ -326,7 +326,7 @@ function HomePage() {
                 )}
                 <div className="font-display text-[2.75rem] leading-none text-cobre">{p.n}</div>
                 <div className="mt-5 font-display text-xl text-carvao">{p.t}</div>
-                <p className="mt-3 text-sm leading-relaxed text-carvao/70 font-sans font-light">{p.d}</p>
+                <p className="mt-3 text-sm leading-relaxed text-carvao/70 ">{p.d}</p>
               </div>
             ))}
           </div>
@@ -343,7 +343,7 @@ function HomePage() {
               {t("faq.title")}
             </h2>
             <span aria-hidden className="mt-8 block h-px w-16 bg-cobre" />
-            <p className="mt-8 max-w-sm text-pretty text-base leading-relaxed text-muted-foreground font-sans font-light">
+            <p className="mt-8 max-w-sm text-pretty text-base leading-relaxed text-muted-foreground ">
               {t("faq.intro")}
             </p>
           </div>
@@ -364,7 +364,7 @@ function HomePage() {
                       +
                     </span>
                   </AccordionTrigger>
-                  <AccordionContent className="pb-7 pr-10 text-base leading-relaxed text-muted-foreground font-sans font-light">
+                  <AccordionContent className="pb-7 pr-10 text-base leading-relaxed text-muted-foreground ">
                     {f.a}
                   </AccordionContent>
                 </AccordionItem>
@@ -384,7 +384,7 @@ function HomePage() {
           <h2 className="mx-auto mt-7 max-w-3xl font-display text-5xl text-balance leading-[1.02] md:text-7xl">
             {t("ctaFinal.title")}
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-pretty text-areia/82 text-lg font-sans font-light">
+          <p className="mx-auto mt-6 max-w-2xl text-pretty text-areia/82 text-lg ">
             {t("ctaFinal.subtitle")}
           </p>
           <Link to="/expedicoes" className="mt-12 inline-flex items-center gap-3 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">

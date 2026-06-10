@@ -91,7 +91,7 @@ function MinhaReserva() {
       <div className="container-tight max-w-3xl">
         <div className="eyebrow">{t("minhaReserva.eyebrow")}</div>
         <h1 className="mt-4 font-display text-5xl text-balance md:text-6xl">{t("minhaReserva.title")}</h1>
-        <p className="mt-4 text-muted-foreground text-pretty font-sans font-light">
+        <p className="mt-4 text-muted-foreground text-pretty ">
           {t("minhaReserva.intro")}{" "}
           <code className="font-mono text-foreground">CET-2026-K7M9QX</code>
         </p>

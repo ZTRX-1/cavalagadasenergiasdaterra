@@ -20,7 +20,7 @@ function RegrasPage() {
         <div className="container-tight pb-14 pt-32 md:pb-20 md:pt-40">
           <div className="eyebrow text-cobre-soft">Segurança · Saúde · Bem-estar</div>
           <h1 className="mt-3 font-display text-4xl md:text-6xl">Regras das Expedições</h1>
-          <p className="mt-5 max-w-2xl text-areia/80 font-sans font-light">Cavalgar é uma travessia de confiança entre você, a equipe e, sobretudo, o cavalo. Estas regras existem para preservar a integridade de todos os envolvidos — humanos e animais.</p>
+          <p className="mt-5 max-w-2xl text-areia/80 ">Cavalgar é uma travessia de confiança entre você, a equipe e, sobretudo, o cavalo. Estas regras existem para preservar a integridade de todos os envolvidos — humanos e animais.</p>
         </div>
       </section>
 
@@ -32,13 +32,13 @@ function RegrasPage() {
             <div>
               <div className="font-eyebrow text-[0.7rem] uppercase tracking-[0.28em] text-cobre">Regra inegociável</div>
               <h2 className="mt-2 font-display text-2xl md:text-3xl">Peso máximo: 110 kg por cavaleiro</h2>
-              <p className="mt-3 text-foreground/85 font-sans font-light">Nossas expedições percorrem trilhas longas, com subidas, descidas e travessias de até 30 km por dia. Acima de <strong>110 kg</strong> o esforço sobre a coluna do cavalo torna-se incompatível com seu bem-estar, podendo causar lesões irreversíveis. Esta regra é absoluta e não comporta exceções, independentemente de condicionamento físico do cavaleiro.</p>
-              <p className="mt-2 text-foreground/85 font-sans font-light">Caso o peso seja informado incorretamente na ficha de inscrição e verificado no embarque, a Operadora se reserva o direito de não permitir a participação, sem reembolso.</p>
+              <p className="mt-3 text-foreground/85 ">Nossas expedições percorrem trilhas longas, com subidas, descidas e travessias de até 30 km por dia. Acima de <strong>110 kg</strong> o esforço sobre a coluna do cavalo torna-se incompatível com seu bem-estar, podendo causar lesões irreversíveis. Esta regra é absoluta e não comporta exceções, independentemente de condicionamento físico do cavaleiro.</p>
+              <p className="mt-2 text-foreground/85 ">Caso o peso seja informado incorretamente na ficha de inscrição e verificado no embarque, a Operadora se reserva o direito de não permitir a participação, sem reembolso.</p>
             </div>
           </div>
         </div>
 
-        <article className="mt-12 space-y-12 text-[0.98rem] leading-relaxed text-foreground/85 font-sans font-light">
+        <article className="mt-12 space-y-12 text-[0.98rem] leading-relaxed text-foreground/85 ">
           <Block icon={<Heart className="h-6 w-6" />} title="Saúde e condicionamento">
             <ul>
               <li>Idade mínima: 12 anos (menores acompanhados por responsável).</li>

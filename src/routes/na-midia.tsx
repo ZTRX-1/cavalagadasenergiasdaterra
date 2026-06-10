@@ -48,7 +48,7 @@ function NaMidiaPage() {
             <h1 className="mt-7 font-display text-5xl text-balance leading-[1.02] md:text-6xl lg:text-7xl">
               {t("naMidia.title")}
             </h1>
-            <p className="mt-8 max-w-2xl text-pretty text-[1.05rem] leading-relaxed text-areia/80 font-sans font-light">
+            <p className="mt-8 max-w-2xl text-pretty text-[1.05rem] leading-relaxed text-areia/80 ">
               {t("naMidia.intro")}
             </p>
           </div>
