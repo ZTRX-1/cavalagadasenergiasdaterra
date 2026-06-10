@@ -273,7 +273,7 @@ function DetalhesExpedicao() {
 
           {expedicao.como_chegar_conteudo && (
             <div className="mt-12">
-              <p className="whitespace-pre-line text-[1.25rem] leading-relaxed text-foreground/90 text-pretty font-display">
+              <p className="whitespace-pre-line text-[1.15rem] leading-relaxed text-foreground/90 text-pretty font-display">
                 {expedicao.como_chegar_conteudo}
               </p>
             </div>
@@ -285,7 +285,7 @@ function DetalhesExpedicao() {
                 <Info className="h-4 w-4" strokeWidth={1.6} />
                 <span className="eyebrow !mt-0">{t("expedicoes.logistica.observacoes")}</span>
               </div>
-              <p className="mt-4 whitespace-pre-line text-[1.15rem] leading-relaxed text-foreground/90 font-display">
+              <p className="mt-4 whitespace-pre-line text-[1.05rem] leading-relaxed text-foreground/90 font-display">
                 {expedicao.como_chegar_observacoes}
               </p>
             </div>
