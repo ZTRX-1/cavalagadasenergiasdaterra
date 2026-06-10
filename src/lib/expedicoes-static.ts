@@ -561,24 +561,6 @@ const EXPEDICOES: Expedicao[] = [
                 "titulo": "Chegada"
             },
             {
-                "dia": "Dias 2 a 6",
-                "desc": "Café da manhã às 08h, início da cavalgada às 09h. Pausas para bebidas e almoço durante o percurso. Chegada ao alojamento por volta das 18h30, jantar às 20h e descanso. Cidades percorridas: Sarria, Portomarín, Palas de Rei, O Coto, Arzúa, Salceda, Monte do Gozo.",
-                "titulo": "Jornada a cavalo"
-            },
-    {
-        "id": "rota-dos-tropeiros-data-1",
-        "status": "disponivel",
-        "data_fim": "2026-07-15",
-        "preco_pix": 0,
-        "data_inicio": "2026-07-11",
-        "vagas_total": 10,
-        "expedicao_id": "rota-dos-tropeiros-id",
-        "preco_cartao": 0,
-        "expedicao_nome": "Rota dos Tropeiros da Canastra",
-        "expedicao_slug": "rota-dos-tropeiros-da-canastra",
-        "vagas_disponiveis": 10
-    },
-    {
                 "dia": "Dia 7",
                 "desc": "Entrada triunfal a cavalo na Plaza do Obradoiro às 07h. Entrega dos cavalos, café da manhã, missa do peregrino e entrega da Compostela. Traslado de retorno para quem viaja no mesmo dia.",
                 "titulo": "Chegada a Santiago"
@@ -641,6 +623,19 @@ const EXPEDICOES: Expedicao[] = [
 ];
 
 const DATAS: DataExpedicao[] = [
+    {
+        "id": "rota-dos-tropeiros-data-1",
+        "status": "disponivel",
+        "data_fim": "2026-07-15",
+        "preco_pix": 0,
+        "data_inicio": "2026-07-11",
+        "vagas_total": 10,
+        "expedicao_id": "rota-dos-tropeiros-id",
+        "preco_cartao": 0,
+        "expedicao_nome": "Rota dos Tropeiros da Canastra",
+        "expedicao_slug": "rota-dos-tropeiros-da-canastra",
+        "vagas_disponiveis": 10
+    },
     {
         "id": "9e910682-0ce1-4ebe-b6f4-306814ef32c9",
         "status": "disponivel",
