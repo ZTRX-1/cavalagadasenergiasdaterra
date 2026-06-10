@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 const LANGS = [
-  { code: "pt", label: "Português", img: "/uploads/br.png" },
+  { code: "pt", label: "Português", img: "/uploads/br1.png" },
   { code: "en", label: "English", img: "/uploads/en.png" },
   { code: "es", label: "Español", img: "/uploads/es.png" }
 ] as const;
