@@ -213,7 +213,7 @@ function QuemSomosPage() {
             <h3 className="mt-4 font-display text-3xl leading-[1.04] text-balance md:text-5xl">
               A sensibilidade da marca só existe porque existe estrutura para sustentá-la.
             </h3>
-            <div className="mt-8 space-y-7 text-[1rem] leading-relaxed text-foreground/84">
+            <div className="mt-8 space-y-7 text-[1rem] leading-relaxed text-foreground/84 font-sans font-light">
               <p className="text-pretty">
                 Empresária e engenheira civil, Alinne é sócia-proprietária da Cavalgadas Energias da Terra, Elas na
                 Sela, Canastra a Cavalo e do Refúgio &amp; Haras Energias da Terra. Atua na gestão de negócios voltados
