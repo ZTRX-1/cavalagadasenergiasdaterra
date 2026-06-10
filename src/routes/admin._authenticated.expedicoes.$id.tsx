@@ -342,8 +342,16 @@ function ExpedicaoEdit() {
                   </select>
                 </AdminField>
               </div>
-              <AdminField label="Duração Estimada" previewTarget="meta" ondeAparece="Faixa de informações técnicas" hint="Cálculo sugerido: 22 a 25 → 4 dias / 3 noites">
-                <input className="admin-input" value={form.duracao ?? ""} onChange={(e) => setF({ duracao: e.target.value })} placeholder="Ex: 4 dias / 3 noites" />
+              <AdminField label="Duração Estimada" previewTarget="meta" ondeAparece="Faixa de informações técnicas" hint="Ex: 4 dias / 3 noites">
+                <input
+                  className="admin-input"
+                  value={form.duracao ?? ""}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setF({ duracao: value });
+                  }}
+                  placeholder="Ex: 4 dias / 3 noites"
+                />
               </AdminField>
             </AdminSection>
 
@@ -687,7 +695,7 @@ function ExpedicaoEdit() {
                 label="Mensagem Comercial Pública"
                 previewTarget="preco"
                 ondeAparece="Substitui o preço nas listagens e na página pública"
-                hint="Ex: 'Consulte valores e disponibilidade'. Se preenchido, o preço real não será exibido publicamente."
+                hint="Valor padrão sugerido: 'Consulte valores e disponibilidade'."
               >
                 <textarea
                   className="admin-input min-h-[80px]"
@@ -898,7 +906,19 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
             onChange={(value) => { setEditing(true); setLocal((s) => ({ ...s, data_inicio: value })); }}
             onCommit={(value) => {
               const iso = brToIsoDate(value);
-              if (iso && iso !== data.data_inicio) commit({ data_inicio: iso }); else setEditing(false);
+              if (iso && iso !== data.data_inicio) {
+                // Cálculo automático de duração
+                const dInicio = new Date(iso + "T00:00:00");
+                const dFim = local.data_fim ? new Date(brToIsoDate(local.data_fim) + "T00:00:00") : null;
+                if (dFim && dFim >= dInicio) {
+                  const diffTime = Math.abs(dFim.getTime() - dInicio.getTime());
+                  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                  const duracaoSugerida = `${diffDays} dias / ${diffDays - 1} noites`;
+                  // Notifica o componente pai para sugerir ou atualizar a duração global se necessário
+                  toast.info(`Duração sugerida: ${duracaoSugerida}`);
+                }
+                commit({ data_inicio: iso });
+              } else setEditing(false);
             }}
           />
         </div>
@@ -909,7 +929,18 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
             onChange={(value) => { setEditing(true); setLocal((s) => ({ ...s, data_fim: value })); }}
             onCommit={(value) => {
               const iso = brToIsoDate(value);
-              if (iso && iso !== data.data_fim) commit({ data_fim: iso }); else setEditing(false);
+              if (iso && iso !== data.data_fim) {
+                // Cálculo automático de duração
+                const dFim = new Date(iso + "T00:00:00");
+                const dInicio = local.data_inicio ? new Date(brToIsoDate(local.data_inicio) + "T00:00:00") : null;
+                if (dInicio && dFim >= dInicio) {
+                  const diffTime = Math.abs(dFim.getTime() - dInicio.getTime());
+                  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                  const duracaoSugerida = `${diffDays} dias / ${diffDays - 1} noites`;
+                  toast.info(`Duração sugerida: ${duracaoSugerida}`);
+                }
+                commit({ data_fim: iso });
+              } else setEditing(false);
             }}
           />
         </div>
