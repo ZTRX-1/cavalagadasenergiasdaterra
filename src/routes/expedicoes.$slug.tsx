@@ -168,7 +168,7 @@ function DetalhesExpedicao() {
               <div className="mt-4 font-display text-3xl text-cobre">
                 {expedicao.mensagem_comercial_publica || t("expedicoes.consulteValores")}
               </div>
-              <ul className="mt-6 space-y-4 text-sm text-foreground/85">
+              <ul className="mt-6 space-y-4 text-sm text-foreground/85 font-sans font-light">
                 <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Cartão: 1x sem juros</li>
                 <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Cartão em até 10x, com os juros por conta do cliente</li>
                 <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Pix: parcelamento mediante consulta</li>
