@@ -32,8 +32,8 @@ function RegrasPage() {
             <div>
               <div className="font-eyebrow text-[0.7rem] uppercase tracking-[0.28em] text-cobre">Regra inegociável</div>
               <h2 className="mt-2 font-display text-2xl md:text-3xl">Peso máximo: 110 kg por cavaleiro</h2>
-              <p className="mt-3 text-foreground/85">Nossas expedições percorrem trilhas longas, com subidas, descidas e travessias de até 30 km por dia. Acima de <strong>110 kg</strong> o esforço sobre a coluna do cavalo torna-se incompatível com seu bem-estar, podendo causar lesões irreversíveis. Esta regra é absoluta e não comporta exceções, independentemente de condicionamento físico do cavaleiro.</p>
-              <p className="mt-2 text-foreground/85">Caso o peso seja informado incorretamente na ficha de inscrição e verificado no embarque, a Operadora se reserva o direito de não permitir a participação, sem reembolso.</p>
+              <p className="mt-3 text-foreground/85 font-sans font-light">Nossas expedições percorrem trilhas longas, com subidas, descidas e travessias de até 30 km por dia. Acima de <strong>110 kg</strong> o esforço sobre a coluna do cavalo torna-se incompatível com seu bem-estar, podendo causar lesões irreversíveis. Esta regra é absoluta e não comporta exceções, independentemente de condicionamento físico do cavaleiro.</p>
+              <p className="mt-2 text-foreground/85 font-sans font-light">Caso o peso seja informado incorretamente na ficha de inscrição e verificado no embarque, a Operadora se reserva o direito de não permitir a participação, sem reembolso.</p>
             </div>
           </div>
         </div>
