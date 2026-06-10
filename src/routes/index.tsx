@@ -326,7 +326,7 @@ function HomePage() {
                 )}
                 <div className="font-display text-[2.75rem] leading-none text-cobre">{p.n}</div>
                 <div className="mt-5 font-display text-xl text-carvao">{p.t}</div>
-                <p className="mt-3 text-sm leading-relaxed text-carvao/70">{p.d}</p>
+                <p className="mt-3 text-sm leading-relaxed text-carvao/70 font-sans font-light">{p.d}</p>
               </div>
             ))}
           </div>
