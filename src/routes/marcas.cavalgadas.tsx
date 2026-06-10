@@ -33,7 +33,7 @@ function Page() {
           <h1 className="mt-3 font-display text-5xl text-balance md:text-7xl text-shadow-strong">
             Cavalgadas <em className="not-italic text-cobre-soft">Energias da Terra</em>
           </h1>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-areia text-shadow-soft text-pretty">
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-areia text-shadow-soft text-pretty font-sans font-light">
             Expedições a cavalo, conduzidas com curadoria, cuidado e profundo conhecimento do território.
             Brasil e mundo, em pequenos grupos, com a alma de quem cria seus próprios cavalos.
           </p>
