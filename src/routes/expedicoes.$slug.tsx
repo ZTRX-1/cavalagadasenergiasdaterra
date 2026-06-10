@@ -51,6 +51,9 @@ function DetalhesExpedicao() {
   const isJeri = expedicao.slug === "jericoacoara";
   const isElas = expedicao.marca === "elas-na-sela";
 
+  const isMantiqueira4 = expedicao.slug === "mantiqueira-4-dias";
+  const isMantiqueira5 = expedicao.slug === "mantiqueira-5-dias";
+
   // Helper para extrair informações dos requisitos
   const findInRequisitos = (keywords: string[]) => {
     return expedicao.requisitos?.find((r: string) => 
