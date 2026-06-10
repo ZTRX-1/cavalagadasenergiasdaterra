@@ -112,7 +112,7 @@ function DetalhesExpedicao() {
             <h2 className="mt-4 font-display text-3xl md:text-4xl text-balance">
               {t("expedicoes.experienciaTitle")}
             </h2>
-            <p className="mt-4 text-foreground/70 text-pretty">
+            <p className="mt-4 text-foreground/70 text-pretty font-sans font-light">
               {t("expedicoes.experienciaIntro")}
             </p>
           </div>
