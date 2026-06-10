@@ -67,7 +67,8 @@ function DetalhesExpedicao() {
   const deslocamento = findInRequisitos(["deslocamento", "shuttle", "transfer"]);
   const acomodacao = findInRequisitos(["acomodação"]);
   const participantes = findInRequisitos(["participantes"]);
-  const tipo = findInRequisitos(["tipo:"]);
+  const tipo = findInRequisitos(["tipo"]);
+
 
 
   return (
@@ -296,23 +297,24 @@ function DetalhesExpedicao() {
               <ExpeditionMetaCard
                 icon={BedSingle}
                 label="Acomodação"
-                value={acomodacao.split(":")[1]?.trim() || "Dupla"}
+                value={acomodacao.split(":")[1]?.trim() || acomodacao.split("/")[1]?.trim() || "Dupla"}
               />
             )}
             {participantes && (
               <ExpeditionMetaCard
                 icon={Users}
                 label="Participantes"
-                value={participantes.split(":")[1]?.trim() || "Máximo 10"}
+                value={participantes.split(":")[1]?.trim() || participantes.split("/")[1]?.trim() || "Máximo 10"}
               />
             )}
             {tipo && (
               <ExpeditionMetaCard
                 icon={Compass}
                 label="Tipo"
-                value={tipo.split(":")[1]?.trim() || "Travessia"}
+                value={tipo.split(":")[1]?.trim() || tipo.split("/")[1]?.trim() || "Travessia"}
               />
             )}
+
 
           </div>
 
