@@ -20,7 +20,7 @@ function RegrasPage() {
         <div className="container-tight pb-14 pt-32 md:pb-20 md:pt-40">
           <div className="eyebrow text-cobre-soft">Segurança · Saúde · Bem-estar</div>
           <h1 className="mt-3 font-display text-4xl md:text-6xl">Regras das Expedições</h1>
-          <p className="mt-5 max-w-2xl text-areia/80">Cavalgar é uma travessia de confiança entre você, a equipe e, sobretudo, o cavalo. Estas regras existem para preservar a integridade de todos os envolvidos — humanos e animais.</p>
+          <p className="mt-5 max-w-2xl text-areia/80 font-sans font-light">Cavalgar é uma travessia de confiança entre você, a equipe e, sobretudo, o cavalo. Estas regras existem para preservar a integridade de todos os envolvidos — humanos e animais.</p>
         </div>
       </section>
 
