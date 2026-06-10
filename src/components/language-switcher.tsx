@@ -1,8 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
-const LANGS = ["pt", "en", "es"] as const;
-type Lang = (typeof LANGS)[number];
+const LANGS = [
+  { code: "pt", label: "Português", flag: "🇧🇷" },
+  { code: "en", label: "English", flag: "🇺🇸" },
+  { code: "es", label: "Español", flag: "🇪🇸" }
+] as const;
+
+type Lang = (typeof LANGS)[number]["code"];
 
 interface Props {
   className?: string;
@@ -11,7 +16,8 @@ interface Props {
 
 export function LanguageSwitcher({ className, align = "header" }: Props) {
   const { i18n } = useTranslation();
-  const current = (LANGS.includes(i18n.language as Lang) ? i18n.language : "pt") as Lang;
+  const currentCode = i18n.language.split("-")[0] as Lang;
+  const current = (LANGS.some(l => l.code === currentCode) ? currentCode : "pt") as Lang;
 
   const change = (lng: Lang) => {
     if (lng !== current) i18n.changeLanguage(lng);
@@ -20,30 +26,26 @@ export function LanguageSwitcher({ className, align = "header" }: Props) {
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-2 font-eyebrow text-[0.7rem] uppercase tracking-[0.22em]",
-        align === "header" ? "text-areia/55" : "text-foreground/60",
+        "inline-flex items-center gap-2.5",
         className,
       )}
       role="group"
       aria-label="Language selector"
     >
-      {LANGS.map((lng, i) => (
-        <span key={lng} className="inline-flex items-center gap-2">
-          {i > 0 && <span className="opacity-40">·</span>}
-          <button
-            type="button"
-            onClick={() => change(lng)}
-            className={cn(
-              "transition-colors hover:text-cobre-soft",
-              current === lng &&
-                (align === "header" ? "text-cobre-soft" : "text-cobre"),
-            )}
-            aria-current={current === lng ? "true" : undefined}
-            aria-label={`Switch language to ${lng.toUpperCase()}`}
-          >
-            {lng.toUpperCase()}
-          </button>
-        </span>
+      {LANGS.map((lng) => (
+        <button
+          key={lng.code}
+          type="button"
+          onClick={() => change(lng.code)}
+          className={cn(
+            "text-base transition-all hover:scale-110 grayscale-[0.3] hover:grayscale-0",
+            current === lng.code ? "grayscale-0 scale-105 opacity-100" : "opacity-40"
+          )}
+          aria-current={current === lng.code ? "true" : undefined}
+          aria-label={`Switch language to ${lng.label}`}
+        >
+          {lng.flag}
+        </button>
       ))}
     </div>
   );
