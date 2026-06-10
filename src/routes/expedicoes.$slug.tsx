@@ -194,7 +194,7 @@ function DetalhesExpedicao() {
                 <div key={d.dia + d.titulo} className="bg-background p-7">
                   <div className="font-display text-2xl text-cobre">{d.dia}</div>
                   <div className="mt-2 font-display text-xl">{d.titulo}</div>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{d.desc}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground font-sans font-light">{d.desc}</p>
                 </div>
               ))}
             </div>
