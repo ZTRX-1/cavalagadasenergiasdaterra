@@ -38,7 +38,7 @@ function RegrasPage() {
           </div>
         </div>
 
-        <article className="mt-12 space-y-12 text-[0.98rem] leading-relaxed text-foreground/85">
+        <article className="mt-12 space-y-12 text-[0.98rem] leading-relaxed text-foreground/85 font-sans font-light">
           <Block icon={<Heart className="h-6 w-6" />} title="Saúde e condicionamento">
             <ul>
               <li>Idade mínima: 12 anos (menores acompanhados por responsável).</li>
