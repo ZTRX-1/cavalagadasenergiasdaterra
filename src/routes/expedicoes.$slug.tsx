@@ -335,8 +335,8 @@ function DetalhesExpedicao() {
             <div className="eyebrow">Outras opções de percurso</div>
             <h2 className="mt-4 font-display text-2xl md:text-3xl max-w-xl">
               {isMantiqueira4 
-                ? "Deseja uma experiência mais completa? Conheça nosso percurso de 5 dias."
-                : "Pouco tempo disponível? Conheça nossa versão compacta de 4 dias."
+                ? "Deseja uma experiência mais completa? Conheça nosso percurso de 5 dias na Mantiqueira."
+                : "Pouco tempo disponível? Conheça nossa versão compacta de 4 dias na Mantiqueira."
               }
             </h2>
             <Link
