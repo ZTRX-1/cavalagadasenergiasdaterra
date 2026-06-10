@@ -302,7 +302,7 @@ function QuemSomosPage() {
             <h2 className="mt-5 font-display text-4xl leading-[1.05] text-balance md:text-5xl">
               Criamos experiências para quem quer voltar diferente.
             </h2>
-            <div className="mt-8 space-y-6 text-[1.02rem] leading-relaxed text-foreground/80">
+            <div className="mt-8 space-y-6 text-[1.02rem] leading-relaxed text-foreground/80 font-sans font-light">
               <p className="text-pretty">
                 As expedições da marca integram natureza, cultura, silêncio, gastronomia e relação autêntica com o
                 cavalo. Seja no Brasil ou em destinos internacionais, o objetivo é o mesmo: tirar o corpo e a mente
