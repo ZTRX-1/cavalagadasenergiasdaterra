@@ -157,7 +157,7 @@ function DetalhesExpedicao() {
           <aside className="md:col-span-5 space-y-6">
             <div className="rounded-sm border border-border bg-card p-8 shadow-card">
               <div className="eyebrow">{t("expedicoes.inclui")}</div>
-              <ul className="mt-5 space-y-3 text-sm text-foreground/85">
+              <ul className="mt-5 space-y-3 text-sm text-foreground/85 font-sans font-light">
                 {expedicao.inclui?.map((i: string) => (
                   <li key={i} className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />{i}</li>
                 ))}
