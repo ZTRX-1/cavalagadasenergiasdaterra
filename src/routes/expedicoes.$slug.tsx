@@ -285,7 +285,7 @@ function DetalhesExpedicao() {
                 <Info className="h-4 w-4" strokeWidth={1.6} />
                 <span className="eyebrow !mt-0">{t("expedicoes.logistica.observacoes")}</span>
               </div>
-              <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-foreground/80 ">
+              <p className="mt-4 whitespace-pre-line text-[0.95rem] leading-relaxed text-foreground/90 font-sans font-light">
                 {expedicao.como_chegar_observacoes}
               </p>
             </div>
