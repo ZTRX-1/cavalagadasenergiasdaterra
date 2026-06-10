@@ -46,7 +46,7 @@ function Page() {
             <div className="eyebrow">O movimento</div>
             <h2 className="mt-4 font-display text-4xl text-balance md:text-5xl">Cavalgar em comunidade. Voltar inteira.</h2>
           </div>
-          <div className="md:col-span-7 text-lg leading-relaxed text-foreground/85 space-y-5">
+          <div className="md:col-span-7 text-lg leading-relaxed text-foreground/85 space-y-5 font-sans font-light">
             <p>Elas na Sela nasceu da vontade de criar um espaço seguro, sofisticado e potente para mulheres viverem a cavalgada com profundidade.</p>
             <p>Grupos pequenos, guias experientes, hospedagens acolhedoras, e uma rede de irmandade que muitas vezes começa na trilha e segue para a vida.</p>
             <p>Para iniciantes ou amazonas experientes. O que importa é a vontade de atravessar.</p>
