@@ -43,9 +43,9 @@ function DetalhesExpedicao() {
   if (!data) return null;
   const { expedicao, datas, assets, capa_url } = data;
   const publicSlug = getPublicExpedicaoSlug(expedicao.slug);
-  const heroImg = getExpedicaoImage(expedicao.slug, { capaUrl: capa_url, assets });
-  const galeria = getExpedicaoGaleria(expedicao.slug, assets);
-  const narrativa = getExpedicaoNarrativa(expedicao.slug, assets);
+  const heroImg = getExpedicaoImage(expedicao.slug, { capaUrl: capa_url, assets }).replace('/public/uploads/', '/uploads/');
+  const galeria = getExpedicaoGaleria(expedicao.slug, assets).map(url => url.replace('/public/uploads/', '/uploads/'));
+  const narrativa = getExpedicaoNarrativa(expedicao.slug, assets).map(item => ({ ...item, src: item.src.replace('/public/uploads/', '/uploads/') }));
   const whatsappMsg = `Olá! Gostaria de reservar minha vaga na expedição "${expedicao.nome}".`;
   const whatsappUrl = buildContactWhatsappUrl(whatsappMsg);
   const isJeri = expedicao.slug === "jericoacoara";
