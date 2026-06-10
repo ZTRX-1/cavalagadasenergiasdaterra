@@ -192,14 +192,14 @@ export const SLUG_IMAGE: Record<string, string> = {
 // ============================================================
 export const SLUG_GALERIA: Record<string, string[]> = {
   "serra-da-canastra": [canNew01, canNew02, canNew03, canNew04, canNew05, canNew06, canNew07, canNew08],
-  "mantiqueira-refugio": [manNew01, manNew02, manNew03, manNew04, manNew05, manNew06, manNew07, manNew08],
+  "mantiqueira-5-dias": [manNew01, manNew02, manNew03, manNew04, manNew05, manNew06, manNew07, manNew08],
+  "mantiqueira-4-dias": [manNew01, manNew02, manNew03, manNew04, manNew05, manNew06, manNew07, manNew08],
   "berco-do-marchador": [berco01, berco02, berco03, berco04, berco05, berco06, berco07, berco08],
   "peru-vale-do-colca": [peruNew01, peruNew02, peruNew03, peruNew04, peruNew05, peruNew06, peruNew07, peruNew08],
   "patagonia-gaucha": [patNew01, patNew02, patNew03, patNew04, patNew05, patNew06, patNew07, patNew08],
   "jericoacoara": [],
   "caminho-de-santiago": [sant01, sant02, sant03, sant04, sant05, sant06, sant07, sant08],
   "canastra-elas-na-sela": [elasNew01, elasNew02, elasNew03, elasNew04, elasNew05, elasNew06, elasNew07, elasNew08],
-
 };
 
 
