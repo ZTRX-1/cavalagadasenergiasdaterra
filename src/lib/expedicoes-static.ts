@@ -104,10 +104,10 @@ const EXPEDICOES: Expedicao[] = [
         "descricao_curta": "Percorra os antigos caminhos tropeiros da Serra da Canastra em uma travessia exclusiva.",
         "descricao_longa": "Uma verdadeira travessia a cavalo pelos antigos caminhos tropeiros da Serra da Canastra.\n\nDurante cinco dias percorremos estradas rurais, serras, vales e paisagens preservadas que durante décadas serviram de passagem para homens e tropas responsáveis por conectar comunidades de todo o interior mineiro.\n\nA jornada acontece em formato de travessia, com deslocamentos diários, hospedagens ao longo do percurso e almoços preparados pela própria equipe da expedição, resgatando tradições que marcaram a história dos tropeiros.\n\nMais do que uma cavalgada, esta is uma imersão na cultura tropeira, na história de Minas Gerais e na experiência de percorrer caminhos que ajudaram a construir o estado.",
         "como_chegar_referencia": "Vargem Bonita (MG)",
-        "como_chegar_aeroporto": "Ribeirão Preto (SP)\nUberaba (MG)\nBelo Horizonte / Confins (MG)",
-        "como_chegar_distancias": "São Paulo (SP) — 540 km\nBelo Horizonte (MG) — 320 km\nRio de Janeiro (RJ) — 580 km\nBrasília (DF) — 820 km",
-        "como_chegar_conteudo": "Aeroportos próximos\n• Ribeirão Preto (SP)\n• Uberaba (MG)\n• Belo Horizonte / Confins (MG)\n\nRodoviárias próximas\n• São Roque de Minas (MG)\n• Piumhi (MG)\n• Passos (MG)\n\nLocação de veículos\nTodos os aeroportos acima contam com locadoras. Recomendamos veículo próprio ou alugado para maior conforto.",
-        "como_chegar_observacoes": "Destino: Vargem Bonita (MG). Portal da Serra da Canastra."
+        "como_chegar_aeroporto": "Ribeirão Preto (SP) — aproximadamente 240 km\nUberaba (MG) — aproximadamente 300 km\nBelo Horizonte / Confins (MG) — aproximadamente 380 km",
+        "como_chegar_distancias": "São Paulo (SP) — aproximadamente 470 km\nBelo Horizonte (MG) — aproximadamente 380 km\nRio de Janeiro (RJ) — aproximadamente 700 km\nBrasília (DF) — aproximadamente 650 km",
+        "como_chegar_conteudo": "• São Roque de Minas (MG) — aproximadamente 25 km\n• Piumhi (MG) — aproximadamente 45 km\n• Passos (MG) — aproximadamente 80 km\n\nAs cidades de Piumhi e Passos recebem linhas regulares de diversas cidades do Sudeste.",
+        "como_chegar_observacoes": "Vargem Bonita (MG)\n\nPortal de entrada da Serra da Canastra e ponto inicial da Rota dos Tropeiros da Canastra."
     },
     {
         "id": "c9e9f1dd-039d-4301-9181-ab26b30b9f2f",
