@@ -67,7 +67,7 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
           <div className="mt-4 flex items-end justify-between gap-3">
             <div className="min-w-0">
               <div className="truncate text-[0.58rem] uppercase tracking-[0.2em] text-areia/65">
-                {t("expedicoes.cardAPartirDe", "Consulte disponibilidade")}
+                {expedicao.mensagem_comercial_publica || t("expedicoes.cardAPartirDe", "Consulte disponibilidade")}
               </div>
             </div>
             <span className="inline-flex h-9 w-9 sm:h-10 sm:w-10 flex-none items-center justify-center rounded-full border border-areia/40 text-areia transition-all group-hover:bg-cobre group-hover:border-cobre">

@@ -342,8 +342,8 @@ function ExpedicaoEdit() {
                   </select>
                 </AdminField>
               </div>
-              <AdminField label="Duração Estimada" previewTarget="meta" ondeAparece="Faixa de informações técnicas">
-                <input className="admin-input" value={form.duracao ?? ""} onChange={(e) => setF({ duracao: e.target.value })} placeholder="Ex: 3 dias / 2 noites" />
+              <AdminField label="Duração Estimada" previewTarget="meta" ondeAparece="Faixa de informações técnicas" hint="Cálculo sugerido: 22 a 25 → 4 dias / 3 noites">
+                <input className="admin-input" value={form.duracao ?? ""} onChange={(e) => setF({ duracao: e.target.value })} placeholder="Ex: 4 dias / 3 noites" />
               </AdminField>
             </AdminSection>
 
