@@ -598,8 +598,8 @@ const DATAS: DataExpedicao[] = [
         "vagas_total": 12,
         "expedicao_id": "9dd91b11-3ce3-4368-ab3c-4d441da8d34d",
         "preco_cartao": 4600,
-        "expedicao_nome": "Serra da Mantiqueira",
-        "expedicao_slug": "mantiqueira-refugio",
+        "expedicao_nome": "Serra da Mantiqueira · 5 dias",
+        "expedicao_slug": "mantiqueira-5-dias",
         "vagas_disponiveis": 5
     },
     {
