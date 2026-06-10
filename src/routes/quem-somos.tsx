@@ -93,7 +93,7 @@ function QuemSomosPage() {
             <h2 className="mt-5 font-display text-4xl leading-[1.05] text-balance md:text-5xl">
               Onde tudo começou.
             </h2>
-            <div className="mt-8 space-y-6 text-[1.02rem] leading-relaxed text-foreground/82">
+            <div className="mt-8 space-y-6 text-[1.02rem] leading-relaxed text-foreground/82 font-sans font-light">
               <p className="text-pretty">
                 A Cavalgadas Energias da Terra nasceu da paixão pelo universo equestre e da certeza de que algumas experiências só podem ser vividas no ritmo do cavalo.
               </p>
