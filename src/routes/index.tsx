@@ -364,7 +364,7 @@ function HomePage() {
                       +
                     </span>
                   </AccordionTrigger>
-                  <AccordionContent className="pb-7 pr-10 text-base leading-relaxed text-muted-foreground">
+                  <AccordionContent className="pb-7 pr-10 text-base leading-relaxed text-muted-foreground font-sans font-light">
                     {f.a}
                   </AccordionContent>
                 </AccordionItem>
