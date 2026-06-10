@@ -64,7 +64,7 @@ function ContatoPage() {
             <div className="eyebrow text-cobre-soft">{t("contato.quemSomosEyebrow")}</div>
             <h2 className="mt-4 font-display text-4xl md:text-5xl">{t("contato.quemSomosTitle")}</h2>
           </div>
-          <div className="md:col-span-8 space-y-6 text-lg leading-relaxed text-areia/85 text-pretty">
+          <div className="md:col-span-8 space-y-6 text-lg leading-relaxed text-areia/85 text-pretty font-sans font-light">
             <p>
               A Cavalgadas Energias da Terra foi criada por quem vive o universo equestre todos os dias. Somos criadores de cavalos, anfitriões e especialistas em expedições a cavalo.
             </p>
