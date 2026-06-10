@@ -259,7 +259,7 @@ function HomePage() {
               <div key={key}>
                 <Icon className="h-7 w-7 text-cobre-soft" />
                 <div className="mt-5 font-display text-xl">{incluiCopy[key].label}</div>
-                <p className="mt-2 text-sm leading-relaxed text-areia/70">{incluiCopy[key].desc}</p>
+                <p className="mt-2 text-sm leading-relaxed text-areia/70 font-sans font-light">{incluiCopy[key].desc}</p>
               </div>
             ))}
           </div>
