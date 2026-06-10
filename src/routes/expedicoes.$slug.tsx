@@ -148,7 +148,9 @@ function DetalhesExpedicao() {
           <div className="md:col-span-7">
             <div className="eyebrow">A experiência</div>
             <h2 className="mt-4 font-display text-3xl md:text-4xl">Sobre a expedição</h2>
-            <p className="mt-6 whitespace-pre-line text-[1.1rem] leading-relaxed text-foreground/80 text-pretty ">{expedicao.descricao_longa}</p>
+            <p className="mt-6 whitespace-pre-line text-[1.1rem] leading-relaxed text-foreground/80 text-pretty ">
+              {expedicao.descricao_longa.replace(/\\n/g, '\n')}
+            </p>
 
             {expedicao.requisitos?.length > 0 && (
               <div className="mt-12">
@@ -176,9 +178,10 @@ function DetalhesExpedicao() {
                 {expedicao.mensagem_comercial_publica || t("expedicoes.consulteValores")}
               </div>
               <ul className="mt-6 space-y-4 text-sm text-foreground/85 ">
-                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Cartão 1x sem juros.</li>
-                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Cartão parcelado com juros do cliente.</li>
-                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Pix parcelado mediante consulta.</li>
+                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Pix à vista (transferência)</li>
+                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Cartão à vista</li>
+                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Cartão parcelado (juros por conta do cliente)</li>
+                <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Pix parcelado mediante consulta</li>
               </ul>
               <p className="mt-6 border-t border-border pt-4 text-xs text-muted-foreground">
                 {t("expedicoes.entreEmContato")}
@@ -219,7 +222,7 @@ function DetalhesExpedicao() {
             </h2>
             <div className="mt-10 max-w-3xl">
               <p className="whitespace-pre-line text-[1.15rem] leading-relaxed text-foreground/80 text-pretty font-display">
-                {expedicao.observacoes}
+                {expedicao.observacoes.replace(/\\n/g, '\n')}
               </p>
             </div>
           </div>
@@ -309,13 +312,12 @@ function DetalhesExpedicao() {
                 value={participantes.split(":")[1]?.trim() || participantes.split("/")[1]?.trim() || "Máximo 10"}
               />
             )}
-            {tipo && (
-              <ExpeditionMetaCard
-                icon={Compass}
-                label="Tipo"
-                value={tipo.split(":")[1]?.trim() || tipo.split("/")[1]?.trim() || "Travessia"}
-              />
-            )}
+            <ExpeditionMetaCard
+              icon={UserPlus}
+              label="Grupo Exclusivo"
+              value="Máximo de 10 participantes"
+              className="border-cobre/40 bg-cobre/5"
+            />
 
 
           </div>
@@ -323,7 +325,7 @@ function DetalhesExpedicao() {
           {expedicao.como_chegar_conteudo && (
             <div className="mt-12">
               <p className="whitespace-pre-line text-[1.15rem] leading-relaxed text-foreground/90 text-pretty font-display">
-                {expedicao.como_chegar_conteudo}
+                {expedicao.como_chegar_conteudo.replace(/\\n/g, '\n')}
               </p>
             </div>
           )}
@@ -335,7 +337,7 @@ function DetalhesExpedicao() {
                 <span className="eyebrow !mt-0">{t("expedicoes.logistica.observacoes")}</span>
               </div>
               <p className="mt-4 whitespace-pre-line text-[1.05rem] leading-relaxed text-foreground/90 font-display">
-                {expedicao.como_chegar_observacoes}
+                {expedicao.como_chegar_observacoes.replace(/\\n/g, '\n')}
               </p>
             </div>
           )}
