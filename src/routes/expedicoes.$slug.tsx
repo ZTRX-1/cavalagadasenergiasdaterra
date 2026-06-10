@@ -300,7 +300,7 @@ function DetalhesExpedicao() {
             <div className="max-w-2xl">
               <div className="eyebrow">Galeria</div>
               <h2 className="mt-4 font-display text-3xl md:text-4xl">A expedição em imagens</h2>
-              <p className="mt-4 text-foreground/70 text-pretty">
+              <p className="mt-4 text-foreground/70 text-pretty font-sans font-light">
                 Cenas reais das nossas expedições, registradas em campo.
               </p>
             </div>
