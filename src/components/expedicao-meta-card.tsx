@@ -15,7 +15,7 @@ export function ExpeditionMetaCard({ icon: Icon, label, value, className }: Expe
         <Icon className="h-4 w-4" strokeWidth={1.6} />
         <span className="font-eyebrow text-[0.7rem] uppercase tracking-[0.22em] !mt-0 leading-none font-medium">{label}</span>
       </div>
-      <p className="mt-2.5 font-display text-[1.25rem] leading-relaxed text-foreground/90">
+      <p className="mt-2.5 font-display text-[1.1rem] leading-tight text-foreground/90 whitespace-pre-line">
         {value}
       </p>
     </div>
