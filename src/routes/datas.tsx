@@ -21,7 +21,13 @@ export const Route = createFileRoute("/datas")({
 function DatasPage() {
   const { t } = useTranslation();
   const { data } = useSuspenseQuery(qo);
-  const grouped = data.reduce<Record<string, typeof data>>((acc, d) => {
+  
+  // Ordenação cronológica por data de início
+  const sortedData = [...data].sort((a, b) => 
+    new Date(a.data_inicio).getTime() - new Date(b.data_inicio).getTime()
+  );
+
+  const grouped = sortedData.reduce<Record<string, typeof data>>((acc, d) => {
     const k = formatMonthYear(d.data_inicio);
     (acc[k] ??= []).push(d);
     return acc;

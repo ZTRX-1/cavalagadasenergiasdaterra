@@ -51,6 +51,9 @@ function DetalhesExpedicao() {
   const isJeri = expedicao.slug === "jericoacoara";
   const isElas = expedicao.marca === "elas-na-sela";
 
+  const isMantiqueira4 = expedicao.slug === "mantiqueira-4-dias";
+  const isMantiqueira5 = expedicao.slug === "mantiqueira-5-dias";
+
   // Helper para extrair informações dos requisitos
   const findInRequisitos = (keywords: string[]) => {
     return expedicao.requisitos?.find((r: string) => 
@@ -324,6 +327,28 @@ function DetalhesExpedicao() {
           )}
         </div>
       </section>
+
+      {/* Sugestão de Percurso Alternativo (Mantiqueira) */}
+      {(isMantiqueira4 || isMantiqueira5) && (
+        <section className="bg-background py-16 md:py-20 border-t border-border">
+          <div className="container-tight flex flex-col items-center text-center">
+            <div className="eyebrow">Outras opções de percurso</div>
+            <h2 className="mt-4 font-display text-2xl md:text-3xl max-w-xl">
+              {isMantiqueira4 
+                ? "Deseja uma experiência mais completa? Conheça nosso percurso de 5 dias na Mantiqueira."
+                : "Pouco tempo disponível? Conheça nossa versão compacta de 4 dias na Mantiqueira."
+              }
+            </h2>
+            <Link
+              to="/expedicoes/$slug"
+              params={{ slug: isMantiqueira4 ? "mantiqueira-5-dias" : "mantiqueira-4-dias" }}
+              className="mt-8 inline-flex items-center gap-2 rounded-full border border-cobre px-7 py-3 text-sm uppercase tracking-widest text-cobre transition-colors hover:bg-cobre hover:text-areia"
+            >
+              {isMantiqueira4 ? "Ver percurso de 5 dias" : "Ver percurso de 4 dias"}
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* CTA */}
       <section className={`bg-floresta-deep py-20 text-areia md:py-24`}>
