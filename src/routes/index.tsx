@@ -182,7 +182,7 @@ function HomePage() {
           <div className="max-w-2xl">
             <div className="eyebrow">{t("marcas.eyebrow")}</div>
             <h2 className="mt-5 font-display text-4xl text-balance md:text-5xl">{t("marcas.title")}</h2>
-            <p className="mt-5 text-lg leading-relaxed text-foreground/75 text-pretty">
+            <p className="mt-5 text-lg leading-relaxed text-foreground/75 text-pretty font-sans font-light">
               {t("marcas.subtitle")}
             </p>
           </div>
