@@ -112,7 +112,7 @@ function DetalhesExpedicao() {
             <h2 className="mt-4 font-display text-3xl md:text-4xl text-balance">
               {t("expedicoes.experienciaTitle")}
             </h2>
-            <p className="mt-4 text-foreground/70 text-pretty">
+            <p className="mt-4 text-foreground/70 text-pretty font-sans font-light">
               {t("expedicoes.experienciaIntro")}
             </p>
           </div>
@@ -141,12 +141,12 @@ function DetalhesExpedicao() {
           <div className="md:col-span-7">
             <div className="eyebrow">A experiência</div>
             <h2 className="mt-4 font-display text-3xl md:text-4xl">Sobre a expedição</h2>
-            <p className="mt-6 whitespace-pre-line text-lg leading-relaxed text-foreground/80 text-pretty">{expedicao.descricao_longa}</p>
+            <p className="mt-6 whitespace-pre-line text-[1.1rem] leading-relaxed text-foreground/80 text-pretty font-sans font-light">{expedicao.descricao_longa}</p>
 
             {expedicao.requisitos?.length > 0 && (
               <div className="mt-12">
                 <div className="eyebrow">{t("expedicoes.requisitos")}</div>
-                <ul className="mt-4 space-y-2 text-sm text-foreground/80">
+                <ul className="mt-4 space-y-2 text-sm text-foreground/80 font-sans font-light">
                   {expedicao.requisitos.map((r: string) => (
                     <li key={r} className="flex items-start gap-2"><span className="mt-2 h-1 w-1 rounded-full bg-cobre" />{r}</li>
                   ))}
@@ -157,7 +157,7 @@ function DetalhesExpedicao() {
           <aside className="md:col-span-5 space-y-6">
             <div className="rounded-sm border border-border bg-card p-8 shadow-card">
               <div className="eyebrow">{t("expedicoes.inclui")}</div>
-              <ul className="mt-5 space-y-3 text-sm text-foreground/85">
+              <ul className="mt-5 space-y-3 text-sm text-foreground/85 font-sans font-light">
                 {expedicao.inclui?.map((i: string) => (
                   <li key={i} className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />{i}</li>
                 ))}
@@ -168,7 +168,7 @@ function DetalhesExpedicao() {
               <div className="mt-4 font-display text-3xl text-cobre">
                 {expedicao.mensagem_comercial_publica || t("expedicoes.consulteValores")}
               </div>
-              <ul className="mt-6 space-y-4 text-sm text-foreground/85">
+              <ul className="mt-6 space-y-4 text-sm text-foreground/85 font-sans font-light">
                 <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Cartão: 1x sem juros</li>
                 <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Cartão em até 10x, com os juros por conta do cliente</li>
                 <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-cobre" />Pix: parcelamento mediante consulta</li>
@@ -194,7 +194,7 @@ function DetalhesExpedicao() {
                 <div key={d.dia + d.titulo} className="bg-background p-7">
                   <div className="font-display text-2xl text-cobre">{d.dia}</div>
                   <div className="mt-2 font-display text-xl">{d.titulo}</div>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{d.desc}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground font-sans font-light">{d.desc}</p>
                 </div>
               ))}
             </div>
@@ -273,7 +273,7 @@ function DetalhesExpedicao() {
 
           {expedicao.como_chegar_conteudo && (
             <div className="mt-12">
-              <p className="whitespace-pre-line text-lg leading-relaxed text-foreground/80 text-pretty">
+              <p className="whitespace-pre-line text-lg leading-relaxed text-foreground/80 text-pretty font-sans font-light">
                 {expedicao.como_chegar_conteudo}
               </p>
             </div>
@@ -285,7 +285,7 @@ function DetalhesExpedicao() {
                 <Info className="h-4 w-4" strokeWidth={1.6} />
                 <span className="eyebrow !mt-0">{t("expedicoes.logistica.observacoes")}</span>
               </div>
-              <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-foreground/80">
+              <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-foreground/80 font-sans font-light">
                 {expedicao.como_chegar_observacoes}
               </p>
             </div>
@@ -300,7 +300,7 @@ function DetalhesExpedicao() {
             <div className="max-w-2xl">
               <div className="eyebrow">Galeria</div>
               <h2 className="mt-4 font-display text-3xl md:text-4xl">A expedição em imagens</h2>
-              <p className="mt-4 text-foreground/70 text-pretty">
+              <p className="mt-4 text-foreground/70 text-pretty font-sans font-light">
                 Cenas reais das nossas expedições, registradas em campo.
               </p>
             </div>
@@ -354,7 +354,7 @@ function DetalhesExpedicao() {
       <section className={`bg-floresta-deep py-20 text-areia md:py-24`}>
         <div className="container-tight text-center">
           <h2 className="font-display text-3xl text-balance md:text-5xl">{t("expedicoes.ctaTitle")}</h2>
-          <p className="mx-auto mt-4 max-w-xl text-areia/75">{t("expedicoes.ctaSubtitle")}</p>
+          <p className="mx-auto mt-4 max-w-xl text-areia/75 font-sans font-light">{t("expedicoes.ctaSubtitle")}</p>
           <a
             href={whatsappUrl}
             target="_blank"

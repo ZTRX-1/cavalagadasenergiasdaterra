@@ -78,7 +78,7 @@ function QuemSomosPage() {
             <h1 className="mt-5 font-display text-4xl leading-[1.01] text-balance md:text-6xl lg:text-[4.5rem]">
               {t("quemSomos.heroTitleStart")} <em className="not-italic text-cobre-soft">{t("quemSomos.heroTitleEm")}</em>.
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-relaxed text-areia/82 md:text-lg">
+            <p className="mt-6 max-w-2xl text-base leading-relaxed text-areia/82 md:text-lg font-sans font-light">
               {t("quemSomos.heroIntro")}
             </p>
 
@@ -93,7 +93,7 @@ function QuemSomosPage() {
             <h2 className="mt-5 font-display text-4xl leading-[1.05] text-balance md:text-5xl">
               Onde tudo começou.
             </h2>
-            <div className="mt-8 space-y-6 text-[1.02rem] leading-relaxed text-foreground/82">
+            <div className="mt-8 space-y-6 text-[1.02rem] leading-relaxed text-foreground/82 font-sans font-light">
               <p className="text-pretty">
                 A Cavalgadas Energias da Terra nasceu da paixão pelo universo equestre e da certeza de que algumas experiências só podem ser vividas no ritmo do cavalo.
               </p>
@@ -123,7 +123,7 @@ function QuemSomosPage() {
             <div key={item.title} className="border border-border/70 bg-background/70 p-6">
               <item.icon className="h-6 w-6 text-cobre" strokeWidth={1.5} />
               <div className="mt-4 font-display text-xl">{item.title}</div>
-              <p className="mt-3 text-sm leading-relaxed text-foreground/68">{item.desc}</p>
+              <p className="mt-3 text-sm leading-relaxed text-foreground/68 font-sans font-light">{item.desc}</p>
             </div>
           ))}
         </div>
@@ -158,7 +158,7 @@ function QuemSomosPage() {
             <h3 className="mt-4 font-display text-3xl leading-[1.04] text-balance md:text-5xl">
               O cavalo veio primeiro como cura. Depois, como destino.
             </h3>
-            <div className="mt-8 space-y-7 text-[1rem] leading-relaxed text-foreground/84">
+            <div className="mt-8 space-y-7 text-[1rem] leading-relaxed text-foreground/84 font-sans font-light">
               <p className="text-pretty">
                 Aos 38 anos, Lígia reúne duas dimensões que definem a marca: é cirurgiã-dentista formada há 17 anos
                 e também a idealizadora do projeto Cavalgadas Energias da Terra. Sócia-proprietária das empresas do
@@ -213,7 +213,7 @@ function QuemSomosPage() {
             <h3 className="mt-4 font-display text-3xl leading-[1.04] text-balance md:text-5xl">
               A sensibilidade da marca só existe porque existe estrutura para sustentá-la.
             </h3>
-            <div className="mt-8 space-y-7 text-[1rem] leading-relaxed text-foreground/84">
+            <div className="mt-8 space-y-7 text-[1rem] leading-relaxed text-foreground/84 font-sans font-light">
               <p className="text-pretty">
                 Empresária e engenheira civil, Alinne é sócia-proprietária da Cavalgadas Energias da Terra, Elas na
                 Sela, Canastra a Cavalo e do Refúgio &amp; Haras Energias da Terra. Atua na gestão de negócios voltados
@@ -255,7 +255,7 @@ function QuemSomosPage() {
             <h2 className="mt-5 font-display text-4xl leading-[1.05] text-balance md:text-5xl">
               Haras, equipe e criação própria a serviço da experiência.
             </h2>
-            <p className="mt-6 text-pretty text-areia/80">
+            <p className="mt-6 text-pretty text-areia/80 font-sans font-light">
               A autoridade da marca não vem só da estética. Vem da base: cavalo bem cuidado, equipe treinada,
               operação afinada e um território que é vivido por dentro.
             </p>
@@ -271,15 +271,15 @@ function QuemSomosPage() {
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
               <div className="border border-areia/15 p-5">
                 <div className="font-display text-xl text-cobre-soft">Criação</div>
-                <p className="mt-2 text-sm leading-relaxed text-areia/72">Cavalos próprios preparados com método, descanso e respeito.</p>
+                <p className="mt-2 text-sm leading-relaxed text-areia/72 font-sans font-light">Cavalos próprios preparados com método, descanso e respeito.</p>
               </div>
               <div className="border border-areia/15 p-5">
                 <div className="font-display text-xl text-cobre-soft">Hospitalidade</div>
-                <p className="mt-2 text-sm leading-relaxed text-areia/72">Refúgio, acolhimento e roteiro pensados como uma experiência completa.</p>
+                <p className="mt-2 text-sm leading-relaxed text-areia/72 font-sans font-light">Refúgio, acolhimento e roteiro pensados como uma experiência completa.</p>
               </div>
               <div className="border border-areia/15 p-5">
                 <div className="font-display text-xl text-cobre-soft">Condução</div>
-                <p className="mt-2 text-sm leading-relaxed text-areia/72">Guias, parceiros e operação alinhados com segurança e sofisticação discreta.</p>
+                <p className="mt-2 text-sm leading-relaxed text-areia/72 font-sans font-light">Guias, parceiros e operação alinhados com segurança e sofisticação discreta.</p>
               </div>
             </div>
           </div>
@@ -302,7 +302,7 @@ function QuemSomosPage() {
             <h2 className="mt-5 font-display text-4xl leading-[1.05] text-balance md:text-5xl">
               Criamos experiências para quem quer voltar diferente.
             </h2>
-            <div className="mt-8 space-y-6 text-[1.02rem] leading-relaxed text-foreground/80">
+            <div className="mt-8 space-y-6 text-[1.02rem] leading-relaxed text-foreground/80 font-sans font-light">
               <p className="text-pretty">
                 As expedições da marca integram natureza, cultura, silêncio, gastronomia e relação autêntica com o
                 cavalo. Seja no Brasil ou em destinos internacionais, o objetivo é o mesmo: tirar o corpo e a mente
@@ -335,7 +335,7 @@ function QuemSomosPage() {
           <h2 className="mx-auto mt-5 max-w-3xl font-display text-4xl text-balance md:text-6xl">
             {t("quemSomos.ctaTitle")}
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-pretty text-areia/82">
+          <p className="mx-auto mt-6 max-w-2xl text-pretty text-areia/82 font-sans font-light">
             {t("quemSomos.ctaSubtitle")}
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">

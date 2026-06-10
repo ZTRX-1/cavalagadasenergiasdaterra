@@ -48,7 +48,7 @@ export function MarcaCrossNav({ current }: { current: MarcaKey }) {
                 <img src={m.logo} alt="" loading="lazy" className="h-16 w-16 shrink-0 rounded-full object-cover ring-1 ring-cobre/30" />
                 <div className="flex-1">
                   <div className="font-display text-xl leading-tight">{m.nome}</div>
-                  <div className="mt-1 text-sm text-muted-foreground">{m.tagline}</div>
+                  <div className="mt-1 text-sm text-muted-foreground font-sans font-light">{m.tagline}</div>
                 </div>
                 <ArrowRight className="h-4 w-4 shrink-0 text-cobre transition-transform group-hover:translate-x-1" />
               </Link>

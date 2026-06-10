@@ -39,7 +39,7 @@ function DatasPage() {
         <div className="max-w-3xl">
           <div className="eyebrow">{t("datas.eyebrow")}</div>
           <h1 className="mt-4 font-display text-5xl text-balance md:text-7xl">{t("datas.title")}</h1>
-          <p className="mt-6 max-w-xl text-lg text-muted-foreground text-pretty">
+          <p className="mt-6 max-w-xl text-lg text-muted-foreground text-pretty font-sans font-light">
             {t("datas.intro")}
           </p>
         </div>

@@ -36,13 +36,13 @@ export function DataCard({ data, variant = "link" }: { data: DataExpedicao; vari
         </div>
         <div className="md:hidden">
           <div className="font-eyebrow text-[0.7rem] uppercase tracking-[0.22em] text-cobre">{data.expedicao_nome}</div>
-          <div className="mt-1 font-display text-lg leading-tight text-foreground">{formatDateRange(data.data_inicio, data.data_fim)}</div>
+          <div className="mt-1 font-sans text-lg leading-tight text-foreground font-light">{formatDateRange(data.data_inicio, data.data_fim)}</div>
         </div>
       </div>
 
       <div className="hidden md:block md:flex-1">
         <div className="font-eyebrow text-[0.72rem] uppercase tracking-[0.22em] text-cobre">{data.expedicao_nome}</div>
-        <div className="mt-1.5 font-display text-xl text-foreground">{formatDateRange(data.data_inicio, data.data_fim)}</div>
+        <div className="mt-1.5 font-sans text-xl text-foreground font-light">{formatDateRange(data.data_inicio, data.data_fim)}</div>
       </div>
 
 
