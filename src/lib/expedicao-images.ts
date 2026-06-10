@@ -177,14 +177,14 @@ export const IMAGES: Record<string, string> = {
 // ============================================================
 export const SLUG_IMAGE: Record<string, string> = {
   "serra-da-canastra": canNew01,     // cavaleira no rio — capa da expedição
-  "mantiqueira-refugio": manNew01,   // tropa em movimento na estrada de terra
+  "mantiqueira-5-dias": manNew01,   // tropa em movimento na estrada de terra
+  "mantiqueira-4-dias": manNew01,   // tropa em movimento na estrada de terra
   "berco-do-marchador": berco01,     // cavaleiros no berço do Marchador — Cruzília/MG
   "jericoacoara": jeri01,            // cavaleira ao nascer do sol nas dunas
   "peru-vale-do-colca": peruNew01,   // cavaleiros nos cânions do Peru — capa da expedição
   "patagonia-gaucha": patNew01,      // tropa nas montanhas nevadas da Patagônia
   "caminho-de-santiago": sant01,     // chegada à Catedral de Santiago — capa da jornada
   "canastra-elas-na-sela": elasNew01,   // edição especial feminina na Canastra
-
 };
 
 // ============================================================
