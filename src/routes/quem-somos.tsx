@@ -255,7 +255,7 @@ function QuemSomosPage() {
             <h2 className="mt-5 font-display text-4xl leading-[1.05] text-balance md:text-5xl">
               Haras, equipe e criação própria a serviço da experiência.
             </h2>
-            <p className="mt-6 text-pretty text-areia/80">
+            <p className="mt-6 text-pretty text-areia/80 font-sans font-light">
               A autoridade da marca não vem só da estética. Vem da base: cavalo bem cuidado, equipe treinada,
               operação afinada e um território que é vivido por dentro.
             </p>
