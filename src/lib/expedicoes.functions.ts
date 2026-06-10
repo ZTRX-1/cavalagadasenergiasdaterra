@@ -51,8 +51,10 @@ function normalizeExpedicao(row: Record<string, unknown>): Expedicao {
     como_chegar_aeroporto: (row.como_chegar_aeroporto as string | null) ?? null,
     como_chegar_referencia: (row.como_chegar_referencia as string | null) ?? null,
     como_chegar_observacoes: (row.como_chegar_observacoes as string | null) ?? null,
+    observacoes: (row.observacoes as string | null) ?? null,
   };
 }
+
 
 function normalizeData(row: Record<string, unknown>, exp?: { nome: string; slug: string; moeda?: string }): DataExpedicao {
   return {

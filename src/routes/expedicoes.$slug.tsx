@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { ArrowRight, Check, Plane, MapPin, Info, Car, UserPlus, GlassWater, Bus, Hotel, Clock } from "lucide-react";
+import { ArrowRight, Check, Plane, MapPin, Info, Car, UserPlus, GlassWater, Bus, Hotel, Clock, Users, BedSingle, Compass } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { getExpedicaoBySlug } from "@/lib/expedicoes.functions";
@@ -65,6 +65,10 @@ function DetalhesExpedicao() {
   const bebidas = findInRequisitos(["bebidas não incluídas", "bebidas à parte"]);
   const pousada = findInRequisitos(["pousada não incluída", "hospedagem não inclusa"]);
   const deslocamento = findInRequisitos(["deslocamento", "shuttle", "transfer"]);
+  const acomodacao = findInRequisitos(["acomodação"]);
+  const participantes = findInRequisitos(["participantes"]);
+  const tipo = findInRequisitos(["tipo:"]);
+
 
   return (
     <>
@@ -202,6 +206,25 @@ function DetalhesExpedicao() {
         </section>
       )}
 
+      {/* Bloco "A Experiência" */}
+      {expedicao.observacoes && (
+        <section className="bg-background py-20 md:py-24 border-t border-border">
+          <div className="container-tight">
+            <div className="eyebrow">A Experiência</div>
+            <h2 className="mt-4 font-display text-3xl md:text-4xl text-balance">
+              Uma jornada pela história
+            </h2>
+            <div className="mt-10 max-w-3xl">
+              <p className="whitespace-pre-line text-[1.15rem] leading-relaxed text-foreground/80 text-pretty font-display">
+                {expedicao.observacoes}
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
+
+
+
       {/* Logística */}
       <section className="bg-background py-20 md:py-24">
         <div className="container-tight">
@@ -269,6 +292,28 @@ function DetalhesExpedicao() {
                 value={expedicao.roteiro[0].desc.match(/check-in a partir das \d+h/i)?.[0].replace(/check-in /i, "") || "A partir das 14h"}
               />
             )}
+            {acomodacao && (
+              <ExpeditionMetaCard
+                icon={BedSingle}
+                label="Acomodação"
+                value={acomodacao.split(":")[1]?.trim() || "Dupla"}
+              />
+            )}
+            {participantes && (
+              <ExpeditionMetaCard
+                icon={Users}
+                label="Participantes"
+                value={participantes.split(":")[1]?.trim() || "Máximo 10"}
+              />
+            )}
+            {tipo && (
+              <ExpeditionMetaCard
+                icon={Compass}
+                label="Tipo"
+                value={tipo.split(":")[1]?.trim() || "Travessia"}
+              />
+            )}
+
           </div>
 
           {expedicao.como_chegar_conteudo && (
