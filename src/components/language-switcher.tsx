@@ -2,9 +2,9 @@ import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 const LANGS = [
-  { code: "pt", label: "Português", flag: "🇧🇷" },
-  { code: "en", label: "English", flag: "🇺🇸" },
-  { code: "es", label: "Español", flag: "🇪🇸" }
+  { code: "pt", label: "Português", img: "/uploads/br.jpg" },
+  { code: "en", label: "English", img: "/uploads/en.jpg" },
+  { code: "es", label: "Español", img: "/uploads/es.jpg" }
 ] as const;
 
 type Lang = (typeof LANGS)[number]["code"];
@@ -38,13 +38,17 @@ export function LanguageSwitcher({ className, align = "header" }: Props) {
           type="button"
           onClick={() => change(lng.code)}
           className={cn(
-            "text-base transition-all hover:scale-110 grayscale-[0.3] hover:grayscale-0",
-            current === lng.code ? "grayscale-0 scale-105 opacity-100" : "opacity-40"
+            "w-6 h-6 rounded-full overflow-hidden transition-all hover:scale-110 grayscale-[0.3] hover:grayscale-0",
+            current === lng.code ? "grayscale-0 scale-105 opacity-100 ring-1 ring-primary/20" : "opacity-40"
           )}
           aria-current={current === lng.code ? "true" : undefined}
           aria-label={`Switch language to ${lng.label}`}
         >
-          {lng.flag}
+          <img 
+            src={lng.img} 
+            alt={lng.label} 
+            className="w-full h-full object-cover"
+          />
         </button>
       ))}
     </div>
