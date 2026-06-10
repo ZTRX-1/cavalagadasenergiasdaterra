@@ -155,7 +155,7 @@ function HomePage() {
             <p className="mt-4 max-w-xl font-display text-[1.1rem] leading-[1.28] text-areia text-shadow-strong text-balance sm:text-2xl md:mt-5 md:text-[1.7rem] md:leading-[1.2]">
               {t("hero.subtitle")}
             </p>
-            <p className="mt-3 max-w-lg text-[0.86rem] leading-relaxed text-areia/85 text-shadow-soft text-pretty md:mt-4 md:text-[0.98rem]">
+            <p className="mt-3 max-w-lg text-[0.86rem] leading-relaxed text-areia/85 text-shadow-soft text-pretty md:mt-4 md:text-[0.98rem] font-sans font-light">
               {t("hero.support")}
             </p>
             <div className="mt-6 flex flex-wrap gap-3 md:mt-7">
