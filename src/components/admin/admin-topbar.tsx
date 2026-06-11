@@ -32,7 +32,7 @@ export function AdminTopbar({ onOpenMenu }: { onOpenMenu?: () => void }) {
         type="button"
         onClick={onOpenMenu}
         aria-label="Abrir menu"
-        className="md:hidden grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-[color:var(--admin-borda)] text-[color:var(--admin-cinza-2)] hover:bg-[color:var(--admin-petroleo-soft)]/40"
+        className="lg:hidden grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-[color:var(--admin-borda)] text-[color:var(--admin-cinza-2)] hover:bg-[color:var(--admin-petroleo-soft)]/40"
       >
         <Menu className="h-4 w-4" />
       </button>
