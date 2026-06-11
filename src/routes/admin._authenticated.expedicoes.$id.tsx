@@ -321,6 +321,14 @@ function ExpedicaoEdit() {
               </select>
             </AdminField>
             
+            <AdminField label="Selo da Marca" ondeAparece="Card e Topo">
+              <select className="admin-input" value={form.marca ?? "cavalgadas"} onChange={(e) => setF({ marca: e.target.value })}>
+                <option value="cavalgadas">Cavalgadas</option>
+                <option value="canastra-a-cavalo">Canastra a Cavalo</option>
+                <option value="elas-na-sela">Elas na Sela</option>
+              </select>
+            </AdminField>
+            
             <AdminField label="Exposição de Preço" ondeAparece="Página da expedição" hint="Se ativado, o valor real será mostrado. Se desativado, aparecerá a 'Mensagem pública de valor'.">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 hover:border-[color:var(--admin-dourado)]/50 transition-colors cursor-pointer group" onClick={() => setF({ ativo: !form.ativo })}>
                 <div className="flex items-center gap-3">
