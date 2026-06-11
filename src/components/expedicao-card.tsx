@@ -55,7 +55,7 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
           <h3 className="mt-1.5 font-display text-[1.35rem] sm:text-2xl lg:text-[1.7rem] text-balance leading-[1.1] text-areia">
             {nome}
           </h3>
-          <p className="mt-2 hidden text-[0.82rem] leading-relaxed text-areia/90 line-clamp-2 text-pretty sm:block">
+          <p className="mt-2 hidden text-[0.82rem] leading-relaxed text-areia/90 line-clamp-2 text-pretty sm:block min-h-[2.5rem]">
             {descricao}
           </p>
           <div className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[0.58rem] sm:text-[0.62rem] uppercase tracking-[0.18em] text-areia/75 whitespace-nowrap">
