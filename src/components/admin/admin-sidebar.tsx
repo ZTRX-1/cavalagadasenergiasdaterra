@@ -1,4 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
+import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   Compass,
@@ -170,18 +171,17 @@ function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: s
 
 export function AdminSidebar({ user }: { user: { email?: string; nome?: string | null; avatar_url?: string | null } | null }) {
   return (
-    <aside className="hidden md:flex w-[252px] shrink-0 flex-col border-r border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/80 backdrop-blur-xl h-dvh sticky top-0">
+    <aside className="hidden lg:flex w-[252px] shrink-0 flex-col border-r border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/80 backdrop-blur-xl h-dvh sticky top-0">
       <SidebarContent user={user} />
     </aside>
   );
 }
 
 export function AdminSidebarDrawer({ user, open, onClose }: { user: { email?: string; nome?: string | null; avatar_url?: string | null } | null; open: boolean; onClose: () => void }) {
-  if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 md:hidden">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <aside className="absolute inset-y-0 left-0 flex w-[280px] max-w-[85vw] flex-col border-r border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)] shadow-2xl animate-in slide-in-from-left">
+    <div className={cn("fixed inset-0 z-50 lg:hidden", !open && "pointer-events-none")}>
+      <div className={cn("absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300", open ? "opacity-100" : "opacity-0")} onClick={onClose} />
+      <aside className={cn("absolute inset-y-0 left-0 flex w-[280px] max-w-[85vw] flex-col border-r border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)] shadow-2xl transition-transform duration-500 ease-out", open ? "translate-x-0" : "-translate-x-full")}>
         <button onClick={onClose} className="absolute right-3 top-3 z-10 grid h-8 w-8 place-items-center rounded-md text-[color:var(--admin-cinza-2)] hover:bg-[color:var(--admin-petroleo)]">
           <X className="h-4 w-4" />
         </button>

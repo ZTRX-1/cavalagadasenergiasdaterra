@@ -47,7 +47,7 @@ export function SiteHeader() {
           scrolled && "shadow-header",
         )}
       >
-        <div className="mx-auto flex h-[5.5rem] max-w-[105rem] items-center justify-between gap-4 px-4 md:h-[7rem] md:px-9 xl:gap-8 xl:px-14 2xl:gap-12 2xl:px-16 relative">
+        <div className="mx-auto flex h-[5.5rem] max-w-[105rem] items-center justify-between gap-4 px-4 md:h-[7rem] md:px-9 lg:px-12 xl:gap-8 xl:px-14 2xl:gap-12 2xl:px-16 relative">
           <Link
             to="/"
             className="group flex shrink-0 items-center gap-3 sm:gap-5 md:gap-6"
@@ -67,7 +67,7 @@ export function SiteHeader() {
           </Link>
 
 
-          <nav aria-label="Menu principal" className="hidden flex-1 items-center justify-center gap-6 xl:flex xl:gap-8 2xl:gap-11">
+          <nav aria-label="Menu principal" className="hidden flex-1 items-center justify-center gap-6 lg:flex lg:gap-7 xl:gap-8 2xl:gap-11">
             {NAV.map((item) => (
               <Link
                 key={item.label}
@@ -81,7 +81,7 @@ export function SiteHeader() {
           </nav>
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-4 xl:gap-5">
-            <LanguageSwitcher className="hidden sm:inline-flex lg:hidden scale-[0.75] sm:scale-100 origin-right shrink-0" />
+            <LanguageSwitcher className="hidden sm:inline-flex lg:hidden scale-[0.7] sm:scale-100 origin-right shrink-0" />
             <LanguageSwitcher className="hidden lg:inline-flex shrink-0" />
             <Link
               to="/expedicoes"
@@ -95,7 +95,7 @@ export function SiteHeader() {
               aria-label={open ? "Fechar menu" : "Abrir menu"}
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-areia/30 bg-carvao text-areia transition-colors hover:border-cobre hover:text-cobre-soft xl:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-areia/30 bg-carvao text-areia transition-colors hover:border-cobre hover:text-cobre-soft lg:hidden"
             >
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
