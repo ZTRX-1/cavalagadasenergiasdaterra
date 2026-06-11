@@ -317,5 +317,186 @@ function ExpedicaoEdit() {
         </div>
       </div>
     </div>
+}
+
+function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (patch: Partial<DataRowRecord>) => Promise<unknown>; onDelete: () => void | Promise<void> }) {
+  const [local, setLocal] = useState({
+    data_inicio: isoToBrDate(data.data_inicio),
+    data_fim: isoToBrDate(data.data_fim),
+    vagas_total: data.vagas_total != null ? String(data.vagas_total) : "",
+    vagas_disponiveis: data.vagas_disponiveis != null ? String(data.vagas_disponiveis) : "",
+    preco_pix: data.preco_pix != null ? String(data.preco_pix) : "",
+    preco_cartao: data.preco_cartao != null ? String(data.preco_cartao) : "",
+  });
+  const [editing, setEditing] = useState(false);
+
+  useEffect(() => {
+    if (editing) return;
+    setLocal({
+      data_inicio: isoToBrDate(data.data_inicio),
+      data_fim: isoToBrDate(data.data_fim),
+      vagas_total: data.vagas_total != null ? String(data.vagas_total) : "",
+      vagas_disponiveis: data.vagas_disponiveis != null ? String(data.vagas_disponiveis) : "",
+      preco_pix: data.preco_pix != null ? String(data.preco_pix) : "",
+      preco_cartao: data.preco_cartao != null ? String(data.preco_cartao) : "",
+    });
+  }, [editing, data.id, data.data_inicio, data.data_fim, data.vagas_total, data.vagas_disponiveis, data.preco_pix, data.preco_cartao]);
+
+  const commit = (patch: Partial<DataRowRecord>) => { void onSave(patch).finally(() => setEditing(false)); };
+  const total = Number(local.vagas_total) || 0;
+  const disp = Number(local.vagas_disponiveis) || 0;
+  const dispOver = disp > total;
+  const onlyDigits = (value: string) => value.replace(/\D/g, "");
+  const moneyValue = (value: string) => value.replace(/[^0-9,\.]/g, "").replace(/,/g, ".").replace(/(\..*)\./g, "$1");
+
+  const Lbl = ({ children }: { children: React.ReactNode }) => (
+    <span className="block text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] mb-1">{children}</span>
+  );
+
+  return (
+    <div className="rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 p-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+        <div>
+          <Lbl>Início</Lbl>
+          <DateField
+            value={local.data_inicio}
+            onChange={(value) => { setEditing(true); setLocal((s) => ({ ...s, data_inicio: value })); }}
+            onCommit={(value) => {
+              const iso = brToIsoDate(value);
+              if (iso && iso !== data.data_inicio) {
+                commit({ data_inicio: iso });
+              } else setEditing(false);
+            }}
+          />
+        </div>
+        <div>
+          <Lbl>Fim</Lbl>
+          <DateField
+            value={local.data_fim}
+            onChange={(value) => { setEditing(true); setLocal((s) => ({ ...s, data_fim: value })); }}
+            onCommit={(value) => {
+              const iso = brToIsoDate(value);
+              if (iso && iso !== data.data_fim) {
+                commit({ data_fim: iso });
+              } else setEditing(false);
+            }}
+          />
+        </div>
+        <div>
+          <Lbl>Vagas total</Lbl>
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className="admin-input w-full"
+            value={local.vagas_total}
+            onFocus={() => setEditing(true)}
+            onChange={(e) => setLocal((s) => ({ ...s, vagas_total: onlyDigits(e.target.value) }))}
+            onBlur={(e) => {
+              const v = e.target.value === "" ? 0 : Number(e.target.value);
+              if (v !== data.vagas_total) commit({ vagas_total: v }); else setEditing(false);
+            }}
+          />
+        </div>
+        <div>
+          <Lbl>Vagas disponíveis</Lbl>
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className={`admin-input w-full ${dispOver ? "ring-1 ring-amber-400/60" : ""}`}
+            value={local.vagas_disponiveis}
+            onFocus={() => setEditing(true)}
+            onChange={(e) => setLocal((s) => ({ ...s, vagas_disponiveis: onlyDigits(e.target.value) }))}
+            onBlur={(e) => {
+              const v = e.target.value === "" ? 0 : Number(e.target.value);
+              if (v !== data.vagas_disponiveis) commit({ vagas_disponiveis: v }); else setEditing(false);
+            }}
+          />
+        </div>
+        <div>
+          <Lbl>Preço Pix (R$)</Lbl>
+          <input
+            type="text"
+            inputMode="decimal"
+            className="admin-input w-full"
+            value={local.preco_pix}
+            onFocus={() => setEditing(true)}
+            onChange={(e) => setLocal((s) => ({ ...s, preco_pix: moneyValue(e.target.value) }))}
+            onBlur={(e) => {
+              const v = e.target.value === "" ? null : Number(e.target.value);
+              if (v !== data.preco_pix) commit({ preco_pix: v }); else setEditing(false);
+            }}
+          />
+        </div>
+        <div>
+          <Lbl>Preço cartão (R$)</Lbl>
+          <input
+            type="text"
+            inputMode="decimal"
+            className="admin-input w-full"
+            value={local.preco_cartao}
+            onFocus={() => setEditing(true)}
+            onChange={(e) => setLocal((s) => ({ ...s, preco_cartao: moneyValue(e.target.value) }))}
+            onBlur={(e) => {
+              const v = e.target.value === "" ? null : Number(e.target.value);
+              if (v !== data.preco_cartao) commit({ preco_cartao: v }); else setEditing(false);
+            }}
+          />
+        </div>
+      </div>
+      <div className="mt-3 flex justify-end">
+        <button className="admin-btn-ghost gap-1 text-[12px] hover:!bg-rose-500/10 hover:!text-rose-300" onClick={() => onDelete()}>
+          <Trash2 className="h-3.5 w-3.5" /> Remover data
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function DateField({ value, onChange, onCommit }: { value: string; onChange: (value: string) => void; onCommit: (value: string) => void }) {
+  const pickerRef = useRef<HTMLInputElement>(null);
+  const pickerValue = brToIsoDate(value) ?? "";
+  const openPicker = () => {
+    const picker = pickerRef.current;
+    if (!picker) return;
+    if (typeof (picker as any).showPicker === "function") (picker as any).showPicker();
+    else picker.click();
+  };
+
+  return (
+    <div className="relative">
+      <input
+        type="text"
+        inputMode="numeric"
+        placeholder="dd/mm/aaaa"
+        className="admin-input admin-date-text-input w-full"
+        value={value}
+        onChange={(e) => onChange(formatBrDateInput(e.target.value))}
+        onBlur={(e) => onCommit(e.target.value)}
+      />
+      <button
+        type="button"
+        className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-md text-[color:var(--admin-dourado-glow)] transition hover:bg-[color:var(--admin-dourado)]/10"
+        aria-label="Abrir calendário"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={openPicker}
+      >
+        <CalendarDays className="h-4 w-4" strokeWidth={1.7} />
+      </button>
+      <input
+        ref={pickerRef}
+        type="date"
+        tabIndex={-1}
+        aria-hidden="true"
+        className="admin-input-date pointer-events-none absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 opacity-0"
+        value={pickerValue}
+        onChange={(e) => {
+          const next = isoToBrDate(e.target.value);
+          onChange(next);
+          onCommit(next);
+        }}
+      />
+    </div>
   );
 }
