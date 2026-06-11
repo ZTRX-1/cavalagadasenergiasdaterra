@@ -321,6 +321,10 @@ function ExpedicaoEdit() {
               </select>
             </AdminField>
             
+            <AdminField label="País/Região" ondeAparece="Card e Listagem">
+              <input className="admin-input" value={form.pais ?? ""} onChange={(e) => setF({ pais: e.target.value })} placeholder="Ex: Brasil" />
+            </AdminField>
+            
             <AdminField label="Selo da Marca" ondeAparece="Card e Topo">
               <select className="admin-input" value={form.marca ?? "cavalgadas"} onChange={(e) => setF({ marca: e.target.value })}>
                 <option value="cavalgadas">Cavalgadas</option>
