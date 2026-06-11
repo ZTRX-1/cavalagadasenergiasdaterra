@@ -322,19 +322,21 @@ function ExpedicaoEdit() {
             </AdminField>
             
             <AdminField label="Exposição de Preço" ondeAparece="Página da expedição" hint="Se ativado, o valor real será mostrado. Se desativado, aparecerá a 'Mensagem pública de valor'.">
-              <div className="flex items-center gap-3 p-4 rounded-xl border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 hover:border-[color:var(--admin-dourado)]/50 transition-colors cursor-pointer group" onClick={() => setF({ ativo: !form.ativo })}>
-                <div className={cn(
-                  "flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 ease-in-out ring-2 ring-transparent",
-                  form.ativo ? "bg-[color:var(--admin-dourado)]" : "bg-zinc-700"
-                )}>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 hover:border-[color:var(--admin-dourado)]/50 transition-colors cursor-pointer group" onClick={() => setF({ ativo: !form.ativo })}>
+                <div className="flex items-center gap-3">
                   <div className={cn(
-                    "pointer-events-none h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
-                    form.ativo ? "translate-x-6" : "translate-x-1"
-                  )} />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-sm font-semibold text-[color:var(--admin-cinza-1)] group-hover:text-[color:var(--admin-dourado-glow)] transition-colors">Expor valor real no site</span>
-                  <span className="text-[10px] text-[color:var(--admin-cinza-3)] uppercase tracking-wider">{form.ativo ? "Público verá o preço" : "Preço ficará oculto"}</span>
+                    "flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 ease-in-out ring-2 ring-transparent",
+                    form.ativo ? "bg-[color:var(--admin-dourado)]" : "bg-zinc-700"
+                  )}>
+                    <div className={cn(
+                      "pointer-events-none h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
+                      form.ativo ? "translate-x-6" : "translate-x-1"
+                    )} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-[color:var(--admin-cinza-1)] group-hover:text-[color:var(--admin-dourado-glow)] transition-colors">Expor valor real no site</span>
+                    <span className="text-[10px] text-[color:var(--admin-cinza-3)] uppercase tracking-wider">{form.ativo ? "Público verá o preço" : "Preço ficará oculto"}</span>
+                  </div>
                 </div>
               </div>
             </AdminField>
