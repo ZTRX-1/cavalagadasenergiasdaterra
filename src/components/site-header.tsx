@@ -47,7 +47,7 @@ export function SiteHeader() {
           scrolled && "shadow-header",
         )}
       >
-        <div className="mx-auto flex h-[5.5rem] max-w-[105rem] items-center justify-between gap-4 px-4 md:h-[7rem] md:px-9 xl:gap-8 xl:px-14 2xl:gap-12 2xl:px-16 overflow-hidden">
+        <div className="mx-auto flex h-[5.5rem] max-w-[105rem] items-center justify-between gap-4 px-4 md:h-[7rem] md:px-9 xl:gap-8 xl:px-14 2xl:gap-12 2xl:px-16 relative">
           <Link
             to="/"
             className="group flex shrink-0 items-center gap-3 sm:gap-5 md:gap-6"
@@ -80,8 +80,8 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <div className="flex shrink-0 items-center gap-2.5 sm:gap-4 xl:gap-5 min-w-0">
-            <LanguageSwitcher className="hidden sm:inline-flex lg:hidden scale-[0.85] sm:scale-100 origin-right shrink-0" />
+          <div className="flex shrink-0 items-center gap-2.5 sm:gap-4 xl:gap-5">
+            <LanguageSwitcher className="hidden sm:inline-flex lg:hidden scale-[0.82] sm:scale-100 origin-right shrink-0" />
             <LanguageSwitcher className="hidden lg:inline-flex shrink-0" />
             <Link
               to="/expedicoes"
