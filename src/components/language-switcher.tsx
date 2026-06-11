@@ -25,7 +25,7 @@ export function LanguageSwitcher({ className, align = "header" }: Props) {
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-2 font-eyebrow text-[0.7rem] uppercase tracking-[0.22em]",
+        "inline-flex items-center gap-1.5 sm:gap-2 font-eyebrow text-[0.7rem] uppercase tracking-[0.22em]",
         align === "header" ? "text-areia/55" : "text-foreground/60",
         className,
       )}
@@ -34,7 +34,7 @@ export function LanguageSwitcher({ className, align = "header" }: Props) {
     >
       {LANGS.map((lang, i) => (
         <span key={lang.code} className="inline-flex items-center gap-2">
-          {i > 0 && <span className="opacity-40">·</span>}
+          {i > 0 && <span className="opacity-40 hidden xs:inline">·</span>}
           <button
             type="button"
             onClick={() => change(lang.code)}
