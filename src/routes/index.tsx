@@ -167,7 +167,7 @@ function HomePage() {
               </Link>
             </div>
 
-            <div className="mt-5 flex items-center gap-3 md:mt-6 xl:hidden">
+            <div className="mt-5 flex items-center gap-3 md:mt-6 sm:hidden">
               <span className="h-px w-8 bg-areia/30" />
               <LanguageSwitcher />
             </div>

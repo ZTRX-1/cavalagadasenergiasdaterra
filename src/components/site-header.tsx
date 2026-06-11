@@ -47,32 +47,32 @@ export function SiteHeader() {
           scrolled && "shadow-header",
         )}
       >
-        <div className="mx-auto flex h-[5.5rem] max-w-[105rem] items-center justify-between gap-8 px-5 md:h-[7rem] md:px-9 xl:gap-12 xl:px-14 2xl:px-16">
+        <div className="mx-auto flex h-[5.5rem] max-w-[105rem] items-center justify-between gap-4 px-4 md:h-[7rem] md:px-9 xl:gap-8 xl:px-14 2xl:gap-12 2xl:px-16 relative">
           <Link
             to="/"
-            className="group flex shrink-0 items-center gap-5 md:gap-6"
+            className="group flex shrink-0 items-center gap-3 sm:gap-5 md:gap-6"
             aria-label="Cavalgadas Energias da Terra"
           >
-            <span className="flex h-[4.25rem] w-[4.25rem] items-center justify-center overflow-hidden rounded-full bg-carvao ring-1 ring-cobre/40 md:h-[5.25rem] md:w-[5.25rem]">
+            <span className="flex h-[3.5rem] w-[3.5rem] items-center justify-center overflow-hidden rounded-full bg-carvao ring-1 ring-cobre/40 sm:h-[4.25rem] sm:w-[4.25rem] md:h-[5.25rem] md:w-[5.25rem]">
               <img src={logoCavalgadas} alt="" className="h-full w-full object-cover" />
             </span>
-            <span className="flex flex-col leading-none gap-[0.55rem] md:gap-[0.7rem]">
-              <span className="font-display text-[1.32rem] leading-none tracking-tight text-areia md:text-[1.5rem]">
+            <span className="flex flex-col leading-none gap-[0.4rem] sm:gap-[0.55rem] md:gap-[0.7rem]">
+              <span className="font-display text-[1.1rem] leading-none tracking-tight text-areia sm:text-[1.32rem] md:text-[1.5rem]">
                 Cavalgadas
               </span>
-              <span className="font-eyebrow text-[0.6rem] leading-none uppercase tracking-[0.32em] text-cobre-soft md:text-[0.68rem]">
+              <span className="font-eyebrow text-[0.55rem] leading-none uppercase tracking-[0.32em] text-cobre-soft sm:text-[0.6rem] md:text-[0.68rem]">
                 Energias da Terra
               </span>
             </span>
           </Link>
 
 
-          <nav aria-label="Menu principal" className="hidden flex-1 items-center justify-center gap-7 xl:flex xl:gap-9 2xl:gap-11">
+          <nav aria-label="Menu principal" className="hidden flex-1 items-center justify-center gap-6 xl:flex xl:gap-8 2xl:gap-11">
             {NAV.map((item) => (
               <Link
                 key={item.label}
                 to={item.to}
-                className="font-eyebrow text-[0.7rem] uppercase tracking-[0.26em] text-areia/80 transition-colors hover:text-cobre-soft whitespace-nowrap antialiased subpixel-antialiased 2xl:text-[0.74rem]"
+                className="font-eyebrow text-[0.65rem] uppercase tracking-[0.22em] text-areia/80 transition-colors hover:text-cobre-soft whitespace-nowrap antialiased subpixel-antialiased 2xl:text-[0.74rem] 2xl:tracking-[0.26em]"
                 activeProps={{ className: "text-cobre-soft" }}
               >
                 {item.label}
@@ -80,11 +80,12 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <div className="flex shrink-0 items-center gap-4 xl:gap-5">
-            <LanguageSwitcher className="hidden md:inline-flex" />
+          <div className="flex shrink-0 items-center gap-2 sm:gap-4 xl:gap-5">
+            <LanguageSwitcher className="hidden sm:inline-flex lg:hidden scale-[0.75] sm:scale-100 origin-right shrink-0" />
+            <LanguageSwitcher className="hidden lg:inline-flex shrink-0" />
             <Link
               to="/expedicoes"
-              className="hidden rounded-full bg-cobre px-7 py-[0.7rem] font-eyebrow text-[0.68rem] uppercase tracking-[0.28em] text-areia shadow-elegant transition-all hover:bg-couro hover:shadow-[0_18px_40px_-15px_rgba(0,0,0,0.55)] xl:inline-flex whitespace-nowrap 2xl:px-8 2xl:py-[0.78rem] 2xl:text-[0.72rem]"
+              className="hidden rounded-full bg-cobre px-5 py-[0.6rem] font-eyebrow text-[0.6rem] uppercase tracking-[0.22em] text-areia shadow-elegant transition-all hover:bg-couro hover:shadow-[0_18px_40px_-15px_rgba(0,0,0,0.55)] lg:inline-flex xl:px-7 xl:py-[0.7rem] xl:text-[0.68rem] xl:tracking-[0.28em] whitespace-nowrap 2xl:px-8 2xl:py-[0.78rem] 2xl:text-[0.72rem]"
             >
               {t("nav.reservar")}
             </Link>

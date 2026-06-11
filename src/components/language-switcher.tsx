@@ -25,7 +25,7 @@ export function LanguageSwitcher({ className, align = "header" }: Props) {
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-2 font-eyebrow text-[0.7rem] uppercase tracking-[0.22em]",
+        "inline-flex items-center gap-1.5 sm:gap-2 font-eyebrow text-[0.7rem] uppercase tracking-[0.22em]",
         align === "header" ? "text-areia/55" : "text-foreground/60",
         className,
       )}
@@ -34,13 +34,13 @@ export function LanguageSwitcher({ className, align = "header" }: Props) {
     >
       {LANGS.map((lang, i) => (
         <span key={lang.code} className="inline-flex items-center gap-2">
-          {i > 0 && <span className="opacity-40">·</span>}
+          {i > 0 && <span className="opacity-40 hidden xs:inline">·</span>}
           <button
             type="button"
             onClick={() => change(lang.code)}
             className={cn(
               "group relative transition-all duration-300",
-              current === lang.code ? "opacity-100 scale-125" : "opacity-40 hover:opacity-100 grayscale hover:grayscale-0",
+              current === lang.code ? "opacity-100 scale-110 sm:scale-125" : "opacity-40 hover:opacity-100 grayscale hover:grayscale-0",
             )}
             aria-current={current === lang.code ? "true" : undefined}
             aria-label={`Switch language to ${lang.code.toUpperCase()}`}
@@ -49,7 +49,7 @@ export function LanguageSwitcher({ className, align = "header" }: Props) {
               src={lang.icon} 
               alt={lang.code.toUpperCase()} 
               className={cn(
-                "w-10 h-10 object-contain rounded-full border-[1px] transition-all",
+                "w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-full border-[1px] transition-all",
                 current === lang.code 
                   ? (align === "header" ? "border-areia/40" : "border-cobre/40") 
                   : "border-transparent"
