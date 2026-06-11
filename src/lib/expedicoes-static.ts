@@ -26,6 +26,7 @@ export interface Expedicao {
   mensagem_comercial_publica?: string | null;
   como_chegar_distancias?: string | null;
   observacoes?: string | null;
+  ativo?: boolean;
 }
 
 

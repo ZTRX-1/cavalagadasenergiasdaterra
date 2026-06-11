@@ -108,8 +108,8 @@ function normalizeExpedicao(row: Record<string, unknown>): Expedicao {
     como_chegar_aeroporto: (row.como_chegar_aeroporto as string | null) ?? null,
     como_chegar_referencia: (row.como_chegar_referencia as string | null) ?? null,
     como_chegar_observacoes: (row.como_chegar_observacoes as string | null) ?? null,
+    mensagem_comercial_publica: (row.mensagem_comercial_publica as string | null) ?? null,
     observacoes: (row.observacoes as string | null) ?? null,
-    ativo: (row.ativo as boolean) ?? false,
   };
 }
 
