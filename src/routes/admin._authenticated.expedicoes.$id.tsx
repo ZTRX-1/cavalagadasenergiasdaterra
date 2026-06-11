@@ -107,7 +107,7 @@ function ExpedicaoEdit() {
       </div>
 
       {/* Menu Rápido Flutuante (Horizontal em telas menores, Lateral em maiores) */}
-      <nav className="sticky top-16 sm:top-20 z-30 bg-carvao/95 backdrop-blur-md border-y sm:border border-[color:var(--admin-borda)] sm:rounded-full px-2 py-1 flex items-center justify-start sm:justify-center gap-1 overflow-x-auto no-scrollbar shadow-xl">
+      <nav className="sticky top-16 sm:top-20 z-30 bg-carvao/95 backdrop-blur-md border-y sm:border border-[color:var(--admin-borda)] sm:rounded-full px-2 py-1 flex items-center justify-start sm:justify-center gap-1 overflow-x-auto no-scrollbar shadow-xl scroll-smooth">
         {[
           { id: "hero", label: "Hero" },
           { id: "imagens", label: "Fotos" },
@@ -121,12 +121,19 @@ function ExpedicaoEdit() {
         ].map((item) => (
           <button
             key={item.id}
-            onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth", block: "start" })}
+            onClick={() => {
+              const el = document.getElementById(item.id);
+              if (el) {
+                const yOffset = -120; // Espaço para o menu fixo
+                const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+              }
+            }}
             className={cn(
-              "whitespace-nowrap px-4 py-2 text-[10px] sm:text-xs uppercase tracking-widest transition-all rounded-full",
+              "whitespace-nowrap px-4 py-2 text-[10px] sm:text-xs uppercase tracking-widest transition-all rounded-full shrink-0",
               activeSection === item.id 
-                ? "bg-[color:var(--admin-dourado)] text-[color:var(--admin-carvao-deep)] font-bold" 
-                : "text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-cinza-1)]"
+                ? "bg-[color:var(--admin-dourado)] text-[color:var(--admin-carvao-deep)] font-bold shadow-sm" 
+                : "text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-cinza-1)] hover:bg-white/5"
             )}
           >
             {item.label}
