@@ -49,7 +49,7 @@ export function LanguageSwitcher({ className, align = "header" }: Props) {
               src={lang.icon} 
               alt={lang.code.toUpperCase()} 
               className={cn(
-                "w-6 h-6 object-contain rounded-full border-2 transition-colors",
+                "w-8 h-8 object-contain rounded-full border-2 transition-colors",
                 current === lang.code 
                   ? (align === "header" ? "border-cobre-soft" : "border-cobre") 
                   : "border-transparent"
