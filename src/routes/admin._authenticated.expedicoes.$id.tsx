@@ -314,9 +314,9 @@ function ExpedicaoEdit() {
               <Save className="h-5 w-5 mr-2" /> Salvar Tudo
             </button>
           </div>
-        </div>
       </div>
     </div>
+  );
 }
 
 function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (patch: Partial<DataRowRecord>) => Promise<unknown>; onDelete: () => void | Promise<void> }) {
