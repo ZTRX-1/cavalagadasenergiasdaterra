@@ -310,27 +310,32 @@ function ExpedicaoEdit() {
           </div>
         </GuidedSection>
 
-        <GuidedSection id="publicacao" titulo="9. Visibilidade e Preços" explicacao="Controle como a expedição aparece para os clientes.">
+        <GuidedSection id="publicacao" titulo="9. Visibilidade e Exposição" explicacao="Controle como a expedição aparece para os clientes.">
           <div className="grid md:grid-cols-2 gap-8">
             <AdminField label="Status da expedição" ondeAparece="Visibilidade no site">
               <select className="admin-input" value={form.status ?? "rascunho"} onChange={(e) => setF({ status: e.target.value as any })}>
-                <option value="rascunho">Rascunho (Privado)</option>
+                <option value="rascunho">Rascunho (Oculto)</option>
                 <option value="publicado">Publicado (Visível)</option>
-                <option value="pausado">Pausado (Sem reservas)</option>
-                <option value="arquivado">Arquivado</option>
+                <option value="pausado">Pausado (Visível, sem reserva)</option>
+                <option value="arquivado">Arquivado (Oculto)</option>
               </select>
             </AdminField>
             
-            <AdminField label="Expor preço no site?" ondeAparece="Página da expedição" hint="Se ativado, o valor real será mostrado. Se desativado, aparecerá a 'Mensagem pública de valor'.">
-              <div className="flex items-center gap-3 p-3 rounded-lg border border-[color:var(--admin-borda)] bg-white/5">
-                <input 
-                  type="checkbox" 
-                  id="show_price"
-                  className="h-5 w-5 accent-[color:var(--admin-dourado)]"
-                  checked={form.ativo === true} 
-                  onChange={(e) => setF({ ativo: e.target.checked })} 
-                />
-                <label htmlFor="show_price" className="text-sm font-medium cursor-pointer">Mostrar preço real para o público</label>
+            <AdminField label="Exposição de Preço" ondeAparece="Página da expedição" hint="Se ativado, o valor real será mostrado. Se desativado, aparecerá a 'Mensagem pública de valor'.">
+              <div className="flex items-center gap-3 p-4 rounded-xl border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 hover:border-[color:var(--admin-dourado)]/50 transition-colors cursor-pointer group" onClick={() => setF({ ativo: !form.ativo })}>
+                <div className={cn(
+                  "flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 ease-in-out ring-2 ring-transparent",
+                  form.ativo ? "bg-[color:var(--admin-dourado)]" : "bg-zinc-700"
+                )}>
+                  <div className={cn(
+                    "pointer-events-none h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
+                    form.ativo ? "translate-x-6" : "translate-x-1"
+                  )} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-[color:var(--admin-cinza-1)] group-hover:text-[color:var(--admin-dourado-glow)] transition-colors">Expor valor real no site</span>
+                  <span className="text-[10px] text-[color:var(--admin-cinza-3)] uppercase tracking-wider">{form.ativo ? "Público verá o preço" : "Preço ficará oculto"}</span>
+                </div>
               </div>
             </AdminField>
           </div>
