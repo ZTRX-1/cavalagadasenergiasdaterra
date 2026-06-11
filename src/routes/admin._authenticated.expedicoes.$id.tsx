@@ -325,6 +325,13 @@ function ExpedicaoEdit() {
               <input className="admin-input" value={form.pais ?? ""} onChange={(e) => setF({ pais: e.target.value })} placeholder="Ex: Brasil" />
             </AdminField>
             
+            <AdminField label="Cidade/Estado" ondeAparece="Card e Listagem">
+              <div className="grid grid-cols-2 gap-3">
+                <input className="admin-input" value={form.cidade ?? ""} onChange={(e) => setF({ cidade: e.target.value })} placeholder="Cidade" />
+                <input className="admin-input" value={form.estado ?? ""} onChange={(e) => setF({ estado: e.target.value })} placeholder="Estado" />
+              </div>
+            </AdminField>
+            
             <AdminField label="Vídeo da Experiência" ondeAparece="Seção Vídeo" hint="Link do YouTube ou Vimeo">
               <input className="admin-input" value={form.video_url ?? ""} onChange={(e) => setF({ video_url: e.target.value })} placeholder="https://youtube.com/..." />
             </AdminField>
