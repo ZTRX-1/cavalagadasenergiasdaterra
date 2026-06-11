@@ -126,16 +126,14 @@ function DetalhesExpedicao() {
       )}
 
       {/* Vídeo cinematográfico */}
-      {(expedicao.slug === "serra-da-canastra" || expedicao.slug === "rota-dos-tropeiros-da-canastra") && (
+      {expedicao.slug === "serra-da-canastra" && (
         <section className="bg-carvao py-16 md:py-20">
           <div className="container-tight">
             <VideoCinematic
               youtubeId="nPoJeABD5ko"
               poster={canastraVideoPoster}
-              eyebrow={expedicao.slug === "serra-da-canastra" ? "Serra da Canastra · filme da expedição" : "Rota dos Tropeiros da Canastra"}
-              title={expedicao.slug === "serra-da-canastra" 
-                ? "Expedições a cavalo na Serra da Canastra. Memórias para a vida toda." 
-                : "Uma travessia pelos caminhos que ajudaram a construir Minas Gerais."}
+              eyebrow="Serra da Canastra · filme da expedição"
+              title="Expedições a cavalo na Serra da Canastra. Memórias para a vida toda."
               subtitle="Toque para assistir com som"
             />
           </div>
