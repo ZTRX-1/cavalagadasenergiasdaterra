@@ -340,6 +340,10 @@ function ExpedicaoEdit() {
                 </div>
               </div>
             </AdminField>
+            
+            <AdminField label="URL Amigável (Slug)" ondeAparece="Endereço da página" hint="Atenção: alterar isso mudará o link da página no site.">
+              <input className="admin-input font-mono text-xs" value={form.slug ?? ""} onChange={(e) => setF({ slug: slugify(e.target.value) })} placeholder="ex-serra-da-canastra" />
+            </AdminField>
           </div>
         </GuidedSection>
         
