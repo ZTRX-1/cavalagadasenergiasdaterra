@@ -13,7 +13,36 @@ import {
 } from "@/lib/expedicoes-static";
 import { getCanonicalExpedicaoSlug } from "@/lib/expedicao-slugs";
 
-export type { DataExpedicao, Expedicao };
+export type { DataExpedicao };
+
+export interface Expedicao {
+  id: string;
+  slug: string;
+  nome: string;
+  descricao_curta: string;
+  descricao_longa: string;
+  duracao: string;
+  nivel: string;
+  preco: number;
+  moeda: string;
+  mensagem_comercial_publica: string | null;
+  como_chegar_distancias: string | null;
+  marca: string;
+  pais: string;
+  regiao: string | null;
+  imagem_url: string | null;
+  galeria: string[];
+  inclui: string[];
+  requisitos: string[];
+  roteiro: { dia: string; titulo: string; desc: string }[];
+  como_chegar_titulo: string | null;
+  como_chegar_conteudo: string | null;
+  como_chegar_aeroporto: string | null;
+  como_chegar_referencia: string | null;
+  como_chegar_observacoes: string | null;
+  observacoes: string | null;
+  ativo?: boolean; // Novo campo para controlar exposição do preço
+}
 
 export interface ExpedicaoAssetLite {
   url: string;
@@ -52,6 +81,7 @@ function normalizeExpedicao(row: Record<string, unknown>): Expedicao {
     como_chegar_referencia: (row.como_chegar_referencia as string | null) ?? null,
     como_chegar_observacoes: (row.como_chegar_observacoes as string | null) ?? null,
     observacoes: (row.observacoes as string | null) ?? null,
+    ativo: (row.ativo as boolean) ?? false,
   };
 }
 
@@ -79,7 +109,6 @@ export async function listExpedicoes(): Promise<Expedicao[]> {
     const { data, error } = await supabase
       .from("expedicoes")
       .select("*")
-      .eq("ativo", true)
       .eq("status", "publicado")
       .order("ordem", { ascending: true })
       .order("created_at", { ascending: false });
@@ -100,7 +129,6 @@ export async function getExpedicaoBySlug(
       .from("expedicoes")
       .select("*")
       .eq("slug", canonicalSlug)
-      .eq("ativo", true)
       .eq("status", "publicado")
       .maybeSingle();
     if (error) throw error;
@@ -142,7 +170,7 @@ export async function listProximasDatas(): Promise<DataExpedicao[]> {
     return data
       .filter((row) => {
         const exp = (row as { expedicoes?: { ativo: boolean; status: string } | null }).expedicoes;
-        return exp?.ativo && exp.status === "publicado";
+        return exp?.status === "publicado";
       })
       .map((row) => {
         const exp = (row as { expedicoes?: { nome: string; slug: string; moeda?: string } | null }).expedicoes ?? undefined;
