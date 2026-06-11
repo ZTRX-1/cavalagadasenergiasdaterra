@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { cn } from "@/lib/utils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Save, Star, Trash2, ChevronUp, ChevronDown, Plus, ExternalLink, CheckCircle2, Circle, CalendarDays, Eye, X } from "lucide-react";
@@ -270,7 +271,7 @@ function ExpedicaoEdit() {
               <DataRow 
                 key={d.id} 
                 data={d} 
-                onSave={(patch) => updateData(d.id, patch).then(() => qc.invalidateQueries({ queryKey: ["admin", "datas", id] }))}
+                onSave={(patch: Partial<DataRowRecord>) => updateData(d.id, patch).then(() => qc.invalidateQueries({ queryKey: ["admin", "datas", id] }))}
                 onDelete={() => deleteData(d.id).then(() => qc.invalidateQueries({ queryKey: ["admin", "datas", id] }))}
               />
             ))}
