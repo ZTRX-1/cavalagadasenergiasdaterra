@@ -85,10 +85,10 @@ export async function listExpedicoes(): Promise<Expedicao[]> {
       .order("ordem", { ascending: true })
       .order("created_at", { ascending: false });
     if (error) throw error;
-    if (!data || data.length === 0) return listExpedicoesStatic() as Expedicao[];
+    if (!data || data.length === 0) return (await listExpedicoesStatic()) as Expedicao[];
     return data.map((row) => normalizeExpedicao(row as Record<string, unknown>));
   } catch {
-    return listExpedicoesStatic() as Expedicao[];
+    return (await listExpedicoesStatic()) as Expedicao[];
   }
 }
 
