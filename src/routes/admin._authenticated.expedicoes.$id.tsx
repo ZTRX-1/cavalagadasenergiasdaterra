@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminSection, AdminField } from "@/components/admin/admin-section";
+import { GuidedSection, GuidedField, ListEditor } from "@/components/admin/guided-editor-components";
 import { AdminUploader } from "@/components/admin/admin-uploader";
 import { ExpedicaoPreview } from "@/components/admin/expedicao-preview";
 import { StatusBadge } from "@/components/admin/admin-status-badge";
