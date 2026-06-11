@@ -40,7 +40,7 @@ export function LanguageSwitcher({ className, align = "header" }: Props) {
             onClick={() => change(lang.code)}
             className={cn(
               "group relative transition-all duration-300",
-              current === lang.code ? "opacity-100 scale-110" : "opacity-40 hover:opacity-80 grayscale hover:grayscale-0",
+              current === lang.code ? "opacity-100 scale-125" : "opacity-40 hover:opacity-100 grayscale hover:grayscale-0",
             )}
             aria-current={current === lang.code ? "true" : undefined}
             aria-label={`Switch language to ${lang.code.toUpperCase()}`}
@@ -49,9 +49,9 @@ export function LanguageSwitcher({ className, align = "header" }: Props) {
               src={lang.icon} 
               alt={lang.code.toUpperCase()} 
               className={cn(
-                "w-8 h-8 object-contain rounded-full border-2 transition-colors",
+                "w-10 h-10 object-contain rounded-full border-[1px] transition-all",
                 current === lang.code 
-                  ? (align === "header" ? "border-cobre-soft" : "border-cobre") 
+                  ? (align === "header" ? "border-areia/40" : "border-cobre/40") 
                   : "border-transparent"
               )}
             />
