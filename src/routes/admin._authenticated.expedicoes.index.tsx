@@ -170,10 +170,12 @@ function ExpedicoesPage() {
                                 alt=""
                                 className="h-full w-full object-cover"
                                 onError={(ev) => {
-                                const img = ev.currentTarget;
-                                img.style.display = "none";
-                                img.nextElementSibling?.classList.remove("hidden");
-                              }}
+                                  const img = ev.currentTarget;
+                                  img.style.display = "none";
+                                  const placeholder = img.parentElement?.nextElementSibling;
+                                  if (placeholder) placeholder.classList.remove("hidden");
+                                }}
+                              />
                             </div>
                           ) : null;
                         })()}
