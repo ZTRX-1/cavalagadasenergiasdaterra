@@ -98,15 +98,15 @@ function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: s
 
   return (
     <>
-      <div className="flex items-center gap-3 px-6 py-5 border-b border-[color:var(--admin-borda)]">
+      <div className="flex items-center gap-3 px-4 xs:px-6 py-4 xs:py-5 border-b border-[color:var(--admin-borda)]">
         <img
           src={logoCavalgadas}
           alt="Cavalgadas Energias da Terra"
-          className="h-10 w-10 shrink-0 rounded-md object-cover ring-1 ring-[color:var(--admin-borda-strong)] shadow-[var(--admin-glow-dourado)]"
+          className="h-8 w-8 xs:h-10 xs:w-10 shrink-0 rounded-md object-cover ring-1 ring-[color:var(--admin-borda-strong)] shadow-[var(--admin-glow-dourado)]"
         />
         <div className="flex flex-col leading-tight min-w-0">
-          <span className="font-display text-[15px] text-[color:var(--admin-cinza-1)] truncate">Cavalgadas</span>
-          <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)] truncate">Energias da Terra</span>
+          <span className="font-display text-[13px] xs:text-[15px] text-[color:var(--admin-cinza-1)] truncate">Cavalgadas</span>
+          <span className="text-[8px] xs:text-[10px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)] truncate">Energias da Terra</span>
         </div>
       </div>
       <nav className="flex-1 overflow-y-auto px-3 py-5 space-y-0.5 custom-scrollbar">
@@ -181,7 +181,7 @@ export function AdminSidebarDrawer({ user, open, onClose }: { user: { email?: st
   return (
     <div className={cn("fixed inset-0 z-50 lg:hidden", !open && "pointer-events-none")}>
       <div className={cn("absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300", open ? "opacity-100" : "opacity-0")} onClick={onClose} />
-      <aside className={cn("absolute inset-y-0 left-0 flex w-[280px] max-w-[85vw] flex-col border-r border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)] shadow-2xl transition-transform duration-500 ease-out", open ? "translate-x-0" : "-translate-x-full")}>
+      <aside className={cn("absolute inset-y-0 left-0 flex w-[260px] xs:w-[280px] max-w-[85vw] flex-col border-r border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)] shadow-2xl transition-transform duration-500 ease-out", open ? "translate-x-0" : "-translate-x-full")}>
         <button onClick={onClose} className="absolute right-3 top-3 z-10 grid h-8 w-8 place-items-center rounded-md text-[color:var(--admin-cinza-2)] hover:bg-[color:var(--admin-petroleo)]">
           <X className="h-4 w-4" />
         </button>
