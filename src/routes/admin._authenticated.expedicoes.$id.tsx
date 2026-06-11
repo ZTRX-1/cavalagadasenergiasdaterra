@@ -30,8 +30,8 @@ import {
 } from "@/lib/admin/api";
 
 // Helpers for date/money (from existing file logic)
-function isoToBrDate(iso: string | null) { if (!iso) return ""; const [y, m, d] = iso.split("-"); return `${d}/${m}/${y}`; }
-function brToIsoDate(br: string) { if (!br) return ""; const [d, m, y] = br.split("/"); return `${y}-${m}-${d}`; }
+function isoToBrDate(iso: string | null) { if (!iso) return ""; const parts = iso.split("-"); if (parts.length !== 3) return iso; return `${parts[2]}/${parts[1]}/${parts[0]}`; }
+function brToIsoDate(br: string) { if (!br) return ""; const parts = br.split("/"); if (parts.length !== 3) return br; return `${parts[2]}-${parts[1]}-${parts[0]}`; }
 function formatBrDateInput(val: string) {
   const digits = val.replace(/\D/g, "");
   if (digits.length <= 2) return digits;
