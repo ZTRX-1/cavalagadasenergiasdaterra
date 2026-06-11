@@ -47,7 +47,7 @@ export function SiteHeader() {
           scrolled && "shadow-header",
         )}
       >
-        <div className="mx-auto flex h-[5.5rem] max-w-[105rem] items-center justify-between gap-4 px-4 md:h-[7rem] md:px-9 xl:gap-8 xl:px-14 2xl:gap-12 2xl:px-16">
+        <div className="mx-auto flex h-[5.5rem] max-w-[105rem] items-center justify-between gap-4 px-4 md:h-[7rem] md:px-9 xl:gap-8 xl:px-14 2xl:gap-12 2xl:px-16 overflow-hidden">
           <Link
             to="/"
             className="group flex shrink-0 items-center gap-3 sm:gap-5 md:gap-6"
@@ -80,9 +80,9 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <div className="flex shrink-0 items-center gap-2.5 sm:gap-4 xl:gap-5">
-            <LanguageSwitcher className="hidden sm:inline-flex lg:hidden scale-[0.85] sm:scale-100 origin-right" />
-            <LanguageSwitcher className="hidden lg:inline-flex" />
+          <div className="flex shrink-0 items-center gap-2.5 sm:gap-4 xl:gap-5 min-w-0">
+            <LanguageSwitcher className="hidden sm:inline-flex lg:hidden scale-[0.85] sm:scale-100 origin-right shrink-0" />
+            <LanguageSwitcher className="hidden lg:inline-flex shrink-0" />
             <Link
               to="/expedicoes"
               className="hidden rounded-full bg-cobre px-5 py-[0.6rem] font-eyebrow text-[0.6rem] uppercase tracking-[0.22em] text-areia shadow-elegant transition-all hover:bg-couro hover:shadow-[0_18px_40px_-15px_rgba(0,0,0,0.55)] lg:inline-flex xl:px-7 xl:py-[0.7rem] xl:text-[0.68rem] xl:tracking-[0.28em] whitespace-nowrap 2xl:px-8 2xl:py-[0.78rem] 2xl:text-[0.72rem]"
