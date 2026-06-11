@@ -90,36 +90,47 @@ function ExpedicaoEdit() {
   if (!form) return <div className="admin-card h-40 animate-pulse" />;
 
   return (
-    <div className="grid lg:grid-cols-[280px_1fr] gap-8 pb-24">
-      <nav className="sticky top-24 hidden lg:block space-y-1 h-fit">
+    <div className="flex flex-col gap-8 pb-24 max-w-5xl mx-auto">
+      {/* Header Mobile & Desktop simplificado */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-4 sm:px-0">
+        <button onClick={() => nav({ to: "/admin/expedicoes" })} className="admin-btn-ghost w-fit">
+          <ArrowLeft className="h-4 w-4 mr-2" /> Voltar
+        </button>
+        <div className="flex items-center gap-3">
+          <StatusBadge status={form.status ?? "rascunho"} className="scale-110" />
+          {form.slug && (
+            <a href={`/expedicoes/${form.slug}`} target="_blank" rel="noreferrer" className="admin-btn-ghost text-xs">
+              <ExternalLink className="h-3 w-3 mr-1.5" /> Ver no site
+            </a>
+          )}
+        </div>
+      </div>
+
+      {/* Menu Rápido Flutuante (Horizontal em telas menores, Lateral em maiores) */}
+      <nav className="sticky top-16 sm:top-20 z-30 bg-carvao/95 backdrop-blur-md border-y sm:border border-[color:var(--admin-borda)] sm:rounded-full px-2 py-1 flex items-center justify-start sm:justify-center gap-1 overflow-x-auto no-scrollbar shadow-xl">
         {[
-          { id: "hero", label: "1. Hero" },
-          { id: "imagens", label: "2. Experiência" },
-          { id: "sobre", label: "3. Sobre" },
-          { id: "cards", label: "4. Cards laterais" },
-          { id: "roteiro", label: "5. Roteiro" },
-          { id: "info", label: "6. Informações" },
-          { id: "logistica", label: "7. Logística" },
-          { id: "datas", label: "8. Próximas datas" },
-          { id: "publicacao", label: "9. SEO e Publicação" },
+          { id: "hero", label: "Hero" },
+          { id: "imagens", label: "Fotos" },
+          { id: "sobre", label: "Texto" },
+          { id: "cards", label: "Cards" },
+          { id: "roteiro", label: "Roteiro" },
+          { id: "info", label: "Info" },
+          { id: "logistica", label: "Logística" },
+          { id: "datas", label: "Datas" },
+          { id: "publicacao", label: "Publicar" },
         ].map((item) => (
-          <a
+          <button
             key={item.id}
-            href={`#${item.id}`}
-            onClick={(e) => {
-              e.preventDefault();
-              document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth" });
-              setActiveSection(item.id);
-            }}
+            onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth", block: "start" })}
             className={cn(
-              "block px-4 py-2 text-xs uppercase tracking-[0.1em] transition-colors border-l-2",
+              "whitespace-nowrap px-4 py-2 text-[10px] sm:text-xs uppercase tracking-widest transition-all rounded-full",
               activeSection === item.id 
-                ? "border-[color:var(--admin-dourado)] text-[color:var(--admin-dourado-glow)] bg-[color:var(--admin-dourado)]/10" 
-                : "border-transparent text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-dourado-glow)]"
+                ? "bg-[color:var(--admin-dourado)] text-[color:var(--admin-carvao-deep)] font-bold" 
+                : "text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-cinza-1)]"
             )}
           >
             {item.label}
-          </a>
+          </button>
         ))}
       </nav>
 
@@ -315,16 +326,19 @@ function ExpedicaoEdit() {
           </div>
         </GuidedSection>
         
-        <div className="flex items-center justify-between p-6 admin-card sticky bottom-6 z-20 shadow-2xl border-[color:var(--admin-dourado)]/30">
-          <div className="flex items-center gap-4">
-            <StatusBadge status={form.status ?? "rascunho"} className="scale-110" />
-            <span className="text-sm text-[color:var(--admin-cinza-3)] italic">Alterações não salvas</span>
-          </div>
-          <div className="flex gap-3">
-            <button className="admin-btn-ghost" onClick={() => nav({ to: "/admin/expedicoes" })}>Cancelar</button>
-            <button className="admin-btn-primary px-8 py-3" onClick={() => saveMut.mutate(form)} disabled={saveMut.isPending}>
-              <Save className="h-5 w-5 mr-2" /> Salvar Tudo
-            </button>
+        {/* Barra de Ação Fixa mais amigável */}
+        <div className="fixed bottom-0 left-0 right-0 lg:left-[280px] bg-carvao/90 backdrop-blur-md border-t border-[color:var(--admin-borda)] p-4 sm:p-6 z-40 shadow-2xl">
+          <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
+            <div className="hidden sm:flex items-center gap-4">
+              <div className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+              <span className="text-xs text-[color:var(--admin-cinza-3)] uppercase tracking-widest font-medium">Alterações pendentes</span>
+            </div>
+            <div className="flex flex-1 sm:flex-initial gap-3">
+              <button className="flex-1 sm:flex-initial admin-btn-ghost py-3" onClick={() => nav({ to: "/admin/expedicoes" })}>Cancelar</button>
+              <button className="flex-1 sm:flex-initial admin-btn-primary px-10 py-3 shadow-[0_0_20px_rgba(212,175,55,0.2)]" onClick={() => saveMut.mutate(form)} disabled={saveMut.isPending}>
+                <Save className="h-5 w-5 mr-2" /> Salvar Tudo
+              </button>
+            </div>
           </div>
         </div>
       </div>
