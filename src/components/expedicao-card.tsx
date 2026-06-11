@@ -52,7 +52,7 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
               {regiao}
             </div>
           )}
-          <h3 className="mt-1.5 font-display text-[1.35rem] sm:text-2xl lg:text-[1.7rem] text-balance leading-[1.1] text-areia">
+          <h3 className="mt-1.5 font-display text-[1.2rem] sm:text-2xl lg:text-[1.7rem] text-balance leading-[1.1] text-areia">
             {nome}
           </h3>
           <p className="mt-2 hidden text-[0.82rem] leading-relaxed text-areia/90 line-clamp-2 text-pretty sm:block min-h-[2.5rem]">

@@ -29,14 +29,14 @@ export function DataCard({ data, variant = "link" }: { data: DataExpedicao; vari
 
   return (
     <div className="group relative flex flex-col gap-4 rounded-sm border border-border bg-card p-5 transition-colors hover:border-cobre/50 md:flex-row md:items-center md:gap-8 md:p-6">
-      <div className="flex items-center gap-5 md:w-48">
-        <div className="flex h-16 w-16 flex-col items-center justify-center rounded-sm border border-cobre/30 bg-floresta-deep text-areia md:h-20 md:w-20">
-          <span className="font-display text-2xl leading-none md:text-3xl">{inicio.day}</span>
-          <span className="mt-1 font-eyebrow text-[0.6rem] tracking-[0.22em] text-cobre-soft">{inicio.month}</span>
+      <div className="flex items-center gap-4 sm:gap-5 md:w-48">
+        <div className="flex h-14 w-14 sm:h-16 sm:w-16 flex-col items-center justify-center rounded-sm border border-cobre/30 bg-floresta-deep text-areia md:h-20 md:w-20">
+          <span className="font-display text-xl sm:text-2xl leading-none md:text-3xl">{inicio.day}</span>
+          <span className="mt-0.5 sm:mt-1 font-eyebrow text-[0.55rem] sm:text-[0.6rem] tracking-[0.22em] text-cobre-soft">{inicio.month}</span>
         </div>
-        <div className="md:hidden">
-          <div className="font-eyebrow text-[0.7rem] uppercase tracking-[0.22em] text-cobre">{data.expedicao_nome}</div>
-          <div className="mt-1 font-sans text-lg leading-tight text-foreground font-light">{formatDateRange(data.data_inicio, data.data_fim)}</div>
+        <div className="md:hidden overflow-hidden">
+          <div className="truncate font-eyebrow text-[0.65rem] sm:text-[0.7rem] uppercase tracking-[0.18em] sm:tracking-[0.22em] text-cobre">{data.expedicao_nome}</div>
+          <div className="mt-1 truncate font-sans text-base sm:text-lg leading-tight text-foreground font-light">{formatDateRange(data.data_inicio, data.data_fim)}</div>
         </div>
       </div>
 
