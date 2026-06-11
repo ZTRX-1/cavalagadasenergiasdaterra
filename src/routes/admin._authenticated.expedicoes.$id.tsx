@@ -53,7 +53,10 @@ function ExpedicaoEdit() {
   const { data: assets = [] } = useQuery({ queryKey: ["admin", "assets", id], queryFn: () => listAssets(id), enabled: !!exp });
   const { data: datas = [] } = useQuery({ queryKey: ["admin", "datas", id], queryFn: () => listDatas(id), enabled: !!exp });
 
+  const [form, setForm] = useState<Partial<ExpedicaoRow> | null>(null);
   const [activeSection, setActiveSection] = useState("hero");
+
+  useEffect(() => { if (exp) setForm(exp); }, [exp]);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -63,7 +66,7 @@ function ExpedicaoEdit() {
     }, { rootMargin: "-20% 0px -70% 0px" });
     document.querySelectorAll("section[id]").forEach(s => observer.observe(s));
     return () => observer.disconnect();
-  }, []);
+  }, [form]);
 
   const saveMut = useMutation({
     mutationFn: (patch: Partial<ExpedicaoRow>) => updateExpedicao(id, patch),
