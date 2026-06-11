@@ -167,7 +167,7 @@ function ExpedicoesPage() {
                             <img
                               src={capa}
                               alt=""
-                              className="h-11 w-16 rounded-md object-cover ring-1 ring-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo)]"
+                              className="h-10 w-10 rounded-md object-cover ring-1 ring-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo)]"
                               onError={(ev) => {
                                 const img = ev.currentTarget;
                                 img.style.display = "none";
@@ -177,7 +177,7 @@ function ExpedicoesPage() {
                           ) : null;
                         })()}
                         <div
-                          className={`${(e as ExpedicaoRow & { _capa?: string | null })._capa || getExpedicaoImage(e.slug) ? "hidden " : ""}h-11 w-16 rounded-md ring-1 ring-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo)] grid place-items-center text-[color:var(--admin-cinza-3)]`}
+                          className={`${(e as ExpedicaoRow & { _capa?: string | null })._capa || getExpedicaoImage(e.slug) ? "hidden " : ""}h-10 w-10 rounded-md ring-1 ring-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo)] grid place-items-center text-[color:var(--admin-cinza-3)]`}
                           title="Sem capa — envie uma imagem na aba Mídia"
                         >
                           <ImageOff className="h-4 w-4" />
