@@ -379,8 +379,18 @@ function ExpedicaoEdit() {
               <AdminField label="Descrição completa" previewTarget="descricao" ondeAparece="Bloco 'Sobre a expedição'" hint="Aparece logo abaixo do hero.">
                 <textarea className="admin-input min-h-[180px]" value={form.descricao_longa ?? ""} onChange={(e) => setF({ descricao_longa: e.target.value })} />
               </AdminField>
+              <AdminField label="A Experiência (Campo Opcional)" previewTarget="descricao" ondeAparece="Bloco de texto destacado no final da página" hint="Use para narrativas históricas ou detalhes imersivos.">
+                <textarea className="admin-input min-h-[140px]" value={form.observacoes ?? ""} onChange={(e) => setF({ observacoes: e.target.value ?? null })} />
+              </AdminField>
               <AdminField label="Observações internas" hint="Só visível para a equipe — não aparece no site.">
-                <textarea className="admin-input min-h-[60px]" value={form.observacoes ?? ""} onChange={(e) => setF({ observacoes: e.target.value ?? null })} />
+                <textarea className="admin-input min-h-[60px]" value={form.politicas && Array.isArray(form.politicas) ? JSON.stringify(form.politicas) : ""} onChange={(e) => {
+                  try {
+                    const val = e.target.value ? JSON.parse(e.target.value) : [];
+                    setF({ politicas: val });
+                  } catch {
+                    // fallback to string if not JSON
+                  }
+                }} placeholder="Uso interno da equipe..." />
               </AdminField>
             </AdminSection>
           </div>
