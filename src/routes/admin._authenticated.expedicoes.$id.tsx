@@ -310,18 +310,28 @@ function ExpedicaoEdit() {
           </div>
         </GuidedSection>
 
-        <GuidedSection id="publicacao" titulo="9. SEO e Publicação" explicacao="Controle de visibilidade e indexação.">
-          <div className="grid md:grid-cols-2 gap-6">
+        <GuidedSection id="publicacao" titulo="9. Visibilidade e Preços" explicacao="Controle como a expedição aparece para os clientes.">
+          <div className="grid md:grid-cols-2 gap-8">
             <AdminField label="Status da expedição" ondeAparece="Visibilidade no site">
               <select className="admin-input" value={form.status ?? "rascunho"} onChange={(e) => setF({ status: e.target.value as any })}>
-                <option value="rascunho">Rascunho</option>
-                <option value="publicado">Publicado</option>
-                <option value="pausado">Pausado</option>
+                <option value="rascunho">Rascunho (Privado)</option>
+                <option value="publicado">Publicado (Visível)</option>
+                <option value="pausado">Pausado (Sem reservas)</option>
                 <option value="arquivado">Arquivado</option>
               </select>
             </AdminField>
-            <AdminField label="Slug (URL)" ondeAparece="Link do navegador">
-              <input className="admin-input font-mono" value={form.slug ?? ""} onChange={(e) => setF({ slug: slugify(e.target.value) })} />
+            
+            <AdminField label="Expor preço no site?" ondeAparece="Página da expedição" hint="Se ativado, o valor real será mostrado. Se desativado, aparecerá a 'Mensagem pública de valor'.">
+              <div className="flex items-center gap-3 p-3 rounded-lg border border-[color:var(--admin-borda)] bg-white/5">
+                <input 
+                  type="checkbox" 
+                  id="show_price"
+                  className="h-5 w-5 accent-[color:var(--admin-dourado)]"
+                  checked={form.ativo === true} 
+                  onChange={(e) => setF({ ativo: e.target.checked })} 
+                />
+                <label htmlFor="show_price" className="text-sm font-medium cursor-pointer">Mostrar preço real para o público</label>
+              </div>
             </AdminField>
           </div>
         </GuidedSection>
