@@ -6,8 +6,8 @@ const LANGS = [
   { code: "en", icon: "/uploads/en.png" },
   { code: "es", icon: "/uploads/es.png" },
 ] as const;
+
 type LangCode = (typeof LANGS)[number]["code"];
-type Lang = (typeof LANGS)[number];
 
 interface Props {
   className?: string;
@@ -16,10 +16,10 @@ interface Props {
 
 export function LanguageSwitcher({ className, align = "header" }: Props) {
   const { i18n } = useTranslation();
-  const current = (LANGS.includes(i18n.language as Lang) ? i18n.language : "pt") as Lang;
+  const current = (LANGS.some(l => l.code === i18n.language) ? i18n.language : "pt") as LangCode;
 
-  const change = (lng: Lang) => {
-    if (lng !== current) i18n.changeLanguage(lng);
+  const change = (code: LangCode) => {
+    if (code !== current) i18n.changeLanguage(code);
   };
 
   return (
