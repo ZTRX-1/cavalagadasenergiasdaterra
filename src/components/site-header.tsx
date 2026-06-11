@@ -81,7 +81,7 @@ export function SiteHeader() {
           </nav>
 
           <div className="flex shrink-0 items-center gap-3 sm:gap-4 xl:gap-5">
-            <LanguageSwitcher className="hidden sm:inline-flex" />
+            <LanguageSwitcher className="hidden lg:inline-flex" />
             <Link
               to="/expedicoes"
               className="hidden rounded-full bg-cobre px-5 py-[0.6rem] font-eyebrow text-[0.6rem] uppercase tracking-[0.22em] text-areia shadow-elegant transition-all hover:bg-couro hover:shadow-[0_18px_40px_-15px_rgba(0,0,0,0.55)] lg:inline-flex xl:px-7 xl:py-[0.7rem] xl:text-[0.68rem] xl:tracking-[0.28em] whitespace-nowrap 2xl:px-8 2xl:py-[0.78rem] 2xl:text-[0.72rem]"
