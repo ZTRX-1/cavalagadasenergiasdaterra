@@ -325,6 +325,10 @@ function ExpedicaoEdit() {
               <input className="admin-input" value={form.pais ?? ""} onChange={(e) => setF({ pais: e.target.value })} placeholder="Ex: Brasil" />
             </AdminField>
             
+            <AdminField label="Vídeo da Experiência" ondeAparece="Seção Vídeo" hint="Link do YouTube ou Vimeo">
+              <input className="admin-input" value={form.video_url ?? ""} onChange={(e) => setF({ video_url: e.target.value })} placeholder="https://youtube.com/..." />
+            </AdminField>
+            
             <AdminField label="Selo da Marca" ondeAparece="Card e Topo">
               <select className="admin-input" value={form.marca ?? "cavalgadas"} onChange={(e) => setF({ marca: e.target.value })}>
                 <option value="cavalgadas">Cavalgadas</option>
