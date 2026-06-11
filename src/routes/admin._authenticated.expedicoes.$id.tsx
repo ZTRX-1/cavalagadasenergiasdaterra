@@ -342,18 +342,19 @@ function ExpedicaoEdit() {
         </GuidedSection>
         
         {/* Barra de Ação Fixa mais amigável */}
-        <div className="fixed bottom-0 left-0 right-0 lg:left-0 bg-carvao/95 backdrop-blur-xl border-t border-[color:var(--admin-borda)] p-4 sm:p-5 z-40 shadow-[0_-10px_40px_rgba(0,0,0,0.4)]">
-          <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
+        <div className="fixed bottom-0 left-0 right-0 lg:left-0 bg-carvao/95 backdrop-blur-xl border-t border-[color:var(--admin-borda)] p-4 sm:p-5 z-40 shadow-[0_-10px_40px_rgba(0,0,0,0.4)] transition-all duration-300">
+          <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="hidden sm:flex flex-col">
               <div className="flex items-center gap-2">
                 <div className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
                 <span className="text-[10px] text-[color:var(--admin-cinza-3)] uppercase tracking-widest font-bold">Alterações pendentes</span>
               </div>
-              <span className="text-xs text-[color:var(--admin-cinza-1)] font-display mt-0.5">{form.nome || "Expedição"}</span>
+              <span className="text-xs text-[color:var(--admin-cinza-1)] font-display mt-0.5 truncate max-w-[200px]">{form.nome || "Expedição"}</span>
             </div>
-            <div className="flex flex-1 sm:flex-initial gap-3">
+            
+            <div className="flex w-full sm:w-auto gap-3">
               <button className="flex-1 sm:flex-initial admin-btn-ghost py-3 px-6 text-[10px] sm:text-xs uppercase tracking-widest" onClick={() => nav({ to: "/admin/expedicoes" })}>Cancelar</button>
-              <button className="flex-1 sm:flex-initial admin-btn-primary px-12 py-3 shadow-[0_0_30px_rgba(212,175,55,0.15)] text-[10px] sm:text-xs uppercase tracking-widest font-bold" onClick={() => saveMut.mutate(form)} disabled={saveMut.isPending}>
+              <button className="flex-[2] sm:flex-initial admin-btn-primary px-12 py-3 shadow-[0_0_30px_rgba(212,175,55,0.15)] text-[10px] sm:text-xs uppercase tracking-widest font-bold" onClick={() => saveMut.mutate(form)} disabled={saveMut.isPending}>
                 <Save className="h-4 w-4 mr-2" /> Salvar Tudo
               </button>
             </div>
