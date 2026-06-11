@@ -36,7 +36,7 @@ function ExpedicoesCatalog() {
       <div className="container-tight">
         <div className="max-w-3xl">
           <div className="eyebrow">{t("expedicoes.catalogoEyebrow")}</div>
-          <h1 className="mt-4 font-display text-5xl text-balance md:text-7xl">{t("expedicoes.catalogoTitle")}</h1>
+          <h1 className="mt-4 font-display text-[2.2rem] xs:text-5xl text-balance leading-tight md:text-7xl">{t("expedicoes.catalogoTitle")}</h1>
           <p className="mt-6 max-w-xl text-lg text-muted-foreground text-pretty">
             {t("expedicoes.catalogoIntro")}
           </p>
