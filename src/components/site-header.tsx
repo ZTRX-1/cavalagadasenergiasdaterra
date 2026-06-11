@@ -80,8 +80,8 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <div className="flex shrink-0 items-center gap-3 sm:gap-4 xl:gap-5">
-            <LanguageSwitcher className="hidden sm:inline-flex lg:hidden" />
+          <div className="flex shrink-0 items-center gap-2.5 sm:gap-4 xl:gap-5">
+            <LanguageSwitcher className="hidden sm:inline-flex lg:hidden scale-90 sm:scale-100" />
             <LanguageSwitcher className="hidden lg:inline-flex" />
             <Link
               to="/expedicoes"
