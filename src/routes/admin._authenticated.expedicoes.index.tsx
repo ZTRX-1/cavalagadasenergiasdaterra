@@ -164,16 +164,19 @@ function ExpedicoesPage() {
                         {(() => {
                           const capa = (e as ExpedicaoRow & { _capa?: string | null })._capa || getExpedicaoImage(e.slug);
                           return capa ? (
-                            <img
-                              src={capa}
-                              alt=""
-                              className="h-10 w-16 rounded-md object-cover ring-1 ring-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo)]"
-                              onError={(ev) => {
-                                const img = ev.currentTarget;
-                                img.style.display = "none";
-                                img.nextElementSibling?.classList.remove("hidden");
-                              }}
-                            />
+                            <div className="h-10 w-16 shrink-0 overflow-hidden rounded-md ring-1 ring-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo)]">
+                              <img
+                                src={capa}
+                                alt=""
+                                className="h-full w-full object-cover"
+                                onError={(ev) => {
+                                  const img = ev.currentTarget;
+                                  img.style.display = "none";
+                                  const placeholder = img.parentElement?.nextElementSibling;
+                                  if (placeholder) placeholder.classList.remove("hidden");
+                                }}
+                              />
+                            </div>
                           ) : null;
                         })()}
                         <div
