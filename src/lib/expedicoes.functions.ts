@@ -6,7 +6,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import {
   type DataExpedicao,
-  type Expedicao,
   listExpedicoes as listExpedicoesStatic,
   listProximasDatas as listProximasDatasStatic,
   getExpedicaoBySlug as getExpedicaoBySlugStatic,
@@ -50,6 +49,35 @@ export interface ExpedicaoAssetLite {
   titulo: string | null;
   ordem: number;
   is_capa: boolean;
+}
+
+export interface Expedicao {
+  id: string;
+  slug: string;
+  nome: string;
+  descricao_curta: string;
+  descricao_longa: string;
+  duracao: string;
+  nivel: string;
+  preco: number;
+  moeda: string;
+  mensagem_comercial_publica: string | null | undefined;
+  como_chegar_distancias: string | null;
+  marca: string;
+  pais: string;
+  regiao: string | null;
+  imagem_url: string | null;
+  galeria: string[];
+  inclui: string[];
+  requisitos: string[];
+  roteiro: { dia: string; titulo: string; desc: string }[];
+  como_chegar_titulo: string | null;
+  como_chegar_conteudo: string | null;
+  como_chegar_aeroporto: string | null;
+  como_chegar_referencia: string | null;
+  como_chegar_observacoes: string | null;
+  observacoes: string | null;
+  ativo?: boolean;
 }
 
 function normalizeExpedicao(row: Record<string, unknown>): Expedicao {
@@ -114,7 +142,7 @@ export async function listExpedicoes(): Promise<Expedicao[]> {
       .order("created_at", { ascending: false });
     if (error) throw error;
     if (!data || data.length === 0) return listExpedicoesStatic();
-    return data.map((row) => normalizeExpedicao(row as Record<string, unknown>));
+    return data.map((row) => normalizeExpedicao(row as Record<string, unknown>)) as Expedicao[];
   } catch {
     return listExpedicoesStatic();
   }
@@ -146,7 +174,7 @@ export async function getExpedicaoBySlug(
         .order("ordem", { ascending: true }),
     ]);
     return {
-      expedicao: norm,
+      expedicao: norm as Expedicao,
       datas: (datasRes.data ?? []).map((d) =>
         normalizeData(d as Record<string, unknown>, { nome: norm.nome, slug: norm.slug, moeda: norm.moeda }),
       ),
