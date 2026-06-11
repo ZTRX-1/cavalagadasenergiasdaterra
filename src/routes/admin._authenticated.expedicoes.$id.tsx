@@ -64,10 +64,21 @@ function ExpedicaoEdit() {
       entries.forEach(e => {
         if (e.isIntersecting) setActiveSection(e.target.id);
       });
-    }, { rootMargin: "-20% 0px -70% 0px" });
-    document.querySelectorAll("section[id]").forEach(s => observer.observe(s));
-    return () => observer.disconnect();
-  }, [form]);
+    }, { 
+      rootMargin: "-10% 0px -60% 0px",
+      threshold: 0.1
+    });
+    
+    // Pequeno delay para garantir que o DOM renderizou
+    const timer = setTimeout(() => {
+      document.querySelectorAll("section[id]").forEach(s => observer.observe(s));
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+    };
+  }, [form, assets, datas]);
 
   const saveMut = useMutation({
     mutationFn: (patch: Partial<ExpedicaoRow>) => updateExpedicao(id, patch),
