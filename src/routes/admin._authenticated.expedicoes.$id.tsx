@@ -30,8 +30,8 @@ import {
 } from "@/lib/admin/api";
 
 // Helpers for date/money (from existing file logic)
-function isoToBrDate(iso: string | null) { if (!iso) return ""; const [y, m, d] = iso.split("-"); return `${d}/${m}/${y}`; }
-function brToIsoDate(br: string) { if (!br) return ""; const [d, m, y] = br.split("/"); return `${y}-${m}-${d}`; }
+function isoToBrDate(iso: string | null) { if (!iso) return ""; const parts = iso.split("-"); if (parts.length !== 3) return iso; return `${parts[2]}/${parts[1]}/${parts[0]}`; }
+function brToIsoDate(br: string) { if (!br) return ""; const parts = br.split("/"); if (parts.length !== 3) return br; return `${parts[2]}-${parts[1]}-${parts[0]}`; }
 function formatBrDateInput(val: string) {
   const digits = val.replace(/\D/g, "");
   if (digits.length <= 2) return digits;
@@ -90,36 +90,47 @@ function ExpedicaoEdit() {
   if (!form) return <div className="admin-card h-40 animate-pulse" />;
 
   return (
-    <div className="grid lg:grid-cols-[280px_1fr] gap-8 pb-24">
-      <nav className="sticky top-24 hidden lg:block space-y-1 h-fit">
+    <div className="flex flex-col gap-8 pb-24 max-w-5xl mx-auto">
+      {/* Header Mobile & Desktop simplificado */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-4 sm:px-0">
+        <button onClick={() => nav({ to: "/admin/expedicoes" })} className="admin-btn-ghost w-fit">
+          <ArrowLeft className="h-4 w-4 mr-2" /> Voltar
+        </button>
+        <div className="flex items-center gap-3">
+          <StatusBadge status={form.status ?? "rascunho"} className="scale-110" />
+          {form.slug && (
+            <a href={`/expedicoes/${form.slug}`} target="_blank" rel="noreferrer" className="admin-btn-ghost text-xs">
+              <ExternalLink className="h-3 w-3 mr-1.5" /> Ver no site
+            </a>
+          )}
+        </div>
+      </div>
+
+      {/* Menu Rápido Flutuante (Horizontal em telas menores, Lateral em maiores) */}
+      <nav className="sticky top-16 sm:top-20 z-30 bg-carvao/95 backdrop-blur-md border-y sm:border border-[color:var(--admin-borda)] sm:rounded-full px-2 py-1 flex items-center justify-start sm:justify-center gap-1 overflow-x-auto no-scrollbar shadow-xl">
         {[
-          { id: "hero", label: "1. Hero" },
-          { id: "imagens", label: "2. Experiência" },
-          { id: "sobre", label: "3. Sobre" },
-          { id: "cards", label: "4. Cards laterais" },
-          { id: "roteiro", label: "5. Roteiro" },
-          { id: "info", label: "6. Informações" },
-          { id: "logistica", label: "7. Logística" },
-          { id: "datas", label: "8. Próximas datas" },
-          { id: "publicacao", label: "9. SEO e Publicação" },
+          { id: "hero", label: "Hero" },
+          { id: "imagens", label: "Fotos" },
+          { id: "sobre", label: "Texto" },
+          { id: "cards", label: "Cards" },
+          { id: "roteiro", label: "Roteiro" },
+          { id: "info", label: "Info" },
+          { id: "logistica", label: "Logística" },
+          { id: "datas", label: "Datas" },
+          { id: "publicacao", label: "Publicar" },
         ].map((item) => (
-          <a
+          <button
             key={item.id}
-            href={`#${item.id}`}
-            onClick={(e) => {
-              e.preventDefault();
-              document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth" });
-              setActiveSection(item.id);
-            }}
+            onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth", block: "start" })}
             className={cn(
-              "block px-4 py-2 text-xs uppercase tracking-[0.1em] transition-colors border-l-2",
+              "whitespace-nowrap px-4 py-2 text-[10px] sm:text-xs uppercase tracking-widest transition-all rounded-full",
               activeSection === item.id 
-                ? "border-[color:var(--admin-dourado)] text-[color:var(--admin-dourado-glow)] bg-[color:var(--admin-dourado)]/10" 
-                : "border-transparent text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-dourado-glow)]"
+                ? "bg-[color:var(--admin-dourado)] text-[color:var(--admin-carvao-deep)] font-bold" 
+                : "text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-cinza-1)]"
             )}
           >
             {item.label}
-          </a>
+          </button>
         ))}
       </nav>
 
@@ -299,32 +310,83 @@ function ExpedicaoEdit() {
           </div>
         </GuidedSection>
 
-        <GuidedSection id="publicacao" titulo="9. SEO e Publicação" explicacao="Controle de visibilidade e indexação.">
-          <div className="grid md:grid-cols-2 gap-6">
+        <GuidedSection id="publicacao" titulo="9. Visibilidade e Exposição" explicacao="Controle como a expedição aparece para os clientes.">
+          <div className="grid md:grid-cols-2 gap-8">
             <AdminField label="Status da expedição" ondeAparece="Visibilidade no site">
               <select className="admin-input" value={form.status ?? "rascunho"} onChange={(e) => setF({ status: e.target.value as any })}>
-                <option value="rascunho">Rascunho</option>
-                <option value="publicado">Publicado</option>
-                <option value="pausado">Pausado</option>
-                <option value="arquivado">Arquivado</option>
+                <option value="rascunho">Rascunho (Oculto)</option>
+                <option value="publicado">Publicado (Visível)</option>
+                <option value="pausado">Pausado (Visível, sem reserva)</option>
+                <option value="arquivado">Arquivado (Oculto)</option>
               </select>
             </AdminField>
-            <AdminField label="Slug (URL)" ondeAparece="Link do navegador">
-              <input className="admin-input font-mono" value={form.slug ?? ""} onChange={(e) => setF({ slug: slugify(e.target.value) })} />
+            
+            <AdminField label="País/Região" ondeAparece="Card e Listagem">
+              <input className="admin-input" value={form.pais ?? ""} onChange={(e) => setF({ pais: e.target.value })} placeholder="Ex: Brasil" />
+            </AdminField>
+            
+            <AdminField label="Cidade/Estado" ondeAparece="Card e Listagem">
+              <div className="grid grid-cols-2 gap-3">
+                <input className="admin-input" value={form.cidade ?? ""} onChange={(e) => setF({ cidade: e.target.value })} placeholder="Cidade" />
+                <input className="admin-input" value={form.estado ?? ""} onChange={(e) => setF({ estado: e.target.value })} placeholder="Estado" />
+              </div>
+            </AdminField>
+            
+            <AdminField label="Vídeo da Experiência" ondeAparece="Seção Vídeo" hint="Link do YouTube ou Vimeo">
+              <input className="admin-input" value={form.video_url ?? ""} onChange={(e) => setF({ video_url: e.target.value })} placeholder="https://youtube.com/..." />
+            </AdminField>
+            
+            <AdminField label="Selo da Marca" ondeAparece="Card e Topo">
+              <select className="admin-input" value={form.marca ?? "cavalgadas"} onChange={(e) => setF({ marca: e.target.value })}>
+                <option value="cavalgadas">Cavalgadas</option>
+                <option value="canastra-a-cavalo">Canastra a Cavalo</option>
+                <option value="elas-na-sela">Elas na Sela</option>
+              </select>
+            </AdminField>
+            
+            <AdminField label="Exposição de Preço" ondeAparece="Página da expedição" hint="Se ativado, o valor real será mostrado. Se desativado, aparecerá a 'Mensagem pública de valor'.">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 hover:border-[color:var(--admin-dourado)]/50 transition-colors cursor-pointer group" onClick={() => setF({ ativo: !form.ativo })}>
+                <div className="flex items-center gap-3">
+                  <div className={cn(
+                    "flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 ease-in-out ring-2 ring-transparent",
+                    form.ativo ? "bg-[color:var(--admin-dourado)]" : "bg-zinc-700"
+                  )}>
+                    <div className={cn(
+                      "pointer-events-none h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
+                      form.ativo ? "translate-x-6" : "translate-x-1"
+                    )} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-[color:var(--admin-cinza-1)] group-hover:text-[color:var(--admin-dourado-glow)] transition-colors">Expor valor real no site</span>
+                    <span className="text-[10px] text-[color:var(--admin-cinza-3)] uppercase tracking-wider">{form.ativo ? "Público verá o preço" : "Preço ficará oculto"}</span>
+                  </div>
+                </div>
+              </div>
+            </AdminField>
+            
+            <AdminField label="URL Amigável (Slug)" ondeAparece="Endereço da página" hint="Atenção: alterar isso mudará o link da página no site.">
+              <input className="admin-input font-mono text-xs" value={form.slug ?? ""} onChange={(e) => setF({ slug: slugify(e.target.value) })} placeholder="ex-serra-da-canastra" />
             </AdminField>
           </div>
         </GuidedSection>
         
-        <div className="flex items-center justify-between p-6 admin-card sticky bottom-6 z-20 shadow-2xl border-[color:var(--admin-dourado)]/30">
-          <div className="flex items-center gap-4">
-            <StatusBadge status={form.status ?? "rascunho"} className="scale-110" />
-            <span className="text-sm text-[color:var(--admin-cinza-3)] italic">Alterações não salvas</span>
-          </div>
-          <div className="flex gap-3">
-            <button className="admin-btn-ghost" onClick={() => nav({ to: "/admin/expedicoes" })}>Cancelar</button>
-            <button className="admin-btn-primary px-8 py-3" onClick={() => saveMut.mutate(form)} disabled={saveMut.isPending}>
-              <Save className="h-5 w-5 mr-2" /> Salvar Tudo
-            </button>
+        {/* Barra de Ação Fixa mais amigável */}
+        <div className="fixed bottom-0 left-0 right-0 lg:left-0 bg-carvao/95 backdrop-blur-xl border-t border-[color:var(--admin-borda)] p-4 sm:p-5 z-40 shadow-[0_-10px_40px_rgba(0,0,0,0.4)] transition-all duration-300">
+          <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="hidden sm:flex flex-col">
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                <span className="text-[10px] text-[color:var(--admin-cinza-3)] uppercase tracking-widest font-bold">Alterações pendentes</span>
+              </div>
+              <span className="text-xs text-[color:var(--admin-cinza-1)] font-display mt-0.5 truncate max-w-[200px]">{form.nome || "Expedição"}</span>
+            </div>
+            
+            <div className="flex w-full sm:w-auto gap-3">
+              <button className="flex-1 sm:flex-initial admin-btn-ghost py-3 px-6 text-[10px] sm:text-xs uppercase tracking-widest" onClick={() => nav({ to: "/admin/expedicoes" })}>Cancelar</button>
+              <button className="flex-[2] sm:flex-initial admin-btn-primary px-12 py-3 shadow-[0_0_30px_rgba(212,175,55,0.15)] text-[10px] sm:text-xs uppercase tracking-widest font-bold" onClick={() => saveMut.mutate(form)} disabled={saveMut.isPending}>
+                <Save className="h-4 w-4 mr-2" /> Salvar Tudo
+              </button>
+            </div>
           </div>
         </div>
       </div>

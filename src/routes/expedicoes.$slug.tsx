@@ -92,7 +92,7 @@ function DetalhesExpedicao() {
             <span className="h-1 w-1 rounded-full bg-cobre" />
             <span>{expedicao.nivel}</span>
             <span className="h-1 w-1 rounded-full bg-cobre" />
-            <span>{expedicao.mensagem_comercial_publica || t("expedicoes.consulteValores")}</span>
+            <span>{expedicao.ativo ? (new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(expedicao.preco)) : (expedicao.mensagem_comercial_publica || t("expedicoes.consulteValores"))}</span>
           </div>
           <h1 className="mt-5 max-w-3xl font-display text-[1.8rem] xs:text-4xl leading-tight sm:text-5xl md:text-7xl">{expedicao.nome}</h1>
           <p className="mt-5 max-w-2xl text-lg text-areia/85 text-pretty">{expedicao.descricao_curta}</p>

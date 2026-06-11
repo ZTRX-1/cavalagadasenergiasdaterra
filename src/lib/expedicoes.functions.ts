@@ -1,19 +1,21 @@
 /**
  * Camada pública de leitura de expedições.
- * Lê do banco (tabela `expedicoes` + `datas`) e cai para o arquivo estático
- * em caso de falha (offline / build sem DB).
  */
 import { supabase } from "@/integrations/supabase/client";
 import {
-  type DataExpedicao,
-  type Expedicao,
+  type DataExpedicao as DataExpStatic,
+  type Expedicao as ExpStatic,
   listExpedicoes as listExpedicoesStatic,
   listProximasDatas as listProximasDatasStatic,
   getExpedicaoBySlug as getExpedicaoBySlugStatic,
 } from "@/lib/expedicoes-static";
 import { getCanonicalExpedicaoSlug } from "@/lib/expedicao-slugs";
 
-export type { DataExpedicao, Expedicao };
+// Re-export static types or define local ones if they differ
+export type DataExpedicao = DataExpStatic;
+export interface Expedicao extends ExpStatic {
+  ativo?: boolean;
+}
 
 export interface ExpedicaoAssetLite {
   url: string;
@@ -52,9 +54,9 @@ function normalizeExpedicao(row: Record<string, unknown>): Expedicao {
     como_chegar_referencia: (row.como_chegar_referencia as string | null) ?? null,
     como_chegar_observacoes: (row.como_chegar_observacoes as string | null) ?? null,
     observacoes: (row.observacoes as string | null) ?? null,
+    ativo: (row.ativo as boolean) ?? false,
   };
 }
-
 
 function normalizeData(row: Record<string, unknown>, exp?: { nome: string; slug: string; moeda?: string }): DataExpedicao {
   return {
@@ -79,15 +81,14 @@ export async function listExpedicoes(): Promise<Expedicao[]> {
     const { data, error } = await supabase
       .from("expedicoes")
       .select("*")
-      .eq("ativo", true)
       .eq("status", "publicado")
       .order("ordem", { ascending: true })
       .order("created_at", { ascending: false });
     if (error) throw error;
-    if (!data || data.length === 0) return listExpedicoesStatic();
+    if (!data || data.length === 0) return (await listExpedicoesStatic()) as Expedicao[];
     return data.map((row) => normalizeExpedicao(row as Record<string, unknown>));
   } catch {
-    return listExpedicoesStatic();
+    return (await listExpedicoesStatic()) as Expedicao[];
   }
 }
 
@@ -100,13 +101,12 @@ export async function getExpedicaoBySlug(
       .from("expedicoes")
       .select("*")
       .eq("slug", canonicalSlug)
-      .eq("ativo", true)
       .eq("status", "publicado")
       .maybeSingle();
     if (error) throw error;
     if (!exp) {
       const fallback = await getExpedicaoBySlugStatic(input);
-      return fallback ? { ...fallback, assets: [], capa_url: null } : null;
+      return fallback ? { ...fallback, assets: [], capa_url: null } as any : null;
     }
     const norm = normalizeExpedicao(exp as Record<string, unknown>);
     const [datasRes, assetsRes] = await Promise.all([
@@ -127,7 +127,7 @@ export async function getExpedicaoBySlug(
     };
   } catch {
     const fallback = await getExpedicaoBySlugStatic(input);
-    return fallback ? { ...fallback, assets: [], capa_url: null } : null;
+    return fallback ? { ...fallback, assets: [], capa_url: null } as any : null;
   }
 }
 
@@ -141,8 +141,8 @@ export async function listProximasDatas(): Promise<DataExpedicao[]> {
     if (!data || data.length === 0) return listProximasDatasStatic();
     return data
       .filter((row) => {
-        const exp = (row as { expedicoes?: { ativo: boolean; status: string } | null }).expedicoes;
-        return exp?.ativo && exp.status === "publicado";
+        const exp = (row as { expedicoes?: { status: string } | null }).expedicoes;
+        return exp?.status === "publicado";
       })
       .map((row) => {
         const exp = (row as { expedicoes?: { nome: string; slug: string; moeda?: string } | null }).expedicoes ?? undefined;
