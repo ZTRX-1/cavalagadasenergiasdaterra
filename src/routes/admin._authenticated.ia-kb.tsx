@@ -121,17 +121,17 @@ function KBPage() {
   const save = useMutation({
     mutationFn: async (it: Partial<KBItem>) => {
       const payload = {
-        titulo: it.titulo,
-        conteudo: it.conteudo,
+        titulo: it.titulo ?? "",
+        conteudo: it.conteudo ?? "",
         categoria: it.categoria || null,
         subcategoria: it.subcategoria || null,
         tags: it.tags ?? [],
-        tipo: it.tipo,
-        prioridade: it.prioridade,
-        idioma: it.idioma,
-        escopo: it.escopo,
-        expedicao_id: it.escopo === "global" ? null : it.expedicao_id,
-        data_id: it.escopo === "data" ? it.data_id : null,
+        tipo: (it.tipo ?? "faq") as Tipo,
+        prioridade: (it.prioridade ?? "media") as Prioridade,
+        idioma: it.idioma ?? "pt-BR",
+        escopo: (it.escopo ?? "global") as Escopo,
+        expedicao_id: it.escopo === "global" ? null : (it.expedicao_id ?? null),
+        data_id: it.escopo === "data" ? (it.data_id ?? null) : null,
         ativo: it.ativo ?? true,
       };
       if (it.id) {

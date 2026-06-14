@@ -34,6 +34,7 @@ import { Route as AdminAuthenticatedParticipantesRouteImport } from './routes/ad
 import { Route as AdminAuthenticatedMidiaRouteImport } from './routes/admin._authenticated.midia'
 import { Route as AdminAuthenticatedLeadsRouteImport } from './routes/admin._authenticated.leads'
 import { Route as AdminAuthenticatedIntegracoesRouteImport } from './routes/admin._authenticated.integracoes'
+import { Route as AdminAuthenticatedIaKbRouteImport } from './routes/admin._authenticated.ia-kb'
 import { Route as AdminAuthenticatedIaRouteImport } from './routes/admin._authenticated.ia'
 import { Route as AdminAuthenticatedHistoricoRouteImport } from './routes/admin._authenticated.historico'
 import { Route as AdminAuthenticatedFinanceiroRouteImport } from './routes/admin._authenticated.financeiro'
@@ -181,6 +182,11 @@ const AdminAuthenticatedIntegracoesRoute =
     path: '/integracoes',
     getParentRoute: () => AdminAuthenticatedRoute,
   } as any)
+const AdminAuthenticatedIaKbRoute = AdminAuthenticatedIaKbRouteImport.update({
+  id: '/ia-kb',
+  path: '/ia-kb',
+  getParentRoute: () => AdminAuthenticatedRoute,
+} as any)
 const AdminAuthenticatedIaRoute = AdminAuthenticatedIaRouteImport.update({
   id: '/ia',
   path: '/ia',
@@ -303,6 +309,7 @@ export interface FileRoutesByFullPath {
   '/admin/financeiro': typeof AdminAuthenticatedFinanceiroRoute
   '/admin/historico': typeof AdminAuthenticatedHistoricoRoute
   '/admin/ia': typeof AdminAuthenticatedIaRoute
+  '/admin/ia-kb': typeof AdminAuthenticatedIaKbRoute
   '/admin/integracoes': typeof AdminAuthenticatedIntegracoesRoute
   '/admin/leads': typeof AdminAuthenticatedLeadsRouteWithChildren
   '/admin/midia': typeof AdminAuthenticatedMidiaRoute
@@ -345,6 +352,7 @@ export interface FileRoutesByTo {
   '/admin/financeiro': typeof AdminAuthenticatedFinanceiroRoute
   '/admin/historico': typeof AdminAuthenticatedHistoricoRoute
   '/admin/ia': typeof AdminAuthenticatedIaRoute
+  '/admin/ia-kb': typeof AdminAuthenticatedIaKbRoute
   '/admin/integracoes': typeof AdminAuthenticatedIntegracoesRoute
   '/admin/midia': typeof AdminAuthenticatedMidiaRoute
   '/admin/perfil': typeof AdminAuthenticatedPerfilRoute
@@ -386,6 +394,7 @@ export interface FileRoutesById {
   '/admin/_authenticated/financeiro': typeof AdminAuthenticatedFinanceiroRoute
   '/admin/_authenticated/historico': typeof AdminAuthenticatedHistoricoRoute
   '/admin/_authenticated/ia': typeof AdminAuthenticatedIaRoute
+  '/admin/_authenticated/ia-kb': typeof AdminAuthenticatedIaKbRoute
   '/admin/_authenticated/integracoes': typeof AdminAuthenticatedIntegracoesRoute
   '/admin/_authenticated/leads': typeof AdminAuthenticatedLeadsRouteWithChildren
   '/admin/_authenticated/midia': typeof AdminAuthenticatedMidiaRoute
@@ -431,6 +440,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro'
     | '/admin/historico'
     | '/admin/ia'
+    | '/admin/ia-kb'
     | '/admin/integracoes'
     | '/admin/leads'
     | '/admin/midia'
@@ -473,6 +483,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro'
     | '/admin/historico'
     | '/admin/ia'
+    | '/admin/ia-kb'
     | '/admin/integracoes'
     | '/admin/midia'
     | '/admin/perfil'
@@ -513,6 +524,7 @@ export interface FileRouteTypes {
     | '/admin/_authenticated/financeiro'
     | '/admin/_authenticated/historico'
     | '/admin/_authenticated/ia'
+    | '/admin/_authenticated/ia-kb'
     | '/admin/_authenticated/integracoes'
     | '/admin/_authenticated/leads'
     | '/admin/_authenticated/midia'
@@ -727,6 +739,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthenticatedIntegracoesRouteImport
       parentRoute: typeof AdminAuthenticatedRoute
     }
+    '/admin/_authenticated/ia-kb': {
+      id: '/admin/_authenticated/ia-kb'
+      path: '/ia-kb'
+      fullPath: '/admin/ia-kb'
+      preLoaderRoute: typeof AdminAuthenticatedIaKbRouteImport
+      parentRoute: typeof AdminAuthenticatedRoute
+    }
     '/admin/_authenticated/ia': {
       id: '/admin/_authenticated/ia'
       path: '/ia'
@@ -913,6 +932,7 @@ interface AdminAuthenticatedRouteChildren {
   AdminAuthenticatedFinanceiroRoute: typeof AdminAuthenticatedFinanceiroRoute
   AdminAuthenticatedHistoricoRoute: typeof AdminAuthenticatedHistoricoRoute
   AdminAuthenticatedIaRoute: typeof AdminAuthenticatedIaRoute
+  AdminAuthenticatedIaKbRoute: typeof AdminAuthenticatedIaKbRoute
   AdminAuthenticatedIntegracoesRoute: typeof AdminAuthenticatedIntegracoesRoute
   AdminAuthenticatedLeadsRoute: typeof AdminAuthenticatedLeadsRouteWithChildren
   AdminAuthenticatedMidiaRoute: typeof AdminAuthenticatedMidiaRoute
@@ -934,6 +954,7 @@ const AdminAuthenticatedRouteChildren: AdminAuthenticatedRouteChildren = {
   AdminAuthenticatedFinanceiroRoute: AdminAuthenticatedFinanceiroRoute,
   AdminAuthenticatedHistoricoRoute: AdminAuthenticatedHistoricoRoute,
   AdminAuthenticatedIaRoute: AdminAuthenticatedIaRoute,
+  AdminAuthenticatedIaKbRoute: AdminAuthenticatedIaKbRoute,
   AdminAuthenticatedIntegracoesRoute: AdminAuthenticatedIntegracoesRoute,
   AdminAuthenticatedLeadsRoute: AdminAuthenticatedLeadsRouteWithChildren,
   AdminAuthenticatedMidiaRoute: AdminAuthenticatedMidiaRoute,
