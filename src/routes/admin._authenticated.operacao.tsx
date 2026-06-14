@@ -32,10 +32,10 @@ function OperacaoPage() {
         e fecha tarefas geradas manualmente ou por automação. Quando a Bárbara entrar, ela usa exatamente os mesmos registros.
       </AdminPageIntro>
 
-      <div className="mb-4 flex gap-2">
+      <div className="mb-4 flex flex-wrap gap-2">
         {([["atencao","Atenção hoje"],["handoffs","Handoffs"],["tarefas","Tarefas"]] as const).map(([k, l]) => (
           <button key={k} onClick={() => setAba(k)}
-            className={`rounded-md border px-3 py-1.5 text-xs uppercase tracking-wide ${
+            className={`rounded-md border px-3 py-2 text-xs uppercase tracking-wide min-h-[36px] ${
               aba === k
                 ? "border-[color:var(--admin-dourado)]/40 bg-[color:var(--admin-dourado)]/10 text-[color:var(--admin-dourado)]"
                 : "border-[color:var(--admin-borda)] text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-cinza-1)]"
