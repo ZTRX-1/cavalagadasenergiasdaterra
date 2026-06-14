@@ -47,6 +47,7 @@ const nav: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, modulo: "dashboard", exact: true, group: "operacao" },
   { to: "/admin/expedicoes", label: "Expedições", icon: Compass, modulo: "expedicoes", group: "operacao" },
   { to: "/admin/leads", label: "Leads", icon: Sparkles, modulo: "leads", group: "operacao" },
+  { to: "/admin/inbox", label: "Caixa de entrada", icon: MessageSquare, modulo: "leads", group: "operacao" },
   { to: "/admin/reservas", label: "Reservas", icon: BookOpen, modulo: "reservas", group: "operacao" },
   { to: "/admin/participantes", label: "Participantes", icon: Users, modulo: "participantes", group: "operacao" },
   { to: "/admin/equipe", label: "Equipe", icon: Users, modulo: "equipe", group: "operacao" },
