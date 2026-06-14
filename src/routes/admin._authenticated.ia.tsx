@@ -347,8 +347,43 @@ function IAConfigPage() {
           </div>
         </Card>
 
+        <Card title="Modelos OpenAI (configuráveis)" icon={Cpu}>
+          <Field label="Modelo principal">
+            <input type="text" disabled={!canEdit} value={form.modelo_principal ?? ""} onChange={(e) => update("modelo_principal", e.target.value)} className="admin-input h-9 w-full px-3 text-sm" placeholder="ex.: gpt-x-mini" />
+          </Field>
+          <Field label="Modelo fallback">
+            <input type="text" disabled={!canEdit} value={form.modelo_fallback ?? ""} onChange={(e) => update("modelo_fallback", e.target.value)} className="admin-input h-9 w-full px-3 text-sm" placeholder="ex.: gpt-x" />
+          </Field>
+          <Field label="Modelo de classificação">
+            <input type="text" disabled={!canEdit} value={form.modelo_classificacao ?? ""} onChange={(e) => update("modelo_classificacao", e.target.value)} className="admin-input h-9 w-full px-3 text-sm" placeholder="ex.: gpt-x-nano" />
+          </Field>
+          <div className="text-[10px] text-[color:var(--admin-cinza-3)] mt-1">
+            Nenhum nome de modelo está fixado no código. A IA usa o que estiver aqui.
+          </div>
+        </Card>
+
+        <Card title="Orçamento e versão" icon={Wallet}>
+          <Field label="Budget mensal (USD)">
+            <input
+              type="number"
+              min={0}
+              step="0.01"
+              disabled={!canEdit}
+              value={form.budget_mensal_usd}
+              onChange={(e) => update("budget_mensal_usd", Number(e.target.value))}
+              className="admin-input h-9 w-full px-3 text-sm"
+              placeholder="0.00"
+            />
+          </Field>
+          <Field label={<span className="inline-flex items-center gap-1"><GitBranch className="h-3 w-3" /> Versão do prompt em uso</span> as unknown as string}>
+            <input type="text" disabled={!canEdit} value={form.prompt_versao ?? ""} onChange={(e) => update("prompt_versao", e.target.value)} className="admin-input h-9 w-full px-3 text-sm" placeholder="v1" />
+          </Field>
+          <div className="text-[10px] text-[color:var(--admin-cinza-3)] mt-1">
+            A versão do prompt fica gravada em cada ia_interacoes para rastreabilidade.
+          </div>
+        </Card>
+
         <ListEditor
-          title="Perguntas de qualificação"
           icon={ListChecks}
           items={form.perguntas_qualificacao}
           onChange={(v) => update("perguntas_qualificacao", v)}
