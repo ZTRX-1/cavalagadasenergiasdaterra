@@ -271,7 +271,7 @@ async function handleCriar(payload: CriarPayload) {
     observacoes_importantes: payload.adicionais.observacoes_importantes,
     forma_pagamento: payload.adicionais.forma_pagamento,
     valor_total,
-    moeda: payload.moeda || "BRL",
+    moeda: (realData as { moeda?: string }).moeda || payload.moeda || "BRL",
   };
 
   const { data: reservaRow, error: reservaErr } = await admin
