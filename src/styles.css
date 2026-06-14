@@ -577,6 +577,28 @@
 @media (max-width: 640px) {
   /* Em telas estreitas, reduzimos min-width das tabelas para evitar scroll excessivo */
   .admin-table-wrap > table { min-width: 560px; }
+
+  /* Reduz padding dos cards no mobile para ganhar área útil */
+  .admin-surface .admin-card { padding: 1rem; }
+
+  /* Áreas de toque mínimas no admin (WCAG 2.5.5) */
+  .admin-surface button,
+  .admin-surface [role="button"],
+  .admin-surface a.admin-nav-item,
+  .admin-surface select,
+  .admin-surface input:not([type="checkbox"]):not([type="radio"]) {
+    min-height: 40px;
+  }
+
+  /* Indica scroll horizontal das tabelas com um fade dourado sutil à direita */
+  .admin-table-wrap {
+    background-image: linear-gradient(to right, transparent 85%, color-mix(in oklab, var(--admin-dourado) 14%, transparent));
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+
+  /* Evita títulos enormes vazando */
+  .admin-surface h1, .admin-surface h2 { word-break: break-word; hyphens: auto; }
 }
 
 
