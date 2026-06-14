@@ -264,8 +264,9 @@ function TabReceitas({ reservas, onChanged }: { reservas: ReservaRow[]; onChange
                   <td className="py-3 text-[color:var(--admin-cinza-1)] truncate max-w-[200px]">{r.expedicao_nome}</td>
                   <td className="py-3 text-[color:var(--admin-cinza-2)]">{r.data_label}</td>
                   <td className="py-3 text-[color:var(--admin-cinza-2)]">{r.quantidade_participantes}</td>
-                  <td className="py-3 text-[color:var(--admin-cinza-2)]">{fmtBRL(Number(r.valor_total ?? 0))}</td>
-                  <td className="py-3 text-[color:var(--admin-cinza-2)]">{fmtBRL(Number(r.valor_pago))}</td>
+                  <td className="py-3 text-[color:var(--admin-cinza-2)]">{formatPrice(Number(r.valor_total ?? 0), r.moeda || "BRL")}</td>
+                  <td className="py-3 text-[color:var(--admin-cinza-2)]">{formatPrice(Number(r.valor_pago), r.moeda || "BRL")}</td>
+
                   <td className="py-3"><StatusBadge status={r.status_pagamento} /></td>
                   <td className="py-3 text-right"><button className="admin-btn-ghost px-3 py-1" onClick={() => setEdit(r)}>Editar</button></td>
                 </tr>
