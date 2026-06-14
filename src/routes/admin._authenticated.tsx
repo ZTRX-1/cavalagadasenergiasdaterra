@@ -117,6 +117,7 @@ function AdminLayout() {
       { prefix: "/admin/expedicoes", modulo: "expedicoes" },
       { prefix: "/admin/leads", modulo: "leads" },
       { prefix: "/admin/inbox", modulo: "leads" },
+      { prefix: "/admin/operacao", modulo: "leads" },
       { prefix: "/admin/reservas", modulo: "reservas" },
       { prefix: "/admin/participantes", modulo: "participantes" },
       { prefix: "/admin/financeiro", modulo: "financeiro" },
