@@ -878,6 +878,54 @@ export type Database = {
         }
         Relationships: []
       }
+      ia_contexto_logs: {
+        Row: {
+          created_at: string
+          encontrado: boolean | null
+          erro: string | null
+          id: number
+          lead_id: string | null
+          origem: string
+          participante_id: string | null
+          reserva_id: string | null
+          sucesso: boolean
+          tamanho_payload: number | null
+          telefone_hash: string | null
+          tempo_execucao_ms: number | null
+          tipo: string | null
+        }
+        Insert: {
+          created_at?: string
+          encontrado?: boolean | null
+          erro?: string | null
+          id?: number
+          lead_id?: string | null
+          origem?: string
+          participante_id?: string | null
+          reserva_id?: string | null
+          sucesso?: boolean
+          tamanho_payload?: number | null
+          telefone_hash?: string | null
+          tempo_execucao_ms?: number | null
+          tipo?: string | null
+        }
+        Update: {
+          created_at?: string
+          encontrado?: boolean | null
+          erro?: string | null
+          id?: number
+          lead_id?: string | null
+          origem?: string
+          participante_id?: string | null
+          reserva_id?: string | null
+          sucesso?: boolean
+          tamanho_payload?: number | null
+          telefone_hash?: string | null
+          tempo_execucao_ms?: number | null
+          tipo?: string | null
+        }
+        Relationships: []
+      }
       ia_handoff_queue: {
         Row: {
           atribuido_para: string | null
