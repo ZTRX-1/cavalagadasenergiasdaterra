@@ -11,6 +11,7 @@ const titles: Record<string, string> = {
   "/admin/financeiro": "Financeiro",
   "/admin/midia": "Mídia",
   "/admin/documentos": "Documentos",
+  "/admin/inbox": "Caixa de entrada",
   "/admin/ia": "Configurações da IA",
   "/admin/ia-kb": "Base de Conhecimento",
   "/admin/automacoes": "Central de Automações",

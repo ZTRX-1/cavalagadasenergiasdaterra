@@ -838,47 +838,65 @@ export type Database = {
       }
       ia_interacoes: {
         Row: {
+          autor: string
           canal: string
           confidence: number | null
           conteudo: string | null
+          contexto_usado: Json
           created_at: string
           direcao: string
           id: string
           intent: string | null
+          latencia_ms: number | null
           lead_id: string | null
+          mensagem_id: string | null
           metadata: Json
           modelo: string | null
+          motivo_handoff: string | null
           reserva_id: string | null
+          resposta_final: string | null
           tokens_in: number | null
           tokens_out: number | null
         }
         Insert: {
+          autor?: string
           canal?: string
           confidence?: number | null
           conteudo?: string | null
+          contexto_usado?: Json
           created_at?: string
           direcao: string
           id?: string
           intent?: string | null
+          latencia_ms?: number | null
           lead_id?: string | null
+          mensagem_id?: string | null
           metadata?: Json
           modelo?: string | null
+          motivo_handoff?: string | null
           reserva_id?: string | null
+          resposta_final?: string | null
           tokens_in?: number | null
           tokens_out?: number | null
         }
         Update: {
+          autor?: string
           canal?: string
           confidence?: number | null
           conteudo?: string | null
+          contexto_usado?: Json
           created_at?: string
           direcao?: string
           id?: string
           intent?: string | null
+          latencia_ms?: number | null
           lead_id?: string | null
+          mensagem_id?: string | null
           metadata?: Json
           modelo?: string | null
+          motivo_handoff?: string | null
           reserva_id?: string | null
+          resposta_final?: string | null
           tokens_in?: number | null
           tokens_out?: number | null
         }
@@ -888,6 +906,13 @@ export type Database = {
             columns: ["lead_id"]
             isOneToOne: false
             referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ia_interacoes_mensagem_id_fkey"
+            columns: ["mensagem_id"]
+            isOneToOne: false
+            referencedRelation: "mensagens_canal"
             referencedColumns: ["id"]
           },
           {
@@ -1381,6 +1406,7 @@ export type Database = {
       }
       mensagens_canal: {
         Row: {
+          autor: string
           canal: string
           conteudo: string | null
           created_at: string
@@ -1389,12 +1415,16 @@ export type Database = {
           externo_id: string | null
           id: string
           lead_id: string | null
+          lido: boolean
+          lido_em: string | null
           metadata: Json
+          participante_id: string | null
           remetente: string | null
           reserva_id: string | null
           status: string
         }
         Insert: {
+          autor?: string
           canal: string
           conteudo?: string | null
           created_at?: string
@@ -1403,12 +1433,16 @@ export type Database = {
           externo_id?: string | null
           id?: string
           lead_id?: string | null
+          lido?: boolean
+          lido_em?: string | null
           metadata?: Json
+          participante_id?: string | null
           remetente?: string | null
           reserva_id?: string | null
           status?: string
         }
         Update: {
+          autor?: string
           canal?: string
           conteudo?: string | null
           created_at?: string
@@ -1417,7 +1451,10 @@ export type Database = {
           externo_id?: string | null
           id?: string
           lead_id?: string | null
+          lido?: boolean
+          lido_em?: string | null
           metadata?: Json
+          participante_id?: string | null
           remetente?: string | null
           reserva_id?: string | null
           status?: string
@@ -1428,6 +1465,13 @@ export type Database = {
             columns: ["lead_id"]
             isOneToOne: false
             referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mensagens_canal_participante_id_fkey"
+            columns: ["participante_id"]
+            isOneToOne: false
+            referencedRelation: "participantes"
             referencedColumns: ["id"]
           },
           {
@@ -2283,6 +2327,22 @@ export type Database = {
           entidade_id: string | null
           referencia: string | null
           tipo: string | null
+        }
+        Relationships: []
+      }
+      vw_timeline_cliente: {
+        Row: {
+          autor: string | null
+          canal: string | null
+          detalhe: string | null
+          direcao: string | null
+          evento_id: string | null
+          lead_id: string | null
+          metadata: Json | null
+          ocorrido_em: string | null
+          reserva_id: string | null
+          tipo: string | null
+          titulo: string | null
         }
         Relationships: []
       }

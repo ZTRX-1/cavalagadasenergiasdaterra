@@ -34,6 +34,7 @@ import { Route as AdminAuthenticatedParticipantesRouteImport } from './routes/ad
 import { Route as AdminAuthenticatedMidiaRouteImport } from './routes/admin._authenticated.midia'
 import { Route as AdminAuthenticatedLeadsRouteImport } from './routes/admin._authenticated.leads'
 import { Route as AdminAuthenticatedIntegracoesRouteImport } from './routes/admin._authenticated.integracoes'
+import { Route as AdminAuthenticatedInboxRouteImport } from './routes/admin._authenticated.inbox'
 import { Route as AdminAuthenticatedIaKbRouteImport } from './routes/admin._authenticated.ia-kb'
 import { Route as AdminAuthenticatedIaRouteImport } from './routes/admin._authenticated.ia'
 import { Route as AdminAuthenticatedHistoricoRouteImport } from './routes/admin._authenticated.historico'
@@ -182,6 +183,11 @@ const AdminAuthenticatedIntegracoesRoute =
     path: '/integracoes',
     getParentRoute: () => AdminAuthenticatedRoute,
   } as any)
+const AdminAuthenticatedInboxRoute = AdminAuthenticatedInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => AdminAuthenticatedRoute,
+} as any)
 const AdminAuthenticatedIaKbRoute = AdminAuthenticatedIaKbRouteImport.update({
   id: '/ia-kb',
   path: '/ia-kb',
@@ -310,6 +316,7 @@ export interface FileRoutesByFullPath {
   '/admin/historico': typeof AdminAuthenticatedHistoricoRoute
   '/admin/ia': typeof AdminAuthenticatedIaRoute
   '/admin/ia-kb': typeof AdminAuthenticatedIaKbRoute
+  '/admin/inbox': typeof AdminAuthenticatedInboxRoute
   '/admin/integracoes': typeof AdminAuthenticatedIntegracoesRoute
   '/admin/leads': typeof AdminAuthenticatedLeadsRouteWithChildren
   '/admin/midia': typeof AdminAuthenticatedMidiaRoute
@@ -353,6 +360,7 @@ export interface FileRoutesByTo {
   '/admin/historico': typeof AdminAuthenticatedHistoricoRoute
   '/admin/ia': typeof AdminAuthenticatedIaRoute
   '/admin/ia-kb': typeof AdminAuthenticatedIaKbRoute
+  '/admin/inbox': typeof AdminAuthenticatedInboxRoute
   '/admin/integracoes': typeof AdminAuthenticatedIntegracoesRoute
   '/admin/midia': typeof AdminAuthenticatedMidiaRoute
   '/admin/perfil': typeof AdminAuthenticatedPerfilRoute
@@ -395,6 +403,7 @@ export interface FileRoutesById {
   '/admin/_authenticated/historico': typeof AdminAuthenticatedHistoricoRoute
   '/admin/_authenticated/ia': typeof AdminAuthenticatedIaRoute
   '/admin/_authenticated/ia-kb': typeof AdminAuthenticatedIaKbRoute
+  '/admin/_authenticated/inbox': typeof AdminAuthenticatedInboxRoute
   '/admin/_authenticated/integracoes': typeof AdminAuthenticatedIntegracoesRoute
   '/admin/_authenticated/leads': typeof AdminAuthenticatedLeadsRouteWithChildren
   '/admin/_authenticated/midia': typeof AdminAuthenticatedMidiaRoute
@@ -441,6 +450,7 @@ export interface FileRouteTypes {
     | '/admin/historico'
     | '/admin/ia'
     | '/admin/ia-kb'
+    | '/admin/inbox'
     | '/admin/integracoes'
     | '/admin/leads'
     | '/admin/midia'
@@ -484,6 +494,7 @@ export interface FileRouteTypes {
     | '/admin/historico'
     | '/admin/ia'
     | '/admin/ia-kb'
+    | '/admin/inbox'
     | '/admin/integracoes'
     | '/admin/midia'
     | '/admin/perfil'
@@ -525,6 +536,7 @@ export interface FileRouteTypes {
     | '/admin/_authenticated/historico'
     | '/admin/_authenticated/ia'
     | '/admin/_authenticated/ia-kb'
+    | '/admin/_authenticated/inbox'
     | '/admin/_authenticated/integracoes'
     | '/admin/_authenticated/leads'
     | '/admin/_authenticated/midia'
@@ -739,6 +751,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthenticatedIntegracoesRouteImport
       parentRoute: typeof AdminAuthenticatedRoute
     }
+    '/admin/_authenticated/inbox': {
+      id: '/admin/_authenticated/inbox'
+      path: '/inbox'
+      fullPath: '/admin/inbox'
+      preLoaderRoute: typeof AdminAuthenticatedInboxRouteImport
+      parentRoute: typeof AdminAuthenticatedRoute
+    }
     '/admin/_authenticated/ia-kb': {
       id: '/admin/_authenticated/ia-kb'
       path: '/ia-kb'
@@ -933,6 +952,7 @@ interface AdminAuthenticatedRouteChildren {
   AdminAuthenticatedHistoricoRoute: typeof AdminAuthenticatedHistoricoRoute
   AdminAuthenticatedIaRoute: typeof AdminAuthenticatedIaRoute
   AdminAuthenticatedIaKbRoute: typeof AdminAuthenticatedIaKbRoute
+  AdminAuthenticatedInboxRoute: typeof AdminAuthenticatedInboxRoute
   AdminAuthenticatedIntegracoesRoute: typeof AdminAuthenticatedIntegracoesRoute
   AdminAuthenticatedLeadsRoute: typeof AdminAuthenticatedLeadsRouteWithChildren
   AdminAuthenticatedMidiaRoute: typeof AdminAuthenticatedMidiaRoute
@@ -955,6 +975,7 @@ const AdminAuthenticatedRouteChildren: AdminAuthenticatedRouteChildren = {
   AdminAuthenticatedHistoricoRoute: AdminAuthenticatedHistoricoRoute,
   AdminAuthenticatedIaRoute: AdminAuthenticatedIaRoute,
   AdminAuthenticatedIaKbRoute: AdminAuthenticatedIaKbRoute,
+  AdminAuthenticatedInboxRoute: AdminAuthenticatedInboxRoute,
   AdminAuthenticatedIntegracoesRoute: AdminAuthenticatedIntegracoesRoute,
   AdminAuthenticatedLeadsRoute: AdminAuthenticatedLeadsRouteWithChildren,
   AdminAuthenticatedMidiaRoute: AdminAuthenticatedMidiaRoute,
