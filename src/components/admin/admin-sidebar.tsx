@@ -54,6 +54,7 @@ const nav: NavItem[] = [
   { to: "/admin/midia", label: "Mídia", icon: ImageIcon, modulo: "midia", group: "operacao" },
   { to: "/admin/documentos", label: "Documentos", icon: FileText, modulo: "documentos", group: "operacao" },
   { to: "/admin/ia", label: "IA", icon: Bot, modulo: "ia", group: "governanca" },
+  { to: "/admin/ia-kb", label: "Base de Conhecimento", icon: BookOpen, modulo: "ia", group: "governanca" },
   { to: "/admin/automacoes", label: "Automações", icon: Workflow, modulo: "automacoes", group: "governanca" },
   { to: "/admin/historico", label: "Histórico", icon: History, modulo: "historico", group: "governanca" },
   { to: "/admin/integracoes", label: "Integrações", icon: Plug, modulo: "integracoes", group: "governanca" },
