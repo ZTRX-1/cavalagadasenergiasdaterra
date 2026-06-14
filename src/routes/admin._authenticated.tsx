@@ -121,6 +121,7 @@ function AdminLayout() {
       { prefix: "/admin/financeiro", modulo: "financeiro" },
       { prefix: "/admin/midia", modulo: "midia" },
       { prefix: "/admin/documentos", modulo: "documentos" },
+      { prefix: "/admin/ia-kb", modulo: "ia" },
       { prefix: "/admin/ia", modulo: "ia" },
       { prefix: "/admin/automacoes", modulo: "automacoes" },
       { prefix: "/admin/integracoes", modulo: "integracoes" },
