@@ -153,7 +153,7 @@ function Handoffs({ canEdit }: { canEdit: boolean }) {
   const filtrados = filtro === "todos" ? data : data.filter((d) => d.sla_status === filtro);
 
   const update = useMutation({
-    mutationFn: async (p: { id: string; patch: Partial<HandoffRow> }) => {
+    mutationFn: async (p: { id: string; patch: { status?: string; resolvido_em?: string | null; atribuido_para?: string | null } }) => {
       const { error } = await supabase.from("ia_handoff_queue").update(p.patch).eq("id", p.id);
       if (error) throw error;
     },
