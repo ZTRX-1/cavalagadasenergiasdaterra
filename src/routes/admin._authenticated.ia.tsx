@@ -105,6 +105,11 @@ async function getIA(): Promise<IAConfig> {
     regras_encaminhamento: arr(raw.regras_encaminhamento),
     tom_ia: (raw.tom_ia as string) ?? "acolhedor",
     ativa: Boolean(raw.ativa),
+    modelo_principal: (raw.modelo_principal as string) ?? "",
+    modelo_fallback: (raw.modelo_fallback as string) ?? "",
+    modelo_classificacao: (raw.modelo_classificacao as string) ?? "",
+    budget_mensal_usd: typeof raw.budget_mensal_usd === "number" ? raw.budget_mensal_usd : Number(raw.budget_mensal_usd ?? 0),
+    prompt_versao: (raw.prompt_versao as string) ?? "v1",
   };
 }
 
