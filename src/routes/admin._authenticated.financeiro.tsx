@@ -173,15 +173,25 @@ function FinanceiroPage() {
         <button className="admin-btn-ghost gap-2" onClick={exportCSV}><Download className="h-4 w-4" /> Exportar CSV</button>
       </div>
 
-      {/* 6 KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-        <KPI label="Faturamento confirmado" value={fmtBRL(totalConfirmado)} tone="ok" />
-        <KPI label="Faturamento estimado" value={fmtBRL(totalEstimado)} tone="warn" />
-        <KPI label="Pagamentos pendentes" value={fmtBRL(totalPendente)} tone="danger" />
-        <KPI label="Despesas totais" value={fmtBRL(totalDespesas)} />
-        <KPI label="Lucro líquido" value={fmtBRL(lucro)} tone={lucro >= 0 ? "ok" : "danger"} />
-        <KPI label="Margem" value={`${margem.toFixed(1)}%`} tone={margem >= 0 ? "ok" : "danger"} />
+      {/* KPIs por moeda (sem somar BRL/USD/EUR) */}
+      <div className="space-y-3">
+        {moedasAtivas.map((m) => {
+          const r = receitasPorMoeda[m] ?? { confirmado: 0, estimado: 0, pendente: 0 };
+          return (
+            <div key={m} className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+              <KPI label={`Faturamento confirmado (${m})`} value={formatPrice(r.confirmado, m)} tone="ok" />
+              <KPI label={`Faturamento estimado (${m})`} value={formatPrice(r.estimado, m)} tone="warn" />
+              <KPI label={`Pagamentos pendentes (${m})`} value={formatPrice(r.pendente, m)} tone="danger" />
+            </div>
+          );
+        })}
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+          <KPI label="Despesas totais (BRL)" value={fmtBRL(totalDespesas)} />
+          <KPI label="Lucro líquido (BRL)" value={fmtBRL(lucroBRL)} tone={lucroBRL >= 0 ? "ok" : "danger"} />
+          <KPI label="Margem BRL" value={`${margemBRL.toFixed(1)}%`} tone={margemBRL >= 0 ? "ok" : "danger"} />
+        </div>
       </div>
+
 
       {/* Tabs */}
       <div className="flex flex-wrap gap-1 border-b border-[color:var(--admin-borda)]">
