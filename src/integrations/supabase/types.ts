@@ -718,12 +718,18 @@ export type Database = {
       }
       ia_configuracoes: {
         Row: {
+          assinatura_padrao: string | null
           ativa: boolean
           dias_atendimento: string[]
+          gatilhos_handoff: Json
           horario_fim: string | null
           horario_inicio: string | null
           id: boolean
+          idiomas: string[]
+          limite_confianca: number
           mensagem_fora_horario: string | null
+          modo: string
+          nome_exibido: string
           perguntas_qualificacao: Json
           regras_encaminhamento: Json
           singleton: boolean
@@ -733,12 +739,18 @@ export type Database = {
           whatsapp_financeiro: string | null
         }
         Insert: {
+          assinatura_padrao?: string | null
           ativa?: boolean
           dias_atendimento?: string[]
+          gatilhos_handoff?: Json
           horario_fim?: string | null
           horario_inicio?: string | null
           id?: boolean
+          idiomas?: string[]
+          limite_confianca?: number
           mensagem_fora_horario?: string | null
+          modo?: string
+          nome_exibido?: string
           perguntas_qualificacao?: Json
           regras_encaminhamento?: Json
           singleton?: boolean
@@ -748,12 +760,18 @@ export type Database = {
           whatsapp_financeiro?: string | null
         }
         Update: {
+          assinatura_padrao?: string | null
           ativa?: boolean
           dias_atendimento?: string[]
+          gatilhos_handoff?: Json
           horario_fim?: string | null
           horario_inicio?: string | null
           id?: boolean
+          idiomas?: string[]
+          limite_confianca?: number
           mensagem_fora_horario?: string | null
+          modo?: string
+          nome_exibido?: string
           perguntas_qualificacao?: Json
           regras_encaminhamento?: Json
           singleton?: boolean
