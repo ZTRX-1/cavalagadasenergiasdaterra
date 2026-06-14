@@ -114,14 +114,16 @@ async function getIA(): Promise<IAConfig> {
 }
 
 async function saveIA(payload: IAConfig) {
-  const { error } = await supabase
-    .from("ia_configuracoes")
+  const { error } = await (supabase
+    .from("ia_configuracoes") as unknown as {
+      update: (v: Record<string, unknown>) => { eq: (c: string, v: unknown) => Promise<{ error: unknown }> };
+    })
     .update({
       ...payload,
       updated_at: new Date().toISOString(),
     })
     .eq("id", true);
-  if (error) throw error;
+  if (error) throw error as Error;
 }
 
 function IAConfigPage() {
