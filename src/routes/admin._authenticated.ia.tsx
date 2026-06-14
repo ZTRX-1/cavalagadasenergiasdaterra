@@ -375,15 +375,16 @@ function IAConfigPage() {
               placeholder="0.00"
             />
           </Field>
-          <Field label={<span className="inline-flex items-center gap-1"><GitBranch className="h-3 w-3" /> Versão do prompt em uso</span> as unknown as string}>
+          <Field label="Versão do prompt em uso">
             <input type="text" disabled={!canEdit} value={form.prompt_versao ?? ""} onChange={(e) => update("prompt_versao", e.target.value)} className="admin-input h-9 w-full px-3 text-sm" placeholder="v1" />
           </Field>
-          <div className="text-[10px] text-[color:var(--admin-cinza-3)] mt-1">
-            A versão do prompt fica gravada em cada ia_interacoes para rastreabilidade.
+          <div className="text-[10px] text-[color:var(--admin-cinza-3)] mt-1 inline-flex items-center gap-1">
+            <GitBranch className="h-3 w-3" /> A versão fica gravada em cada ia_interacoes para rastreabilidade.
           </div>
         </Card>
 
         <ListEditor
+          title="Perguntas de qualificação"
           icon={ListChecks}
           items={form.perguntas_qualificacao}
           onChange={(v) => update("perguntas_qualificacao", v)}
