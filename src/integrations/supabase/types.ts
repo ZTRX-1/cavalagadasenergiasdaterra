@@ -281,7 +281,7 @@ export type Database = {
           data_inicio: string
           expedicao_id: string
           id?: string
-          moeda?: string
+          moeda: string
           preco_cartao?: number | null
           preco_pix?: number | null
           status?: string
@@ -1470,7 +1470,7 @@ export type Database = {
           expedicao_id?: string | null
           forma?: string
           id?: string
-          moeda?: string
+          moeda: string
           observacoes?: string | null
           parcela_atual?: number | null
           parcela_total?: number | null
