@@ -752,10 +752,56 @@ export type Database = {
         }
         Relationships: []
       }
+      ia_acoes_log: {
+        Row: {
+          ator_id: string | null
+          autor: string
+          created_at: string
+          id: string
+          ip: string | null
+          lead_id: string | null
+          motivo: string | null
+          payload: Json
+          reserva_id: string | null
+          resultado: Json
+          rpc_nome: string
+          sucesso: boolean
+        }
+        Insert: {
+          ator_id?: string | null
+          autor?: string
+          created_at?: string
+          id?: string
+          ip?: string | null
+          lead_id?: string | null
+          motivo?: string | null
+          payload?: Json
+          reserva_id?: string | null
+          resultado?: Json
+          rpc_nome: string
+          sucesso?: boolean
+        }
+        Update: {
+          ator_id?: string | null
+          autor?: string
+          created_at?: string
+          id?: string
+          ip?: string | null
+          lead_id?: string | null
+          motivo?: string | null
+          payload?: Json
+          reserva_id?: string | null
+          resultado?: Json
+          rpc_nome?: string
+          sucesso?: boolean
+        }
+        Relationships: []
+      }
       ia_configuracoes: {
         Row: {
           assinatura_padrao: string | null
           ativa: boolean
+          budget_mensal_usd: number | null
           dias_atendimento: string[]
           gatilhos_handoff: Json
           horario_fim: string | null
@@ -764,9 +810,13 @@ export type Database = {
           idiomas: string[]
           limite_confianca: number
           mensagem_fora_horario: string | null
+          modelo_classificacao: string | null
+          modelo_fallback: string | null
+          modelo_principal: string | null
           modo: string
           nome_exibido: string
           perguntas_qualificacao: Json
+          prompt_versao: string | null
           regras_encaminhamento: Json
           singleton: boolean
           tom_ia: string | null
@@ -777,6 +827,7 @@ export type Database = {
         Insert: {
           assinatura_padrao?: string | null
           ativa?: boolean
+          budget_mensal_usd?: number | null
           dias_atendimento?: string[]
           gatilhos_handoff?: Json
           horario_fim?: string | null
@@ -785,9 +836,13 @@ export type Database = {
           idiomas?: string[]
           limite_confianca?: number
           mensagem_fora_horario?: string | null
+          modelo_classificacao?: string | null
+          modelo_fallback?: string | null
+          modelo_principal?: string | null
           modo?: string
           nome_exibido?: string
           perguntas_qualificacao?: Json
+          prompt_versao?: string | null
           regras_encaminhamento?: Json
           singleton?: boolean
           tom_ia?: string | null
@@ -798,6 +853,7 @@ export type Database = {
         Update: {
           assinatura_padrao?: string | null
           ativa?: boolean
+          budget_mensal_usd?: number | null
           dias_atendimento?: string[]
           gatilhos_handoff?: Json
           horario_fim?: string | null
@@ -806,9 +862,13 @@ export type Database = {
           idiomas?: string[]
           limite_confianca?: number
           mensagem_fora_horario?: string | null
+          modelo_classificacao?: string | null
+          modelo_fallback?: string | null
+          modelo_principal?: string | null
           modo?: string
           nome_exibido?: string
           perguntas_qualificacao?: Json
+          prompt_versao?: string | null
           regras_encaminhamento?: Json
           singleton?: boolean
           tom_ia?: string | null
@@ -2492,6 +2552,16 @@ export type Database = {
           },
         ]
       }
+      vw_ia_auditoria_diaria: {
+        Row: {
+          dia: string | null
+          falhas: number | null
+          rpc_nome: string | null
+          sucessos: number | null
+          total: number | null
+        }
+        Relationships: []
+      }
       vw_jornada_consistencia: {
         Row: {
           entidade_id: string | null
@@ -2518,6 +2588,19 @@ export type Database = {
       }
     }
     Functions: {
+      _ia_log: {
+        Args: {
+          p_lead: string
+          p_motivo: string
+          p_payload: Json
+          p_reserva: string
+          p_resultado: Json
+          p_rpc: string
+          p_sucesso: boolean
+        }
+        Returns: undefined
+      }
+      _ia_pode_atuar: { Args: never; Returns: boolean }
       check_crm_health: {
         Args: never
         Returns: {
@@ -2547,6 +2630,75 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      ia_abrir_handoff: {
+        Args: {
+          p_contexto?: Json
+          p_lead_id?: string
+          p_motivo: string
+          p_prioridade?: string
+          p_reserva_id?: string
+        }
+        Returns: Json
+      }
+      ia_anexar_memoria: {
+        Args: { p_chave: string; p_lead_id: string; p_valor: string }
+        Returns: Json
+      }
+      ia_atualizar_temperatura: {
+        Args: { p_lead_id: string; p_motivo?: string; p_temperatura: string }
+        Returns: Json
+      }
+      ia_avancar_etapa: {
+        Args: { p_lead_id: string; p_motivo?: string; p_nova_etapa: string }
+        Returns: Json
+      }
+      ia_concluir_tarefa: { Args: { p_tarefa_id: string }; Returns: Json }
+      ia_criar_tarefa: {
+        Args: {
+          p_descricao?: string
+          p_lead_id?: string
+          p_participante_id?: string
+          p_prazo_horas?: number
+          p_prioridade?: string
+          p_reserva_id?: string
+          p_titulo: string
+        }
+        Returns: Json
+      }
+      ia_registrar_interacao: {
+        Args: {
+          p_canal?: string
+          p_confidence?: number
+          p_conteudo?: string
+          p_contexto_usado?: Json
+          p_direcao?: string
+          p_intent?: string
+          p_latencia_ms?: number
+          p_lead_id: string
+          p_mensagem_id?: string
+          p_metadata?: Json
+          p_modelo?: string
+          p_motivo_handoff?: string
+          p_reserva_id?: string
+          p_resposta_final?: string
+          p_tokens_in?: number
+          p_tokens_out?: number
+        }
+        Returns: Json
+      }
+      ia_registrar_objecao: {
+        Args: { p_lead_id: string; p_objecao: string }
+        Returns: Json
+      }
+      ia_solicitar_alteracao_reserva: {
+        Args: {
+          p_campo: string
+          p_motivo?: string
+          p_novo_valor: string
+          p_reserva_id: string
+        }
+        Returns: Json
       }
       is_internal_user: { Args: { _user_id: string }; Returns: boolean }
       recalcular_vagas_data: { Args: { p_data_id: string }; Returns: undefined }
