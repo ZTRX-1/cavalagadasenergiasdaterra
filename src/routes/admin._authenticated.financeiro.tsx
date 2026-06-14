@@ -63,8 +63,29 @@ const TABS = [
 ] as const;
 type TabId = typeof TABS[number]["id"];
 
+import { formatPrice } from "@/lib/format";
+
 const fmtBRL = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+
+// NUNCA somar moedas diferentes — agrega por moeda e devolve um map.
+type TotaisPorMoeda = Record<string, { confirmado: number; estimado: number; pendente: number }>;
+function agregarPorMoeda(reservas: ReservaRow[]): TotaisPorMoeda {
+  const out: TotaisPorMoeda = {};
+  for (const r of reservas) {
+    const m = r.moeda || "BRL";
+    if (!out[m]) out[m] = { confirmado: 0, estimado: 0, pendente: 0 };
+    const isConf =
+      r.status === "reserva_confirmada" ||
+      r.status === "participante_confirmado" ||
+      r.status_pagamento === "confirmado";
+    out[m].estimado += Number(r.valor_total ?? 0);
+    out[m].confirmado += isConf ? Number(r.valor_total ?? 0) : Number(r.valor_pago ?? 0);
+  }
+  for (const m of Object.keys(out)) out[m].pendente = out[m].estimado - out[m].confirmado;
+  return out;
+}
+
 
 function FinanceiroPage() {
   const qc = useQueryClient();
