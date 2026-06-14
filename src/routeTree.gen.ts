@@ -31,6 +31,7 @@ import { Route as AdminAuthenticatedUsuariosRouteImport } from './routes/admin._
 import { Route as AdminAuthenticatedReservasRouteImport } from './routes/admin._authenticated.reservas'
 import { Route as AdminAuthenticatedPerfilRouteImport } from './routes/admin._authenticated.perfil'
 import { Route as AdminAuthenticatedParticipantesRouteImport } from './routes/admin._authenticated.participantes'
+import { Route as AdminAuthenticatedOperacaoRouteImport } from './routes/admin._authenticated.operacao'
 import { Route as AdminAuthenticatedMidiaRouteImport } from './routes/admin._authenticated.midia'
 import { Route as AdminAuthenticatedLeadsRouteImport } from './routes/admin._authenticated.leads'
 import { Route as AdminAuthenticatedIntegracoesRouteImport } from './routes/admin._authenticated.integracoes'
@@ -165,6 +166,12 @@ const AdminAuthenticatedParticipantesRoute =
   AdminAuthenticatedParticipantesRouteImport.update({
     id: '/participantes',
     path: '/participantes',
+    getParentRoute: () => AdminAuthenticatedRoute,
+  } as any)
+const AdminAuthenticatedOperacaoRoute =
+  AdminAuthenticatedOperacaoRouteImport.update({
+    id: '/operacao',
+    path: '/operacao',
     getParentRoute: () => AdminAuthenticatedRoute,
   } as any)
 const AdminAuthenticatedMidiaRoute = AdminAuthenticatedMidiaRouteImport.update({
@@ -320,6 +327,7 @@ export interface FileRoutesByFullPath {
   '/admin/integracoes': typeof AdminAuthenticatedIntegracoesRoute
   '/admin/leads': typeof AdminAuthenticatedLeadsRouteWithChildren
   '/admin/midia': typeof AdminAuthenticatedMidiaRoute
+  '/admin/operacao': typeof AdminAuthenticatedOperacaoRoute
   '/admin/participantes': typeof AdminAuthenticatedParticipantesRouteWithChildren
   '/admin/perfil': typeof AdminAuthenticatedPerfilRoute
   '/admin/reservas': typeof AdminAuthenticatedReservasRouteWithChildren
@@ -363,6 +371,7 @@ export interface FileRoutesByTo {
   '/admin/inbox': typeof AdminAuthenticatedInboxRoute
   '/admin/integracoes': typeof AdminAuthenticatedIntegracoesRoute
   '/admin/midia': typeof AdminAuthenticatedMidiaRoute
+  '/admin/operacao': typeof AdminAuthenticatedOperacaoRoute
   '/admin/perfil': typeof AdminAuthenticatedPerfilRoute
   '/admin/usuarios': typeof AdminAuthenticatedUsuariosRoute
   '/admin': typeof AdminAuthenticatedIndexRoute
@@ -407,6 +416,7 @@ export interface FileRoutesById {
   '/admin/_authenticated/integracoes': typeof AdminAuthenticatedIntegracoesRoute
   '/admin/_authenticated/leads': typeof AdminAuthenticatedLeadsRouteWithChildren
   '/admin/_authenticated/midia': typeof AdminAuthenticatedMidiaRoute
+  '/admin/_authenticated/operacao': typeof AdminAuthenticatedOperacaoRoute
   '/admin/_authenticated/participantes': typeof AdminAuthenticatedParticipantesRouteWithChildren
   '/admin/_authenticated/perfil': typeof AdminAuthenticatedPerfilRoute
   '/admin/_authenticated/reservas': typeof AdminAuthenticatedReservasRouteWithChildren
@@ -454,6 +464,7 @@ export interface FileRouteTypes {
     | '/admin/integracoes'
     | '/admin/leads'
     | '/admin/midia'
+    | '/admin/operacao'
     | '/admin/participantes'
     | '/admin/perfil'
     | '/admin/reservas'
@@ -497,6 +508,7 @@ export interface FileRouteTypes {
     | '/admin/inbox'
     | '/admin/integracoes'
     | '/admin/midia'
+    | '/admin/operacao'
     | '/admin/perfil'
     | '/admin/usuarios'
     | '/admin'
@@ -540,6 +552,7 @@ export interface FileRouteTypes {
     | '/admin/_authenticated/integracoes'
     | '/admin/_authenticated/leads'
     | '/admin/_authenticated/midia'
+    | '/admin/_authenticated/operacao'
     | '/admin/_authenticated/participantes'
     | '/admin/_authenticated/perfil'
     | '/admin/_authenticated/reservas'
@@ -728,6 +741,13 @@ declare module '@tanstack/react-router' {
       path: '/participantes'
       fullPath: '/admin/participantes'
       preLoaderRoute: typeof AdminAuthenticatedParticipantesRouteImport
+      parentRoute: typeof AdminAuthenticatedRoute
+    }
+    '/admin/_authenticated/operacao': {
+      id: '/admin/_authenticated/operacao'
+      path: '/operacao'
+      fullPath: '/admin/operacao'
+      preLoaderRoute: typeof AdminAuthenticatedOperacaoRouteImport
       parentRoute: typeof AdminAuthenticatedRoute
     }
     '/admin/_authenticated/midia': {
@@ -956,6 +976,7 @@ interface AdminAuthenticatedRouteChildren {
   AdminAuthenticatedIntegracoesRoute: typeof AdminAuthenticatedIntegracoesRoute
   AdminAuthenticatedLeadsRoute: typeof AdminAuthenticatedLeadsRouteWithChildren
   AdminAuthenticatedMidiaRoute: typeof AdminAuthenticatedMidiaRoute
+  AdminAuthenticatedOperacaoRoute: typeof AdminAuthenticatedOperacaoRoute
   AdminAuthenticatedParticipantesRoute: typeof AdminAuthenticatedParticipantesRouteWithChildren
   AdminAuthenticatedPerfilRoute: typeof AdminAuthenticatedPerfilRoute
   AdminAuthenticatedReservasRoute: typeof AdminAuthenticatedReservasRouteWithChildren
@@ -979,6 +1000,7 @@ const AdminAuthenticatedRouteChildren: AdminAuthenticatedRouteChildren = {
   AdminAuthenticatedIntegracoesRoute: AdminAuthenticatedIntegracoesRoute,
   AdminAuthenticatedLeadsRoute: AdminAuthenticatedLeadsRouteWithChildren,
   AdminAuthenticatedMidiaRoute: AdminAuthenticatedMidiaRoute,
+  AdminAuthenticatedOperacaoRoute: AdminAuthenticatedOperacaoRoute,
   AdminAuthenticatedParticipantesRoute:
     AdminAuthenticatedParticipantesRouteWithChildren,
   AdminAuthenticatedPerfilRoute: AdminAuthenticatedPerfilRoute,
