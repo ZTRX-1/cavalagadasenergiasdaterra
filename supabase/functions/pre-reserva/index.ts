@@ -130,7 +130,7 @@ async function handleCriar(payload: CriarPayload) {
   // SEGURANÇA: Validar preço unitário a partir do banco de dados
   const { data: realData, error: dataErr } = await admin
     .from("datas")
-    .select("preco_pix, preco_cartao, status, vagas_disponiveis")
+    .select("preco_pix, preco_cartao, status, vagas_disponiveis, moeda, expedicao_id")
     .eq("id", payload.data_id)
     .single();
 
