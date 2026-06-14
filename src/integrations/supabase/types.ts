@@ -1249,6 +1249,48 @@ export type Database = {
           },
         ]
       }
+      ia_prompts: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          formato_saida: string | null
+          id: string
+          nome: string
+          objetivo: string | null
+          regras_handoff: string | null
+          regras_operacionais: string | null
+          system_prompt: string
+          updated_at: string
+          versao: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          formato_saida?: string | null
+          id?: string
+          nome: string
+          objetivo?: string | null
+          regras_handoff?: string | null
+          regras_operacionais?: string | null
+          system_prompt: string
+          updated_at?: string
+          versao: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          formato_saida?: string | null
+          id?: string
+          nome?: string
+          objetivo?: string | null
+          regras_handoff?: string | null
+          regras_operacionais?: string | null
+          system_prompt?: string
+          updated_at?: string
+          versao?: string
+        }
+        Relationships: []
+      }
       integracoes_status: {
         Row: {
           categoria: string
