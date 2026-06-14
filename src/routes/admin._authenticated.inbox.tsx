@@ -349,12 +349,12 @@ function ComposeModal({ onClose, onSaved }: { onClose: () => void; onSaved: () =
           </div>
         )}
 
-        <div className="mt-6 flex justify-end gap-2">
-          <button onClick={onClose} className="rounded-md border border-[color:var(--admin-borda)] px-4 py-2 text-sm text-[color:var(--admin-cinza-1)]">Cancelar</button>
+        <div className="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
+          <button onClick={onClose} className="rounded-md border border-[color:var(--admin-borda)] px-4 py-2.5 text-sm text-[color:var(--admin-cinza-1)] min-h-[44px] w-full sm:w-auto">Cancelar</button>
           <button
             disabled={!conteudo.trim() || save.isPending}
             onClick={() => save.mutate()}
-            className="inline-flex items-center gap-2 rounded-md bg-[color:var(--admin-dourado)] px-4 py-2 text-sm font-medium text-[color:var(--admin-carvao-deep)] hover:opacity-90 disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 rounded-md bg-[color:var(--admin-dourado)] px-4 py-2.5 text-sm font-medium text-[color:var(--admin-carvao-deep)] hover:opacity-90 disabled:opacity-50 min-h-[44px] w-full sm:w-auto"
           >
             <Send className="h-4 w-4" /> Registrar
           </button>
