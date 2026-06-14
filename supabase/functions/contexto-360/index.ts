@@ -168,8 +168,8 @@ Deno.serve(async (req) => {
     const saldo_restante = Math.max(0, valor_total - valor_pago);
 
     // Contexto temporal
-    const ultima_msg_in = mensagens.find(m => m.direcao === "entrada");
-    const ultima_msg_out = mensagens.find(m => m.direcao === "saida");
+    const ultima_msg_in = mensagens.find(m => m.direcao === "in");
+    const ultima_msg_out = mensagens.find(m => m.direcao === "out");
     const ultimo_pagamento = pagamentos
       .filter(p => p.status === "confirmado")
       .sort((a, b) => new Date(b.confirmado_em ?? b.created_at).getTime() - new Date(a.confirmado_em ?? a.created_at).getTime())[0] ?? null;
