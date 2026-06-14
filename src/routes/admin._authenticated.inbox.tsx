@@ -262,11 +262,11 @@ function ComposeModal({ onClose, onSaved }: { onClose: () => void; onSaved: () =
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)] p-6">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-base font-medium text-[color:var(--admin-cinza-1)]">Registrar mensagem</h2>
-          <button onClick={onClose} className="text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-cinza-1)]"><X className="h-5 w-5" /></button>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-4">
+      <div className="w-full sm:max-w-2xl max-h-[92dvh] sm:max-h-[90vh] overflow-y-auto rounded-t-2xl sm:rounded-xl border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)] p-4 sm:p-6">
+        <div className="mb-4 flex items-center justify-between gap-2">
+          <h2 className="text-base font-medium text-[color:var(--admin-cinza-1)] truncate">Registrar mensagem</h2>
+          <button onClick={onClose} aria-label="Fechar" className="shrink-0 grid h-9 w-9 place-items-center rounded-md text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-cinza-1)] hover:bg-[color:var(--admin-petroleo-soft)]/40"><X className="h-5 w-5" /></button>
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
