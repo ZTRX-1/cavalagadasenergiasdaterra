@@ -785,38 +785,53 @@ export type Database = {
       ia_handoff_queue: {
         Row: {
           atribuido_para: string | null
+          atualizado_em: string
           criado_em: string
           id: string
           lead_id: string | null
           motivo: string
           notas: string | null
+          origem: string
+          prazo: string | null
           prioridade: string
           reserva_id: string | null
           resolvido_em: string | null
+          responsavel_anterior: string | null
+          responsavel_atual: string | null
           status: string
         }
         Insert: {
           atribuido_para?: string | null
+          atualizado_em?: string
           criado_em?: string
           id?: string
           lead_id?: string | null
           motivo: string
           notas?: string | null
+          origem?: string
+          prazo?: string | null
           prioridade?: string
           reserva_id?: string | null
           resolvido_em?: string | null
+          responsavel_anterior?: string | null
+          responsavel_atual?: string | null
           status?: string
         }
         Update: {
           atribuido_para?: string | null
+          atualizado_em?: string
           criado_em?: string
           id?: string
           lead_id?: string | null
           motivo?: string
           notas?: string | null
+          origem?: string
+          prazo?: string | null
           prioridade?: string
           reserva_id?: string | null
           resolvido_em?: string | null
+          responsavel_anterior?: string | null
+          responsavel_atual?: string | null
           status?: string
         }
         Relationships: [
@@ -2151,8 +2166,11 @@ export type Database = {
           created_by: string | null
           descricao: string | null
           due_at: string | null
+          expedicao_id: string | null
           id: string
           lead_id: string | null
+          origem: string
+          participante_id: string | null
           prioridade: string
           reserva_id: string | null
           responsavel_id: string | null
@@ -2167,8 +2185,11 @@ export type Database = {
           created_by?: string | null
           descricao?: string | null
           due_at?: string | null
+          expedicao_id?: string | null
           id?: string
           lead_id?: string | null
+          origem?: string
+          participante_id?: string | null
           prioridade?: string
           reserva_id?: string | null
           responsavel_id?: string | null
@@ -2183,8 +2204,11 @@ export type Database = {
           created_by?: string | null
           descricao?: string | null
           due_at?: string | null
+          expedicao_id?: string | null
           id?: string
           lead_id?: string | null
+          origem?: string
+          participante_id?: string | null
           prioridade?: string
           reserva_id?: string | null
           responsavel_id?: string | null
@@ -2195,10 +2219,31 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "tarefas_expedicao_id_fkey"
+            columns: ["expedicao_id"]
+            isOneToOne: false
+            referencedRelation: "expedicao_indicadores"
+            referencedColumns: ["expedicao_id"]
+          },
+          {
+            foreignKeyName: "tarefas_expedicao_id_fkey"
+            columns: ["expedicao_id"]
+            isOneToOne: false
+            referencedRelation: "expedicoes"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "tarefas_lead_id_fkey"
             columns: ["lead_id"]
             isOneToOne: false
             referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tarefas_participante_id_fkey"
+            columns: ["participante_id"]
+            isOneToOne: false
+            referencedRelation: "participantes"
             referencedColumns: ["id"]
           },
           {
@@ -2322,6 +2367,95 @@ export type Database = {
         }
         Relationships: []
       }
+      vw_central_atencao: {
+        Row: {
+          atrasado: boolean | null
+          categoria: string | null
+          item_id: string | null
+          lead_id: string | null
+          ocorrido_em: string | null
+          prioridade: string | null
+          reserva_id: string | null
+          titulo: string | null
+          vence_em: string | null
+        }
+        Relationships: []
+      }
+      vw_handoffs_sla: {
+        Row: {
+          atribuido_para: string | null
+          atualizado_em: string | null
+          criado_em: string | null
+          id: string | null
+          lead_id: string | null
+          motivo: string | null
+          notas: string | null
+          origem: string | null
+          prazo: string | null
+          prioridade: string | null
+          reserva_id: string | null
+          resolvido_em: string | null
+          responsavel_anterior: string | null
+          responsavel_atual: string | null
+          segundos_em_aberto: number | null
+          sla_status: string | null
+          status: string | null
+        }
+        Insert: {
+          atribuido_para?: string | null
+          atualizado_em?: string | null
+          criado_em?: string | null
+          id?: string | null
+          lead_id?: string | null
+          motivo?: string | null
+          notas?: string | null
+          origem?: string | null
+          prazo?: string | null
+          prioridade?: string | null
+          reserva_id?: string | null
+          resolvido_em?: string | null
+          responsavel_anterior?: string | null
+          responsavel_atual?: string | null
+          segundos_em_aberto?: never
+          sla_status?: never
+          status?: string | null
+        }
+        Update: {
+          atribuido_para?: string | null
+          atualizado_em?: string | null
+          criado_em?: string | null
+          id?: string | null
+          lead_id?: string | null
+          motivo?: string | null
+          notas?: string | null
+          origem?: string | null
+          prazo?: string | null
+          prioridade?: string | null
+          reserva_id?: string | null
+          resolvido_em?: string | null
+          responsavel_anterior?: string | null
+          responsavel_atual?: string | null
+          segundos_em_aberto?: never
+          sla_status?: never
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ia_handoff_queue_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ia_handoff_queue_reserva_id_fkey"
+            columns: ["reserva_id"]
+            isOneToOne: false
+            referencedRelation: "reservas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vw_jornada_consistencia: {
         Row: {
           entidade_id: string | null
@@ -2354,6 +2488,19 @@ export type Database = {
           count: number
           issue: string
         }[]
+      }
+      criar_tarefa_idempotente: {
+        Args: {
+          p_due: string
+          p_lead: string
+          p_origem: string
+          p_participante: string
+          p_prioridade: string
+          p_reserva: string
+          p_tipo: string
+          p_titulo: string
+        }
+        Returns: string
       }
       gerar_protocolo: { Args: never; Returns: string }
       gerar_protocolo_lead: { Args: never; Returns: string }
