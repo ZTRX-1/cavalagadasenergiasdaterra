@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Save, Bot, Clock, Phone, MessageSquare, ListChecks, Sparkles, ShieldCheck, Languages, PenLine } from "lucide-react";
+import { Save, Bot, Clock, Phone, MessageSquare, ListChecks, Sparkles, ShieldCheck, Languages, PenLine, Cpu, Wallet, GitBranch } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
@@ -32,6 +32,11 @@ type IAConfig = {
   regras_encaminhamento: string[];
   tom_ia: string | null;
   ativa: boolean;
+  modelo_principal: string | null;
+  modelo_fallback: string | null;
+  modelo_classificacao: string | null;
+  budget_mensal_usd: number;
+  prompt_versao: string | null;
 };
 
 const DIAS = [
@@ -100,18 +105,25 @@ async function getIA(): Promise<IAConfig> {
     regras_encaminhamento: arr(raw.regras_encaminhamento),
     tom_ia: (raw.tom_ia as string) ?? "acolhedor",
     ativa: Boolean(raw.ativa),
+    modelo_principal: (raw.modelo_principal as string) ?? "",
+    modelo_fallback: (raw.modelo_fallback as string) ?? "",
+    modelo_classificacao: (raw.modelo_classificacao as string) ?? "",
+    budget_mensal_usd: typeof raw.budget_mensal_usd === "number" ? raw.budget_mensal_usd : Number(raw.budget_mensal_usd ?? 0),
+    prompt_versao: (raw.prompt_versao as string) ?? "v1",
   };
 }
 
 async function saveIA(payload: IAConfig) {
-  const { error } = await supabase
-    .from("ia_configuracoes")
+  const { error } = await (supabase
+    .from("ia_configuracoes") as unknown as {
+      update: (v: Record<string, unknown>) => { eq: (c: string, v: unknown) => Promise<{ error: unknown }> };
+    })
     .update({
       ...payload,
       updated_at: new Date().toISOString(),
     })
     .eq("id", true);
-  if (error) throw error;
+  if (error) throw error as Error;
 }
 
 function IAConfigPage() {
@@ -332,6 +344,42 @@ function IAConfigPage() {
           </div>
           <div className="text-[10px] text-[color:var(--admin-cinza-3)]">
             Quando qualquer gatilho marcado disparar, a conversa é encaminhada à fila de Handoff humano.
+          </div>
+        </Card>
+
+        <Card title="Modelos OpenAI (configuráveis)" icon={Cpu}>
+          <Field label="Modelo principal">
+            <input type="text" disabled={!canEdit} value={form.modelo_principal ?? ""} onChange={(e) => update("modelo_principal", e.target.value)} className="admin-input h-9 w-full px-3 text-sm" placeholder="ex.: gpt-x-mini" />
+          </Field>
+          <Field label="Modelo fallback">
+            <input type="text" disabled={!canEdit} value={form.modelo_fallback ?? ""} onChange={(e) => update("modelo_fallback", e.target.value)} className="admin-input h-9 w-full px-3 text-sm" placeholder="ex.: gpt-x" />
+          </Field>
+          <Field label="Modelo de classificação">
+            <input type="text" disabled={!canEdit} value={form.modelo_classificacao ?? ""} onChange={(e) => update("modelo_classificacao", e.target.value)} className="admin-input h-9 w-full px-3 text-sm" placeholder="ex.: gpt-x-nano" />
+          </Field>
+          <div className="text-[10px] text-[color:var(--admin-cinza-3)] mt-1">
+            Nenhum nome de modelo está fixado no código. A IA usa o que estiver aqui.
+          </div>
+        </Card>
+
+        <Card title="Orçamento e versão" icon={Wallet}>
+          <Field label="Budget mensal (USD)">
+            <input
+              type="number"
+              min={0}
+              step="0.01"
+              disabled={!canEdit}
+              value={form.budget_mensal_usd}
+              onChange={(e) => update("budget_mensal_usd", Number(e.target.value))}
+              className="admin-input h-9 w-full px-3 text-sm"
+              placeholder="0.00"
+            />
+          </Field>
+          <Field label="Versão do prompt em uso">
+            <input type="text" disabled={!canEdit} value={form.prompt_versao ?? ""} onChange={(e) => update("prompt_versao", e.target.value)} className="admin-input h-9 w-full px-3 text-sm" placeholder="v1" />
+          </Field>
+          <div className="text-[10px] text-[color:var(--admin-cinza-3)] mt-1 inline-flex items-center gap-1">
+            <GitBranch className="h-3 w-3" /> A versão fica gravada em cada ia_interacoes para rastreabilidade.
           </div>
         </Card>
 
