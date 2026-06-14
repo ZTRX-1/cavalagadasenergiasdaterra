@@ -926,6 +926,69 @@ export type Database = {
         }
         Relationships: []
       }
+      ia_decisoes: {
+        Row: {
+          acao_sugerida: string | null
+          confidence: number | null
+          contexto_utilizado: Json
+          created_at: string
+          handoff_recomendado: boolean
+          id: string
+          intent: string | null
+          lead_id: string | null
+          mensagem_entrada: string
+          modelo: string | null
+          motivo_handoff: string | null
+          prompt_versao: string | null
+          reserva_id: string | null
+          resposta_sugerida: string | null
+          shadow: boolean
+          telefone_hash: string | null
+          tempo_execucao_ms: number | null
+          tokens_estimados: number | null
+        }
+        Insert: {
+          acao_sugerida?: string | null
+          confidence?: number | null
+          contexto_utilizado?: Json
+          created_at?: string
+          handoff_recomendado?: boolean
+          id?: string
+          intent?: string | null
+          lead_id?: string | null
+          mensagem_entrada: string
+          modelo?: string | null
+          motivo_handoff?: string | null
+          prompt_versao?: string | null
+          reserva_id?: string | null
+          resposta_sugerida?: string | null
+          shadow?: boolean
+          telefone_hash?: string | null
+          tempo_execucao_ms?: number | null
+          tokens_estimados?: number | null
+        }
+        Update: {
+          acao_sugerida?: string | null
+          confidence?: number | null
+          contexto_utilizado?: Json
+          created_at?: string
+          handoff_recomendado?: boolean
+          id?: string
+          intent?: string | null
+          lead_id?: string | null
+          mensagem_entrada?: string
+          modelo?: string | null
+          motivo_handoff?: string | null
+          prompt_versao?: string | null
+          reserva_id?: string | null
+          resposta_sugerida?: string | null
+          shadow?: boolean
+          telefone_hash?: string | null
+          tempo_execucao_ms?: number | null
+          tokens_estimados?: number | null
+        }
+        Relationships: []
+      }
       ia_handoff_queue: {
         Row: {
           atribuido_para: string | null
