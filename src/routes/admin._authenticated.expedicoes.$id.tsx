@@ -277,8 +277,19 @@ function ExpedicaoEdit() {
             <AdminField label="Duração" ondeAparece="Ícone de relógio">
               <input className="admin-input" value={form.duracao ?? ""} onChange={(e) => setF({ duracao: e.target.value })} placeholder="Ex: 5 dias / 4 noites" />
             </AdminField>
-            <AdminField label="Preço base (interno)" ondeAparece="Gestão interna">
-              <input className="admin-input" type="number" value={form.preco ?? 0} onChange={(e) => setF({ preco: Number(e.target.value) })} />
+            <AdminField label="Moeda" ondeAparece="Define a moeda de toda a expedição, datas, reservas e pagamentos">
+              <select
+                className="admin-input"
+                value={(form as { moeda?: string }).moeda ?? "BRL"}
+                onChange={(e) => setF({ moeda: e.target.value } as Partial<ExpedicaoRow>)}
+              >
+                <option value="BRL">Real (BRL)</option>
+                <option value="USD">Dólar (USD)</option>
+                <option value="EUR">Euro (EUR)</option>
+              </select>
+            </AdminField>
+            <AdminField label="Preço base (interno)" ondeAparece="Gestão interna" hint="Use o valor cheio (ex.: 3500). Valores entre 0 e 100 são bloqueados.">
+              <input className="admin-input" type="number" min={0} step={1} value={form.preco ?? 0} onChange={(e) => setF({ preco: Number(e.target.value) })} />
             </AdminField>
           </div>
         </GuidedSection>
