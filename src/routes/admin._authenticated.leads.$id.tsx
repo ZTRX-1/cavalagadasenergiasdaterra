@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminSection, AdminField } from "@/components/admin/admin-section";
 import { StatusBadge } from "@/components/admin/admin-status-badge";
+import { Timeline360 } from "@/components/admin/timeline-360";
 import { ConverterLeadModal } from "@/components/admin/converter-lead-modal";
 import {
   getLead, updateLead, LEAD_ETAPAS, CONVERSA_TIPOS,
