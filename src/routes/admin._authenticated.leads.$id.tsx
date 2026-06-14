@@ -7,6 +7,7 @@ import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminSection, AdminField } from "@/components/admin/admin-section";
 import { StatusBadge } from "@/components/admin/admin-status-badge";
 import { Timeline360 } from "@/components/admin/timeline-360";
+import { Visao360 } from "@/components/admin/visao-360";
 import { ConverterLeadModal } from "@/components/admin/converter-lead-modal";
 import {
   getLead, updateLead, LEAD_ETAPAS, CONVERSA_TIPOS,
@@ -365,6 +366,7 @@ function LeadEdit() {
           <HistoricoAbas conversas={conversas} />
 
           <AdminSection titulo="Linha do tempo 360°" descricao="Mensagens (todos os canais), interações IA, alterações de etapa, pagamentos, tarefas e handoffs — em ordem cronológica.">
+            <Visao360 leadId={id} />
             <Timeline360 leadId={id} />
           </AdminSection>
 
