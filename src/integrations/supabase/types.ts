@@ -932,60 +932,78 @@ export type Database = {
           confidence: number | null
           contexto_utilizado: Json
           created_at: string
+          custo_estimado: number | null
           handoff_recomendado: boolean
           id: string
           intent: string | null
           lead_id: string | null
           mensagem_entrada: string
           modelo: string | null
+          modelo_utilizado: string | null
           motivo_handoff: string | null
+          origem: string
           prompt_versao: string | null
           reserva_id: string | null
           resposta_sugerida: string | null
           shadow: boolean
           telefone_hash: string | null
           tempo_execucao_ms: number | null
+          tempo_llm_ms: number | null
           tokens_estimados: number | null
+          tokens_input: number | null
+          tokens_output: number | null
         }
         Insert: {
           acao_sugerida?: string | null
           confidence?: number | null
           contexto_utilizado?: Json
           created_at?: string
+          custo_estimado?: number | null
           handoff_recomendado?: boolean
           id?: string
           intent?: string | null
           lead_id?: string | null
           mensagem_entrada: string
           modelo?: string | null
+          modelo_utilizado?: string | null
           motivo_handoff?: string | null
+          origem?: string
           prompt_versao?: string | null
           reserva_id?: string | null
           resposta_sugerida?: string | null
           shadow?: boolean
           telefone_hash?: string | null
           tempo_execucao_ms?: number | null
+          tempo_llm_ms?: number | null
           tokens_estimados?: number | null
+          tokens_input?: number | null
+          tokens_output?: number | null
         }
         Update: {
           acao_sugerida?: string | null
           confidence?: number | null
           contexto_utilizado?: Json
           created_at?: string
+          custo_estimado?: number | null
           handoff_recomendado?: boolean
           id?: string
           intent?: string | null
           lead_id?: string | null
           mensagem_entrada?: string
           modelo?: string | null
+          modelo_utilizado?: string | null
           motivo_handoff?: string | null
+          origem?: string
           prompt_versao?: string | null
           reserva_id?: string | null
           resposta_sugerida?: string | null
           shadow?: boolean
           telefone_hash?: string | null
           tempo_execucao_ms?: number | null
+          tempo_llm_ms?: number | null
           tokens_estimados?: number | null
+          tokens_input?: number | null
+          tokens_output?: number | null
         }
         Relationships: []
       }
