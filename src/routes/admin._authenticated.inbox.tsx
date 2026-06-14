@@ -27,7 +27,7 @@ type LeadLite = {
 type Msg = {
   id: string;
   canal: Canal;
-  direcao: "entrada" | "saida";
+  direcao: "in" | "out";
   autor: Autor;
   conteudo: string | null;
   remetente: string | null;
@@ -203,7 +203,7 @@ function AuthorIcon({ autor }: { autor: Autor }) {
 
 function ComposeModal({ onClose, onSaved }: { onClose: () => void; onSaved: () => void }) {
   const [canal, setCanal] = useState<Canal>("whatsapp");
-  const [direcao, setDirecao] = useState<"entrada" | "saida">("entrada");
+  const [direcao, setDirecao] = useState<"in" | "out">("in");
   const [autor, setAutor] = useState<Autor>("cliente");
   const [remetente, setRemetente] = useState("");
   const [destinatario, setDestinatario] = useState("");
@@ -246,7 +246,7 @@ function ComposeModal({ onClose, onSaved }: { onClose: () => void; onSaved: () =
             direcao,
             autor: autor === "ia" ? "ia" : "humano",
             conteudo,
-            resposta_final: direcao === "saida" ? conteudo : null,
+            resposta_final: direcao === "out" ? conteudo : null,
             modelo: autor === "ia" ? "simulado" : null,
             confidence: autor === "ia" ? confidence : null,
             latencia_ms: latencia === "" ? null : Number(latencia),
@@ -276,9 +276,9 @@ function ComposeModal({ onClose, onSaved }: { onClose: () => void; onSaved: () =
             </select>
           </F>
           <F label="Direção">
-            <select value={direcao} onChange={(e) => setDirecao(e.target.value as "entrada" | "saida")} className="admin-input h-9 w-full px-3 text-sm">
-              <option value="entrada">Entrada</option>
-              <option value="saida">Saída</option>
+            <select value={direcao} onChange={(e) => setDirecao(e.target.value as "in" | "out")} className="admin-input h-9 w-full px-3 text-sm">
+              <option value="in">Entrada</option>
+              <option value="out">Saída</option>
             </select>
           </F>
           <F label="Autor">

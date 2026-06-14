@@ -8,7 +8,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-api-key, x-cliente",
   "Access-Control-Allow-Methods": "GET, OPTIONS",
 };
 
@@ -52,20 +52,45 @@ Deno.serve(async (req) => {
   const id = url.searchParams.get("id");
   if (!id) return json({ error: "Parâmetro 'id' obrigatório" }, 400);
 
+  // ── Autenticação: aceita usuário humano (Bearer JWT) OU service-to-service via x-api-key ──
+  const apiKey = req.headers.get("x-api-key");
+  const cliente = req.headers.get("x-cliente") ?? "servico-externo";
+  const expectedKey = Deno.env.get("IA_BARBARA_API_KEY");
   const authHeader = req.headers.get("Authorization");
-  if (!authHeader?.startsWith("Bearer ")) {
-    return json({ error: "Unauthorized" }, 401);
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
+
+  let origem: "usuario" | "s2s" = "usuario";
+  let userId: string | null = null;
+  let supabase;
+
+  if (apiKey && expectedKey && apiKey === expectedKey) {
+    origem = "s2s";
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!serviceKey) return json({ error: "Service auth indisponível" }, 500);
+    supabase = createClient(Deno.env.get("SUPABASE_URL")!, serviceKey);
+  } else {
+    if (!authHeader?.startsWith("Bearer ")) return json({ error: "Unauthorized" }, 401);
+    supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: authHeader } } },
+    );
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claims, error: claimsErr } = await supabase.auth.getClaims(token);
+    if (claimsErr || !claims?.claims) return json({ error: "Unauthorized" }, 401);
+    userId = (claims.claims as any).sub ?? null;
   }
 
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_ANON_KEY")!,
-    { global: { headers: { Authorization: authHeader } } },
-  );
-
-  const token = authHeader.replace("Bearer ", "");
-  const { data: claims, error: claimsErr } = await supabase.auth.getClaims(token);
-  if (claimsErr || !claims?.claims) return json({ error: "Unauthorized" }, 401);
+  // Auditoria (não bloqueia em erro)
+  const auditar = async (status: number) => {
+    try {
+      await supabase.from("contexto_acessos").insert({
+        origem, cliente: origem === "s2s" ? cliente : null,
+        tipo: isLead ? "lead" : "reserva", alvo_id: id,
+        user_id: userId, ip, status,
+      });
+    } catch (_) { /* noop */ }
+  };
 
   try {
     // Resolve lead_id e reserva_id de forma simétrica
@@ -133,7 +158,7 @@ Deno.serve(async (req) => {
     const interacoes: any[] = interacoesRes.data ?? [];
     const memoria: any = memoriaRes.data;
 
-    if (!lead && !reserva) return json({ error: "Não encontrado" }, 404);
+    if (!lead && !reserva) { await auditar(404); return json({ error: "Não encontrado" }, 404); }
 
     // Expedição + data
     let expedicao: any = null;
@@ -214,9 +239,11 @@ Deno.serve(async (req) => {
       conhecimento_aplicavel: kb ?? [],
     };
 
+    await auditar(200);
     return json(payload, 200);
   } catch (e) {
     console.error("contexto-360 error", e);
+    await auditar(500);
     return json({ error: (e as Error).message }, 500);
   }
 });

@@ -259,6 +259,42 @@ export type Database = {
         }
         Relationships: []
       }
+      contexto_acessos: {
+        Row: {
+          alvo_id: string
+          cliente: string | null
+          created_at: string
+          id: string
+          ip: string | null
+          origem: string
+          status: number
+          tipo: string
+          user_id: string | null
+        }
+        Insert: {
+          alvo_id: string
+          cliente?: string | null
+          created_at?: string
+          id?: string
+          ip?: string | null
+          origem: string
+          status: number
+          tipo: string
+          user_id?: string | null
+        }
+        Update: {
+          alvo_id?: string
+          cliente?: string | null
+          created_at?: string
+          id?: string
+          ip?: string | null
+          origem?: string
+          status?: number
+          tipo?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       datas: {
         Row: {
           created_at: string
