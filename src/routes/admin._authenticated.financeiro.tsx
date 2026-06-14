@@ -124,9 +124,9 @@ function FinanceiroPage() {
 
   function exportCSV() {
     const lines = [
-      ["tipo","data","descricao","categoria","valor"].join(";"),
-      ...reservasNoPeriodo.map((r) => ["RECEITA", r.created_at.slice(0,10), r.expedicao_nome, "reserva", String(r.valor_pago || 0)].join(";")),
-      ...despesas.map((d) => ["DESPESA", d.data, d.descricao, d.categoria, String(d.valor)].join(";")),
+      ["tipo","data","descricao","categoria","moeda","valor"].join(";"),
+      ...reservasNoPeriodo.map((r) => ["RECEITA", r.created_at.slice(0,10), r.expedicao_nome, "reserva", r.moeda || "BRL", String(r.valor_pago || 0)].join(";")),
+      ...despesas.map((d) => ["DESPESA", d.data, d.descricao, d.categoria, "BRL", String(d.valor)].join(";")),
     ];
     const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -134,6 +134,7 @@ function FinanceiroPage() {
     a.href = url; a.download = `financeiro_${rangeDate.from}_${rangeDate.to}.csv`; a.click();
     URL.revokeObjectURL(url);
   }
+
 
   return (
     <div className="space-y-6">
