@@ -32,6 +32,11 @@ type IAConfig = {
   regras_encaminhamento: string[];
   tom_ia: string | null;
   ativa: boolean;
+  modelo_principal: string | null;
+  modelo_fallback: string | null;
+  modelo_classificacao: string | null;
+  budget_mensal_usd: number;
+  prompt_versao: string | null;
 };
 
 const DIAS = [
