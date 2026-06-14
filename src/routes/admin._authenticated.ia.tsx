@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Save, Bot, Clock, Phone, MessageSquare, ListChecks, Sparkles, ShieldCheck, Languages, PenLine } from "lucide-react";
+import { Save, Bot, Clock, Phone, MessageSquare, ListChecks, Sparkles, ShieldCheck, Languages, PenLine, Cpu, Wallet, GitBranch } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
