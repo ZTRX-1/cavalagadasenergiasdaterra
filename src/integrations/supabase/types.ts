@@ -2600,6 +2600,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      _ia_normalizar_telefone: { Args: { p_tel: string }; Returns: string }
       _ia_pode_atuar: { Args: never; Returns: boolean }
       check_crm_health: {
         Args: never
@@ -2705,6 +2706,10 @@ export type Database = {
       reconstruir_resumo_ia_reserva: {
         Args: { reserva_id: string }
         Returns: string
+      }
+      resolver_lead_por_telefone: {
+        Args: { p_telefone: string }
+        Returns: Json
       }
       scan_parcelas_vencimento: { Args: never; Returns: undefined }
       slugify_unique_expedicao: { Args: { base: string }; Returns: string }
