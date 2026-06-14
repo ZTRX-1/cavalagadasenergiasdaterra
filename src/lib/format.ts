@@ -44,19 +44,8 @@ export function formatPrice(n: number, moeda: string = "BRL"): string {
   return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }
 
-// Cotação turismo aproximada (constantes, ajustáveis manualmente)
-export const USD_BRL = 5.5;
-export const EUR_BRL = 6.0;
+// IMPORTANTE: o sistema NÃO realiza conversão entre moedas em nenhuma camada.
+// BRL, USD e EUR são tratados como moedas independentes. Toda agregação
+// financeira deve respeitar a moeda original da operação.
 
-/** Retorna o valor convertido em BRL (apenas para USD/EUR). null se for BRL. */
-export function priceInBRL(n: number, moeda: string): string | null {
-  if (moeda === "USD") return formatPrice(Math.round(n * USD_BRL), "BRL");
-  if (moeda === "EUR") return formatPrice(Math.round(n * EUR_BRL), "BRL");
-  return null;
-}
-
-/** Formata preço com BRL ao lado, quando aplicável. Ex: "US$ 1.600 (≈ R$ 8.800)" */
-export function formatPriceWithBRL(n: number, moeda: string = "BRL"): string {
-  return formatPrice(n, moeda);
-}
 

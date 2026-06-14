@@ -831,9 +831,11 @@ export interface ReservaRow {
   forma_pagamento: string | null;
   parcelas: number;
   status_pagamento: string;
+  moeda: string;
   created_at: string;
   updated_at: string;
 }
+
 
 export async function listReservas(): Promise<ReservaRow[]> {
   const { data, error } = await supabase

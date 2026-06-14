@@ -63,8 +63,29 @@ const TABS = [
 ] as const;
 type TabId = typeof TABS[number]["id"];
 
+import { formatPrice } from "@/lib/format";
+
 const fmtBRL = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+
+// NUNCA somar moedas diferentes — agrega por moeda e devolve um map.
+type TotaisPorMoeda = Record<string, { confirmado: number; estimado: number; pendente: number }>;
+function agregarPorMoeda(reservas: ReservaRow[]): TotaisPorMoeda {
+  const out: TotaisPorMoeda = {};
+  for (const r of reservas) {
+    const m = r.moeda || "BRL";
+    if (!out[m]) out[m] = { confirmado: 0, estimado: 0, pendente: 0 };
+    const isConf =
+      r.status === "reserva_confirmada" ||
+      r.status === "participante_confirmado" ||
+      r.status_pagamento === "confirmado";
+    out[m].estimado += Number(r.valor_total ?? 0);
+    out[m].confirmado += isConf ? Number(r.valor_total ?? 0) : Number(r.valor_pago ?? 0);
+  }
+  for (const m of Object.keys(out)) out[m].pendente = out[m].estimado - out[m].confirmado;
+  return out;
+}
+
 
 function FinanceiroPage() {
   const qc = useQueryClient();
@@ -90,28 +111,22 @@ function FinanceiroPage() {
     () => reservas.filter((r) => r.created_at >= range.from && r.created_at <= range.to),
     [reservas, range],
   );
-  const totalConfirmado = reservasNoPeriodo
-    .reduce((s, r) => {
-      if (
-        r.status === "reserva_confirmada" || 
-        r.status === "participante_confirmado" ||
-        r.status_pagamento === "confirmado"
-      ) {
-        return s + Number(r.valor_total ?? 0);
-      }
-      return s + Number(r.valor_pago ?? 0);
-    }, 0);
-  const totalEstimado = reservasNoPeriodo.reduce((s, r) => s + Number(r.valor_total || 0), 0);
-  const totalPendente = totalEstimado - totalConfirmado;
+  // Receitas: agrupadas por moeda (BRL, USD, EUR são independentes — nunca somadas)
+  const receitasPorMoeda = useMemo(() => agregarPorMoeda(reservasNoPeriodo), [reservasNoPeriodo]);
+  const moedasAtivas = Object.keys(receitasPorMoeda).length > 0 ? Object.keys(receitasPorMoeda) : ["BRL"];
+
+  // Despesas (assumidas em BRL — toda despesa local). Não somar a receitas em moeda estrangeira.
   const totalDespesas = despesas.reduce((s, d) => s + Number(d.valor), 0);
-  const lucro = totalConfirmado - totalDespesas;
-  const margem = totalConfirmado > 0 ? (lucro / totalConfirmado) * 100 : 0;
+  const confirmadoBRL = receitasPorMoeda["BRL"]?.confirmado ?? 0;
+  const lucroBRL = confirmadoBRL - totalDespesas;
+  const margemBRL = confirmadoBRL > 0 ? (lucroBRL / confirmadoBRL) * 100 : 0;
+
 
   function exportCSV() {
     const lines = [
-      ["tipo","data","descricao","categoria","valor"].join(";"),
-      ...reservasNoPeriodo.map((r) => ["RECEITA", r.created_at.slice(0,10), r.expedicao_nome, "reserva", String(r.valor_pago || 0)].join(";")),
-      ...despesas.map((d) => ["DESPESA", d.data, d.descricao, d.categoria, String(d.valor)].join(";")),
+      ["tipo","data","descricao","categoria","moeda","valor"].join(";"),
+      ...reservasNoPeriodo.map((r) => ["RECEITA", r.created_at.slice(0,10), r.expedicao_nome, "reserva", r.moeda || "BRL", String(r.valor_pago || 0)].join(";")),
+      ...despesas.map((d) => ["DESPESA", d.data, d.descricao, d.categoria, "BRL", String(d.valor)].join(";")),
     ];
     const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -119,6 +134,7 @@ function FinanceiroPage() {
     a.href = url; a.download = `financeiro_${rangeDate.from}_${rangeDate.to}.csv`; a.click();
     URL.revokeObjectURL(url);
   }
+
 
   return (
     <div className="space-y-6">
@@ -158,15 +174,25 @@ function FinanceiroPage() {
         <button className="admin-btn-ghost gap-2" onClick={exportCSV}><Download className="h-4 w-4" /> Exportar CSV</button>
       </div>
 
-      {/* 6 KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-        <KPI label="Faturamento confirmado" value={fmtBRL(totalConfirmado)} tone="ok" />
-        <KPI label="Faturamento estimado" value={fmtBRL(totalEstimado)} tone="warn" />
-        <KPI label="Pagamentos pendentes" value={fmtBRL(totalPendente)} tone="danger" />
-        <KPI label="Despesas totais" value={fmtBRL(totalDespesas)} />
-        <KPI label="Lucro líquido" value={fmtBRL(lucro)} tone={lucro >= 0 ? "ok" : "danger"} />
-        <KPI label="Margem" value={`${margem.toFixed(1)}%`} tone={margem >= 0 ? "ok" : "danger"} />
+      {/* KPIs por moeda (sem somar BRL/USD/EUR) */}
+      <div className="space-y-3">
+        {moedasAtivas.map((m) => {
+          const r = receitasPorMoeda[m] ?? { confirmado: 0, estimado: 0, pendente: 0 };
+          return (
+            <div key={m} className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+              <KPI label={`Faturamento confirmado (${m})`} value={formatPrice(r.confirmado, m)} tone="ok" />
+              <KPI label={`Faturamento estimado (${m})`} value={formatPrice(r.estimado, m)} tone="warn" />
+              <KPI label={`Pagamentos pendentes (${m})`} value={formatPrice(r.pendente, m)} tone="danger" />
+            </div>
+          );
+        })}
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+          <KPI label="Despesas totais (BRL)" value={fmtBRL(totalDespesas)} />
+          <KPI label="Lucro líquido (BRL)" value={fmtBRL(lucroBRL)} tone={lucroBRL >= 0 ? "ok" : "danger"} />
+          <KPI label="Margem BRL" value={`${margemBRL.toFixed(1)}%`} tone={margemBRL >= 0 ? "ok" : "danger"} />
+        </div>
       </div>
+
 
       {/* Tabs */}
       <div className="flex flex-wrap gap-1 border-b border-[color:var(--admin-borda)]">
@@ -238,8 +264,9 @@ function TabReceitas({ reservas, onChanged }: { reservas: ReservaRow[]; onChange
                   <td className="py-3 text-[color:var(--admin-cinza-1)] truncate max-w-[200px]">{r.expedicao_nome}</td>
                   <td className="py-3 text-[color:var(--admin-cinza-2)]">{r.data_label}</td>
                   <td className="py-3 text-[color:var(--admin-cinza-2)]">{r.quantidade_participantes}</td>
-                  <td className="py-3 text-[color:var(--admin-cinza-2)]">{fmtBRL(Number(r.valor_total ?? 0))}</td>
-                  <td className="py-3 text-[color:var(--admin-cinza-2)]">{fmtBRL(Number(r.valor_pago))}</td>
+                  <td className="py-3 text-[color:var(--admin-cinza-2)]">{formatPrice(Number(r.valor_total ?? 0), r.moeda || "BRL")}</td>
+                  <td className="py-3 text-[color:var(--admin-cinza-2)]">{formatPrice(Number(r.valor_pago), r.moeda || "BRL")}</td>
+
                   <td className="py-3"><StatusBadge status={r.status_pagamento} /></td>
                   <td className="py-3 text-right"><button className="admin-btn-ghost px-3 py-1" onClick={() => setEdit(r)}>Editar</button></td>
                 </tr>
