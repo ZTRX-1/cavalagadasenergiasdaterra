@@ -130,7 +130,7 @@ async function handleCriar(payload: CriarPayload) {
   // SEGURANÇA: Validar preço unitário a partir do banco de dados
   const { data: realData, error: dataErr } = await admin
     .from("datas")
-    .select("preco_pix, preco_cartao, status, vagas_disponiveis")
+    .select("preco_pix, preco_cartao, status, vagas_disponiveis, moeda, expedicao_id")
     .eq("id", payload.data_id)
     .single();
 
@@ -271,7 +271,7 @@ async function handleCriar(payload: CriarPayload) {
     observacoes_importantes: payload.adicionais.observacoes_importantes,
     forma_pagamento: payload.adicionais.forma_pagamento,
     valor_total,
-    moeda: payload.moeda || "BRL",
+    moeda: (realData as { moeda?: string }).moeda || payload.moeda || "BRL",
   };
 
   const { data: reservaRow, error: reservaErr } = await admin

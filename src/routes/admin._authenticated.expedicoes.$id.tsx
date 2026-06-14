@@ -277,8 +277,19 @@ function ExpedicaoEdit() {
             <AdminField label="Duração" ondeAparece="Ícone de relógio">
               <input className="admin-input" value={form.duracao ?? ""} onChange={(e) => setF({ duracao: e.target.value })} placeholder="Ex: 5 dias / 4 noites" />
             </AdminField>
-            <AdminField label="Preço base (interno)" ondeAparece="Gestão interna">
-              <input className="admin-input" type="number" value={form.preco ?? 0} onChange={(e) => setF({ preco: Number(e.target.value) })} />
+            <AdminField label="Moeda" ondeAparece="Define a moeda de toda a expedição, datas, reservas e pagamentos">
+              <select
+                className="admin-input"
+                value={(form as { moeda?: string }).moeda ?? "BRL"}
+                onChange={(e) => setF({ moeda: e.target.value } as Partial<ExpedicaoRow>)}
+              >
+                <option value="BRL">Real (BRL)</option>
+                <option value="USD">Dólar (USD)</option>
+                <option value="EUR">Euro (EUR)</option>
+              </select>
+            </AdminField>
+            <AdminField label="Preço base (interno)" ondeAparece="Gestão interna" hint="Use o valor cheio (ex.: 3500). Valores entre 0 e 100 são bloqueados.">
+              <input className="admin-input" type="number" min={0} step={1} value={form.preco ?? 0} onChange={(e) => setF({ preco: Number(e.target.value) })} />
             </AdminField>
           </div>
         </GuidedSection>
@@ -435,8 +446,17 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
     <span className="block text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] mb-1">{children}</span>
   );
 
+  const moeda = (data as { moeda?: string }).moeda ?? "BRL";
+  const simbolo = moeda === "USD" ? "US$" : moeda === "EUR" ? "€" : "R$";
+
   return (
     <div className="rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 p-3">
+      <div className="mb-2 flex items-center gap-2">
+        <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] ring-1 uppercase tracking-[0.12em] bg-[color:var(--admin-dourado)]/15 text-[color:var(--admin-dourado)] ring-[color:var(--admin-dourado)]/30">
+          Moeda: {moeda}
+        </span>
+        <span className="text-[10px] text-[color:var(--admin-cinza-3)]">herdada da expedição</span>
+      </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
         <div>
           <Lbl>Início</Lbl>
@@ -497,7 +517,7 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
           />
         </div>
         <div>
-          <Lbl>Preço Pix (R$)</Lbl>
+          <Lbl>Preço Pix ({simbolo})</Lbl>
           <input
             type="text"
             inputMode="decimal"
@@ -512,7 +532,7 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
           />
         </div>
         <div>
-          <Lbl>Preço cartão (R$)</Lbl>
+          <Lbl>Preço cartão ({simbolo})</Lbl>
           <input
             type="text"
             inputMode="decimal"
