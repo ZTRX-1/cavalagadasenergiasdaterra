@@ -158,7 +158,7 @@ Deno.serve(async (req) => {
     const interacoes: any[] = interacoesRes.data ?? [];
     const memoria: any = memoriaRes.data;
 
-    if (!lead && !reserva) return json({ error: "Não encontrado" }, 404);
+    if (!lead && !reserva) { await auditar(404); return json({ error: "Não encontrado" }, 404); }
 
     // Expedição + data
     let expedicao: any = null;
@@ -239,9 +239,11 @@ Deno.serve(async (req) => {
       conhecimento_aplicavel: kb ?? [],
     };
 
+    await auditar(200);
     return json(payload, 200);
   } catch (e) {
     console.error("contexto-360 error", e);
+    await auditar(500);
     return json({ error: (e as Error).message }, 500);
   }
 });
