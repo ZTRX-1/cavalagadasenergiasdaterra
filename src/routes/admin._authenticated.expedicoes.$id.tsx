@@ -446,8 +446,17 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
     <span className="block text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)] mb-1">{children}</span>
   );
 
+  const moeda = (data as { moeda?: string }).moeda ?? "BRL";
+  const simbolo = moeda === "USD" ? "US$" : moeda === "EUR" ? "€" : "R$";
+
   return (
     <div className="rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 p-3">
+      <div className="mb-2 flex items-center gap-2">
+        <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] ring-1 uppercase tracking-[0.12em] bg-[color:var(--admin-dourado)]/15 text-[color:var(--admin-dourado)] ring-[color:var(--admin-dourado)]/30">
+          Moeda: {moeda}
+        </span>
+        <span className="text-[10px] text-[color:var(--admin-cinza-3)]">herdada da expedição</span>
+      </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
         <div>
           <Lbl>Início</Lbl>
