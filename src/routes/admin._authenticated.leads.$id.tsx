@@ -364,6 +364,11 @@ function LeadEdit() {
 
           <HistoricoAbas conversas={conversas} />
 
+          <AdminSection titulo="Linha do tempo 360°" descricao="Mensagens (todos os canais), interações IA, alterações de etapa, pagamentos, tarefas e handoffs — em ordem cronológica.">
+            <Timeline360 leadId={id} />
+          </AdminSection>
+
+
         </div>
       </div>
 
