@@ -40,10 +40,9 @@ type Interacao = {
   created_at: string;
 };
 
-// Tipos ainda não gerados — uso seguro via cast.
-const db = supabase as unknown as {
-  from: (t: string) => ReturnType<typeof supabase.from>;
-};
+// Tipos ainda não gerados para as novas tabelas/view — cast amplo.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const db: any = supabase;
 
 async function fetchResumoDiario(): Promise<LinhaDiaria[]> {
   const { data, error } = await db.from("vw_ia_auditoria_diaria").select("*").limit(200);
