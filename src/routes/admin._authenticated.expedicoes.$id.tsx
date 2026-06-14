@@ -532,7 +532,7 @@ function DataRow({ data, onSave, onDelete }: { data: DataRowRecord; onSave: (pat
           />
         </div>
         <div>
-          <Lbl>Preço cartão (R$)</Lbl>
+          <Lbl>Preço cartão ({simbolo})</Lbl>
           <input
             type="text"
             inputMode="decimal"
