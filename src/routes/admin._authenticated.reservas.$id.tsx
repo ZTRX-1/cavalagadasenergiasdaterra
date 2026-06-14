@@ -18,6 +18,7 @@ import {
 } from "@/lib/admin/financeiro-api";
 import { ReservaPagamentos } from "@/components/admin/reserva-pagamentos";
 import { ReservaParticipantes } from "@/components/admin/reserva-participantes";
+import { Visao360 } from "@/components/admin/visao-360";
 import { StatusBadge } from "@/components/admin/admin-status-badge";
 import { cn } from "@/lib/utils";
 import {
@@ -281,6 +282,10 @@ function ReservaDetalhePage() {
           </div>
         </section>
       </div>
+
+      <Visao360 reservaId={id} />
+
+
 
       <ReservaPagamentos
         reservaId={id}
