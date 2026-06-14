@@ -905,12 +905,25 @@ export type Database = {
           categoria: string | null
           conteudo: string
           created_at: string
+          created_by: string | null
+          data_id: string | null
           embedding_jsonb: Json | null
+          embedding_pendente: boolean
+          escopo: Database["public"]["Enums"]["ia_kb_escopo"]
+          expedicao_id: string | null
           id: string
+          idioma: string
           metadata: Json
+          prioridade: Database["public"]["Enums"]["ia_kb_prioridade"]
+          score_relevancia: number
+          subcategoria: string | null
           tags: string[]
+          tipo: Database["public"]["Enums"]["ia_kb_tipo"]
           titulo: string
+          total_utilizacoes: number
+          ultima_utilizacao: string | null
           updated_at: string
+          updated_by: string | null
           versao: number
         }
         Insert: {
@@ -918,12 +931,25 @@ export type Database = {
           categoria?: string | null
           conteudo: string
           created_at?: string
+          created_by?: string | null
+          data_id?: string | null
           embedding_jsonb?: Json | null
+          embedding_pendente?: boolean
+          escopo?: Database["public"]["Enums"]["ia_kb_escopo"]
+          expedicao_id?: string | null
           id?: string
+          idioma?: string
           metadata?: Json
+          prioridade?: Database["public"]["Enums"]["ia_kb_prioridade"]
+          score_relevancia?: number
+          subcategoria?: string | null
           tags?: string[]
+          tipo?: Database["public"]["Enums"]["ia_kb_tipo"]
           titulo: string
+          total_utilizacoes?: number
+          ultima_utilizacao?: string | null
           updated_at?: string
+          updated_by?: string | null
           versao?: number
         }
         Update: {
@@ -931,15 +957,50 @@ export type Database = {
           categoria?: string | null
           conteudo?: string
           created_at?: string
+          created_by?: string | null
+          data_id?: string | null
           embedding_jsonb?: Json | null
+          embedding_pendente?: boolean
+          escopo?: Database["public"]["Enums"]["ia_kb_escopo"]
+          expedicao_id?: string | null
           id?: string
+          idioma?: string
           metadata?: Json
+          prioridade?: Database["public"]["Enums"]["ia_kb_prioridade"]
+          score_relevancia?: number
+          subcategoria?: string | null
           tags?: string[]
+          tipo?: Database["public"]["Enums"]["ia_kb_tipo"]
           titulo?: string
+          total_utilizacoes?: number
+          ultima_utilizacao?: string | null
           updated_at?: string
+          updated_by?: string | null
           versao?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "ia_knowledge_base_data_id_fkey"
+            columns: ["data_id"]
+            isOneToOne: false
+            referencedRelation: "datas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ia_knowledge_base_expedicao_id_fkey"
+            columns: ["expedicao_id"]
+            isOneToOne: false
+            referencedRelation: "expedicao_indicadores"
+            referencedColumns: ["expedicao_id"]
+          },
+          {
+            foreignKeyName: "ia_knowledge_base_expedicao_id_fkey"
+            columns: ["expedicao_id"]
+            isOneToOne: false
+            referencedRelation: "expedicoes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       integracoes_status: {
         Row: {
@@ -2266,6 +2327,23 @@ export type Database = {
         | "socia"
         | "desenvolvedor"
         | "ceo_preview"
+      ia_kb_escopo: "global" | "expedicao" | "data"
+      ia_kb_prioridade: "baixa" | "media" | "alta" | "critica"
+      ia_kb_tipo:
+        | "faq"
+        | "politica"
+        | "procedimento_interno"
+        | "expedicao"
+        | "hospedagem"
+        | "transporte"
+        | "pagamento"
+        | "cancelamento"
+        | "documentacao"
+        | "roteiro_atendimento"
+        | "objecoes_comerciais"
+        | "seguranca"
+        | "alimentacao"
+        | "equipamentos"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2405,6 +2483,24 @@ export const Constants = {
         "socia",
         "desenvolvedor",
         "ceo_preview",
+      ],
+      ia_kb_escopo: ["global", "expedicao", "data"],
+      ia_kb_prioridade: ["baixa", "media", "alta", "critica"],
+      ia_kb_tipo: [
+        "faq",
+        "politica",
+        "procedimento_interno",
+        "expedicao",
+        "hospedagem",
+        "transporte",
+        "pagamento",
+        "cancelamento",
+        "documentacao",
+        "roteiro_atendimento",
+        "objecoes_comerciais",
+        "seguranca",
+        "alimentacao",
+        "equipamentos",
       ],
     },
   },
