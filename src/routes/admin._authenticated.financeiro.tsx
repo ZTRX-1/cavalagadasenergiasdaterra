@@ -111,22 +111,16 @@ function FinanceiroPage() {
     () => reservas.filter((r) => r.created_at >= range.from && r.created_at <= range.to),
     [reservas, range],
   );
-  const totalConfirmado = reservasNoPeriodo
-    .reduce((s, r) => {
-      if (
-        r.status === "reserva_confirmada" || 
-        r.status === "participante_confirmado" ||
-        r.status_pagamento === "confirmado"
-      ) {
-        return s + Number(r.valor_total ?? 0);
-      }
-      return s + Number(r.valor_pago ?? 0);
-    }, 0);
-  const totalEstimado = reservasNoPeriodo.reduce((s, r) => s + Number(r.valor_total || 0), 0);
-  const totalPendente = totalEstimado - totalConfirmado;
+  // Receitas: agrupadas por moeda (BRL, USD, EUR são independentes — nunca somadas)
+  const receitasPorMoeda = useMemo(() => agregarPorMoeda(reservasNoPeriodo), [reservasNoPeriodo]);
+  const moedasAtivas = Object.keys(receitasPorMoeda).length > 0 ? Object.keys(receitasPorMoeda) : ["BRL"];
+
+  // Despesas (assumidas em BRL — toda despesa local). Não somar a receitas em moeda estrangeira.
   const totalDespesas = despesas.reduce((s, d) => s + Number(d.valor), 0);
-  const lucro = totalConfirmado - totalDespesas;
-  const margem = totalConfirmado > 0 ? (lucro / totalConfirmado) * 100 : 0;
+  const confirmadoBRL = receitasPorMoeda["BRL"]?.confirmado ?? 0;
+  const lucroBRL = confirmadoBRL - totalDespesas;
+  const margemBRL = confirmadoBRL > 0 ? (lucroBRL / confirmadoBRL) * 100 : 0;
+
 
   function exportCSV() {
     const lines = [
