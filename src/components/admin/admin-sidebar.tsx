@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import {
@@ -36,36 +37,43 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+type NavGroup = "operacao" | "avancado" | "configuracao";
+
 type NavItem = {
   to: string;
   label: string;
   icon: typeof LayoutDashboard;
   modulo: AdminModule;
   exact?: boolean;
-  group: "operacao" | "governanca";
+  group: NavGroup;
 };
 
 const nav: NavItem[] = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, modulo: "dashboard", exact: true, group: "operacao" },
+  // OPERAÇÃO — o que Aline e Lígia abrem todo dia
+  { to: "/admin", label: "Central", icon: LayoutDashboard, modulo: "dashboard", exact: true, group: "operacao" },
+  { to: "/admin/leads", label: "Central de Reservas", icon: Sparkles, modulo: "leads", group: "operacao" },
   { to: "/admin/expedicoes", label: "Expedições", icon: Compass, modulo: "expedicoes", group: "operacao" },
-  { to: "/admin/leads", label: "Leads", icon: Sparkles, modulo: "leads", group: "operacao" },
-  { to: "/admin/inbox", label: "Caixa de entrada", icon: MessageSquare, modulo: "leads", group: "operacao" },
-  { to: "/admin/operacao", label: "Central operacional", icon: ListChecks, modulo: "leads", group: "operacao" },
-  { to: "/admin/reservas", label: "Reservas", icon: BookOpen, modulo: "reservas", group: "operacao" },
   { to: "/admin/participantes", label: "Participantes", icon: Users, modulo: "participantes", group: "operacao" },
-  { to: "/admin/equipe", label: "Equipe", icon: Users, modulo: "equipe", group: "operacao" },
-  { to: "/admin/financeiro", label: "Financeiro", icon: Wallet, modulo: "financeiro", group: "operacao" },
-  { to: "/admin/midia", label: "Mídia", icon: ImageIcon, modulo: "midia", group: "operacao" },
-  { to: "/admin/documentos", label: "Documentos", icon: FileText, modulo: "documentos", group: "operacao" },
-  { to: "/admin/ia", label: "IA", icon: Bot, modulo: "ia", group: "governanca" },
-  { to: "/admin/ia-auditoria", label: "IA · Auditoria", icon: ShieldCheck, modulo: "ia", group: "governanca" },
-  { to: "/admin/ia-kb", label: "Base de Conhecimento", icon: BookOpen, modulo: "ia", group: "governanca" },
-  { to: "/admin/automacoes", label: "Automações", icon: Workflow, modulo: "automacoes", group: "governanca" },
-  { to: "/admin/historico", label: "Histórico", icon: History, modulo: "historico", group: "governanca" },
-  { to: "/admin/integracoes", label: "Integrações", icon: Plug, modulo: "integracoes", group: "governanca" },
-  { to: "/admin/usuarios", label: "Usuários", icon: UserCog, modulo: "usuarios", group: "governanca" },
-  { to: "/admin/cargos", label: "Cargos", icon: ShieldCheck, modulo: "cargos", group: "governanca" },
-  { to: "/admin/configuracoes", label: "Configurações", icon: Settings, modulo: "configuracoes", group: "governanca" },
+
+  // AVANÇADO — relatórios, IA e operação técnica
+  { to: "/admin/reservas", label: "Reservas (lista)", icon: BookOpen, modulo: "reservas", group: "avancado" },
+  { to: "/admin/financeiro", label: "Financeiro", icon: Wallet, modulo: "financeiro", group: "avancado" },
+  { to: "/admin/documentos", label: "Documentos", icon: FileText, modulo: "documentos", group: "avancado" },
+  { to: "/admin/inbox", label: "Caixa de entrada", icon: MessageSquare, modulo: "leads", group: "avancado" },
+  { to: "/admin/operacao", label: "Pendências", icon: ListChecks, modulo: "leads", group: "avancado" },
+  { to: "/admin/midia", label: "Mídia", icon: ImageIcon, modulo: "midia", group: "avancado" },
+  { to: "/admin/ia", label: "IA", icon: Bot, modulo: "ia", group: "avancado" },
+  { to: "/admin/ia-kb", label: "IA · Conhecimento", icon: BookOpen, modulo: "ia", group: "avancado" },
+  { to: "/admin/ia-auditoria", label: "IA · Auditoria", icon: ShieldCheck, modulo: "ia", group: "avancado" },
+  { to: "/admin/automacoes", label: "Automações", icon: Workflow, modulo: "automacoes", group: "avancado" },
+  { to: "/admin/integracoes", label: "Integrações", icon: Plug, modulo: "integracoes", group: "avancado" },
+  { to: "/admin/historico", label: "Histórico", icon: History, modulo: "historico", group: "avancado" },
+
+  // CONFIGURAÇÃO — quase nunca tocada
+  { to: "/admin/equipe", label: "Equipe", icon: Users, modulo: "equipe", group: "configuracao" },
+  { to: "/admin/usuarios", label: "Usuários", icon: UserCog, modulo: "usuarios", group: "configuracao" },
+  { to: "/admin/cargos", label: "Cargos", icon: ShieldCheck, modulo: "cargos", group: "configuracao" },
+  { to: "/admin/configuracoes", label: "Configurações", icon: Settings, modulo: "configuracoes", group: "configuracao" },
 ];
 
 function NavLinkItem({ item, onNavigate, active }: { item: NavItem; onNavigate?: () => void; active: boolean }) {
@@ -92,6 +100,45 @@ function NavLinkItem({ item, onNavigate, active }: { item: NavItem; onNavigate?:
   );
 }
 
+function NavGroupBlock({
+  label,
+  items,
+  isActive,
+  onNavigate,
+  pathname,
+  defaultOpen,
+}: {
+  label: string;
+  items: NavItem[];
+  isActive: (to: string, exact?: boolean) => boolean;
+  onNavigate?: () => void;
+  pathname: string;
+  defaultOpen: boolean;
+}) {
+  const containsActive = items.some((i) => isActive(i.to, i.exact));
+  const [open, setOpen] = useState<boolean>(defaultOpen || containsActive);
+  useEffect(() => { if (containsActive) setOpen(true); }, [pathname, containsActive]);
+  return (
+    <div className="pt-3 first:pt-0">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between px-3 pb-2 text-[10px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-cinza-2)] transition-colors"
+      >
+        <span>{label}</span>
+        <ChevronUp className={`h-3 w-3 transition-transform ${open ? "" : "rotate-180"}`} strokeWidth={1.8} />
+      </button>
+      {open ? (
+        <div className="space-y-0.5">
+          {items.map((item) => (
+            <NavLinkItem key={item.to} item={item} onNavigate={onNavigate} active={isActive(item.to, item.exact)} />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: string | null; avatar_url?: string | null } | null; onNavigate?: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const handleLogout = async () => {
@@ -101,6 +148,10 @@ function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: s
   const isActive = (to: string, exact?: boolean) =>
     exact ? pathname === to : pathname === to || pathname.startsWith(`${to}/`);
   const inicial = (user?.nome || user?.email || "?").trim().charAt(0).toUpperCase();
+
+  const operacao = nav.filter((i) => i.group === "operacao");
+  const avancado = nav.filter((i) => i.group === "avancado");
+  const configuracao = nav.filter((i) => i.group === "configuracao");
 
   return (
     <>
@@ -115,15 +166,10 @@ function SidebarContent({ user, onNavigate }: { user: { email?: string; nome?: s
           <span className="text-[8px] xs:text-[10px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)] truncate">Energias da Terra</span>
         </div>
       </div>
-      <nav className="flex-1 overflow-y-auto px-3 py-5 space-y-0.5 custom-scrollbar">
-        <div className="px-3 pb-2 text-[10px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)]">Operação</div>
-        {nav.filter((i) => i.group === "operacao").map((item) => (
-          <NavLinkItem key={item.to} item={item} onNavigate={onNavigate} active={isActive(item.to, item.exact)} />
-        ))}
-        <div className="px-3 pt-4 pb-2 text-[10px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)]">Governança</div>
-        {nav.filter((i) => i.group === "governanca").map((item) => (
-          <NavLinkItem key={item.to} item={item} onNavigate={onNavigate} active={isActive(item.to, item.exact)} />
-        ))}
+      <nav className="flex-1 overflow-y-auto px-3 py-5 custom-scrollbar">
+        <NavGroupBlock label="Operação" items={operacao} isActive={isActive} onNavigate={onNavigate} pathname={pathname} defaultOpen />
+        <NavGroupBlock label="Avançado" items={avancado} isActive={isActive} onNavigate={onNavigate} pathname={pathname} defaultOpen={false} />
+        <NavGroupBlock label="Configuração" items={configuracao} isActive={isActive} onNavigate={onNavigate} pathname={pathname} defaultOpen={false} />
       </nav>
       <div className="border-t border-[color:var(--admin-borda)] p-3">
         <DropdownMenu>
