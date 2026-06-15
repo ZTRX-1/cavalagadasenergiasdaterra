@@ -190,10 +190,13 @@ function DashboardPage() {
     <div className="mx-auto max-w-[1400px] space-y-8 pb-12">
       {!canEdit ? <EmDesenvolvimentoBanner /> : null}
       
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      {/* Central Operacional — filas acionáveis sempre no topo */}
+      <CentralOperacional />
+
+      <div className="flex flex-wrap items-end justify-between gap-4 border-t border-[color:var(--admin-borda)] pt-8">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)]">Central Operacional</p>
-          <h2 className="mt-1 font-display text-[32px] leading-tight text-[color:var(--admin-cinza-1)]">Status do Negócio</h2>
+          <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--admin-cinza-3)]">Visão analítica</p>
+          <h2 className="mt-1 font-display text-[28px] leading-tight text-[color:var(--admin-cinza-1)]">Status do negócio</h2>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {PRESETS.map((p) => (
@@ -212,6 +215,7 @@ function DashboardPage() {
           ))}
         </div>
       </div>
+
 
       {/* Alertas Operacionais - Ações Pendentes */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
