@@ -30,6 +30,8 @@ import { useCan } from "@/hooks/use-permissions";
 import { DashboardAnalytics } from "@/components/admin/dashboard-analytics";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import { CentralOperacional } from "@/components/admin/central-operacional";
+
 
 export const Route = createFileRoute("/admin/_authenticated/")({
   component: DashboardPage,
