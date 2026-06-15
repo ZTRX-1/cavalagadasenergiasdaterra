@@ -93,7 +93,13 @@ function LeadEdit() {
         }
       />
 
+      <ProximaAcaoBanner
+        lead={form as LeadRow}
+        contexto={{ temReserva: !!reservaExistente }}
+      />
+
       {/* CTA principal: converter ou ver reserva */}
+
       {reservaExistente ? (
         <Link
           to="/admin/reservas/$id"
