@@ -15,8 +15,14 @@ import {
   closestCenter,
 } from "@dnd-kit/core";
 import { Star, Flame, Trash2, ArrowRight } from "lucide-react";
-import { StatusBadge } from "@/components/admin/admin-status-badge";
-import { LEAD_ETAPAS, LEAD_TEMPERATURAS, type LeadEtapaId, type LeadRow } from "@/lib/admin/api";
+import { LEAD_TEMPERATURAS, type LeadEtapaId, type LeadRow } from "@/lib/admin/api";
+import {
+  JORNADA_ESTAGIOS,
+  JORNADA_TONE_CLASS,
+  jornadaEstagio,
+  jornadaFromLead,
+  type JornadaId,
+} from "@/lib/admin/jornada";
 
 type Props = {
   leads: LeadRow[];
@@ -29,11 +35,11 @@ export function LeadsKanban({ leads, onMove, onDelete, onConverter }: Props) {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  const grouped: Record<LeadEtapaId, LeadRow[]> = useMemo(() => {
-    return LEAD_ETAPAS.reduce((acc, s) => {
-      acc[s.id] = leads.filter((l) => (l.etapa_atendimento ?? "novo") === s.id);
+  const grouped: Record<JornadaId, LeadRow[]> = useMemo(() => {
+    return JORNADA_ESTAGIOS.reduce((acc, s) => {
+      acc[s.id] = leads.filter((l) => jornadaFromLead(l) === s.id);
       return acc;
-    }, {} as Record<LeadEtapaId, LeadRow[]>);
+    }, {} as Record<JornadaId, LeadRow[]>);
   }, [leads]);
 
   const active = activeId ? leads.find((l) => l.id === activeId) ?? null : null;
@@ -42,11 +48,12 @@ export function LeadsKanban({ leads, onMove, onDelete, onConverter }: Props) {
     setActiveId(null);
     const overId = e.over?.id;
     if (!overId) return;
-    const etapa = String(overId) as LeadEtapaId;
+    const destino = JORNADA_ESTAGIOS.find((s) => s.id === String(overId));
+    if (!destino) return;
     const lead = leads.find((l) => l.id === e.active.id);
-    if (!lead || lead.etapa_atendimento === etapa) return;
-    if (!LEAD_ETAPAS.some((s) => s.id === etapa)) return;
-    onMove(lead.id, etapa);
+    if (!lead) return;
+    if (jornadaFromLead(lead) === destino.id) return;
+    onMove(lead.id, destino.etapaPadrao);
   }
 
   function handleDragStart(e: DragStartEvent) {
@@ -63,14 +70,12 @@ export function LeadsKanban({ leads, onMove, onDelete, onConverter }: Props) {
     >
       <div
         className="grid gap-3 overflow-x-auto pb-4"
-        style={{ gridTemplateColumns: `repeat(${LEAD_ETAPAS.length}, minmax(260px, 1fr))` }}
+        style={{ gridTemplateColumns: `repeat(${JORNADA_ESTAGIOS.length}, minmax(240px, 1fr))` }}
       >
-        {LEAD_ETAPAS.map((s) => (
+        {JORNADA_ESTAGIOS.map((s) => (
           <KanbanColumn
             key={s.id}
             id={s.id}
-            label={s.label}
-            descricao={s.descricao}
             leads={grouped[s.id]}
             onDelete={onDelete}
             onConverter={onConverter}
@@ -90,20 +95,17 @@ export function LeadsKanban({ leads, onMove, onDelete, onConverter }: Props) {
 
 function KanbanColumn({
   id,
-  label,
-  descricao,
   leads,
   onDelete,
   onConverter,
 }: {
-  id: LeadEtapaId;
-  label: string;
-  descricao: string;
+  id: JornadaId;
   leads: LeadRow[];
   onDelete: (l: LeadRow) => void;
   onConverter: (l: LeadRow) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id });
+  const estagio = jornadaEstagio(id);
   return (
     <div
       ref={setNodeRef}
@@ -112,9 +114,11 @@ function KanbanColumn({
       }`}
     >
       <div className="mb-3 flex items-center justify-between px-1">
-        <div className="flex flex-col gap-0.5">
-          <StatusBadge status={id} />
-          <span className="text-[10px] text-[color:var(--admin-cinza-3)]">{descricao}</span>
+        <div className="flex flex-col gap-1">
+          <span className={`inline-flex w-fit items-center rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] ${JORNADA_TONE_CLASS[estagio.tone]}`}>
+            {estagio.label}
+          </span>
+          <span className="text-[10px] text-[color:var(--admin-cinza-3)]">{estagio.descricao}</span>
         </div>
         <span className="text-xs text-[color:var(--admin-cinza-3)]">{leads.length}</span>
       </div>
@@ -189,7 +193,7 @@ function LeadCardInner({
   const content = (
     <div className="space-y-2.5">
       <div className="flex items-start justify-between gap-2">
-        <div 
+        <div
           ref={setActivatorNodeRef}
           {...dragAttributes}
           {...dragListeners}
@@ -215,7 +219,7 @@ function LeadCardInner({
       </div>
 
       <div className="flex flex-wrap items-center gap-1.5">
-        <span 
+        <span
           className="inline-flex items-center gap-1 rounded-md bg-[color:var(--admin-petroleo-soft)]/40 px-1.5 py-0.5 text-[10px] text-[color:var(--admin-cinza-2)] ring-1 ring-[color:var(--admin-borda)]"
           title={`Temperatura: ${temperatura.label}`}
         >
@@ -253,17 +257,11 @@ function LeadCardInner({
         </span>
       </div>
 
-      <div className="flex flex-col gap-1 border-t border-[color:var(--admin-borda)]/30 pt-2 text-[10px] text-[color:var(--admin-cinza-3)]">
-        <div className="flex justify-between items-center">
-          <span>Última interação:</span>
-          <span>{lead.ultima_interacao_at ? new Date(lead.ultima_interacao_at).toLocaleDateString("pt-BR") : "—"}</span>
+      {lead.proxima_acao ? (
+        <div className="border-t border-[color:var(--admin-borda)]/30 pt-2 text-[10px] text-amber-200/80 italic truncate" title={lead.proxima_acao}>
+          → {lead.proxima_acao}
         </div>
-        {lead.proxima_acao && (
-          <div className="text-amber-200/80 italic truncate" title={lead.proxima_acao}>
-            → {lead.proxima_acao}
-          </div>
-        )}
-      </div>
+      ) : null}
 
       {!dragging && ehReservaPendente && onConverter ? (
         <button
