@@ -37,6 +37,8 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
+import { ProximaAcaoBanner } from "@/components/admin/proxima-acao-banner";
+
 
 export const Route = createFileRoute("/admin/_authenticated/reservas/$id")({
   component: ReservaDetalhePage,
