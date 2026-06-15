@@ -20,6 +20,8 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { ProximaAcaoBanner } from "@/components/admin/proxima-acao-banner";
+import { ReservaResumoCard } from "@/components/admin/reserva-resumo-card";
+
 
 
 export const Route = createFileRoute("/admin/_authenticated/leads/$id")({
