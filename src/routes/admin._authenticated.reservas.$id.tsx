@@ -163,7 +163,25 @@ function ReservaDetalhePage() {
         </div>
       </div>
 
+      <ProximaAcaoBanner
+        lead={{
+          status: "convertido",
+          etapa_atendimento:
+            reserva.status_operacional === "expedicao_concluida" ? "concluido"
+              : reserva.status_operacional === "participante_confirmado" ? "participante_confirmado"
+              : reserva.status_operacional === "reserva_confirmada" ? "convertido"
+              : "reserva_pendente",
+          proxima_acao: null,
+        } as any}
+        contexto={{
+          temReserva: true,
+          saldoRestante: reserva.saldo_restante,
+          algumPagamento: (pagamentosQ.data?.length ?? 0) > 0,
+        }}
+      />
+
       <div className="grid lg:grid-cols-3 gap-5">
+
         {/* Resumo financeiro */}
         <section className="rounded-xl border border-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo-soft)]/20 p-5 space-y-3">
           <header className="flex items-center gap-2 text-[color:var(--admin-cinza-3)] text-xs uppercase tracking-[0.2em]">
