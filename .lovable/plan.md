@@ -1,143 +1,159 @@
+# Fase 2.5 — Simplificação Operacional
 
-# Fase 2 — Preparação Operacional para a IA Bárbara
-
-Objetivo: deixar todo o substrato (dados, eventos, regras, telas internas) pronto para que, na Fase 3, a Bárbara seja apenas "plugada" — sem que essa fase já dependa de OpenAI, WhatsApp ou N8N.
-
-Nenhuma chamada a LLM, nenhum provedor de mensageria e nenhum webhook externo serão habilitados aqui. Tudo é estrutura interna, com simulação manual via painel admin.
+Reorganização da camada visual e de navegação do admin, sem tocar em tabelas, triggers, RPCs, IA, auditoria, KB, Contexto 360, financeiro, participantes ou reservas. A inteligência fica intacta no banco; o que muda é como Aline e Lígia operam.
 
 ---
 
-## 1. Princípios da Fase 2
+## 1. Como o sistema funciona hoje
 
-- Estrutura primeiro, inteligência depois. A Bárbara, quando ligada, deve apenas ler/gravar nas tabelas — não criar nada novo.
-- Cada ação automática hoje deve ter um equivalente manual em tela, para que o operador "atue como Bárbara" durante o piloto.
-- Toda decisão da IA deve ser auditável: o que ela leu, o que respondeu, com qual confiança, e quando passou para humano.
-- Multi-moeda, vagas e jornada permanecem intocados. A Fase 2 não muda regra de negócio existente.
+Sidebar atual com 15+ rotas paralelas:
 
----
+`Dashboard · Leads · Inbox · Reservas · Participantes · Financeiro · Documentos · Expedições · Operação · Automações · IA · IA-KB · IA-Auditoria · Integrações · Equipe · Cargos · Usuários · Configurações · Histórico · Mídia`
 
-## 2. Camadas a entregar
+Cada entidade vive em sua própria tela. Para resolver uma única reserva, a usuária navega por:
 
 ```text
-+--------------------------------------------------------------+
-|  Painel admin (telas de operação assistida)                  |
-|  - Caixa de entrada unificada                                |
-|  - Fila de handoff humano                                    |
-|  - Base de conhecimento                                      |
-|  - Tarefas operacionais                                      |
-|  - Configurações da Bárbara (perfil, tom, limites)           |
-+----------------------------+---------------------------------+
-                             |
-+----------------------------v---------------------------------+
-|  Camada de domínio Bárbara (tabelas já existentes, vazias)   |
-|  ia_interacoes  ia_handoff_queue  ia_knowledge_base          |
-|  tarefas        mensagens_canal   ia_configuracoes           |
-+----------------------------+---------------------------------+
-                             |
-+----------------------------v---------------------------------+
-|  Núcleo CRM já estabilizado na Fase 1                        |
-|  leads / reservas / participantes / pagamentos / datas       |
-+--------------------------------------------------------------+
+Leads → abre lead → Reservas → abre reserva → Participantes → volta → Financeiro → Documentos → Inbox
 ```
 
----
+O funil de leads tem 7+ status técnicos (`novo`, `triagem_ia`, `qualificado`, `proposta_enviada`, `reserva_pendente`, `participante_confirmado`, `convertido`, `perdido`). Dashboard mostra métricas genéricas, não pendências acionáveis.
 
-## 3. Entregas por bloco
+## 2. Telas complexas demais
 
-### Bloco A — Identidade e configuração da Bárbara
-- Tela "Configurações > Bárbara" lendo/gravando `ia_configuracoes`: nome exibido, tom de voz, idiomas, horário operante, modo (sombra / sugestão / autônomo), limite de confiança para resposta automática, gatilhos de handoff.
-- Sem nenhuma chamada a modelo — apenas persistência das regras.
+- **Dashboard** — KPIs genéricos, não responde "o que preciso fazer agora?"
+- **Leads index** — kanban com status técnicos crus
+- **Reserva detalhe** — abas separadas para pagamentos/participantes/docs
+- **Participantes index** — lista solta, sem hierarquia expedição→data→grupo
+- **Financeiro** — separado da reserva no dia a dia
+- **Sidebar** — 15+ itens com peso visual igual entre operação e configuração
 
-### Bloco B — Caixa de entrada unificada (`mensagens_canal`)
-- Tela "Atendimento > Caixa de Entrada" listando mensagens por lead/reserva, agrupadas por canal (whatsapp, email, site_form, instagram_dm — campos já previstos, sem integração real).
-- Permitir registrar mensagem manualmente (entrada e saída) para simular a operação.
-- Vinculação automática a `lead_id` / `reserva_id` quando o remetente já existir.
+## 3. Etapas que podem ser agrupadas
 
-### Bloco C — Registro de interações da IA (`ia_interacoes`)
-- Todo registro manual feito por operador gera linha em `ia_interacoes` marcada como `autor='humano'`.
-- Quando a Bárbara entrar (Fase 3), as mesmas colunas recebem `autor='ia'`, `modelo`, `confianca`, `tokens`, `latencia_ms`, `contexto_usado` (jsonb).
-- Tela de timeline do lead/reserva mostra mensagens humanas e simuladas de IA lado a lado.
+| Hoje (separado) | Novo (agrupado em uma ficha) |
+|---|---|
+| Lead + Reserva + Participantes + Pagamentos + Docs | **Ficha do Cliente** (visão única) |
+| Inbox + Lead + Conversas | aba *Conversas* da ficha |
+| Financeiro por reserva | bloco *Pagamento* da ficha |
+| Documentos por reserva | bloco *Documentos* da ficha |
+| Tarefas relacionadas | bloco *Próxima ação* |
 
-### Bloco D — Fila de handoff humano (`ia_handoff_queue`)
-- Tela "Atendimento > Handoff" com itens pendentes: motivo, prioridade, lead/reserva associada, SLA.
-- Operador pode "assumir", "devolver para IA" (quando existir) e "concluir".
-- Triggers que já criamos (lead_transferido_humano, pagamento_recebido, contrato_assinado) passam a inserir itens nessa fila automaticamente — hoje só emitem webhook.
+## 4. Módulos que continuam, mas em segundo plano
 
-### Bloco E — Tarefas operacionais (`tarefas`)
-- CRUD de tarefas vinculadas a lead/reserva/expedição com prazo, responsável, prioridade, origem (`manual` / `automacao` / `ia`).
-- Painel "Minhas tarefas" no topbar com contador.
-- Regras automáticas de criação (sem IA): por exemplo, ao mudar reserva para `reserva_confirmada`, criar tarefa "Enviar contrato".
+Movidos para grupo **Avançado** no sidebar (colapsado por padrão), mantendo rotas e código:
 
-### Bloco F — Base de conhecimento (`ia_knowledge_base`)
-- Tela "Bárbara > Conhecimento" para Lígia/Aline cadastrarem:
-  - Perguntas frequentes
-  - Políticas (cancelamento, pagamento, bagagem)
-  - Descrições por expedição (resumo curto + diferencial + público)
-  - Roteiros padrão de resposta
-- Cada item com: título, categoria, idioma, expedição (opcional), conteúdo markdown, `ativo`, `prioridade`, `tags`.
-- Versionamento simples (campo `versao`, atualizado em cada save).
-- Sem embeddings nesta fase — apenas texto estruturado. A Fase 3 indexa.
+- IA · IA-KB · IA-Auditoria
+- Automações · Integrações · Webhooks
+- Histórico · Auditoria
+- Cargos · Usuários · Permissões
+- Financeiro (módulo de relatórios)
+- Mídia
 
-### Bloco G — Contexto unificado do lead/reserva
-- View `vw_contexto_lead` e `vw_contexto_reserva` consolidando, em jsonb único, tudo que a Bárbara precisará ler:
-  - Dados do lead / reserva / participantes / pagamentos / moeda
-  - Últimas N interações
-  - Tarefas abertas
-  - Itens da KB aplicáveis à expedição
-- Endpoint interno (edge function `contexto-bárbara` com `verify_jwt=true`) que devolve esse contexto. Hoje serve a tela "Visão 360"; amanhã serve a IA.
+Continuam funcionando para Bárbara e admin técnico; saem do caminho da operação diária.
 
-### Bloco H — Permissões e cargos
-- Novo cargo `atendente_ia_supervisor` com acesso a Caixa de Entrada, Handoff, KB e Config da Bárbara.
-- Política RLS revisada nas 5 tabelas IA para permitir leitura/escrita por `operador` e `atendente_ia_supervisor`, e leitura total por `admin/ceo/superadmin/desenvolvedor`.
+## 5. Novo fluxo simplificado
 
-### Bloco I — Métricas operacionais (preparação)
-- Tela "Bárbara > Métricas" mostrando, com base nos registros manuais:
-  - Volume de mensagens por canal e por dia
-  - Tempo médio de resposta humana
-  - Handoffs abertos / fechados / SLA
-  - Tarefas no prazo vs atrasadas
-- Esses mesmos painéis servirão de baseline para comparar com a IA na Fase 3.
+```text
+Central Operacional (Dashboard)
+        │
+        ▼
+   Clientes  ──► Ficha do Cliente (tudo em uma tela)
+        │           ├─ Cabeçalho: nome, status jornada, próxima ação
+        │           ├─ Conversas
+        │           ├─ Reserva (expedição, data, grupo)
+        │           ├─ Pagamento (total, pago, saldo, registrar)
+        │           ├─ Participantes do grupo
+        │           ├─ Documentos
+        │           └─ Histórico + Tarefas
+        ▼
+   Expedições ──► Data ──► Grupos/Reservas ──► Participantes
+```
 
----
+**Jornada visual (6 estágios)** mapeada sobre status técnicos existentes:
 
-## 4. Garantias de compatibilidade futura
+| Estágio visual | Status técnicos agrupados |
+|---|---|
+| Interessado | `novo`, `triagem_ia` |
+| Em atendimento | `qualificado`, `em_atendimento` |
+| Pré-reserva | `proposta_enviada`, `reserva_pendente` |
+| Confirmado | `participante_confirmado`, `convertido` |
+| Concluído | `concluido` |
+| Perdido | `perdido` |
 
-- Schemas das 5 tabelas IA não serão alterados na Fase 3, apenas populados.
-- Toda escrita já é feita com o mesmo formato que a Bárbara usará (autor, confianca, contexto_usado).
-- Webhooks atuais continuam emitindo — quando o N8N entrar, ele só precisa assinar.
-- Endpoint de contexto já existe e é versionado (`/v1/contexto`), evitando refactor depois.
+Mapeamento puramente em frontend (helper `jornadaFromStatus()`); banco intacto.
 
----
+## 6. Telas alteradas
 
-## 5. Fora do escopo desta fase
+1. **`admin/index` → Central Operacional**
+   Substituir KPIs genéricos por filas acionáveis: *Aguardando resposta · Aguardando pagamento · Docs pendentes · Participantes incompletos · Próximas expedições (7 dias) · Tarefas urgentes*. Cada item abre direto a ficha.
 
-- Integração com OpenAI / Lovable AI Gateway
-- Integração com WhatsApp Business API
-- N8N / orquestração externa
-- Embeddings, RAG, busca vetorial
-- Mudanças em jornada, vagas, moeda ou financeiro
+2. **`admin/leads` → Clientes**
+   Renomear visualmente para "Clientes". Kanban com as 6 colunas da jornada. Card mostra: nome, expedição, próxima ação, status financeiro resumido.
 
----
+3. **`admin/leads/$id` + `admin/reservas/$id` → Ficha do Cliente unificada**
+   Layout editorial em coluna única com seções ancoradas. Lead sem reserva mostra CTA "Criar pré-reserva". Lead com reserva mostra blocos completos. Rotas antigas redirecionam para a ficha unificada.
 
-## 6. Critérios de aceite
+4. **`admin/participantes` → hierarquia Expedição → Data → Grupo**
+   Tela responde rapidamente: ocupação, vagas restantes, fichas incompletas, confirmados, pendentes. Lista solta vira drill-down.
 
-- Operador consegue rodar um atendimento completo (mensagem → handoff → tarefa → resposta → conclusão) usando apenas as novas telas.
-- Toda essa operação aparece na timeline do lead/reserva.
-- `vw_contexto_lead` devolve, para qualquer lead com reserva, um jsonb único contendo dados + interações + tarefas + KB aplicável.
-- Nenhuma chamada externa é feita; nenhum segredo novo é necessário.
-- Auditoria `vw_jornada_consistencia` permanece sem regressões.
+5. **Sidebar reorganizada**
 
----
+   ```text
+   OPERAÇÃO
+     Central
+     Clientes
+     Expedições
+     Participantes
 
-## 7. Ordem sugerida de execução
+   AVANÇADO (colapsado)
+     Financeiro · Documentos · Inbox · IA · KB · Auditoria
+     Automações · Integrações · Histórico · Mídia
 
-1. Bloco A (config) + Bloco H (permissões)
-2. Bloco F (KB) — para já começarmos a popular o conhecimento real
-3. Bloco B + C (caixa de entrada + ia_interacoes)
-4. Bloco D + E (handoff + tarefas)
-5. Bloco G (contexto unificado)
-6. Bloco I (métricas)
+   CONFIGURAÇÃO (colapsado)
+     Equipe · Cargos · Usuários · Configurações · Perfil
+   ```
 
-Cada bloco será entregue com seu próprio mini-teste operacional, no mesmo formato do teste ponta a ponta da Fase 1.
+## 7. Telas mantidas sem mudança funcional
 
-Aprovando este plano, começo pelo Bloco A + H.
+- Expedições (admin e detalhe)
+- Configurações, Perfil, Login
+- IA-KB, IA-Auditoria, Automações, Integrações (apenas reposicionadas no sidebar)
+- Todas as rotas públicas do site
+
+## 8. Funcionalidades escondidas / reposicionadas
+
+- Inbox vira aba *Conversas* dentro da ficha; rota `/admin/inbox` mantida para visão global em "Avançado"
+- Financeiro detalhado vai para "Avançado" como relatório; operação acontece no bloco *Pagamento* da ficha
+- Documentos seguem o mesmo padrão
+- Status técnicos crus deixam de aparecer; só a jornada de 6 estágios é visível
+- Tarefas ficam embutidas na ficha como "Próxima ação"; rota global some do menu principal
+
+## 9. Compatibilidade com Bárbara
+
+- Nenhuma tabela, RPC, trigger, policy ou edge function alterada
+- `ia_decisoes`, `ia_interacoes`, `ia_acoes_log`, `ia_handoff_queue`, `lead_memoria`, `mensagens_canal`, `ia_knowledge_base`, `ia_prompts` permanecem como estão
+- Status técnicos continuam sendo gravados; mapeamento jornada é só de leitura no frontend
+- Contexto 360 segue alimentando a ficha; vira componente embutido em vez de tela separada
+- Handoff queue continua acessível via "Avançado" e via badge na ficha do cliente
+- Edge functions `ia-shadow`, `ia-shadow-openai`, `ia-prompt-preview`, `contexto-360`, `ia-resolver-cliente`, `ia-contexto-cliente` intactas
+
+## 10. Ordem de implementação
+
+1. **Helpers + design tokens** — `jornadaFromStatus()`, badges de jornada, tokens editoriais (tipografia, espaçamento, cores de status) em `index.css` e `tailwind.config.ts`
+2. **Sidebar reorganizada** — 3 grupos (Operação / Avançado / Configuração), sem remover rotas
+3. **Central Operacional** — substituir `admin/index` por filas acionáveis
+4. **Ficha do Cliente unificada** — nova `admin/clientes/$id` agregando lead+reserva+pagamento+participantes+docs+conversas; redirects das rotas antigas
+5. **Clientes (kanban jornada)** — refatorar `admin/leads/index` com 6 colunas e cards enxutos
+6. **Participantes hierárquico** — drill-down Expedição→Data→Grupo
+7. **Polimento visual** — densidade, hierarquia, remoção de cards redundantes, revisão tela a tela
+8. **QA com cenários reais** — os 8 passos do critério (ver contato → abrir → conversa → pré-reserva → pagamento → participantes → pendências → confirmar)
+
+## Detalhes técnicos
+
+- **Sem migrations.** Toda mudança em `src/routes/`, `src/components/admin/`, `src/lib/admin/`, `src/components/ui/sidebar` consumer.
+- **Mapeamento jornada** em `src/lib/admin/jornada.ts` (puro TS, sem chamada de rede).
+- **Ficha unificada** consome APIs já existentes (`api.ts`, `financeiro-api.ts`, `participantes-actions.ts`, `central-docs-api.ts`, `contexto-360` edge function) — nenhuma nova RPC.
+- **Redirects** via `loader` do TanStack Router em `admin/leads/$id` e `admin/reservas/$id` para `admin/clientes/$id`, preservando deep links.
+- **Sidebar groups** usam `SidebarGroup` com `defaultOpen={false}` para Avançado/Configuração; rota ativa força abertura do grupo correspondente.
+- **Design** segue a memória do projeto: luxo natural, editorial, sem aparência genérica de IA, imagens intencionais.
+
+Aguardando aprovação antes de implementar qualquer item.
