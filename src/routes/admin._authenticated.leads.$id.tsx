@@ -19,6 +19,8 @@ import {
 } from "@/lib/admin/api";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { ProximaAcaoBanner } from "@/components/admin/proxima-acao-banner";
+
 
 export const Route = createFileRoute("/admin/_authenticated/leads/$id")({
   component: LeadEdit,
@@ -91,7 +93,13 @@ function LeadEdit() {
         }
       />
 
+      <ProximaAcaoBanner
+        lead={form as LeadRow}
+        contexto={{ temReserva: !!reservaExistente }}
+      />
+
       {/* CTA principal: converter ou ver reserva */}
+
       {reservaExistente ? (
         <Link
           to="/admin/reservas/$id"

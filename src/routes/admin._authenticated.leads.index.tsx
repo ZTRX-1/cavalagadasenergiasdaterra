@@ -105,23 +105,23 @@ function LeadsPage() {
   return (
     <div>
       <AdminPageHeader
-        eyebrow="CRM"
-        title="Leads"
-        description="Cada pessoa que entra em contato vira um lead aqui. Acompanhe pelo Kanban e mova entre as etapas do atendimento."
+        eyebrow="Operação"
+        title="Central de Reservas"
+        description="Toda pessoa que entra em contato vira um cliente aqui. Arraste pelos 6 estágios da jornada — do primeiro contato até a expedição concluída."
         actions={
           <div className="flex items-center gap-2">
             <div className="hidden md:flex items-center rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/60 p-0.5">
               <button
                 className={`flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs ${view === "kanban" ? "bg-[color:var(--admin-dourado)]/10 text-[color:var(--admin-dourado)]" : "text-[color:var(--admin-cinza-3)]"}`}
                 onClick={() => setView("kanban")}
-              ><LayoutGrid className="h-3.5 w-3.5" /> Kanban</button>
+              ><LayoutGrid className="h-3.5 w-3.5" /> Jornada</button>
               <button
                 className={`flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs ${view === "lista" ? "bg-[color:var(--admin-dourado)]/10 text-[color:var(--admin-dourado)]" : "text-[color:var(--admin-cinza-3)]"}`}
                 onClick={() => setView("lista")}
               ><List className="h-3.5 w-3.5" /> Lista</button>
             </div>
             <button className="admin-btn-primary" onClick={() => setNovo(true)}>
-              <Plus className="h-4 w-4" /> Novo lead
+              <Plus className="h-4 w-4" /> Novo contato
             </button>
           </div>
         }
@@ -129,8 +129,9 @@ function LeadsPage() {
 
       {!canEdit ? <EmDesenvolvimentoBanner /> : null}
       <AdminPageIntro>
-        <strong className="text-[color:var(--admin-cinza-1)]">CRM de Expedições.</strong> Acompanhe cada contato desde a chegada até virar reserva paga. Os leads <strong className="text-orange-300">Abandonados</strong> são capturados automaticamente quando o cliente inicia o formulário mas não conclui.
+        <strong className="text-[color:var(--admin-cinza-1)]">Tudo gira em torno de reservas e expedições.</strong> Cada cliente caminha por uma jornada simples: <em>Novo → Atendimento → Reserva → Confirmado → Concluído</em>. Os <strong className="text-orange-300">Abandonados</strong> são contatos que iniciaram o formulário mas não concluíram.
       </AdminPageIntro>
+
 
       <Tabs defaultValue="ativos" className="mb-6" value={tab} onValueChange={setTab}>
         <TabsList className="bg-[color:var(--admin-carvao-deep)] border border-[color:var(--admin-borda)] p-1">
