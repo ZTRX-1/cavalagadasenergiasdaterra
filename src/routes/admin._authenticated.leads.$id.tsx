@@ -20,6 +20,8 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { ProximaAcaoBanner } from "@/components/admin/proxima-acao-banner";
+import { ReservaResumoCard } from "@/components/admin/reserva-resumo-card";
+
 
 
 export const Route = createFileRoute("/admin/_authenticated/leads/$id")({
@@ -98,27 +100,9 @@ function LeadEdit() {
         contexto={{ temReserva: !!reservaExistente }}
       />
 
-      {/* CTA principal: converter ou ver reserva */}
-
+      {/* Bloco unificado: se já tem reserva, mostra tudo aqui dentro da ficha */}
       {reservaExistente ? (
-        <Link
-          to="/admin/reservas/$id"
-          params={{ id: reservaExistente.id }}
-          className="flex items-center justify-between rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 hover:bg-emerald-500/15 transition"
-        >
-          <div className="flex items-center gap-3">
-            <CheckCircle2 className="h-5 w-5 text-emerald-300" />
-            <div>
-              <div className="text-sm font-medium text-[color:var(--admin-cinza-1)]">
-                Pré-reserva vinculada
-              </div>
-              <div className="text-[11px] text-[color:var(--admin-cinza-3)]">
-                Protocolo {reservaExistente.protocolo} — clique pra abrir a ficha completa
-              </div>
-            </div>
-          </div>
-          <ArrowRight className="h-4 w-4 text-[color:var(--admin-dourado)]" />
-        </Link>
+        <ReservaResumoCard reservaId={reservaExistente.id} />
       ) : podeConverter ? (
         <button
           onClick={() => setConverter(true)}
@@ -135,6 +119,7 @@ function LeadEdit() {
           <ArrowRight className="h-4 w-4 text-[color:var(--admin-dourado)]" />
         </button>
       ) : null}
+
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
