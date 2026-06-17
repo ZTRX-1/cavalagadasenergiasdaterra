@@ -1,159 +1,95 @@
-# Fase 2.5 — Simplificação Operacional
+## Diagnóstico do estado atual
 
-Reorganização da camada visual e de navegação do admin, sem tocar em tabelas, triggers, RPCs, IA, auditoria, KB, Contexto 360, financeiro, participantes ou reservas. A inteligência fica intacta no banco; o que muda é como Aline e Lígia operam.
+No banco existem hoje, dentro do universo Canastra/Mantiqueira:
 
----
+| Slug | Nome atual | Ativo | Duração | Carrossel |
+|---|---|---|---|---|
+| `serra-da-canastra` | Serra da Canastra | sim | 4d/3n | 8 imagens (são as fotos do "Entre Rédeas") |
+| `rota-dos-tropeiros-da-canastra` | Rota dos Tropeiros da Canastra | **não** | 5d/4n | 8 imagens |
+| `mantiqueira-5-dias` | Serra da Mantiqueira · 5 dias | sim | 4d/3n | 8 imagens |
+| `mantiqueira-4-dias` | Serra da Mantiqueira · 4 dias | não | 4d/3n | 0 |
+| `canastra-elas-na-sela` | Canastra · Elas na Sela | sim | 3d/2n | 8 |
 
-## 1. Como o sistema funciona hoje
+Datas hoje vinculadas ao slug genérico `serra-da-canastra` (misturadas, precisam ser separadas):
 
-Sidebar atual com 15+ rotas paralelas:
+- 2026-06-11 a 2026-06-14 (legado, não consta no novo plano)
+- 2026-10-30 a 2026-11-02 (legado, não consta no novo plano)
+- 2027-04-22, 2027-07-15, 2027-09-04, 2027-11-12 → pertencem a **Entre Rédeas**
+- 2027-05-27, 2027-06-16, 2027-08-19, 2027-10-09 → pertencem a **Travessia SF**
+- 2027-08-04 → pertence a **Rota dos Tropeiros**
 
-`Dashboard · Leads · Inbox · Reservas · Participantes · Financeiro · Documentos · Expedições · Operação · Automações · IA · IA-KB · IA-Auditoria · Integrações · Equipe · Cargos · Usuários · Configurações · Histórico · Mídia`
+Mantiqueira:
+- `mantiqueira-5-dias` já tem `duracao = "4 dias / 3 noites"` (correto), mas o nome diz "5 dias" — inconsistência visual.
+- `mantiqueira-4-dias` tem uma data órfã (2027-06-04/07) e está inativo.
 
-Cada entidade vive em sua própria tela. Para resolver uma única reserva, a usuária navega por:
+Observação importante sobre o item 1 do briefing: você pede para remover **Serra da Canastra 04–07 de junho de 2026**, mas essa data não existe no banco. O que existe próximo é **11–14 de junho de 2026** (id `0b742d7e…`). Vou tratá-la como a data legada a remover (também removerei a 30-out a 02-nov 2026, que tampouco aparece no novo plano). Se alguma dessas duas deve ser preservada, me avise antes de aprovar.
 
-```text
-Leads → abre lead → Reservas → abre reserva → Participantes → volta → Financeiro → Documentos → Inbox
-```
+## Plano de execução
 
-O funil de leads tem 7+ status técnicos (`novo`, `triagem_ia`, `qualificado`, `proposta_enviada`, `reserva_pendente`, `participante_confirmado`, `convertido`, `perdido`). Dashboard mostra métricas genéricas, não pendências acionáveis.
+### 1. Renomear `serra-da-canastra` → `entre-redeas-e-cachoeiras`
+Conteúdo, roteiro e carrossel atuais já são os de Entre Rédeas — apenas renomear:
+- `slug`: `entre-redeas-e-cachoeiras`
+- `nome`: `Entre Rédeas e Cachoeiras`
+- `subtitulo`: mantém atual
 
-## 2. Telas complexas demais
+Mantém: galeria, assets, descrição, roteiro, `duracao` (4d/3n), id `c9e9f1dd…`.
 
-- **Dashboard** — KPIs genéricos, não responde "o que preciso fazer agora?"
-- **Leads index** — kanban com status técnicos crus
-- **Reserva detalhe** — abas separadas para pagamentos/participantes/docs
-- **Participantes index** — lista solta, sem hierarquia expedição→data→grupo
-- **Financeiro** — separado da reserva no dia a dia
-- **Sidebar** — 15+ itens com peso visual igual entre operação e configuração
+### 2. Criar nova expedição `travessia-rio-sao-francisco-casca-danta`
+- `nome`: Travessia do Rio São Francisco e Casca D'anta
+- `subtitulo`: Mais do que uma cavalgada. Uma jornada pelas águas, paisagens e histórias da Serra da Canastra.
+- `descricao_curta` + `descricao_longa`: textos do briefing item 4
+- `duracao`: 5 dias / 4 noites (variável; o card de cada data pode recalcular)
+- `roteiro`: 5 dias, textos integrais do briefing item 4
+- `galeria`: vazia (carrossel ainda virá da equipe — estrutura pronta)
+- `marca`: canastra-a-cavalo, `regiao`: Vargem Bonita, MG
+- `status`: publicado, `ativo`: true
 
-## 3. Etapas que podem ser agrupadas
+### 3. Atualizar `rota-dos-tropeiros-da-canastra`
+- `ativo`: true
+- `subtitulo`: Pelos caminhos que ajudaram a construir Minas Gerais
+- `descricao_curta`/`descricao_longa`/`roteiro`: substituir pelos textos integrais do briefing item 5
+- `duracao`: 5 dias / 4 noites
+- `video_url`: NULL (não exibir bloco de vídeo)
+- `nivel`: Intermediário/Avançado, máx. 10 vagas
+- Mantém carrossel existente (8 imagens)
 
-| Hoje (separado) | Novo (agrupado em uma ficha) |
-|---|---|
-| Lead + Reserva + Participantes + Pagamentos + Docs | **Ficha do Cliente** (visão única) |
-| Inbox + Lead + Conversas | aba *Conversas* da ficha |
-| Financeiro por reserva | bloco *Pagamento* da ficha |
-| Documentos por reserva | bloco *Documentos* da ficha |
-| Tarefas relacionadas | bloco *Próxima ação* |
+### 4. Reorganizar datas (UPDATE de `expedicao_id`)
 
-## 4. Módulos que continuam, mas em segundo plano
+Mover do id atual `serra-da-canastra` para os destinos corretos:
+- Entre Rédeas (mesmo id, slug renomeado): 2027-04-22, 2027-07-15, 2027-09-04, 2027-11-12
+- Travessia SF (id novo): 2027-05-27, 2027-06-16, 2027-08-19, 2027-10-09
+- Rota dos Tropeiros: mover 2027-08-04 e DELETAR a data antiga 2026-08-15/19
 
-Movidos para grupo **Avançado** no sidebar (colapsado por padrão), mantendo rotas e código:
+Excluir datas legadas: 2026-06-11/14 e 2026-10-30/11-02 (após confirmar acima).
 
-- IA · IA-KB · IA-Auditoria
-- Automações · Integrações · Webhooks
-- Histórico · Auditoria
-- Cargos · Usuários · Permissões
-- Financeiro (módulo de relatórios)
-- Mídia
+Ajustar `vagas_total` de cada data conforme briefing: Travessia SF e Rota dos Tropeiros = 10. Entre Rédeas mantém 10.
 
-Continuam funcionando para Bárbara e admin técnico; saem do caminho da operação diária.
+### 5. Mantiqueira
+- Renomear `mantiqueira-5-dias` → nome "Serra da Mantiqueira" (slug mantém para não quebrar links). `duracao` já está correta (4d/3n). Datas já estão corretas (22-abr, 27-mai, 04-set 2027).
+- Desativar definitivamente `mantiqueira-4-dias` e remover sua data órfã 2027-06-04/07 (duplicaria com a já existente).
 
-## 5. Novo fluxo simplificado
+### 6. Frontend
+- Atualizar `src/lib/expedicao-slugs.ts` para mapear o slug antigo `serra-da-canastra` → `entre-redeas-e-cachoeiras` (redirect de canonicalização para links antigos).
+- Atualizar `src/lib/expedicoes-static.ts` (fallback offline): renomear Serra da Canastra → Entre Rédeas; adicionar Travessia SF; atualizar Rota dos Tropeiros.
+- Página da expedição (`src/routes/expedicoes.$slug.tsx`) já condicional a `video_url` — não exibe player se NULL. Verificar e ajustar se necessário.
+- Listagens (home "Próximas Datas", `/expedicoes`, formulário de reserva) leem do banco, então refletem automaticamente após as migrações.
 
-```text
-Central Operacional (Dashboard)
-        │
-        ▼
-   Clientes  ──► Ficha do Cliente (tudo em uma tela)
-        │           ├─ Cabeçalho: nome, status jornada, próxima ação
-        │           ├─ Conversas
-        │           ├─ Reserva (expedição, data, grupo)
-        │           ├─ Pagamento (total, pago, saldo, registrar)
-        │           ├─ Participantes do grupo
-        │           ├─ Documentos
-        │           └─ Histórico + Tarefas
-        ▼
-   Expedições ──► Data ──► Grupos/Reservas ──► Participantes
-```
-
-**Jornada visual (6 estágios)** mapeada sobre status técnicos existentes:
-
-| Estágio visual | Status técnicos agrupados |
-|---|---|
-| Interessado | `novo`, `triagem_ia` |
-| Em atendimento | `qualificado`, `em_atendimento` |
-| Pré-reserva | `proposta_enviada`, `reserva_pendente` |
-| Confirmado | `participante_confirmado`, `convertido` |
-| Concluído | `concluido` |
-| Perdido | `perdido` |
-
-Mapeamento puramente em frontend (helper `jornadaFromStatus()`); banco intacto.
-
-## 6. Telas alteradas
-
-1. **`admin/index` → Central Operacional**
-   Substituir KPIs genéricos por filas acionáveis: *Aguardando resposta · Aguardando pagamento · Docs pendentes · Participantes incompletos · Próximas expedições (7 dias) · Tarefas urgentes*. Cada item abre direto a ficha.
-
-2. **`admin/leads` → Clientes**
-   Renomear visualmente para "Clientes". Kanban com as 6 colunas da jornada. Card mostra: nome, expedição, próxima ação, status financeiro resumido.
-
-3. **`admin/leads/$id` + `admin/reservas/$id` → Ficha do Cliente unificada**
-   Layout editorial em coluna única com seções ancoradas. Lead sem reserva mostra CTA "Criar pré-reserva". Lead com reserva mostra blocos completos. Rotas antigas redirecionam para a ficha unificada.
-
-4. **`admin/participantes` → hierarquia Expedição → Data → Grupo**
-   Tela responde rapidamente: ocupação, vagas restantes, fichas incompletas, confirmados, pendentes. Lista solta vira drill-down.
-
-5. **Sidebar reorganizada**
-
-   ```text
-   OPERAÇÃO
-     Central
-     Clientes
-     Expedições
-     Participantes
-
-   AVANÇADO (colapsado)
-     Financeiro · Documentos · Inbox · IA · KB · Auditoria
-     Automações · Integrações · Histórico · Mídia
-
-   CONFIGURAÇÃO (colapsado)
-     Equipe · Cargos · Usuários · Configurações · Perfil
-   ```
-
-## 7. Telas mantidas sem mudança funcional
-
-- Expedições (admin e detalhe)
-- Configurações, Perfil, Login
-- IA-KB, IA-Auditoria, Automações, Integrações (apenas reposicionadas no sidebar)
-- Todas as rotas públicas do site
-
-## 8. Funcionalidades escondidas / reposicionadas
-
-- Inbox vira aba *Conversas* dentro da ficha; rota `/admin/inbox` mantida para visão global em "Avançado"
-- Financeiro detalhado vai para "Avançado" como relatório; operação acontece no bloco *Pagamento* da ficha
-- Documentos seguem o mesmo padrão
-- Status técnicos crus deixam de aparecer; só a jornada de 6 estágios é visível
-- Tarefas ficam embutidas na ficha como "Próxima ação"; rota global some do menu principal
-
-## 9. Compatibilidade com Bárbara
-
-- Nenhuma tabela, RPC, trigger, policy ou edge function alterada
-- `ia_decisoes`, `ia_interacoes`, `ia_acoes_log`, `ia_handoff_queue`, `lead_memoria`, `mensagens_canal`, `ia_knowledge_base`, `ia_prompts` permanecem como estão
-- Status técnicos continuam sendo gravados; mapeamento jornada é só de leitura no frontend
-- Contexto 360 segue alimentando a ficha; vira componente embutido em vez de tela separada
-- Handoff queue continua acessível via "Avançado" e via badge na ficha do cliente
-- Edge functions `ia-shadow`, `ia-shadow-openai`, `ia-prompt-preview`, `contexto-360`, `ia-resolver-cliente`, `ia-contexto-cliente` intactas
-
-## 10. Ordem de implementação
-
-1. **Helpers + design tokens** — `jornadaFromStatus()`, badges de jornada, tokens editoriais (tipografia, espaçamento, cores de status) em `index.css` e `tailwind.config.ts`
-2. **Sidebar reorganizada** — 3 grupos (Operação / Avançado / Configuração), sem remover rotas
-3. **Central Operacional** — substituir `admin/index` por filas acionáveis
-4. **Ficha do Cliente unificada** — nova `admin/clientes/$id` agregando lead+reserva+pagamento+participantes+docs+conversas; redirects das rotas antigas
-5. **Clientes (kanban jornada)** — refatorar `admin/leads/index` com 6 colunas e cards enxutos
-6. **Participantes hierárquico** — drill-down Expedição→Data→Grupo
-7. **Polimento visual** — densidade, hierarquia, remoção de cards redundantes, revisão tela a tela
-8. **QA com cenários reais** — os 8 passos do critério (ver contato → abrir → conversa → pré-reserva → pagamento → participantes → pendências → confirmar)
+### 7. Validação final
+Após aplicar:
+- Conferir via SQL: nenhuma data 04-07/jun/2026; cada uma das 3 expedições Canastra com exatamente suas datas; Mantiqueira com 3 datas e 4d/3n; Rota dos Tropeiros ativa.
+- Conferir no admin que as 3 aparecem separadas.
+- Visitar cada slug público e confirmar carrossel correto, ausência de vídeo na Rota dos Tropeiros, e roteiro próprio.
 
 ## Detalhes técnicos
 
-- **Sem migrations.** Toda mudança em `src/routes/`, `src/components/admin/`, `src/lib/admin/`, `src/components/ui/sidebar` consumer.
-- **Mapeamento jornada** em `src/lib/admin/jornada.ts` (puro TS, sem chamada de rede).
-- **Ficha unificada** consome APIs já existentes (`api.ts`, `financeiro-api.ts`, `participantes-actions.ts`, `central-docs-api.ts`, `contexto-360` edge function) — nenhuma nova RPC.
-- **Redirects** via `loader` do TanStack Router em `admin/leads/$id` e `admin/reservas/$id` para `admin/clientes/$id`, preservando deep links.
-- **Sidebar groups** usam `SidebarGroup` com `defaultOpen={false}` para Avançado/Configuração; rota ativa força abertura do grupo correspondente.
-- **Design** segue a memória do projeto: luxo natural, editorial, sem aparência genérica de IA, imagens intencionais.
+- 1 migration SQL fará: UPDATE expedicoes (rename + texts + ativar Tropeiros), INSERT da Travessia SF, UPDATE de `datas.expedicao_id`, DELETE das datas legadas.
+- 2 edits em código: `expedicao-slugs.ts` (redirect) e `expedicoes-static.ts` (fallback).
+- Nenhuma alteração de schema. Nenhum impacto em reservas (todas pertencem ao backup/zeradas).
 
-Aguardando aprovação antes de implementar qualquer item.
+## Pergunta antes de executar
+
+Confirma que devo:
+(a) tratar **11–14 jun 2026** como "a data de junho/2026 a remover" (já que 04-07 não existe), e
+(b) também remover **30-out a 02-nov 2026** (não aparece no novo plano)?
+
+Se sim, sigo. Se não, me diga quais datas legadas preservar.

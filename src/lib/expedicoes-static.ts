@@ -49,9 +49,9 @@ export interface DataExpedicao {
 const EXPEDICOES: Expedicao[] = [
     {
         "id": "c9e9f1dd-039d-4301-9181-ab26b30b9f2f",
-        "nome": "Serra da Canastra",
+        "nome": "Entre Rédeas e Cachoeiras",
         "pais": "brasil",
-        "slug": "serra-da-canastra",
+        "slug": "entre-redeas-e-cachoeiras",
         "marca": "canastra-a-cavalo",
         "moeda": "BRL",
         "nivel": "Intermediário",
@@ -106,7 +106,7 @@ const EXPEDICOES: Expedicao[] = [
     },
     {
         "id": "9dd91b11-3ce3-4368-ab3c-4d441da8d34d",
-        "nome": "Serra da Mantiqueira · 5 dias",
+        "nome": "Serra da Mantiqueira",
         "pais": "brasil",
         "slug": "mantiqueira-5-dias",
         "marca": "cavalgadas",
@@ -121,7 +121,7 @@ const EXPEDICOES: Expedicao[] = [
             "Logística e transfers internos"
         ],
         "regiao": "Maria da Fé, MG",
-        "duracao": "5 dias / 4 noites",
+        "duracao": "4 dias / 3 noites",
         "galeria": [
             "expedicao-cipo",
             "cavalo-closeup",

@@ -125,8 +125,8 @@ function DetalhesExpedicao() {
         </section>
       )}
 
-      {/* Vídeo cinematográfico */}
-      {expedicao.slug === "serra-da-canastra" && (
+      {/* Vídeo cinematográfico — apenas para expedições com vídeo oficial */}
+      {expedicao.slug === "entre-redeas-e-cachoeiras" && (
         <section className="bg-carvao py-16 md:py-20">
           <div className="container-tight">
             <VideoCinematic
