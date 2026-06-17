@@ -23,5 +23,6 @@ export function getPublicExpedicaoSlug(slug: string): string {
 }
 
 export function getCanonicalExpedicaoSlug(slug: string): string {
-  return CANONICAL_SLUG_BY_PUBLIC[slug] ?? slug;
+  const resolved = LEGACY_SLUG_REDIRECTS[slug] ?? slug;
+  return CANONICAL_SLUG_BY_PUBLIC[resolved] ?? resolved;
 }
