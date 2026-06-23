@@ -490,14 +490,12 @@ export const LEAD_MOTIVOS_PERDA = [
 ] as const;
 export type LeadMotivoPerdaId = (typeof LEAD_MOTIVOS_PERDA)[number]["id"];
 
-export async function listLeads(opts?: { limit?: number; offset?: number }): Promise<LeadRow[]> {
-  const limit = Math.max(1, Math.min(opts?.limit ?? 500, 1000));
-  const offset = Math.max(0, opts?.offset ?? 0);
+export async function listLeads(): Promise<LeadRow[]> {
   const { data, error } = await supabase
     .from("leads")
     .select("*")
     .order("created_at", { ascending: false })
-    .range(offset, offset + limit - 1);
+    .limit(500);
   if (error) throw error;
   return (data ?? []) as unknown as LeadRow[];
 }
@@ -754,14 +752,12 @@ export interface ParticipanteRow {
   documento_validado: boolean;
 }
 
-export async function listParticipantes(opts?: { limit?: number; offset?: number }): Promise<ParticipanteRow[]> {
-  const limit = Math.max(1, Math.min(opts?.limit ?? 500, 1000));
-  const offset = Math.max(0, opts?.offset ?? 0);
+export async function listParticipantes(): Promise<ParticipanteRow[]> {
   const { data, error } = await supabase
     .from("participantes")
     .select("*, cpf_recebido, pagamento_recebido, contrato_assinado, ficha_medica_enviada, documentacao_aprovada")
     .order("created_at", { ascending: false })
-    .range(offset, offset + limit - 1);
+    .limit(500);
   if (error) throw error;
   return (data ?? []) as unknown as ParticipanteRow[];
 }
@@ -846,14 +842,12 @@ export interface ReservaRow {
 }
 
 
-export async function listReservas(opts?: { limit?: number; offset?: number }): Promise<ReservaRow[]> {
-  const limit = Math.max(1, Math.min(opts?.limit ?? 500, 1000));
-  const offset = Math.max(0, opts?.offset ?? 0);
+export async function listReservas(): Promise<ReservaRow[]> {
   const { data, error } = await supabase
     .from("reservas")
     .select("*")
     .order("created_at", { ascending: false })
-    .range(offset, offset + limit - 1);
+    .limit(500);
   if (error) throw error;
   return (data ?? []) as unknown as ReservaRow[];
 }
