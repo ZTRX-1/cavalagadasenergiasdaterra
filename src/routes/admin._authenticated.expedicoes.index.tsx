@@ -202,11 +202,23 @@ function ExpedicoesPage() {
                     <td className="px-3 py-4"><StatusBadge status={e.status} /></td>
                     <td className="px-3 py-4">
                       {e.mensagem_comercial_publica ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-2 py-1 text-[10px] font-medium text-amber-300 ring-1 ring-amber-500/20" title={e.mensagem_comercial_publica}>
+                        <button
+                          type="button"
+                          onClick={() => precoVisibilidadeMut.mutate({ id: e.id, ocultar: false })}
+                          className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-2 py-1 text-[10px] font-medium text-amber-300 ring-1 ring-amber-500/20 hover:bg-amber-500/20 transition"
+                          title={`${e.mensagem_comercial_publica}\n\nClique para tornar o preço público`}
+                        >
                           Preço oculto
-                        </span>
+                        </button>
                       ) : (
-                        <span className="text-[10px] text-[color:var(--admin-cinza-3)]">Preço público</span>
+                        <button
+                          type="button"
+                          onClick={() => precoVisibilidadeMut.mutate({ id: e.id, ocultar: true })}
+                          className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2 py-1 text-[10px] font-medium text-emerald-300 ring-1 ring-emerald-500/20 hover:bg-emerald-500/20 transition"
+                          title="Clique para ocultar o preço no site"
+                        >
+                          Preço público
+                        </button>
                       )}
                     </td>
                     <td className="px-3 py-4 text-[color:var(--admin-cinza-2)]">{e.moeda} {Number(e.preco).toLocaleString("pt-BR")}</td>
