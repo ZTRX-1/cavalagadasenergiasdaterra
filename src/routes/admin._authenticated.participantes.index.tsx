@@ -156,7 +156,7 @@ function ParticipantesPage() {
       toast.error("Nenhum participante ativo para exportar nesta expedição");
       return;
     }
-    exportarFichaGuiaPDF({ expedicaoNome: exp.nome, participantes: ativos });
+    await exportarFichaGuiaPDF({ expedicaoNome: exp.nome, participantes: ativos });
     toast.success("PDF gerado");
   };
 
