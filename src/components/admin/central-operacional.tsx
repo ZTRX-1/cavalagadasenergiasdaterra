@@ -183,7 +183,8 @@ export function CentralOperacional() {
   const { data: filas, isLoading } = useQuery({
     queryKey: ["admin", "central-operacional"],
     queryFn: carregarFilas,
-    staleTime: 30_000,
+    staleTime: 2 * 60_000,
+    refetchOnWindowFocus: false,
   });
 
   if (isLoading) {
