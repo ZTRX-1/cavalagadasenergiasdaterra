@@ -1,5 +1,3 @@
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 import type { ParticipanteRow } from "@/lib/admin/api";
 
 function idade(nasc: string | null): string {
@@ -9,12 +7,19 @@ function idade(nasc: string | null): string {
   return `${a}`;
 }
 
-export function exportarFichaGuiaPDF(opts: {
+export async function exportarFichaGuiaPDF(opts: {
   expedicaoNome: string;
   data?: string | null;
   participantes: ParticipanteRow[];
 }) {
   const { expedicaoNome, data, participantes } = opts;
+
+  // Lazy-load jsPDF + autotable só quando o usuário realmente exporta.
+  const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([
+    import("jspdf"),
+    import("jspdf-autotable"),
+  ]);
+
   const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
 
   // Cabeçalho
