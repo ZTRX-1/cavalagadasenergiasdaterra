@@ -152,12 +152,6 @@ async function fetchDashboard(range: { from: string; to: string }) {
   };
 }
 
-const _trendPlaceholder = [
-  { m: "Jan", v: 42000 }, { m: "Fev", v: 58000 }, { m: "Mar", v: 71000 },
-  { m: "Abr", v: 65000 }, { m: "Mai", v: 92000 }, { m: "Jun", v: 118000 }, { m: "Jul", v: 134000 },
-];
-void _trendPlaceholder;
-
 function formatCurrency(n: number, currency: string = "BRL") {
   return n.toLocaleString("pt-BR", { style: "currency", currency, maximumFractionDigits: 0 });
 }
