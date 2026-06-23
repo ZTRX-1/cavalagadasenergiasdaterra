@@ -37,7 +37,10 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
           className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
           onError={(event) => {
             const img = event.currentTarget;
-            if (img.src !== fallbackImage) img.src = fallbackImage;
+            if (img.dataset.fallback !== "1") {
+              img.dataset.fallback = "1";
+              img.src = fallbackImage;
+            }
           }}
         />
 

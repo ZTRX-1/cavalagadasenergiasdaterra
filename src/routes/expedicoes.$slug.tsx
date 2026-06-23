@@ -83,7 +83,10 @@ function DetalhesExpedicao() {
           fetchPriority="high"
           onError={(event) => {
             const img = event.currentTarget;
-            if (img.src !== fallbackHeroImg) img.src = fallbackHeroImg;
+            if (img.dataset.fallback !== "1") {
+              img.dataset.fallback = "1";
+              img.src = fallbackHeroImg;
+            }
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-carvao via-carvao/50 to-carvao/30" />
