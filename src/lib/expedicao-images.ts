@@ -176,6 +176,9 @@ export const IMAGES: Record<string, string> = {
 // HERO POR EXPEDIÇÃO — foto cinematográfica de capa
 // ============================================================
 export const SLUG_IMAGE: Record<string, string> = {
+  "rota-dos-tropeiros-da-canastra": "/uploads/1.jpg",
+  "entre-redeas-e-cachoeiras": "/uploads/2.jfif",
+  "travessia-rio-sao-francisco-casca-danta": "/uploads/7.jfif",
   "serra-da-canastra": canNew01,     // cavaleira no rio — capa da expedição
   "mantiqueira-5-dias": manNew01,   // tropa em movimento na estrada de terra
   "mantiqueira-4-dias": manNew01,   // tropa em movimento na estrada de terra
@@ -235,6 +238,7 @@ export interface AssetOverride {
 
 function resolveImageReference(s?: string | null): string | null {
   if (!s) return null;
+  if (s.startsWith("/__l5e/")) return null;
   if (/^(https?:\/\/|\/)/.test(s)) return s;
   return IMAGES[s] ?? null;
 }
@@ -244,6 +248,11 @@ export function getExpedicaoImage(
   slug: string,
   opts?: { capaUrl?: string | null; assets?: AssetOverride[] },
 ): string {
+  const rawCapa = opts?.capaUrl?.trim() ?? null;
+  const hasCuratedCover = Boolean(SLUG_IMAGE[slug]);
+  const isGenericLegacyCover = rawCapa === "expedicao-canastra";
+  if (hasCuratedCover && isGenericLegacyCover) return SLUG_IMAGE[slug];
+
   const capa = resolveImageReference(opts?.capaUrl);
   if (capa) return capa;
   const imagens = (opts?.assets ?? []).filter((a) => (a.tipo ?? "imagem") === "imagem");
