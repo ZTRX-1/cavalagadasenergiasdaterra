@@ -144,7 +144,7 @@ function ParticipantesPage() {
     });
   }, [list, filtroExp, filtroStatus, filtroStatusFinanceiro, apenasConfirmados, busca, reservas]);
 
-  const exportar = () => {
+  const exportar = async () => {
     if (!filtroExp) { toast.error("Selecione uma expedição para gerar a ficha do guia"); return; }
     const exp = expedicoes.find((e) => e.id === filtroExp);
     if (!exp) return;
@@ -156,8 +156,13 @@ function ParticipantesPage() {
       toast.error("Nenhum participante ativo para exportar nesta expedição");
       return;
     }
-    exportarFichaGuiaPDF({ expedicaoNome: exp.nome, participantes: ativos });
-    toast.success("PDF gerado");
+    try {
+      await exportarFichaGuiaPDF({ expedicaoNome: exp.nome, participantes: ativos });
+      toast.success("PDF gerado");
+    } catch (e) {
+      console.error(e);
+      toast.error("Falha ao gerar PDF");
+    }
   };
 
 

@@ -1,5 +1,5 @@
-/* Tipografia editorial: Cormorant Garamond (display serifado clássico) + Inter (corpo) + Tenor Sans (eyebrows). */
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Tenor+Sans&display=swap");
+/* Tipografia editorial: Cormorant Garamond + Inter + Tenor Sans
+   (carregada não-bloqueante em index.html via preload + media swap). */
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";

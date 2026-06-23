@@ -122,25 +122,11 @@ function HomePage() {
         <img
           src={hero}
           alt="Lígia montando a cavalo em travessia pelo rio"
-          className="absolute inset-0 h-full w-full object-cover object-[62%_18%] md:hidden"
+          className="absolute inset-0 h-full w-full object-cover object-[62%_18%] md:object-[50%_18%] xl:object-[46%_22%]"
           fetchPriority="high"
           decoding="async"
-        />
-        <img
-          src={hero}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 hidden h-full w-full object-cover object-[50%_18%] md:block xl:hidden"
-          fetchPriority="high"
-          decoding="async"
-        />
-        <img
-          src={hero}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 hidden h-full w-full object-cover object-[46%_22%] xl:block"
-          fetchPriority="high"
-          decoding="async"
+          width={2000}
+          height={1333}
         />
         <div className="absolute inset-0 bg-carvao/45 md:bg-carvao/40" />
         <div className="absolute inset-x-0 bottom-0 h-[85%] bg-gradient-to-t from-carvao via-carvao/82 to-transparent md:h-[72%] md:via-carvao/70" />

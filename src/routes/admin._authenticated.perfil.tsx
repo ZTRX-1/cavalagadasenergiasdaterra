@@ -1,13 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Save, Upload, Shield, KeyRound, Clock, CalendarDays, Eye, EyeOff, User as UserIcon, Terminal, Code2, Sparkles, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { getMeuPerfil, atualizarMeuPerfil, uploadAvatar, CARGOS_EQUIPE } from "@/lib/admin/api";
-import { ImageCropper } from "@/components/admin/image-cropper";
+const ImageCropper = lazy(() =>
+  import("@/components/admin/image-cropper").then((m) => ({ default: m.ImageCropper }))
+);
 
 export const Route = createFileRoute("/admin/_authenticated/perfil")({
   component: PerfilPage,
@@ -351,12 +353,14 @@ function PerfilPage() {
       </div>
 
       {cropData && (
-        <ImageCropper 
-          imageSrc={cropData.src}
-          aspect={cropData.type === 'avatar' ? 1 : 16 / 5}
-          onCropComplete={handleCropComplete}
-          onCancel={() => setCropData(null)}
-        />
+        <Suspense fallback={null}>
+          <ImageCropper
+            imageSrc={cropData.src}
+            aspect={cropData.type === 'avatar' ? 1 : 16 / 5}
+            onCropComplete={handleCropComplete}
+            onCancel={() => setCropData(null)}
+          />
+        </Suspense>
       )}
     </div>
 
@@ -407,12 +411,14 @@ function PerfilPage() {
       </div>
 
       {cropData && (
-        <ImageCropper 
-          imageSrc={cropData.src}
-          aspect={cropData.type === 'avatar' ? 1 : 16 / 5}
-          onCropComplete={handleCropComplete}
-          onCancel={() => setCropData(null)}
-        />
+        <Suspense fallback={null}>
+          <ImageCropper
+            imageSrc={cropData.src}
+            aspect={cropData.type === 'avatar' ? 1 : 16 / 5}
+            onCropComplete={handleCropComplete}
+            onCancel={() => setCropData(null)}
+          />
+        </Suspense>
       )}
     </div>
   );

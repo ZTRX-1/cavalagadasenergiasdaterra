@@ -491,7 +491,11 @@ export const LEAD_MOTIVOS_PERDA = [
 export type LeadMotivoPerdaId = (typeof LEAD_MOTIVOS_PERDA)[number]["id"];
 
 export async function listLeads(): Promise<LeadRow[]> {
-  const { data, error } = await supabase.from("leads").select("*").order("created_at", { ascending: false });
+  const { data, error } = await supabase
+    .from("leads")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(500);
   if (error) throw error;
   return (data ?? []) as unknown as LeadRow[];
 }
@@ -752,7 +756,8 @@ export async function listParticipantes(): Promise<ParticipanteRow[]> {
   const { data, error } = await supabase
     .from("participantes")
     .select("*, cpf_recebido, pagamento_recebido, contrato_assinado, ficha_medica_enviada, documentacao_aprovada")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(500);
   if (error) throw error;
   return (data ?? []) as unknown as ParticipanteRow[];
 }
@@ -841,7 +846,8 @@ export async function listReservas(): Promise<ReservaRow[]> {
   const { data, error } = await supabase
     .from("reservas")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(500);
   if (error) throw error;
   return (data ?? []) as unknown as ReservaRow[];
 }

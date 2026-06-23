@@ -1,95 +1,65 @@
-## Diagnóstico do estado atual
+# Plano de Otimização de Performance
 
-No banco existem hoje, dentro do universo Canastra/Mantiqueira:
+Baseado em auditoria completa do projeto. 15 gargalos identificados, agrupados em 4 ondas executáveis sem quebrar nenhuma funcionalidade.
 
-| Slug | Nome atual | Ativo | Duração | Carrossel |
-|---|---|---|---|---|
-| `serra-da-canastra` | Serra da Canastra | sim | 4d/3n | 8 imagens (são as fotos do "Entre Rédeas") |
-| `rota-dos-tropeiros-da-canastra` | Rota dos Tropeiros da Canastra | **não** | 5d/4n | 8 imagens |
-| `mantiqueira-5-dias` | Serra da Mantiqueira · 5 dias | sim | 4d/3n | 8 imagens |
-| `mantiqueira-4-dias` | Serra da Mantiqueira · 4 dias | não | 4d/3n | 0 |
-| `canastra-elas-na-sela` | Canastra · Elas na Sela | sim | 3d/2n | 8 |
+## Onda 1 — Quick wins de bundle e carregamento crítico
 
-Datas hoje vinculadas ao slug genérico `serra-da-canastra` (misturadas, precisam ser separadas):
+**Impacto: redução estimada de 40–60% do JS inicial e ~300ms no LCP.**
 
-- 2026-06-11 a 2026-06-14 (legado, não consta no novo plano)
-- 2026-10-30 a 2026-11-02 (legado, não consta no novo plano)
-- 2027-04-22, 2027-07-15, 2027-09-04, 2027-11-12 → pertencem a **Entre Rédeas**
-- 2027-05-27, 2027-06-16, 2027-08-19, 2027-10-09 → pertencem a **Travessia SF**
-- 2027-08-04 → pertence a **Rota dos Tropeiros**
+1. **Ativar code splitting automático do TanStack Router** — `vite.config.ts`: `autoCodeSplitting: true`. Cada rota vira chunk independente; a área `/admin` deixa de ser baixada por visitantes do site público.
+2. **Compressão Brotli + Gzip no build** — adicionar `vite-plugin-compression2` gerando `.br` e `.gz` para todo JS/CSS/SVG.
+3. **Manual chunks de vendor** — separar `recharts`, `@supabase/*`, `i18next/react-i18next`, `embla-carousel`, `@dnd-kit` em chunks próprios para melhor cache entre deploys.
+4. **Google Fonts não-bloqueante** — remover `@import url(...)` do `src/styles.css`, mover para `index.html` como `<link rel="preconnect">` + `<link rel="preload" as="style">` + `<link rel="stylesheet" media="print" onload="this.media='all'">`.
+5. **Remover import duplicado de `@/i18n`** — manter apenas em `src/main.tsx`.
 
-Mantiqueira:
-- `mantiqueira-5-dias` já tem `duracao = "4 dias / 3 noites"` (correto), mas o nome diz "5 dias" — inconsistência visual.
-- `mantiqueira-4-dias` tem uma data órfã (2027-06-04/07) e está inativo.
+## Onda 2 — Lazy loading de libs pesadas
 
-Observação importante sobre o item 1 do briefing: você pede para remover **Serra da Canastra 04–07 de junho de 2026**, mas essa data não existe no banco. O que existe próximo é **11–14 de junho de 2026** (id `0b742d7e…`). Vou tratá-la como a data legada a remover (também removerei a 30-out a 02-nov 2026, que tampouco aparece no novo plano). Se alguma dessas duas deve ser preservada, me avise antes de aprovar.
+**Impacto: −500KB jsPDF, −150KB react-image-crop, −300KB recharts no caminho não-admin.**
 
-## Plano de execução
+1. **jsPDF dinâmico** — em `src/lib/admin/participantes-pdf.ts`, converter para função async que faz `const { default: jsPDF } = await import("jspdf")` apenas ao clicar exportar.
+2. **`ImageCropper` lazy** — `React.lazy` no `src/routes/admin._authenticated.perfil.tsx`, envolvido em `<Suspense>` dentro do Dialog.
+3. **Recharts lazy** — `React.lazy` para componentes que usam `AreaChart` em `admin.index.tsx` e `admin.financeiro.tsx`, com skeleton enquanto carrega.
+4. **`canastraVideoPoster` condicional** — import dinâmico só quando a expedição é `entre-redeas-e-cachoeiras`.
 
-### 1. Renomear `serra-da-canastra` → `entre-redeas-e-cachoeiras`
-Conteúdo, roteiro e carrossel atuais já são os de Entre Rédeas — apenas renomear:
-- `slug`: `entre-redeas-e-cachoeiras`
-- `nome`: `Entre Rédeas e Cachoeiras`
-- `subtitulo`: mantém atual
+## Onda 3 — React Query e dados
 
-Mantém: galeria, assets, descrição, roteiro, `duracao` (4d/3n), id `c9e9f1dd…`.
+**Impacto: menos refetches, menos tráfego Supabase, navegação back/forward instantânea.**
 
-### 2. Criar nova expedição `travessia-rio-sao-francisco-casca-danta`
-- `nome`: Travessia do Rio São Francisco e Casca D'anta
-- `subtitulo`: Mais do que uma cavalgada. Uma jornada pelas águas, paisagens e histórias da Serra da Canastra.
-- `descricao_curta` + `descricao_longa`: textos do briefing item 4
-- `duracao`: 5 dias / 4 noites (variável; o card de cada data pode recalcular)
-- `roteiro`: 5 dias, textos integrais do briefing item 4
-- `galeria`: vazia (carrossel ainda virá da equipe — estrutura pronta)
-- `marca`: canastra-a-cavalo, `regiao`: Vargem Bonita, MG
-- `status`: publicado, `ativo`: true
+1. **Defaults globais melhores** em `src/router.tsx`:
+   - `refetchOnWindowFocus: false`
+   - `gcTime: 30 * 60_000` (30 min)
+   - manter `staleTime: 60_000` e `retry: 1`
+2. **Paginação em listas admin** — `listLeads`, `listReservas`, `listParticipantes` recebem `{ limit, offset }` opcionais (default 100) com `.range()`, e seletores explícitos das colunas usadas nas tabelas (não mais `select("*")`).
+3. **Cache key do dashboard estável** — em `admin._authenticated.index.tsx`, usar o nome do preset (`hoje`/`semana`/`mes`/`ano`) na queryKey em vez do ISO timestamp, evitando cache miss a cada render.
+4. **`CentralOperacional`** — aumentar `staleTime` de 30s → 2min e desativar refetch on focus.
 
-### 3. Atualizar `rota-dos-tropeiros-da-canastra`
-- `ativo`: true
-- `subtitulo`: Pelos caminhos que ajudaram a construir Minas Gerais
-- `descricao_curta`/`descricao_longa`/`roteiro`: substituir pelos textos integrais do briefing item 5
-- `duracao`: 5 dias / 4 noites
-- `video_url`: NULL (não exibir bloco de vídeo)
-- `nivel`: Intermediário/Avançado, máx. 10 vagas
-- Mantém carrossel existente (8 imagens)
+## Onda 4 — Imagens, CSS e UX visual
 
-### 4. Reorganizar datas (UPDATE de `expedicao_id`)
+**Impacto: melhor LCP, menos CLS, FPS estável no carrossel.**
 
-Mover do id atual `serra-da-canastra` para os destinos corretos:
-- Entre Rédeas (mesmo id, slug renomeado): 2027-04-22, 2027-07-15, 2027-09-04, 2027-11-12
-- Travessia SF (id novo): 2027-05-27, 2027-06-16, 2027-08-19, 2027-10-09
-- Rota dos Tropeiros: mover 2027-08-04 e DELETAR a data antiga 2026-08-15/19
+1. **Hero único na home** — substituir as 3 `<img fetchPriority="high">` por uma única, com `object-position` controlado por classes responsivas.
+2. **Atributos `width`/`height` + `decoding="async"`** em todas as `<img>` de `carrossel-narrativo.tsx`, `galeria-editorial.tsx` e hero da expedição para zerar CLS.
+3. **Blur do carrossel só no slide ativo** — limitar `blur-2xl` ao slide `selectedIndex` do Embla; demais slides ficam com `filter: none` e `content-visibility: auto`.
+4. **Header scroll listener idempotente** — em `site-header.tsx`, comparar valor antes de `setScrolled` (evita re-render desnecessário).
+5. **Imagens estáticas com `loading="lazy"`** onde já não está, exceto LCP.
 
-Excluir datas legadas: 2026-06-11/14 e 2026-10-30/11-02 (após confirmar acima).
+## Não incluído nesta passada (justificativa)
 
-Ajustar `vagas_total` de cada data conforme briefing: Travessia SF e Rota dos Tropeiros = 10. Entre Rédeas mantém 10.
-
-### 5. Mantiqueira
-- Renomear `mantiqueira-5-dias` → nome "Serra da Mantiqueira" (slug mantém para não quebrar links). `duracao` já está correta (4d/3n). Datas já estão corretas (22-abr, 27-mai, 04-set 2027).
-- Desativar definitivamente `mantiqueira-4-dias` e remover sua data órfã 2027-06-04/07 (duplicaria com a já existente).
-
-### 6. Frontend
-- Atualizar `src/lib/expedicao-slugs.ts` para mapear o slug antigo `serra-da-canastra` → `entre-redeas-e-cachoeiras` (redirect de canonicalização para links antigos).
-- Atualizar `src/lib/expedicoes-static.ts` (fallback offline): renomear Serra da Canastra → Entre Rédeas; adicionar Travessia SF; atualizar Rota dos Tropeiros.
-- Página da expedição (`src/routes/expedicoes.$slug.tsx`) já condicional a `video_url` — não exibe player se NULL. Verificar e ajustar se necessário.
-- Listagens (home "Próximas Datas", `/expedicoes`, formulário de reserva) leem do banco, então refletem automaticamente após as migrações.
-
-### 7. Validação final
-Após aplicar:
-- Conferir via SQL: nenhuma data 04-07/jun/2026; cada uma das 3 expedições Canastra com exatamente suas datas; Mantiqueira com 3 datas e 4d/3n; Rota dos Tropeiros ativa.
-- Conferir no admin que as 3 aparecem separadas.
-- Visitar cada slug público e confirmar carrossel correto, ausência de vídeo na Rota dos Tropeiros, e roteiro próprio.
+- **Conversão massiva JPG → WebP/AVIF (38MB de fotos)**: exige rodar pipeline de imagens e revalidar visualmente todas as expedições. Recomendo fazer em PR dedicado depois desta otimização, ou migrar gradualmente para o CDN de assets do Lovable (já estamos usando em `entre-redeas` e `travessia`).
+- **Refatoração de `expedicao-images.ts` para imports dinâmicos**: alto risco de regressão visual em todas as páginas de expedição. Melhor abordar junto com a migração para CDN.
+- **Virtualização de listas (`@tanstack/react-virtual`) em leads/participantes**: ganho real só com 500+ itens; com paginação da Onda 3 fica resolvido por enquanto.
+- **RPC consolidada no Supabase para o dashboard**: requer migration nova e validação de permissões; vale como follow-up.
 
 ## Detalhes técnicos
 
-- 1 migration SQL fará: UPDATE expedicoes (rename + texts + ativar Tropeiros), INSERT da Travessia SF, UPDATE de `datas.expedicao_id`, DELETE das datas legadas.
-- 2 edits em código: `expedicao-slugs.ts` (redirect) e `expedicoes-static.ts` (fallback).
-- Nenhuma alteração de schema. Nenhum impacto em reservas (todas pertencem ao backup/zeradas).
+- Todas as mudanças preservam APIs públicas dos componentes/funções.
+- Lazy imports usam `React.lazy` + `<Suspense fallback={...}>` com os skeletons já existentes no projeto.
+- `vite-plugin-compression2` é zero-config para servir assets pré-comprimidos no Lovable Hosting (que aceita `.br`/`.gz`).
+- Paginação adiciona parâmetros opcionais — chamadas existentes sem `limit` continuam funcionando (default mantém comportamento atual, só explicita o teto).
+- Cache key do dashboard: a chave atual `[from, to]` muda a cada render porque o range é recalculado; trocar para `[presetKey]` faz o cache realmente funcionar quando o usuário alterna presets ida-e-volta.
 
-## Pergunta antes de executar
+## Verificação ao final
 
-Confirma que devo:
-(a) tratar **11–14 jun 2026** como "a data de junho/2026 a remover" (já que 04-07 não existe), e
-(b) também remover **30-out a 02-nov 2026** (não aparece no novo plano)?
-
-Se sim, sigo. Se não, me diga quais datas legadas preservar.
+- `bun run build` deve passar sem erros.
+- Inspeção via Playwright do `/` e `/admin` para confirmar que não há regressão visual ou de console.
+- Conferência de tamanho dos chunks no output do build.

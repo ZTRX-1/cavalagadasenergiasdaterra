@@ -18,8 +18,6 @@ import heroOg from "@/assets/founders/ligia-rio.jpg";
 
 import { Toaster } from "@/components/ui/sonner";
 
-import "@/i18n";
-
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">

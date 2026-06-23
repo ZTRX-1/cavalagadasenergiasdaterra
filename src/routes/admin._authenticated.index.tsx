@@ -14,14 +14,8 @@ import {
   Clock,
   ArrowRight,
 } from "lucide-react";
-import {
-  AreaChart,
-  Area,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  Tooltip,
-} from "recharts";
+// Recharts removido do dashboard: o gráfico hardcoded `trend` não era renderizado;
+// quando voltar, importar lazy de um componente isolado para não inflar o bundle inicial.
 import { supabase } from "@/integrations/supabase/client";
 import { formatDateRange } from "@/lib/format";
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
@@ -158,11 +152,6 @@ async function fetchDashboard(range: { from: string; to: string }) {
   };
 }
 
-const trend = [
-  { m: "Jan", v: 42000 }, { m: "Fev", v: 58000 }, { m: "Mar", v: 71000 },
-  { m: "Abr", v: 65000 }, { m: "Mai", v: 92000 }, { m: "Jun", v: 118000 }, { m: "Jul", v: 134000 },
-];
-
 function formatCurrency(n: number, currency: string = "BRL") {
   return n.toLocaleString("pt-BR", { style: "currency", currency, maximumFractionDigits: 0 });
 }
@@ -182,8 +171,9 @@ function DashboardPage() {
   const { canEdit } = useCan("dashboard");
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-dashboard", range.from, range.to],
+    queryKey: ["admin-dashboard", preset, preset === "custom" ? `${custom.from}:${custom.to}` : null],
     queryFn: () => fetchDashboard(range),
+    staleTime: 60_000,
   });
 
   return (
