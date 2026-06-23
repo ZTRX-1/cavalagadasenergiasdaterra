@@ -12,8 +12,8 @@ export default defineConfig({
     react(),
     tailwindcss(),
     tsconfigPaths(),
-    compression({ algorithm: "brotliCompress", exclude: [/\.(br)$/, /\.(gz)$/] }),
-    compression({ algorithm: "gzip", exclude: [/\.(br)$/, /\.(gz)$/] }),
+    compression({ algorithms: ["brotliCompress"], exclude: [/\.(br)$/, /\.(gz)$/] }),
+    compression({ algorithms: ["gzip"], exclude: [/\.(br)$/, /\.(gz)$/] }),
   ],
   build: {
     outDir: "dist",
