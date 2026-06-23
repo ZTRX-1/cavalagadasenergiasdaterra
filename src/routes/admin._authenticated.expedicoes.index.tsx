@@ -79,6 +79,13 @@ function ExpedicoesPage() {
     onError: (e) => toast.error((e as Error).message),
   });
 
+  const precoVisibilidadeMut = useMutation({
+    mutationFn: ({ id, ocultar }: { id: string; ocultar: boolean }) =>
+      updateExpedicao(id, { mensagem_comercial_publica: ocultar ? "Consulte valores e disponibilidade" : null }),
+    onSuccess: (_d, vars) => { toast.success(vars.ocultar ? "Preço oculto no site" : "Preço público no site"); refresh(); },
+    onError: (e) => toast.error((e as Error).message),
+  });
+
   const contadores = {
     todos: list.length,
     publicado: list.filter((e) => e.status === "publicado").length,
