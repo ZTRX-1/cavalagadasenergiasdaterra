@@ -1,65 +1,522 @@
-# Plano de Otimização de Performance
+# REESTRUTURAÇÃO COMPLETA DO CRM OPERACIONAL
 
-Baseado em auditoria completa do projeto. 15 gargalos identificados, agrupados em 4 ondas executáveis sem quebrar nenhuma funcionalidade.
+## ESCOPO
 
-## Onda 1 — Quick wins de bundle e carregamento crítico
+NÃO ALTERAR:
 
-**Impacto: redução estimada de 40–60% do JS inicial e ~300ms no LCP.**
+- Cadastro de Expedições
+- Publicação de Expedições
+- Próximas Datas
+- Gestão de Expedições
+- Usuários
+- Equipe
+- Permissões
+- Cargos
+- Configurações Gerais
 
-1. **Ativar code splitting automático do TanStack Router** — `vite.config.ts`: `autoCodeSplitting: true`. Cada rota vira chunk independente; a área `/admin` deixa de ser baixada por visitantes do site público.
-2. **Compressão Brotli + Gzip no build** — adicionar `vite-plugin-compression2` gerando `.br` e `.gz` para todo JS/CSS/SVG.
-3. **Manual chunks de vendor** — separar `recharts`, `@supabase/*`, `i18next/react-i18next`, `embla-carousel`, `@dnd-kit` em chunks próprios para melhor cache entre deploys.
-4. **Google Fonts não-bloqueante** — remover `@import url(...)` do `src/styles.css`, mover para `index.html` como `<link rel="preconnect">` + `<link rel="preload" as="style">` + `<link rel="stylesheet" media="print" onload="this.media='all'">`.
-5. **Remover import duplicado de `@/i18n`** — manter apenas em `src/main.tsx`.
+ALTERAR E REESTRUTURAR:
 
-## Onda 2 — Lazy loading de libs pesadas
+- CRM / Leads
+- Atendimento
+- Reservas
+- Participantes
+- Documentos
+- Financeiro
+- Inbox
+- IA
+- Pós-venda
+- Reativação
 
-**Impacto: −500KB jsPDF, −150KB react-image-crop, −300KB recharts no caminho não-admin.**
+---
 
-1. **jsPDF dinâmico** — em `src/lib/admin/participantes-pdf.ts`, converter para função async que faz `const { default: jsPDF } = await import("jspdf")` apenas ao clicar exportar.
-2. **`ImageCropper` lazy** — `React.lazy` no `src/routes/admin._authenticated.perfil.tsx`, envolvido em `<Suspense>` dentro do Dialog.
-3. **Recharts lazy** — `React.lazy` para componentes que usam `AreaChart` em `admin.index.tsx` e `admin.financeiro.tsx`, com skeleton enquanto carrega.
-4. **`canastraVideoPoster` condicional** — import dinâmico só quando a expedição é `entre-redeas-e-cachoeiras`.
+# 1. NOVO FUNIL OPERACIONAL
 
-## Onda 3 — React Query e dados
+Substituir o Kanban atual.
 
-**Impacto: menos refetches, menos tráfego Supabase, navegação back/forward instantânea.**
+O objetivo é que qualquer pessoa da equipe consiga entender imediatamente em que etapa o cliente está.
 
-1. **Defaults globais melhores** em `src/router.tsx`:
-   - `refetchOnWindowFocus: false`
-   - `gcTime: 30 * 60_000` (30 min)
-   - manter `staleTime: 60_000` e `retry: 1`
-2. **Paginação em listas admin** — `listLeads`, `listReservas`, `listParticipantes` recebem `{ limit, offset }` opcionais (default 100) com `.range()`, e seletores explícitos das colunas usadas nas tabelas (não mais `select("*")`).
-3. **Cache key do dashboard estável** — em `admin._authenticated.index.tsx`, usar o nome do preset (`hoje`/`semana`/`mes`/`ano`) na queryKey em vez do ISO timestamp, evitando cache miss a cada render.
-4. **`CentralOperacional`** — aumentar `staleTime` de 30s → 2min e desativar refetch on focus.
+## Colunas principais
 
-## Onda 4 — Imagens, CSS e UX visual
+NOVO
 
-**Impacto: melhor LCP, menos CLS, FPS estável no carrossel.**
+↓
 
-1. **Hero único na home** — substituir as 3 `<img fetchPriority="high">` por uma única, com `object-position` controlado por classes responsivas.
-2. **Atributos `width`/`height` + `decoding="async"`** em todas as `<img>` de `carrossel-narrativo.tsx`, `galeria-editorial.tsx` e hero da expedição para zerar CLS.
-3. **Blur do carrossel só no slide ativo** — limitar `blur-2xl` ao slide `selectedIndex` do Embla; demais slides ficam com `filter: none` e `content-visibility: auto`.
-4. **Header scroll listener idempotente** — em `site-header.tsx`, comparar valor antes de `setScrolled` (evita re-render desnecessário).
-5. **Imagens estáticas com `loading="lazy"`** onde já não está, exceto LCP.
+EM ATENDIMENTO
 
-## Não incluído nesta passada (justificativa)
+↓
 
-- **Conversão massiva JPG → WebP/AVIF (38MB de fotos)**: exige rodar pipeline de imagens e revalidar visualmente todas as expedições. Recomendo fazer em PR dedicado depois desta otimização, ou migrar gradualmente para o CDN de assets do Lovable (já estamos usando em `entre-redeas` e `travessia`).
-- **Refatoração de `expedicao-images.ts` para imports dinâmicos**: alto risco de regressão visual em todas as páginas de expedição. Melhor abordar junto com a migração para CDN.
-- **Virtualização de listas (`@tanstack/react-virtual`) em leads/participantes**: ganho real só com 500+ itens; com paginação da Onda 3 fica resolvido por enquanto.
-- **RPC consolidada no Supabase para o dashboard**: requer migration nova e validação de permissões; vale como follow-up.
+PROPOSTA ENVIADA
 
-## Detalhes técnicos
+↓
 
-- Todas as mudanças preservam APIs públicas dos componentes/funções.
-- Lazy imports usam `React.lazy` + `<Suspense fallback={...}>` com os skeletons já existentes no projeto.
-- `vite-plugin-compression2` é zero-config para servir assets pré-comprimidos no Lovable Hosting (que aceita `.br`/`.gz`).
-- Paginação adiciona parâmetros opcionais — chamadas existentes sem `limit` continuam funcionando (default mantém comportamento atual, só explicita o teto).
-- Cache key do dashboard: a chave atual `[from, to]` muda a cada render porque o range é recalculado; trocar para `[presetKey]` faz o cache realmente funcionar quando o usuário alterna presets ida-e-volta.
+RESERVA CONFIRMADA
 
-## Verificação ao final
+↓
 
-- `bun run build` deve passar sem erros.
-- Inspeção via Playwright do `/` e `/admin` para confirmar que não há regressão visual ou de console.
-- Conferência de tamanho dos chunks no output do build.
+EXPEDIÇÃO REALIZADA
+
+↓
+
+PERDIDO
+
+## Coluna paralela
+
+REATIVAÇÃO
+
+A coluna REATIVAÇÃO não faz parte do funil principal.
+
+Ela será utilizada para:
+
+- Clientes antigos
+- Participantes de expedições anteriores
+- Leads sem interação há mais de 90 dias
+- Campanhas de retorno
+
+---
+
+# 2. MAPEAMENTO AUTOMÁTICO DOS LEADS EXISTENTES
+
+Migrar automaticamente:
+
+novo  
+→ NOVO
+
+qualificado  
+→ EM ATENDIMENTO
+
+em_atendimento  
+→ EM ATENDIMENTO
+
+proposta_enviada  
+→ PROPOSTA ENVIADA
+
+reserva_confirmada  
+→ RESERVA CONFIRMADA
+
+concluido  
+→ EXPEDIÇÃO REALIZADA
+
+perdido  
+→ PERDIDO
+
+Qualquer etapa desconhecida:
+
+→ EM ATENDIMENTO
+
+Nunca perder dados históricos.
+
+---
+
+# 3. FICHA DO CLIENTE (LEAD 360 SIMPLIFICADO)
+
+Remover excesso de informação da tela principal.
+
+A ficha passa a possuir apenas:
+
+## DADOS PRINCIPAIS
+
+- Nome
+- Telefone
+- WhatsApp
+- E-mail
+- Cidade
+- Estado
+- Data de nascimento
+- Idade calculada
+
+## INTERESSE
+
+- Expedição
+- Data escolhida
+- Quantidade de participantes
+- Forma de pagamento
+
+## OBJETIVO
+
+Texto original preenchido pelo cliente.
+
+Sem interpretação da IA.
+
+## RESTRIÇÕES
+
+Texto original preenchido pelo cliente.
+
+Sem interpretação da IA.
+
+## OBSERVAÇÕES
+
+Texto original preenchido pelo cliente.
+
+---
+
+# 4. ABAS DA FICHA
+
+Substituir o modelo atual por:
+
+- Cliente
+- Participantes
+- Financeiro
+- Documentos
+- Conversas
+- IA
+
+Remover o conceito de aba "Avançado".
+
+---
+
+# 5. MEMÓRIA IA
+
+Separar completamente:
+
+## FATOS
+
+Informações declaradas pelo cliente.
+
+Exemplos:
+
+- Diabético
+- Sorocaba
+- Iniciante
+- Cartão
+- Grupo de 4 pessoas
+
+## INFERÊNCIAS
+
+Informações deduzidas pela IA.
+
+Exemplos:
+
+- Perfil aventureiro
+- Interesse em natureza
+- Possível retorno futuro
+
+Toda memória criada pela IA deve possuir:
+
+tipo = fato
+
+ou
+
+tipo = inferencia
+
+Nunca misturar os dois.
+
+---
+
+# 6. ATENDIMENTO AUTOMÁTICO DA IA
+
+Quando um lead entrar em NOVO:
+
+A IA recebe:
+
+- Nome
+- Telefone
+- E-mail
+- Cidade
+- Estado
+- Idade
+- Expedição
+- Data
+- Participantes
+- Experiência
+- Objetivo
+- Restrições
+- Forma de pagamento
+
+Prazo máximo para iniciar contato:
+
+5 minutos
+
+Caso não aconteça:
+
+Criar automaticamente:
+
+- Alerta operacional
+- Notificação
+- Tarefa crítica
+
+---
+
+# 7. OBJETIVOS DA IA
+
+A IA não deve ser apenas um chatbot.
+
+Ela precisa cumprir etapas.
+
+Objetivos:
+
+1. Receber o lead
+2. Confirmar interesse
+3. Qualificar perfil
+4. Explicar a expedição
+5. Apresentar valores
+6. Responder dúvidas
+7. Coletar documentos
+8. Acompanhar pagamento
+9. Confirmar participação
+10. Realizar pós-venda
+
+---
+
+# 8. RESPONSÁVEL X PARTICIPANTES
+
+Separação obrigatória.
+
+Estrutura:
+
+Reserva
+
+└── Responsável
+
+└── Participante 1
+
+└── Participante 2
+
+└── Participante 3
+
+...
+
+O responsável não deve ser confundido com os participantes.
+
+---
+
+# 9. PARTICIPANTES
+
+Cada participante possui ficha própria.
+
+Campos:
+
+- Nome
+- Documento
+- Data de nascimento
+- Idade
+- Peso
+- Nível de experiência
+- Restrições médicas
+- Observações
+
+---
+
+# 10. DOCUMENTOS
+
+Migrar documentos para vínculo principal com participante.
+
+Tipos:
+
+- Documento pessoal
+- Contrato
+- Comprovante de pagamento
+- Ficha médica
+- Termo de responsabilidade
+- Arquivos extras
+
+Status:
+
+- Não iniciado
+- Parcial
+- Completo
+
+---
+
+# 11. RESERVAS
+
+Adicionar status operacional independente do funil.
+
+Status possíveis:
+
+- Pré-reserva
+- Aguardando pagamento
+- Sinal pago
+- Quitada
+- Cancelada
+
+O status financeiro não deve depender do status do lead.
+
+---
+
+# 12. FINANCEIRO
+
+Adicionar suporte real para múltiplas moedas.
+
+Campos:
+
+- valor_original
+- moeda_original
+- cotacao
+- valor_convertido_brl
+
+Exemplo:
+
+USD 2.500 × 5,62
+
+=
+
+R$ 14.050
+
+Também exibir:
+
+- Valor vendido
+- Valor recebido
+- Saldo pendente
+- Data limite de pagamento
+
+---
+
+# 13. INBOX UNIFICADO
+
+Criar timeline única por cliente.
+
+Fontes:
+
+- WhatsApp
+- Instagram
+- Site
+- E-mail
+- Telefone
+
+Tudo agrupado na mesma conversa.
+
+Não separar por canal.
+
+Separar por cliente.
+
+---
+
+# 14. PÓS-VENDA
+
+Quando:
+
+Data da expedição < hoje
+
+E
+
+Reserva Confirmada
+
+Mover automaticamente para:
+
+EXPEDIÇÃO REALIZADA
+
+Exibir:
+
+- Expedição realizada
+- Data
+- Participantes
+- Valor pago
+
+Preparar gatilhos futuros para:
+
+- Depoimentos
+- Remarketing
+- Novas expedições
+
+---
+
+# 15. REATIVAÇÃO
+
+Critérios:
+
+Lead sem interação há mais de 90 dias
+
+OU
+
+Cliente com expedição realizada há mais de 6 meses
+
+Aparece apenas na coluna REATIVAÇÃO.
+
+Nunca misturar com PERDIDO.
+
+---
+
+# 16. FORMULÁRIO DE RESERVA
+
+Manter as 5 etapas.
+
+1. Responsável
+2. Participantes
+3. Experiência
+4. Pagamento
+5. Confirmação
+
+Corrigir:
+
+- Perda de dados
+- Inconsistência de participantes
+- Campos que não refletem corretamente no CRM
+
+Implementar:
+
+- Salvamento automático
+- LocalStorage
+- Lead progressivo por etapa
+
+---
+
+# FASES DE EXECUÇÃO
+
+## FASE A
+
+Backend
+
+- Migrations
+- Novos enums
+- Memória IA
+- Multimoeda
+- Documentos por participante
+- Triggers
+
+VALIDAÇÃO
+
+---
+
+## FASE B
+
+Novo CRM
+
+- Novo Kanban
+- Nova Ficha
+- Novas Abas
+
+VALIDAÇÃO
+
+---
+
+## FASE C
+
+Participantes e Documentos
+
+- Ficha individual
+- Contratos
+- Documentos
+
+VALIDAÇÃO
+
+---
+
+## FASE D
+
+Inbox + IA
+
+- Inbox unificado
+- IA automática
+- Alertas
+
+VALIDAÇÃO
+
+---
+
+## FASE E
+
+Pós-venda
+
+- Reativação
+- Automações
+- Ajustes finais
+
+VALIDAÇÃO
+
+---
+
+IMPORTANTE
+
+Não remover componentes antigos.
+
+Visão 360, Resumo IA, Conhecimento Aplicável e componentes legados devem permanecer funcionando internamente e serem movidos para a aba IA, preservando compatibilidade e evitando perda de desenvolvimento já realizado.

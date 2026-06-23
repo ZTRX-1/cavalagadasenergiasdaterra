@@ -1068,6 +1068,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "ia_handoff_queue_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "vw_leads_reativacao"
+            referencedColumns: ["lead_id"]
+          },
+          {
             foreignKeyName: "ia_handoff_queue_reserva_id_fkey"
             columns: ["reserva_id"]
             isOneToOne: false
@@ -1147,6 +1154,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "leads"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ia_interacoes_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "vw_leads_reativacao"
+            referencedColumns: ["lead_id"]
           },
           {
             foreignKeyName: "ia_interacoes_mensagem_id_fkey"
@@ -1417,6 +1431,13 @@ export type Database = {
             referencedRelation: "leads"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "lead_atividades_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "vw_leads_reativacao"
+            referencedColumns: ["lead_id"]
+          },
         ]
       }
       lead_conversas: {
@@ -1470,6 +1491,7 @@ export type Database = {
           orcamento: string | null
           perfil: string | null
           restricoes: string | null
+          tipo: string
           ultima_atualizacao: string
         }
         Insert: {
@@ -1483,6 +1505,7 @@ export type Database = {
           orcamento?: string | null
           perfil?: string | null
           restricoes?: string | null
+          tipo?: string
           ultima_atualizacao?: string
         }
         Update: {
@@ -1496,9 +1519,70 @@ export type Database = {
           orcamento?: string | null
           perfil?: string | null
           restricoes?: string | null
+          tipo?: string
           ultima_atualizacao?: string
         }
         Relationships: []
+      }
+      lead_memoria_itens: {
+        Row: {
+          categoria: string | null
+          chave: string | null
+          confianca: number | null
+          created_at: string
+          created_by: string | null
+          id: string
+          lead_id: string
+          metadata: Json
+          origem: string
+          tipo: string
+          updated_at: string
+          valor: string
+        }
+        Insert: {
+          categoria?: string | null
+          chave?: string | null
+          confianca?: number | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lead_id: string
+          metadata?: Json
+          origem?: string
+          tipo: string
+          updated_at?: string
+          valor: string
+        }
+        Update: {
+          categoria?: string | null
+          chave?: string | null
+          confianca?: number | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lead_id?: string
+          metadata?: Json
+          origem?: string
+          tipo?: string
+          updated_at?: string
+          valor?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_memoria_itens_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_memoria_itens_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "vw_leads_reativacao"
+            referencedColumns: ["lead_id"]
+          },
+        ]
       }
       leads: {
         Row: {
@@ -1750,6 +1834,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "mensagens_canal_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "vw_leads_reativacao"
+            referencedColumns: ["lead_id"]
+          },
+          {
             foreignKeyName: "mensagens_canal_participante_id_fkey"
             columns: ["participante_id"]
             isOneToOne: false
@@ -1849,6 +1940,7 @@ export type Database = {
         Row: {
           cliente_nome: string | null
           comprovante_url: string | null
+          cotacao: number | null
           created_at: string
           data_pagamento: string | null
           data_prevista: string | null
@@ -1856,6 +1948,7 @@ export type Database = {
           forma: string
           id: string
           moeda: string
+          moeda_original: string | null
           observacoes: string | null
           parcela_atual: number | null
           parcela_total: number | null
@@ -1865,10 +1958,13 @@ export type Database = {
           tipo: string
           updated_at: string
           valor: number
+          valor_convertido_brl: number | null
+          valor_original: number | null
         }
         Insert: {
           cliente_nome?: string | null
           comprovante_url?: string | null
+          cotacao?: number | null
           created_at?: string
           data_pagamento?: string | null
           data_prevista?: string | null
@@ -1876,6 +1972,7 @@ export type Database = {
           forma?: string
           id?: string
           moeda: string
+          moeda_original?: string | null
           observacoes?: string | null
           parcela_atual?: number | null
           parcela_total?: number | null
@@ -1885,10 +1982,13 @@ export type Database = {
           tipo?: string
           updated_at?: string
           valor: number
+          valor_convertido_brl?: number | null
+          valor_original?: number | null
         }
         Update: {
           cliente_nome?: string | null
           comprovante_url?: string | null
+          cotacao?: number | null
           created_at?: string
           data_pagamento?: string | null
           data_prevista?: string | null
@@ -1896,6 +1996,7 @@ export type Database = {
           forma?: string
           id?: string
           moeda?: string
+          moeda_original?: string | null
           observacoes?: string | null
           parcela_atual?: number | null
           parcela_total?: number | null
@@ -1905,6 +2006,8 @@ export type Database = {
           tipo?: string
           updated_at?: string
           valor?: number
+          valor_convertido_brl?: number | null
+          valor_original?: number | null
         }
         Relationships: [
           {
@@ -2266,6 +2369,7 @@ export type Database = {
           contrato_assinado_em: string | null
           contrato_enviado: boolean
           contrato_enviado_em: string | null
+          cotacao_referencia: number | null
           created_at: string
           data_id: string | null
           data_label: string
@@ -2297,6 +2401,7 @@ export type Database = {
           valor_entrada: number | null
           valor_pago: number
           valor_total: number | null
+          valor_total_brl: number | null
         }
         Insert: {
           aceites?: Json
@@ -2309,6 +2414,7 @@ export type Database = {
           contrato_assinado_em?: string | null
           contrato_enviado?: boolean
           contrato_enviado_em?: string | null
+          cotacao_referencia?: number | null
           created_at?: string
           data_id?: string | null
           data_label: string
@@ -2340,6 +2446,7 @@ export type Database = {
           valor_entrada?: number | null
           valor_pago?: number
           valor_total?: number | null
+          valor_total_brl?: number | null
         }
         Update: {
           aceites?: Json
@@ -2352,6 +2459,7 @@ export type Database = {
           contrato_assinado_em?: string | null
           contrato_enviado?: boolean
           contrato_enviado_em?: string | null
+          cotacao_referencia?: number | null
           created_at?: string
           data_id?: string | null
           data_label?: string
@@ -2383,6 +2491,7 @@ export type Database = {
           valor_entrada?: number | null
           valor_pago?: number
           valor_total?: number | null
+          valor_total_brl?: number | null
         }
         Relationships: [
           {
@@ -2505,6 +2614,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "leads"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tarefas_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "vw_leads_reativacao"
+            referencedColumns: ["lead_id"]
           },
           {
             foreignKeyName: "tarefas_participante_id_fkey"
@@ -2715,6 +2831,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "ia_handoff_queue_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "vw_leads_reativacao"
+            referencedColumns: ["lead_id"]
+          },
+          {
             foreignKeyName: "ia_handoff_queue_reserva_id_fkey"
             columns: ["reserva_id"]
             isOneToOne: false
@@ -2738,6 +2861,45 @@ export type Database = {
           entidade_id: string | null
           referencia: string | null
           tipo: string | null
+        }
+        Relationships: []
+      }
+      vw_leads_pos_expedicao: {
+        Row: {
+          lead_id: string | null
+        }
+        Relationships: []
+      }
+      vw_leads_reativacao: {
+        Row: {
+          email: string | null
+          etapa_atendimento: string | null
+          lead_id: string | null
+          motivo_reativacao: string | null
+          nome: string | null
+          telefone: string | null
+          ultima_interacao_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          email?: string | null
+          etapa_atendimento?: string | null
+          lead_id?: string | null
+          motivo_reativacao?: never
+          nome?: string | null
+          telefone?: string | null
+          ultima_interacao_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          email?: string | null
+          etapa_atendimento?: string | null
+          lead_id?: string | null
+          motivo_reativacao?: never
+          nome?: string | null
+          telefone?: string | null
+          ultima_interacao_at?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -2773,6 +2935,7 @@ export type Database = {
       }
       _ia_normalizar_telefone: { Args: { p_tel: string }; Returns: string }
       _ia_pode_atuar: { Args: never; Returns: boolean }
+      alertar_ia_atendimento_atrasado: { Args: never; Returns: number }
       check_crm_health: {
         Args: never
         Returns: {
@@ -2873,6 +3036,7 @@ export type Database = {
         Returns: Json
       }
       is_internal_user: { Args: { _user_id: string }; Returns: boolean }
+      processar_pos_expedicao: { Args: never; Returns: number }
       recalcular_vagas_data: { Args: { p_data_id: string }; Returns: undefined }
       reconstruir_resumo_ia_reserva: {
         Args: { reserva_id: string }
