@@ -1,16 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { lazy, Suspense, useMemo, useState } from "react";
 import { Wallet, Save, Plus, Trash2, Download } from "lucide-react";
 import { toast } from "sonner";
-import {
-  AreaChart,
-  Area,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  Tooltip,
-} from "recharts";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminSection, AdminField } from "@/components/admin/admin-section";
 import { StatusBadge } from "@/components/admin/admin-status-badge";
@@ -27,6 +19,9 @@ import {
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
 import { useCan } from "@/hooks/use-permissions";
+
+// Recharts (~300KB) carregado sob demanda apenas quando a aba "Fluxo" é renderizada.
+const FluxoCaixaChart = lazy(() => import("@/components/admin/fluxo-caixa-chart"));
 
 export const Route = createFileRoute("/admin/_authenticated/financeiro")({
   component: FinanceiroPage,
