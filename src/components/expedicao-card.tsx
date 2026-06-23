@@ -29,7 +29,7 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
     >
       <div className="relative aspect-[4/5] overflow-hidden">
         <img
-          src={getExpedicaoImage(slug, { capaUrl: expedicao.imagem_url })}
+          src={getExpedicaoImage(slug, { capaUrl: expedicao.capa_url ?? expedicao.imagem_url })}
           alt={nome}
           loading="lazy"
           decoding="async"

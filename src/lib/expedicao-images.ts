@@ -233,8 +233,10 @@ export interface AssetOverride {
   is_capa?: boolean;
 }
 
-function isHttpUrl(s?: string | null): s is string {
-  return !!s && /^https?:\/\//.test(s);
+function resolveImageReference(s?: string | null): string | null {
+  if (!s) return null;
+  if (/^(https?:\/\/|\/)/.test(s)) return s;
+  return IMAGES[s] ?? null;
 }
 
 /** Capa: 1) capa_url do banco, 2) asset is_capa, 3) primeiro asset, 4) curadoria estática. */
@@ -242,7 +244,8 @@ export function getExpedicaoImage(
   slug: string,
   opts?: { capaUrl?: string | null; assets?: AssetOverride[] },
 ): string {
-  if (isHttpUrl(opts?.capaUrl)) return opts!.capaUrl!;
+  const capa = resolveImageReference(opts?.capaUrl);
+  if (capa) return capa;
   const imagens = (opts?.assets ?? []).filter((a) => (a.tipo ?? "imagem") === "imagem");
   if (imagens.length > 0) {
     const capa = imagens.find((a) => a.is_capa);
