@@ -79,6 +79,13 @@ function ExpedicoesPage() {
     onError: (e) => toast.error((e as Error).message),
   });
 
+  const precoVisibilidadeMut = useMutation({
+    mutationFn: ({ id, ocultar }: { id: string; ocultar: boolean }) =>
+      updateExpedicao(id, { mensagem_comercial_publica: ocultar ? "Consulte valores e disponibilidade" : null }),
+    onSuccess: (_d, vars) => { toast.success(vars.ocultar ? "Preço oculto no site" : "Preço público no site"); refresh(); },
+    onError: (e) => toast.error((e as Error).message),
+  });
+
   const contadores = {
     todos: list.length,
     publicado: list.filter((e) => e.status === "publicado").length,
@@ -162,29 +169,38 @@ function ExpedicoesPage() {
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
                         {(() => {
-                          const capa = (e as ExpedicaoRow & { _capa?: string | null })._capa || getExpedicaoImage(e.slug);
-                          return capa ? (
-                            <div className="h-10 w-16 shrink-0 overflow-hidden rounded-md ring-1 ring-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo)]">
+                          const capaRow = (e as ExpedicaoRow & { _capa?: string | null })._capa;
+                          const capa = capaRow || getExpedicaoImage(e.slug);
+                          const fallback = getExpedicaoImage(e.slug);
+                          return (
+                            <div className="relative h-10 w-16 shrink-0 overflow-hidden rounded-md ring-1 ring-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo)]">
                               <img
                                 src={capa}
                                 alt=""
+                                loading="lazy"
                                 className="h-full w-full object-cover"
                                 onError={(ev) => {
                                   const img = ev.currentTarget;
-                                  img.style.display = "none";
-                                  const placeholder = img.parentElement?.nextElementSibling;
-                                  if (placeholder) placeholder.classList.remove("hidden");
+                                  if (img.dataset.fallback !== "1" && fallback && img.src !== fallback) {
+                                    img.dataset.fallback = "1";
+                                    img.src = fallback;
+                                  } else {
+                                    img.style.display = "none";
+                                    const ph = img.parentElement?.querySelector("[data-img-placeholder]");
+                                    if (ph) ph.classList.remove("hidden");
+                                  }
                                 }}
                               />
+                              <div
+                                data-img-placeholder
+                                className="hidden absolute inset-0 grid place-items-center text-[color:var(--admin-cinza-3)]"
+                                title="Sem capa — envie uma imagem na aba Mídia"
+                              >
+                                <ImageOff className="h-4 w-4" />
+                              </div>
                             </div>
-                          ) : null;
+                          );
                         })()}
-                        <div
-                          className={`${(e as ExpedicaoRow & { _capa?: string | null })._capa || getExpedicaoImage(e.slug) ? "hidden " : ""}h-10 w-16 rounded-md ring-1 ring-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo)] grid place-items-center text-[color:var(--admin-cinza-3)]`}
-                          title="Sem capa — envie uma imagem na aba Mídia"
-                        >
-                          <ImageOff className="h-4 w-4" />
-                        </div>
                         <div className="min-w-0">
                           <div className="font-medium text-[color:var(--admin-cinza-1)] truncate">{e.nome}</div>
                           <div className="text-[11px] text-[color:var(--admin-cinza-3)] truncate">{e.regiao ?? e.cidade ?? "—"}</div>
@@ -195,11 +211,23 @@ function ExpedicoesPage() {
                     <td className="px-3 py-4"><StatusBadge status={e.status} /></td>
                     <td className="px-3 py-4">
                       {e.mensagem_comercial_publica ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-2 py-1 text-[10px] font-medium text-amber-300 ring-1 ring-amber-500/20" title={e.mensagem_comercial_publica}>
+                        <button
+                          type="button"
+                          onClick={() => precoVisibilidadeMut.mutate({ id: e.id, ocultar: false })}
+                          className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-2 py-1 text-[10px] font-medium text-amber-300 ring-1 ring-amber-500/20 hover:bg-amber-500/20 transition"
+                          title={`${e.mensagem_comercial_publica}\n\nClique para tornar o preço público`}
+                        >
                           Preço oculto
-                        </span>
+                        </button>
                       ) : (
-                        <span className="text-[10px] text-[color:var(--admin-cinza-3)]">Preço público</span>
+                        <button
+                          type="button"
+                          onClick={() => precoVisibilidadeMut.mutate({ id: e.id, ocultar: true })}
+                          className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2 py-1 text-[10px] font-medium text-emerald-300 ring-1 ring-emerald-500/20 hover:bg-emerald-500/20 transition"
+                          title="Clique para ocultar o preço no site"
+                        >
+                          Preço público
+                        </button>
                       )}
                     </td>
                     <td className="px-3 py-4 text-[color:var(--admin-cinza-2)]">{e.moeda} {Number(e.preco).toLocaleString("pt-BR")}</td>
