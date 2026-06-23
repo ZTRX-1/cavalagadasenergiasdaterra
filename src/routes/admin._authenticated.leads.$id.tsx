@@ -1,28 +1,28 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Save, Send, Star, Flame, Brain, ArrowRight, CheckCircle2 } from "lucide-react";
+import {
+  ArrowLeft, Save, Send, ArrowRight, User as UserIcon,
+  Users, Wallet, FileText, MessageSquare, Brain, Plus, Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminSection, AdminField } from "@/components/admin/admin-section";
 import { StatusBadge } from "@/components/admin/admin-status-badge";
-import { Timeline360 } from "@/components/admin/timeline-360";
-import { Visao360 } from "@/components/admin/visao-360";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ConverterLeadModal } from "@/components/admin/converter-lead-modal";
+import { ReservaResumoCard } from "@/components/admin/reserva-resumo-card";
+import { ProximaAcaoBanner } from "@/components/admin/proxima-acao-banner";
 import {
   getLead, updateLead, LEAD_ETAPAS, CONVERSA_TIPOS,
-  LEAD_TEMPERATURAS, LEAD_STATUS_ATENDIMENTO, LEAD_MOTIVOS_PERDA,
+  LEAD_MOTIVOS_PERDA,
   listLeadConversas, addLeadConversa,
   getLeadMemoria, upsertLeadMemoria,
   type LeadRow, type LeadEtapaId, type LeadConversaTipo, type LeadMemoriaRow,
-  type LeadTemperaturaId, type LeadStatusAtendimentoId, type LeadMotivoPerdaId,
+  type LeadMotivoPerdaId,
 } from "@/lib/admin/api";
 import { supabase } from "@/integrations/supabase/client";
-import { cn } from "@/lib/utils";
-import { ProximaAcaoBanner } from "@/components/admin/proxima-acao-banner";
-import { ReservaResumoCard } from "@/components/admin/reserva-resumo-card";
-
-
+import { jornadaEstagio, jornadaFromLead, JORNADA_TONE_CLASS } from "@/lib/admin/jornada";
 
 export const Route = createFileRoute("/admin/_authenticated/leads/$id")({
   component: LeadEdit,
@@ -33,9 +33,6 @@ function LeadEdit() {
   const nav = useNavigate();
   const qc = useQueryClient();
   const { data: lead } = useQuery({ queryKey: ["admin", "lead", id], queryFn: () => getLead(id) });
-  const { data: conversas = [] } = useQuery({ queryKey: ["admin", "lead-conv", id], queryFn: () => listLeadConversas(id) });
-  const { data: memoria } = useQuery({ queryKey: ["admin", "lead-mem", id], queryFn: () => getLeadMemoria(id) });
-  // se já existe reserva vinda desse lead, mostra atalho
   const { data: reservaExistente } = useQuery({
     queryKey: ["admin", "reserva-do-lead", id],
     queryFn: async () => {
@@ -50,8 +47,6 @@ function LeadEdit() {
     },
   });
   const [form, setForm] = useState<Partial<LeadRow> | null>(null);
-  const [nota, setNota] = useState("");
-  const [tipoNota, setTipoNota] = useState<LeadConversaTipo>("observacao_interna");
   const [converter, setConverter] = useState(false);
   useEffect(() => { if (lead) setForm(lead); }, [lead]);
 
@@ -61,311 +56,95 @@ function LeadEdit() {
     onError: (e) => toast.error((e as Error).message),
   });
 
-  const conversaMut = useMutation({
-    mutationFn: () => addLeadConversa({ leadId: id, tipo: tipoNota, conteudo: nota.trim() }),
-    onSuccess: () => {
-      setNota("");
-      qc.invalidateQueries({ queryKey: ["admin", "lead-conv", id] });
-      qc.invalidateQueries({ queryKey: ["admin", "lead", id] });
-      toast.success("Registrado");
-    },
-    onError: (e) => toast.error((e as Error).message),
-  });
-
   if (!form) return <div className="admin-card h-40 animate-pulse" />;
 
+  const jornada = jornadaFromLead(form as LeadRow);
+  const estagio = jornadaEstagio(jornada);
   const podeConverter =
     !reservaExistente &&
-    form.etapa_atendimento !== "reserva_pendente" &&
-    form.etapa_atendimento !== "participante_confirmado" &&
-    form.etapa_atendimento !== "concluido" &&
-    form.etapa_atendimento !== "perdido";
+    jornada !== "reserva_confirmada" &&
+    jornada !== "expedicao_realizada" &&
+    jornada !== "perdido";
 
   return (
     <div className="space-y-6">
       <AdminPageHeader
-        eyebrow={form.protocolo ?? "lead"}
+        eyebrow={form.protocolo ?? "cliente"}
         title={form.nome ?? ""}
         actions={
-          <div className="flex items-center gap-2 flex-wrap">
-            <TemperaturaBadge value={form.temperatura_lead ?? "frio"} />
+          <div className="flex flex-wrap items-center gap-2">
+            <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] ${JORNADA_TONE_CLASS[estagio.tone]}`}>
+              {estagio.label}
+            </span>
             <button className="admin-btn-ghost" onClick={() => nav({ to: "/admin/leads" })}><ArrowLeft className="h-4 w-4" /> Voltar</button>
             <button className="admin-btn-primary" onClick={() => saveMut.mutate(form)}><Save className="h-4 w-4" /> Salvar</button>
           </div>
         }
       />
 
-      <ProximaAcaoBanner
-        lead={form as LeadRow}
-        contexto={{ temReserva: !!reservaExistente }}
-      />
+      <ProximaAcaoBanner lead={form as LeadRow} contexto={{ temReserva: !!reservaExistente }} />
 
-      {/* Bloco unificado: se já tem reserva, mostra tudo aqui dentro da ficha */}
-      {reservaExistente ? (
-        <ReservaResumoCard reservaId={reservaExistente.id} />
-      ) : podeConverter ? (
+      {podeConverter ? (
         <button
           onClick={() => setConverter(true)}
           className="flex w-full items-center justify-between rounded-xl border border-[color:var(--admin-dourado)]/30 bg-[color:var(--admin-dourado)]/10 px-4 py-3 hover:bg-[color:var(--admin-dourado)]/15 transition"
         >
           <div className="text-left">
-            <div className="text-sm font-medium text-[color:var(--admin-cinza-1)]">
-              Pronto pra reservar? Converta em reserva
-            </div>
-            <div className="text-[11px] text-[color:var(--admin-cinza-3)]">
-              Cria a reserva já vinculada, com participantes prontos pra completar — e move o lead pra Convertido
-            </div>
+            <div className="text-sm font-medium text-[color:var(--admin-cinza-1)]">Converter em reserva</div>
+            <div className="text-[11px] text-[color:var(--admin-cinza-3)]">Cria a reserva vinculada e habilita as abas Participantes, Financeiro e Documentos.</div>
           </div>
           <ArrowRight className="h-4 w-4 text-[color:var(--admin-dourado)]" />
         </button>
       ) : null}
 
-
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-6">
-          <AdminSection titulo="Atendimento" descricao="Onde está esse lead na jornada e o que precisa acontecer agora.">
-            <div className="grid grid-cols-2 gap-3">
-              <AdminField label="Etapa do Atendimento">
-                <select className="admin-input" value={form.etapa_atendimento ?? "novo"} onChange={(e) => setForm({ ...form, etapa_atendimento: e.target.value as LeadEtapaId, status: e.target.value, etapa_operacional: e.target.value })}>
-                  {LEAD_ETAPAS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
-                </select>
-              </AdminField>
-              <AdminField label="Nível de Interesse (1 a 5)">
-                <select className="admin-input" value={form.nivel_interesse ?? 3} onChange={(e) => setForm({ ...form, nivel_interesse: Number(e.target.value) })}>
-                  <option value={5}>⭐⭐⭐⭐⭐ Altíssimo</option>
-                  <option value={4}>⭐⭐⭐⭐ Alto</option>
-                  <option value={3}>⭐⭐⭐ Médio</option>
-                  <option value={2}>⭐⭐ Baixo</option>
-                  <option value={1}>⭐ Muito baixo</option>
-                </select>
-              </AdminField>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              <AdminField label="Temperatura">
-                <select className="admin-input" value={form.temperatura_lead ?? "frio"} onChange={(e) => setForm({ ...form, temperatura_lead: e.target.value as LeadTemperaturaId })}>
-                  {LEAD_TEMPERATURAS.map((t) => <option key={t.id} value={t.id}>{t.emoji} {t.label}</option>)}
-                </select>
-              </AdminField>
-              <AdminField label="Status de atendimento">
-                <select className="admin-input" value={form.status_atendimento ?? "ia"} onChange={(e) => setForm({ ...form, status_atendimento: e.target.value as LeadStatusAtendimentoId })}>
-                  {LEAD_STATUS_ATENDIMENTO.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
-                </select>
-              </AdminField>
-              <AdminField label="Próxima ação">
-                <input className="admin-input" placeholder="Ex: Follow-up 24h, Enviar contrato…" value={form.proxima_acao ?? ""} onChange={(e) => setForm({ ...form, proxima_acao: e.target.value })} />
-              </AdminField>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <AdminField label="Lead Score (0 a 100, gerado pela IA)">
-                <input type="number" min={0} max={100} className="admin-input" value={form.lead_score ?? 0} onChange={(e) => setForm({ ...form, lead_score: Math.max(0, Math.min(100, Number(e.target.value))) })} />
-              </AdminField>
-              <AdminField label={form.etapa_atendimento === "perdido" ? "Motivo da perda" : "Motivo da perda (se aplicável)"}>
-                <select className="admin-input" value={form.motivo_perda ?? ""} onChange={(e) => setForm({ ...form, motivo_perda: (e.target.value || null) as LeadMotivoPerdaId | null })}>
-                  <option value="">—</option>
-                  {LEAD_MOTIVOS_PERDA.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
-                </select>
-              </AdminField>
-            </div>
-            {form.motivo_perda ? (
-              <AdminField label="Detalhe da perda">
-                <input className="admin-input" value={form.motivo_perda_detalhe ?? ""} onChange={(e) => setForm({ ...form, motivo_perda_detalhe: e.target.value })} />
-              </AdminField>
-            ) : null}
-            <AdminField label="Resumo do atendimento (equipe)">
-              <textarea className="admin-input min-h-[80px]" value={form.resumo_atendimento ?? ""} onChange={(e) => setForm({ ...form, resumo_atendimento: e.target.value })} />
-            </AdminField>
-            {form.resumo_ia ? (
-              <div className="rounded-lg border border-violet-400/20 bg-violet-400/5 p-4">
-                <div className="mb-2 flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-violet-300/80">
-                  <Brain className="h-4 w-4" /> Memórias & Recomendações da IA
-                </div>
-                <div className="space-y-3">
-                  <p className="text-sm text-[color:var(--admin-cinza-1)] whitespace-pre-wrap leading-relaxed">
-                    {form.resumo_ia}
-                  </p>
-                  
-                  {/* Recomendações baseadas nos dados reais */}
-                  <div className="pt-3 border-t border-violet-400/10 grid gap-3 sm:grid-cols-2">
-                    <div className="bg-violet-400/10 rounded-lg p-2.5">
-                      <div className="text-[10px] text-violet-300/60 uppercase tracking-wider mb-1">Perfil do Lead</div>
-                      <div className="text-xs text-violet-200">
-                        {form.tipo_grupo === 'casal' ? '👫 Casal buscando experiência romântica' : 
-                         form.tipo_grupo === 'grupo' ? '👥 Grupo buscando aventura coletiva' : 
-                         form.tipo_grupo === 'individual' ? '👤 Viajante solo em busca de conexão' : 
-                         'Experiência personalizada'}
-                      </div>
-                    </div>
-                    <div className="bg-violet-400/10 rounded-lg p-2.5">
-                      <div className="text-[10px] text-violet-300/60 uppercase tracking-wider mb-1">Nível Técnico</div>
-                      <div className="text-xs text-violet-200">
-                        Nível {form.experiencia_equestre || 'não informado'} — 
-                        {form.experiencia_equestre === 'avancado' ? ' Requer cavalos mais ativos.' : 
-                         form.experiencia_equestre === 'iniciante' ? ' Precisa de cavalos mansos e suporte.' : 
-                         ' Cavalos padrão de trilha.'}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : null}
-          </AdminSection>
-
-          <AdminSection titulo="Dados do lead">
-            <AdminField label="Nome"><input className="admin-input" value={form.nome ?? ""} onChange={(e) => setForm({ ...form, nome: e.target.value })} /></AdminField>
-            <div className="grid grid-cols-2 gap-3">
-              <AdminField label="E-mail">
-                <div className="flex gap-2">
-                  <input className="admin-input flex-1" value={form.email ?? ""} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-                </div>
-              </AdminField>
-              <AdminField label="Telefone">
-                <div className="flex gap-2">
-                  <input className="admin-input flex-1" value={form.telefone ?? ""} onChange={(e) => setForm({ ...form, telefone: e.target.value })} />
-                </div>
-              </AdminField>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              <AdminField label="Idade"><input type="number" className="admin-input" value={form.idade ?? ""} onChange={(e) => setForm({ ...form, idade: e.target.value ? Number(e.target.value) : null })} /></AdminField>
-              <AdminField label="Cidade"><input className="admin-input" value={form.cidade ?? ""} onChange={(e) => setForm({ ...form, cidade: e.target.value })} /></AdminField>
-              <AdminField label="Estado"><input className="admin-input" value={form.estado ?? ""} onChange={(e) => setForm({ ...form, estado: e.target.value })} /></AdminField>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <AdminField label="Expedição de interesse">
-                <input className="admin-input" value={form.expedicao_interesse ?? ""} onChange={(e) => setForm({ ...form, expedicao_interesse: e.target.value })} />
-              </AdminField>
-              <AdminField label="Estratégia de preço">
-                <div className="flex h-10 items-center px-3 rounded-md border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/40 text-[11px] text-[color:var(--admin-cinza-3)] italic">
-                   Real price always visible in CRM. Check Expedition settings for public visibility.
-                </div>
-              </AdminField>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-3">
-              <AdminField label="Tipo de viagem">
-                <select className="admin-input" value={form.tipo_grupo ?? ""} onChange={(e) => setForm({ ...form, tipo_grupo: e.target.value || null })}>
-                  <option value="">—</option>
-                  <option value="individual">Individual</option>
-                  <option value="casal">Casal</option>
-                  <option value="grupo">Grupo</option>
-                  <option value="personalizada">Personalizada</option>
-                </select>
-              </AdminField>
-              <AdminField label="Nível equestre">
-                <select className="admin-input" value={form.experiencia_equestre ?? ""} onChange={(e) => setForm({ ...form, experiencia_equestre: e.target.value || null })}>
-                  <option value="">—</option>
-                  <option value="nenhuma">Nenhuma</option>
-                  <option value="iniciante">Iniciante</option>
-                  <option value="intermediario">Intermediário</option>
-                  <option value="avancado">Avançado</option>
-                </select>
-              </AdminField>
-            </div>
-
-            <AdminField label="O que espera viver nessa experiência?">
-              <textarea 
-                className="admin-input min-h-[60px]" 
-                value={form.motivacao_viagem ?? ""} 
-                onChange={(e) => setForm({ ...form, motivacao_viagem: e.target.value })} 
-                maxLength={250}
-              />
-            </AdminField>
-
-            <AdminField label="Informações importantes (Alergias, Restrições, etc.)">
-              <textarea 
-                className="admin-input min-h-[60px]" 
-                value={form.observacoes_importantes ?? ""} 
-                onChange={(e) => setForm({ ...form, observacoes_importantes: e.target.value })} 
-              />
-            </AdminField>
-
-            <div className="grid grid-cols-3 gap-3">
-              <AdminField label="Data de interesse"><input type="date" className="admin-input" value={form.data_interesse ?? ""} onChange={(e) => setForm({ ...form, data_interesse: e.target.value || null })} /></AdminField>
-              <AdminField label="Pessoas"><input type="number" className="admin-input" value={form.quantidade_pessoas ?? 1} onChange={(e) => setForm({ ...form, quantidade_pessoas: Number(e.target.value) })} /></AdminField>
-              <AdminField label="Valor estimado">
-                <div className="relative">
-                  <input type="number" className={cn("admin-input pr-8", (form.valor_estimado ?? 0) === 0 && "border-amber-500/50")} value={form.valor_estimado ?? ""} onChange={(e) => setForm({ ...form, valor_estimado: e.target.value ? Number(e.target.value) : null })} />
-                  {(form.valor_estimado ?? 0) === 0 && (
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-amber-400" title="Valor não calculado ou zero">⚠️</span>
-                  )}
-                </div>
-              </AdminField>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <AdminField label="Canal de entrada">
-                <select className="admin-input" value={form.canal_entrada ?? ""} onChange={(e) => setForm({ ...form, canal_entrada: e.target.value || null })}>
-                  <option value="">—</option>
-                  <option value="site">Site</option>
-                  <option value="instagram">Instagram</option>
-                  <option value="google">Google</option>
-                  <option value="indicacao">Indicação</option>
-                  <option value="outro">Outro</option>
-                </select>
-              </AdminField>
-              <AdminField label="Canal de atendimento">
-                <select className="admin-input" value={form.canal_atendimento ?? ""} onChange={(e) => setForm({ ...form, canal_atendimento: e.target.value || null })}>
-                  <option value="">—</option>
-                  <option value="whatsapp">WhatsApp</option>
-                  <option value="telefone">Telefone</option>
-                  <option value="email">E-mail</option>
-                  <option value="presencial">Presencial</option>
-                </select>
-              </AdminField>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              <AdminField label="UTM source"><input className="admin-input" value={form.utm_source ?? ""} onChange={(e) => setForm({ ...form, utm_source: e.target.value || null })} /></AdminField>
-              <AdminField label="UTM medium"><input className="admin-input" value={form.utm_medium ?? ""} onChange={(e) => setForm({ ...form, utm_medium: e.target.value || null })} /></AdminField>
-              <AdminField label="UTM campaign"><input className="admin-input" value={form.utm_campaign ?? ""} onChange={(e) => setForm({ ...form, utm_campaign: e.target.value || null })} /></AdminField>
-            </div>
-            <AdminField label="Observações internas"><textarea className="admin-input min-h-[80px]" value={form.observacoes ?? ""} onChange={(e) => setForm({ ...form, observacoes: e.target.value })} /></AdminField>
-          </AdminSection>
-
-          <MemoriaCard leadId={id} memoria={memoria ?? null} />
+      <Tabs defaultValue="cliente" className="w-full">
+        <div className="overflow-x-auto -mx-1 px-1">
+          <TabsList className="bg-[color:var(--admin-carvao-deep)] border border-[color:var(--admin-borda)] p-1 min-w-max">
+            <TabAba value="cliente"      icon={<UserIcon className="h-3.5 w-3.5" />}      label="Cliente" />
+            <TabAba value="participantes" icon={<Users className="h-3.5 w-3.5" />}        label="Participantes" />
+            <TabAba value="financeiro"   icon={<Wallet className="h-3.5 w-3.5" />}        label="Financeiro" />
+            <TabAba value="documentos"   icon={<FileText className="h-3.5 w-3.5" />}      label="Documentos" />
+            <TabAba value="conversas"    icon={<MessageSquare className="h-3.5 w-3.5" />} label="Conversas" />
+            <TabAba value="ia"           icon={<Brain className="h-3.5 w-3.5" />}         label="IA" />
+          </TabsList>
         </div>
 
-        <div className="space-y-6">
-          <AdminSection titulo="Resumo visual">
-            <div className="flex items-center justify-between rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/60 p-3">
-              <div className="flex items-center gap-1">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className={`h-4 w-4 ${i < (form.nivel_interesse ?? 3) ? "fill-[color:var(--admin-dourado)] text-[color:var(--admin-dourado)]" : "text-[color:var(--admin-borda)]"}`} />
-                ))}
-              </div>
-              <div className="flex items-center gap-1 text-amber-300">
-                <Flame className="h-4 w-4" /> <span className="text-sm font-medium">{form.lead_score ?? 0}</span>
-              </div>
-            </div>
-            <p className="text-xs text-[color:var(--admin-cinza-3)]">
-              Última interação: {form.ultima_interacao_at ? new Date(form.ultima_interacao_at).toLocaleString("pt-BR") : "—"}
-            </p>
-          </AdminSection>
+        <TabsContent value="cliente" className="mt-4">
+          <ClienteTab form={form} setForm={setForm} />
+        </TabsContent>
 
-          <AdminSection titulo="Registrar interação" descricao="Cada anotação fica salva no histórico permanente.">
-            <AdminField label="Tipo">
-              <select className="admin-input" value={tipoNota} onChange={(e) => setTipoNota(e.target.value as LeadConversaTipo)}>
-                {CONVERSA_TIPOS.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
-              </select>
-            </AdminField>
-            <textarea className="admin-input min-h-[80px]" value={nota} onChange={(e) => setNota(e.target.value)} placeholder="Liguei, mandei mensagem, recebi resposta…" />
-            <button
-              className="admin-btn-primary w-full"
-              disabled={!nota.trim() || conversaMut.isPending}
-              onClick={() => conversaMut.mutate()}
-            >
-              <Send className="h-4 w-4" /> Registrar
-            </button>
-          </AdminSection>
+        <TabsContent value="participantes" className="mt-4">
+          {reservaExistente ? (
+            <ReservaResumoCard reservaId={reservaExistente.id} />
+          ) : (
+            <EmptyAba mensagem="Converta este cliente em reserva para ver e editar a ficha dos participantes." />
+          )}
+        </TabsContent>
 
-          <HistoricoAbas conversas={conversas} />
+        <TabsContent value="financeiro" className="mt-4">
+          {reservaExistente ? (
+            <ReservaResumoCard reservaId={reservaExistente.id} />
+          ) : (
+            <EmptyAba mensagem="O financeiro aparece aqui assim que houver uma reserva vinculada." />
+          )}
+        </TabsContent>
 
-          <AdminSection titulo="Linha do tempo 360°" descricao="Mensagens (todos os canais), interações IA, alterações de etapa, pagamentos, tarefas e handoffs — em ordem cronológica.">
-            <Visao360 leadId={id} />
-            <Timeline360 leadId={id} />
-          </AdminSection>
+        <TabsContent value="documentos" className="mt-4">
+          {reservaExistente ? (
+            <ReservaResumoCard reservaId={reservaExistente.id} />
+          ) : (
+            <EmptyAba mensagem="Documentos por participante aparecem aqui após a conversão em reserva." />
+          )}
+        </TabsContent>
 
+        <TabsContent value="conversas" className="mt-4">
+          <ConversasTab leadId={id} />
+        </TabsContent>
 
-        </div>
-      </div>
+        <TabsContent value="ia" className="mt-4">
+          <IATab leadId={id} resumoIA={form.resumo_ia ?? null} />
+        </TabsContent>
+      </Tabs>
 
       {converter ? (
         <ConverterLeadModal
@@ -382,85 +161,363 @@ function LeadEdit() {
   );
 }
 
-function MemoriaCard({ leadId, memoria }: { leadId: string; memoria: LeadMemoriaRow | null }) {
+function TabAba({ value, icon, label }: { value: string; icon: React.ReactNode; label: string }) {
+  return (
+    <TabsTrigger
+      value={value}
+      className="data-[state=active]:bg-[color:var(--admin-dourado)] data-[state=active]:text-[color:var(--admin-carvao-deep)] text-xs font-medium px-3 py-2 flex items-center gap-1.5"
+    >
+      {icon} {label}
+    </TabsTrigger>
+  );
+}
+
+function EmptyAba({ mensagem }: { mensagem: string }) {
+  return (
+    <div className="admin-card p-8 text-center text-sm text-[color:var(--admin-cinza-3)]">
+      {mensagem}
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------- */
+/* CLIENTE                                                              */
+/* -------------------------------------------------------------------- */
+
+function ClienteTab({ form, setForm }: { form: Partial<LeadRow>; setForm: (f: Partial<LeadRow>) => void }) {
+  return (
+    <div className="grid gap-6 lg:grid-cols-2">
+      {/* Dados */}
+      <AdminSection titulo="Dados">
+        <AdminField label="Nome">
+          <input className="admin-input" value={form.nome ?? ""} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
+        </AdminField>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <AdminField label="Telefone / WhatsApp">
+            <input className="admin-input" value={form.telefone ?? ""} onChange={(e) => setForm({ ...form, telefone: e.target.value })} />
+          </AdminField>
+          <AdminField label="E-mail">
+            <input className="admin-input" value={form.email ?? ""} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+          </AdminField>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <AdminField label="Cidade">
+            <input className="admin-input" value={form.cidade ?? ""} onChange={(e) => setForm({ ...form, cidade: e.target.value })} />
+          </AdminField>
+          <AdminField label="Estado">
+            <input className="admin-input" value={form.estado ?? ""} onChange={(e) => setForm({ ...form, estado: e.target.value })} />
+          </AdminField>
+          <AdminField label="Idade">
+            <input type="number" className="admin-input" value={form.idade ?? ""} onChange={(e) => setForm({ ...form, idade: e.target.value ? Number(e.target.value) : null })} />
+          </AdminField>
+        </div>
+        <AdminField label="Data de nascimento">
+          <input type="date" className="admin-input" value={form.data_nascimento ?? ""} onChange={(e) => setForm({ ...form, data_nascimento: e.target.value || null })} />
+        </AdminField>
+      </AdminSection>
+
+      {/* Interesse */}
+      <AdminSection titulo="Interesse">
+        <AdminField label="Expedição">
+          <input className="admin-input" value={form.expedicao_interesse ?? ""} onChange={(e) => setForm({ ...form, expedicao_interesse: e.target.value })} />
+        </AdminField>
+        <div className="grid grid-cols-2 gap-3">
+          <AdminField label="Data">
+            <input type="date" className="admin-input" value={form.data_interesse ?? ""} onChange={(e) => setForm({ ...form, data_interesse: e.target.value || null })} />
+          </AdminField>
+          <AdminField label="Participantes">
+            <input type="number" className="admin-input" value={form.quantidade_pessoas ?? 1} onChange={(e) => setForm({ ...form, quantidade_pessoas: Number(e.target.value) })} />
+          </AdminField>
+        </div>
+        <AdminField label="Forma de pagamento (preferência)">
+          <input className="admin-input" placeholder="Pix, cartão, boleto…" value={(form as any).forma_pagamento_preferida ?? ""} onChange={(e) => setForm({ ...form, observacoes: form.observacoes ?? "" })} disabled />
+        </AdminField>
+      </AdminSection>
+
+      {/* Objetivo (texto original do cliente — sem reescrita) */}
+      <AdminSection titulo="Objetivo" descricao="Texto original do cliente.">
+        <textarea
+          className="admin-input min-h-[120px]"
+          value={form.motivacao_viagem ?? ""}
+          onChange={(e) => setForm({ ...form, motivacao_viagem: e.target.value })}
+        />
+      </AdminSection>
+
+      {/* Restrições */}
+      <AdminSection titulo="Restrições" descricao="Texto original do cliente.">
+        <textarea
+          className="admin-input min-h-[120px]"
+          value={form.observacoes_importantes ?? ""}
+          onChange={(e) => setForm({ ...form, observacoes_importantes: e.target.value })}
+        />
+      </AdminSection>
+
+      {/* Observações internas */}
+      <AdminSection titulo="Observações" descricao="Anotações internas da equipe.">
+        <textarea
+          className="admin-input min-h-[120px]"
+          value={form.observacoes ?? ""}
+          onChange={(e) => setForm({ ...form, observacoes: e.target.value })}
+        />
+      </AdminSection>
+
+      {/* Etapa & motivo de perda (operacional) */}
+      <AdminSection titulo="Estado" descricao="Para mover sem usar o Kanban.">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <AdminField label="Etapa">
+            <select
+              className="admin-input"
+              value={form.etapa_atendimento ?? "novo"}
+              onChange={(e) => setForm({ ...form, etapa_atendimento: e.target.value as LeadEtapaId })}
+            >
+              {LEAD_ETAPAS.slice(0, 7).map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+            </select>
+          </AdminField>
+          <AdminField label="Motivo da perda (se aplicável)">
+            <select
+              className="admin-input"
+              value={form.motivo_perda ?? ""}
+              onChange={(e) => setForm({ ...form, motivo_perda: (e.target.value || null) as LeadMotivoPerdaId | null })}
+            >
+              <option value="">—</option>
+              {LEAD_MOTIVOS_PERDA.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
+            </select>
+          </AdminField>
+        </div>
+        <AdminField label="Próxima ação (manual)">
+          <input
+            className="admin-input"
+            placeholder="Ex: Ligar amanhã às 14h…"
+            value={form.proxima_acao ?? ""}
+            onChange={(e) => setForm({ ...form, proxima_acao: e.target.value })}
+          />
+        </AdminField>
+      </AdminSection>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------- */
+/* CONVERSAS — timeline única                                           */
+/* -------------------------------------------------------------------- */
+
+function ConversasTab({ leadId }: { leadId: string }) {
+  const qc = useQueryClient();
+  const { data: conversas = [] } = useQuery({
+    queryKey: ["admin", "lead-conv", leadId],
+    queryFn: () => listLeadConversas(leadId),
+  });
+  const [nota, setNota] = useState("");
+  const [tipoNota, setTipoNota] = useState<LeadConversaTipo>("observacao_interna");
+
+  const mut = useMutation({
+    mutationFn: () => addLeadConversa({ leadId, tipo: tipoNota, conteudo: nota.trim() }),
+    onSuccess: () => {
+      setNota("");
+      qc.invalidateQueries({ queryKey: ["admin", "lead-conv", leadId] });
+      toast.success("Registrado");
+    },
+    onError: (e) => toast.error((e as Error).message),
+  });
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+      <AdminSection titulo="Linha do tempo" descricao="WhatsApp, e-mail, ligações, mensagens internas — tudo em ordem cronológica.">
+        <ol className="space-y-3">
+          {conversas.map((c) => (
+            <li key={c.id} className="relative pl-5">
+              <span className="absolute left-0 top-1.5 h-2 w-2 rounded-full bg-[color:var(--admin-dourado)]" />
+              <div className="flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">
+                <span>{new Date(c.created_at).toLocaleString("pt-BR")}</span>
+                <StatusBadge status={c.tipo_evento} />
+                {c.canal ? <span className="text-[10px]">via {c.canal}</span> : null}
+              </div>
+              <div className="mt-1 text-sm text-[color:var(--admin-cinza-1)] whitespace-pre-wrap break-words">
+                {c.conteudo ?? "—"}
+              </div>
+            </li>
+          ))}
+          {conversas.length === 0 ? (
+            <p className="text-sm text-[color:var(--admin-cinza-3)]">Nada registrado ainda.</p>
+          ) : null}
+        </ol>
+      </AdminSection>
+
+      <AdminSection titulo="Registrar" descricao="Toda anotação fica salva no histórico.">
+        <AdminField label="Tipo">
+          <select className="admin-input" value={tipoNota} onChange={(e) => setTipoNota(e.target.value as LeadConversaTipo)}>
+            {CONVERSA_TIPOS.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
+          </select>
+        </AdminField>
+        <textarea className="admin-input min-h-[100px]" value={nota} onChange={(e) => setNota(e.target.value)} placeholder="Liguei, mandei mensagem, recebi resposta…" />
+        <button className="admin-btn-primary w-full" disabled={!nota.trim() || mut.isPending} onClick={() => mut.mutate()}>
+          <Send className="h-4 w-4" /> Registrar
+        </button>
+      </AdminSection>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------- */
+/* IA — Fatos / Inferências / Resumo / Histórico                        */
+/* -------------------------------------------------------------------- */
+
+interface MemoriaItem {
+  id: string;
+  tipo: string;
+  categoria: string | null;
+  chave: string | null;
+  valor: string;
+  origem: string;
+  confianca: number | null;
+  created_at: string;
+}
+
+function IATab({ leadId, resumoIA }: { leadId: string; resumoIA: string | null }) {
+  const qc = useQueryClient();
+  const { data: memoria } = useQuery({ queryKey: ["admin", "lead-mem", leadId], queryFn: () => getLeadMemoria(leadId) });
+  const { data: itens = [] } = useQuery({
+    queryKey: ["admin", "lead-mem-itens", leadId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("lead_memoria_itens")
+        .select("*")
+        .eq("lead_id", leadId)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as MemoriaItem[];
+    },
+  });
+
+  const fatos = itens.filter((i) => i.tipo === "fato");
+  const inferencias = itens.filter((i) => i.tipo === "inferencia");
+
+  const addMut = useMutation({
+    mutationFn: async (input: { tipo: "fato" | "inferencia"; valor: string; categoria?: string }) => {
+      const { error } = await supabase.from("lead_memoria_itens").insert({
+        lead_id: leadId,
+        tipo: input.tipo,
+        valor: input.valor,
+        categoria: input.categoria ?? null,
+        origem: "manual",
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin", "lead-mem-itens", leadId] }),
+  });
+
+  const delMut = useMutation({
+    mutationFn: async (itemId: string) => {
+      const { error } = await supabase.from("lead_memoria_itens").delete().eq("id", itemId);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin", "lead-mem-itens", leadId] }),
+  });
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-2">
+      <MemoriaLista
+        titulo="Fatos"
+        descricao="Informações confirmadas pelo cliente — nunca misturar com suposições."
+        cor="emerald"
+        itens={fatos}
+        onAdd={(v) => addMut.mutate({ tipo: "fato", valor: v })}
+        onDelete={(id) => delMut.mutate(id)}
+      />
+      <MemoriaLista
+        titulo="Inferências"
+        descricao="Suposições feitas pela IA ou pela equipe — tratar como hipótese."
+        cor="violet"
+        itens={inferencias}
+        onAdd={(v) => addMut.mutate({ tipo: "inferencia", valor: v })}
+        onDelete={(id) => delMut.mutate(id)}
+      />
+
+      <AdminSection titulo="Resumo" descricao="Visão geral do cliente para a IA.">
+        <ResumoMemoriaForm leadId={leadId} memoria={memoria ?? null} />
+      </AdminSection>
+
+      <AdminSection titulo="Histórico" descricao="Resumo automático mais recente.">
+        {resumoIA ? (
+          <p className="text-sm text-[color:var(--admin-cinza-1)] whitespace-pre-wrap leading-relaxed">{resumoIA}</p>
+        ) : (
+          <p className="text-sm text-[color:var(--admin-cinza-3)]">Sem resumo gerado ainda.</p>
+        )}
+      </AdminSection>
+    </div>
+  );
+}
+
+function MemoriaLista({
+  titulo, descricao, cor, itens, onAdd, onDelete,
+}: {
+  titulo: string;
+  descricao: string;
+  cor: "emerald" | "violet";
+  itens: MemoriaItem[];
+  onAdd: (valor: string) => void;
+  onDelete: (id: string) => void;
+}) {
+  const [valor, setValor] = useState("");
+  const tone = cor === "emerald"
+    ? "border-emerald-400/30 bg-emerald-400/5"
+    : "border-violet-400/30 bg-violet-400/5";
+  return (
+    <section className={`admin-card border ${tone}`}>
+      <header className="mb-3">
+        <h3 className="font-display text-base text-[color:var(--admin-cinza-1)]">{titulo}</h3>
+        <p className="text-[11px] text-[color:var(--admin-cinza-3)]">{descricao}</p>
+      </header>
+      <ul className="space-y-2 mb-3">
+        {itens.map((i) => (
+          <li key={i.id} className="flex items-start justify-between gap-2 rounded-md border border-[color:var(--admin-borda)]/50 bg-[color:var(--admin-carvao-deep)]/40 p-2 text-sm">
+            <div className="min-w-0">
+              {i.categoria ? <div className="text-[10px] uppercase tracking-wider text-[color:var(--admin-cinza-3)]">{i.categoria}</div> : null}
+              <div className="break-words text-[color:var(--admin-cinza-1)]">{i.valor}</div>
+            </div>
+            <button onClick={() => onDelete(i.id)} className="text-[color:var(--admin-cinza-3)] hover:text-rose-300 shrink-0" aria-label="Remover">
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          </li>
+        ))}
+        {itens.length === 0 ? (
+          <li className="text-[12px] text-[color:var(--admin-cinza-3)] italic">Nada registrado.</li>
+        ) : null}
+      </ul>
+      <div className="flex gap-2">
+        <input
+          className="admin-input flex-1"
+          placeholder={cor === "emerald" ? "Ex: Mora em Belo Horizonte" : "Ex: Provavelmente busca aventura em casal"}
+          value={valor}
+          onChange={(e) => setValor(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter" && valor.trim()) { onAdd(valor.trim()); setValor(""); } }}
+        />
+        <button
+          className="admin-btn-ghost"
+          onClick={() => { if (valor.trim()) { onAdd(valor.trim()); setValor(""); } }}
+        >
+          <Plus className="h-4 w-4" />
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function ResumoMemoriaForm({ leadId, memoria }: { leadId: string; memoria: LeadMemoriaRow | null }) {
   const qc = useQueryClient();
   const [form, setForm] = useState<Partial<LeadMemoriaRow>>(memoria ?? {});
   useEffect(() => { if (memoria) setForm(memoria); }, [memoria]);
   const mut = useMutation({
     mutationFn: () => upsertLeadMemoria(leadId, form),
-    onSuccess: () => { toast.success("Memória atualizada"); qc.invalidateQueries({ queryKey: ["admin", "lead-mem", leadId] }); },
+    onSuccess: () => { toast.success("Resumo atualizado"); qc.invalidateQueries({ queryKey: ["admin", "lead-mem", leadId] }); },
     onError: (e) => toast.error((e as Error).message),
   });
   return (
-    <AdminSection
-      titulo="Memória do lead (para a IA)"
-      descricao="Resumo de quem é essa pessoa — alimenta o atendimento por IA no futuro. Pode ser preenchido manualmente agora."
-    >
-      <AdminField label="PERFIL"><textarea className="admin-input min-h-[60px]" value={form.perfil ?? ""} onChange={(e) => setForm({ ...form, perfil: e.target.value })} placeholder="Origem, idade, tipo de grupo..." /></AdminField>
-      <AdminField label="OBJETIVOS"><input className="admin-input" value={form.objetivos ?? ""} onChange={(e) => setForm({ ...form, objetivos: e.target.value })} placeholder="Motivação, natureza, conexão..." /></AdminField>
-      <AdminField label="INTERESSES"><input className="admin-input" value={form.interesses ?? ""} onChange={(e) => setForm({ ...form, interesses: e.target.value })} placeholder="Expedição, nível equestre, histórico..." /></AdminField>
-      <AdminField label="RESTRIÇÕES"><textarea className="admin-input min-h-[60px]" value={form.restricoes ?? ""} onChange={(e) => setForm({ ...form, restricoes: e.target.value })} placeholder="Alimentar, médica, limitações físicas..." /></AdminField>
-      <AdminField label="ORÇAMENTO"><input className="admin-input" value={form.orcamento ?? ""} onChange={(e) => setForm({ ...form, orcamento: e.target.value })} placeholder="Valor total, forma de pagamento..." /></AdminField>
-      <button className="admin-btn-ghost w-full" onClick={() => mut.mutate()} disabled={mut.isPending}>Salvar memória</button>
-    </AdminSection>
+    <div className="space-y-3">
+      <AdminField label="Perfil"><textarea className="admin-input min-h-[60px]" value={form.perfil ?? ""} onChange={(e) => setForm({ ...form, perfil: e.target.value })} /></AdminField>
+      <AdminField label="Objetivos"><input className="admin-input" value={form.objetivos ?? ""} onChange={(e) => setForm({ ...form, objetivos: e.target.value })} /></AdminField>
+      <AdminField label="Restrições"><textarea className="admin-input min-h-[60px]" value={form.restricoes ?? ""} onChange={(e) => setForm({ ...form, restricoes: e.target.value })} /></AdminField>
+      <button className="admin-btn-ghost w-full" onClick={() => mut.mutate()} disabled={mut.isPending}>Salvar resumo</button>
+    </div>
   );
 }
-
-const CONVERSA_EVENTOS = new Set(["mensagem_ia", "mensagem_humana", "ligacao", "email", "observacao_interna"]);
-
-function HistoricoAbas({ conversas }: { conversas: Array<{ id: string; created_at: string; conteudo: string | null; tipo_evento: string }> }) {
-  const [aba, setAba] = useState<"conversas" | "timeline" | "tudo">("tudo");
-  const filtradas = conversas.filter((c) => {
-    if (aba === "tudo") return true;
-    const isConversa = CONVERSA_EVENTOS.has(c.tipo_evento);
-    return aba === "conversas" ? isConversa : !isConversa;
-  });
-  const Tab = ({ id, label }: { id: typeof aba; label: string }) => (
-    <button
-      onClick={() => setAba(id)}
-      className={`px-3 py-1 text-[11px] uppercase tracking-[0.18em] rounded-md border transition ${
-        aba === id
-          ? "border-[color:var(--admin-dourado)]/40 bg-[color:var(--admin-dourado)]/10 text-[color:var(--admin-dourado)]"
-          : "border-[color:var(--admin-borda)] text-[color:var(--admin-cinza-3)] hover:text-[color:var(--admin-cinza-1)]"
-      }`}
-    >
-      {label}
-    </button>
-  );
-  return (
-    <AdminSection titulo="Histórico" descricao="Conversas com o lead e eventos da timeline (criação, mudanças, IA, transferências).">
-      <div className="flex items-center gap-2">
-        <Tab id="tudo" label="Tudo" />
-        <Tab id="conversas" label="Conversas" />
-        <Tab id="timeline" label="Timeline" />
-      </div>
-      <ol className="space-y-3 mt-2">
-        {filtradas.map((c) => (
-          <li key={c.id} className="relative pl-5">
-            <span className="absolute left-0 top-1.5 h-2 w-2 rounded-full bg-[color:var(--admin-dourado)]" />
-            <div className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)]">{new Date(c.created_at).toLocaleString("pt-BR")}</div>
-            <div className="mt-0.5 text-sm text-[color:var(--admin-cinza-1)] whitespace-pre-wrap">{c.conteudo ?? "—"}</div>
-            <div className="mt-1"><StatusBadge status={c.tipo_evento} /></div>
-          </li>
-        ))}
-        {filtradas.length === 0 ? <p className="text-sm text-[color:var(--admin-cinza-3)]">Nada por aqui ainda.</p> : null}
-      </ol>
-    </AdminSection>
-  );
-}
-
-function TemperaturaBadge({ value }: { value: LeadTemperaturaId }) {
-  const t = LEAD_TEMPERATURAS.find((x) => x.id === value) ?? LEAD_TEMPERATURAS[0];
-  const tone: Record<LeadTemperaturaId, string> = {
-    frio: "border-sky-400/30 bg-sky-400/10 text-sky-200",
-    morno: "border-amber-300/30 bg-amber-300/10 text-amber-100",
-    quente: "border-orange-400/40 bg-orange-400/10 text-orange-200",
-    urgente: "border-rose-500/40 bg-rose-500/10 text-rose-200",
-  };
-  return (
-    <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] uppercase tracking-[0.18em] ${tone[value]}`}>
-      <span>{t.emoji}</span> {t.label}
-    </span>
-  );
-}
-
