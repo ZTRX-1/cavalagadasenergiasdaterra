@@ -169,29 +169,38 @@ function ExpedicoesPage() {
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
                         {(() => {
-                          const capa = (e as ExpedicaoRow & { _capa?: string | null })._capa || getExpedicaoImage(e.slug);
-                          return capa ? (
-                            <div className="h-10 w-16 shrink-0 overflow-hidden rounded-md ring-1 ring-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo)]">
+                          const capaRow = (e as ExpedicaoRow & { _capa?: string | null })._capa;
+                          const capa = capaRow || getExpedicaoImage(e.slug);
+                          const fallback = getExpedicaoImage(e.slug);
+                          return (
+                            <div className="relative h-10 w-16 shrink-0 overflow-hidden rounded-md ring-1 ring-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo)]">
                               <img
                                 src={capa}
                                 alt=""
+                                loading="lazy"
                                 className="h-full w-full object-cover"
                                 onError={(ev) => {
                                   const img = ev.currentTarget;
-                                  img.style.display = "none";
-                                  const placeholder = img.parentElement?.nextElementSibling;
-                                  if (placeholder) placeholder.classList.remove("hidden");
+                                  if (img.dataset.fallback !== "1" && fallback && img.src !== fallback) {
+                                    img.dataset.fallback = "1";
+                                    img.src = fallback;
+                                  } else {
+                                    img.style.display = "none";
+                                    const ph = img.parentElement?.querySelector("[data-img-placeholder]");
+                                    if (ph) ph.classList.remove("hidden");
+                                  }
                                 }}
                               />
+                              <div
+                                data-img-placeholder
+                                className="hidden absolute inset-0 grid place-items-center text-[color:var(--admin-cinza-3)]"
+                                title="Sem capa — envie uma imagem na aba Mídia"
+                              >
+                                <ImageOff className="h-4 w-4" />
+                              </div>
                             </div>
-                          ) : null;
+                          );
                         })()}
-                        <div
-                          className={`${(e as ExpedicaoRow & { _capa?: string | null })._capa || getExpedicaoImage(e.slug) ? "hidden " : ""}h-10 w-16 rounded-md ring-1 ring-[color:var(--admin-borda)] bg-[color:var(--admin-petroleo)] grid place-items-center text-[color:var(--admin-cinza-3)]`}
-                          title="Sem capa — envie uma imagem na aba Mídia"
-                        >
-                          <ImageOff className="h-4 w-4" />
-                        </div>
                         <div className="min-w-0">
                           <div className="font-medium text-[color:var(--admin-cinza-1)] truncate">{e.nome}</div>
                           <div className="text-[11px] text-[color:var(--admin-cinza-3)] truncate">{e.regiao ?? e.cidade ?? "—"}</div>
