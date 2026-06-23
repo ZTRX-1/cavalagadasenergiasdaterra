@@ -96,20 +96,26 @@ export function CarrosselNarrativo({ cenas, alt = "" }: Props) {
                 >
                   <div className="relative aspect-[4/5] bg-carvao md:aspect-auto md:h-[58vh] md:min-h-[460px] md:max-h-[640px] lg:h-[62vh]">
 
-                    {/* fundo desfocado para preencher elegantemente */}
-                    <img
-                      src={cena.src}
-                      alt=""
-                      aria-hidden
-                      className="absolute inset-0 h-full w-full object-cover scale-110 blur-2xl opacity-40"
-                      draggable={false}
-                    />
+                    {/* fundo desfocado — apenas no slide ativo (compositor pesado) */}
+                    {isActive && (
+                      <img
+                        src={cena.src}
+                        alt=""
+                        aria-hidden
+                        loading="lazy"
+                        decoding="async"
+                        className="absolute inset-0 h-full w-full object-cover scale-110 blur-2xl opacity-40"
+                        draggable={false}
+                      />
+                    )}
                     <img
                       src={cena.src}
                       alt={`${alt} — ${cena.titulo}`}
                       loading={i === 0 ? "eager" : "lazy"}
                       decoding={i === 0 ? "sync" : "async"}
                       fetchPriority={i === 0 ? "high" : undefined}
+                      width={1600}
+                      height={2000}
                       className="absolute inset-0 h-full w-full object-contain"
                       draggable={false}
                     />

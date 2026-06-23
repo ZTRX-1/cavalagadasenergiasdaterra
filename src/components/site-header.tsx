@@ -25,8 +25,15 @@ export function SiteHeader() {
 
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
+    let last = window.scrollY > 8;
+    setScrolled(last);
+    const onScroll = () => {
+      const now = window.scrollY > 8;
+      if (now !== last) {
+        last = now;
+        setScrolled(now);
+      }
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
