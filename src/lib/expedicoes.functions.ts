@@ -15,6 +15,7 @@ import { getCanonicalExpedicaoSlug } from "@/lib/expedicao-slugs";
 export type DataExpedicao = DataExpStatic;
 export interface Expedicao extends ExpStatic {
   ativo?: boolean;
+  capa_url?: string | null;
 }
 
 export interface ExpedicaoAssetLite {
@@ -41,7 +42,8 @@ function normalizeExpedicao(row: Record<string, unknown>): Expedicao {
     marca: (row.marca as string) ?? "cavalgadas",
     pais: (row.pais as string) ?? "brasil",
     regiao: ((row.regiao as string) || (row.cidade as string) || (row.estado as string)) ?? null,
-    imagem_url: (row.imagem_url as string) ?? (row.capa_url as string) ?? null,
+    imagem_url: (row.imagem_url as string) ?? null,
+    capa_url: (row.capa_url as string) ?? null,
     galeria: Array.isArray(row.galeria) ? (row.galeria as string[]) : [],
     inclui: Array.isArray(row.inclui) ? (row.inclui as string[]) : [],
     requisitos: Array.isArray(row.requisitos) ? (row.requisitos as string[]) : [],
