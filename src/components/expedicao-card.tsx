@@ -67,7 +67,11 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
           <div className="mt-4 flex items-end justify-between gap-3">
             <div className="min-w-0">
               <div className="truncate text-[0.58rem] uppercase tracking-[0.2em] text-areia/65">
-                {expedicao.mensagem_comercial_publica || t("expedicoes.cardAPartirDe", "Consulte disponibilidade")}
+                {expedicao.mensagem_comercial_publica
+                  ? expedicao.mensagem_comercial_publica
+                  : expedicao.preco > 0
+                    ? `${t("expedicoes.cardAPartirDe", "A partir de")} ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: expedicao.moeda || "BRL", maximumFractionDigits: 0 }).format(expedicao.preco)}`
+                    : t("expedicoes.consulteValores", "Consulte valores")}
               </div>
             </div>
             <span className="inline-flex h-9 w-9 sm:h-10 sm:w-10 flex-none items-center justify-center rounded-full border border-areia/40 text-areia transition-all group-hover:bg-cobre group-hover:border-cobre">
