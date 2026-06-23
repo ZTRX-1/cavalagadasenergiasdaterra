@@ -411,12 +411,14 @@ function PerfilPage() {
       </div>
 
       {cropData && (
-        <ImageCropper 
-          imageSrc={cropData.src}
-          aspect={cropData.type === 'avatar' ? 1 : 16 / 5}
-          onCropComplete={handleCropComplete}
-          onCancel={() => setCropData(null)}
-        />
+        <Suspense fallback={null}>
+          <ImageCropper
+            imageSrc={cropData.src}
+            aspect={cropData.type === 'avatar' ? 1 : 16 / 5}
+            onCropComplete={handleCropComplete}
+            onCancel={() => setCropData(null)}
+          />
+        </Suspense>
       )}
     </div>
   );
