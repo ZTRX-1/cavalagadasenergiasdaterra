@@ -171,8 +171,9 @@ function DashboardPage() {
   const { canEdit } = useCan("dashboard");
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-dashboard", range.from, range.to],
+    queryKey: ["admin-dashboard", preset, preset === "custom" ? `${custom.from}:${custom.to}` : null],
     queryFn: () => fetchDashboard(range),
+    staleTime: 60_000,
   });
 
   return (
