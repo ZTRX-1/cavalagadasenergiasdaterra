@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
-import { Plus, Sparkles, Trash2, Filter, X, LayoutGrid, List, Star, ArrowRight, UserX } from "lucide-react";
+import { Plus, Sparkles, Trash2, Filter, X, LayoutGrid, List, UserX } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminEmpty } from "@/components/admin/admin-empty";
@@ -14,7 +14,7 @@ import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-b
 import { ConverterLeadModal } from "@/components/admin/converter-lead-modal";
 import { LeadsKanban } from "@/components/admin/leads-kanban";
 import { useCan } from "@/hooks/use-permissions";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   listLeads,
   createLead,
@@ -24,6 +24,12 @@ import {
   type LeadRow,
   type LeadEtapaId,
 } from "@/lib/admin/api";
+import {
+  JORNADA_ESTAGIOS,
+  JORNADA_REATIVACAO,
+  JORNADA_TONE_CLASS,
+  jornadaFromLead,
+} from "@/lib/admin/jornada";
 
 export const Route = createFileRoute("/admin/_authenticated/leads/")({
   component: LeadsPage,
@@ -34,30 +40,21 @@ function LeadsPage() {
   const { data: leads = [], isLoading } = useQuery({ queryKey: ["admin", "leads"], queryFn: listLeads });
   const [novo, setNovo] = useState(false);
   const [del, setDel] = useState<LeadRow | null>(null);
-  const [converter, setConverter] = useState<LeadRow | null>(null);
   const [view, setView] = useState<"kanban" | "lista">("kanban");
   const [tab, setTab] = useState<string>("ativos");
-  const [fOrigem, setFOrigem] = useState<string>("todas");
   const [fExpedicao, setFExpedicao] = useState<string>("todas");
   const [fBusca, setFBusca] = useState<string>("");
-  const [fNivel, setFNivel] = useState<string>("todos");
   const { canEdit } = useCan("leads");
   const refresh = () => qc.invalidateQueries({ queryKey: ["admin", "leads"] });
 
   const moveMut = useMutation({
     mutationFn: ({ id, etapa }: { id: string; etapa: LeadEtapaId }) =>
-      updateLead(id, { etapa_atendimento: etapa, status: etapa }),
+      updateLead(id, { etapa_atendimento: etapa }),
     onSuccess: () => { toast.success("Etapa atualizada"); refresh(); },
     onError: (e) => toast.error((e as Error).message),
   });
 
   function handleMoveLead(id: string, etapa: LeadEtapaId) {
-    const lead = leads.find((l) => l.id === id);
-    if (!lead) return toast.error("Lead não encontrado.");
-    if (etapa === "reserva_pendente" || etapa === "participante_confirmado") {
-      setConverter(lead);
-      return;
-    }
     moveMut.mutate({ id, etapa });
   }
 
@@ -66,11 +63,6 @@ function LeadsPage() {
     onSuccess: () => { toast.success("Excluído"); setDel(null); refresh(); },
   });
 
-  const origensDisponiveis = useMemo(() => {
-    const set = new Set<string>();
-    leads.forEach((l) => l.origem && set.add(l.origem));
-    return Array.from(set);
-  }, [leads]);
   const expedicoesDisponiveis = useMemo(() => {
     const set = new Set<string>();
     leads.forEach((l) => l.expedicao_interesse && set.add(l.expedicao_interesse));
@@ -80,34 +72,40 @@ function LeadsPage() {
   const leadsFiltrados = useMemo(() => {
     const q = fBusca.trim().toLowerCase();
     return leads.filter((l) => {
-      // Filtragem por Tab (Ativos vs Abandonados)
       if (tab === "ativos" && l.status === "abandonado") return false;
       if (tab === "abandonados" && l.status !== "abandonado") return false;
-
-      if (fOrigem !== "todas" && l.origem !== fOrigem) return false;
       if (fExpedicao !== "todas" && l.expedicao_interesse !== fExpedicao) return false;
-      if (fNivel !== "todos" && String(l.nivel_interesse ?? 3) !== fNivel) return false;
       if (q) {
         const hay = `${l.nome ?? ""} ${l.email ?? ""} ${l.telefone ?? ""} ${l.protocolo ?? ""}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
     });
-  }, [leads, fOrigem, fExpedicao, fBusca, fNivel, tab]);
+  }, [leads, fExpedicao, fBusca, tab]);
 
   const countAtivos = useMemo(() => leads.filter(l => l.status !== "abandonado").length, [leads]);
   const countAbandonados = useMemo(() => leads.filter(l => l.status === "abandonado").length, [leads]);
 
-  const filtrosAtivos = fOrigem !== "todas" || fExpedicao !== "todas" || fNivel !== "todos" || fBusca.trim().length > 0;
-  const limparFiltros = () => { setFOrigem("todas"); setFExpedicao("todas"); setFNivel("todos"); setFBusca(""); };
+  // Contagens por estágio para o dashboard
+  const counts = useMemo(() => {
+    const ativosLeads = leads.filter(l => l.status !== "abandonado");
+    const map = new Map<string, number>();
+    for (const l of ativosLeads) {
+      const j = jornadaFromLead(l);
+      map.set(j, (map.get(j) ?? 0) + 1);
+    }
+    return map;
+  }, [leads]);
 
+  const filtrosAtivos = fExpedicao !== "todas" || fBusca.trim().length > 0;
+  const limparFiltros = () => { setFExpedicao("todas"); setFBusca(""); };
 
   return (
     <div>
       <AdminPageHeader
-        eyebrow="Operação"
+        eyebrow="CRM"
         title="Central de Reservas"
-        description="Toda pessoa que entra em contato vira um cliente aqui. Arraste pelos 6 estágios da jornada — do primeiro contato até a expedição concluída."
+        description="Visão única da operação. Cada cliente caminha pela jornada — do primeiro contato à expedição realizada."
         actions={
           <div className="flex items-center gap-2">
             <div className="hidden md:flex items-center rounded-lg border border-[color:var(--admin-borda)] bg-[color:var(--admin-carvao-deep)]/60 p-0.5">
@@ -129,29 +127,39 @@ function LeadsPage() {
 
       {!canEdit ? <EmDesenvolvimentoBanner /> : null}
       <AdminPageIntro>
-        <strong className="text-[color:var(--admin-cinza-1)]">Tudo gira em torno de reservas e expedições.</strong> Cada cliente caminha por uma jornada simples: <em>Novo → Atendimento → Reserva → Confirmado → Concluído</em>. Os <strong className="text-orange-300">Abandonados</strong> são contatos que iniciaram o formulário mas não concluíram.
+        Acompanhe quantos clientes estão em cada estágio. Clique em qualquer card para abrir a ficha — todas as informações estão organizadas em abas.
       </AdminPageIntro>
 
+      {/* Dashboard de contagens por estágio */}
+      <div className="mb-6 grid gap-2 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 xl:grid-cols-7">
+        {JORNADA_ESTAGIOS.map((s) => (
+          <div
+            key={s.id}
+            className={`rounded-xl border p-3 ${JORNADA_TONE_CLASS[s.tone]} bg-opacity-30`}
+          >
+            <div className="text-[10px] uppercase tracking-[0.18em] opacity-80">{s.label}</div>
+            <div className="mt-1 font-display text-2xl">{counts.get(s.id) ?? 0}</div>
+          </div>
+        ))}
+        <div className={`rounded-xl border p-3 ${JORNADA_TONE_CLASS[JORNADA_REATIVACAO.tone]} bg-opacity-30`}>
+          <div className="text-[10px] uppercase tracking-[0.18em] opacity-80">{JORNADA_REATIVACAO.label}</div>
+          <div className="mt-1 font-display text-2xl">{counts.get("reativacao") ?? 0}</div>
+        </div>
+      </div>
 
-      <Tabs defaultValue="ativos" className="mb-6" value={tab} onValueChange={setTab}>
+      <Tabs defaultValue="ativos" className="mb-4" value={tab} onValueChange={setTab}>
         <TabsList className="bg-[color:var(--admin-carvao-deep)] border border-[color:var(--admin-borda)] p-1">
-          <TabsTrigger 
-            value="ativos" 
-            className="data-[state=active]:bg-[color:var(--admin-dourado)] data-[state=active]:text-[color:var(--admin-carvao-deep)] text-xs font-medium px-4 py-2"
-          >
-            Leads Ativos ({countAtivos})
+          <TabsTrigger value="ativos" className="data-[state=active]:bg-[color:var(--admin-dourado)] data-[state=active]:text-[color:var(--admin-carvao-deep)] text-xs font-medium px-4 py-2">
+            Ativos ({countAtivos})
           </TabsTrigger>
-          <TabsTrigger 
-            value="abandonados" 
-            className="data-[state=active]:bg-orange-500 data-[state=active]:text-white text-xs font-medium px-4 py-2"
-          >
+          <TabsTrigger value="abandonados" className="data-[state=active]:bg-orange-500 data-[state=active]:text-white text-xs font-medium px-4 py-2">
             Abandonados ({countAbandonados})
           </TabsTrigger>
         </TabsList>
       </Tabs>
 
-      {/* Filtros */}
-      <div className="admin-card mb-4 p-4">
+      {/* Filtros operacionais (sem temperatura/score) */}
+      <div className="admin-card mb-4 p-3">
         <div className="flex flex-wrap items-end gap-3">
           <div className="flex flex-1 min-w-[200px] items-center gap-2">
             <Filter className="h-4 w-4 text-[color:var(--admin-cinza-3)]" strokeWidth={1.8} />
@@ -163,15 +171,6 @@ function LeadsPage() {
             />
           </div>
           <div>
-            <label className="block text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)] mb-1">Origem</label>
-            <select className="admin-input" value={fOrigem} onChange={(e) => setFOrigem(e.target.value)}>
-              <option value="todas">Todas</option>
-              {origensDisponiveis.map((o) => (
-                <option key={o} value={o}>{o.charAt(0).toUpperCase() + o.slice(1)}</option>
-              ))}
-            </select>
-          </div>
-          <div>
             <label className="block text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)] mb-1">Expedição</label>
             <select className="admin-input min-w-[180px]" value={fExpedicao} onChange={(e) => setFExpedicao(e.target.value)}>
               <option value="todas">Todas</option>
@@ -180,28 +179,12 @@ function LeadsPage() {
               ))}
             </select>
           </div>
-          <div>
-            <label className="block text-[10px] uppercase tracking-[0.18em] text-[color:var(--admin-cinza-3)] mb-1">Nível de Interesse</label>
-            <select className="admin-input" value={fNivel} onChange={(e) => setFNivel(e.target.value)}>
-              <option value="todos">Todos</option>
-              <option value="5">⭐⭐⭐⭐⭐ Altíssimo</option>
-              <option value="4">⭐⭐⭐⭐ Alto</option>
-              <option value="3">⭐⭐⭐ Médio</option>
-              <option value="2">⭐⭐ Baixo</option>
-              <option value="1">⭐ Muito baixo</option>
-            </select>
-          </div>
           {filtrosAtivos ? (
             <button className="admin-btn-ghost px-3 py-2 text-[12px]" onClick={limparFiltros}>
               <X className="h-3.5 w-3.5" /> Limpar
             </button>
           ) : null}
         </div>
-        {filtrosAtivos ? (
-          <p className="mt-3 text-[11px] text-[color:var(--admin-cinza-3)]">
-            Mostrando <strong className="text-[color:var(--admin-cinza-1)]">{leadsFiltrados.length}</strong> de {leads.length} leads
-          </p>
-        ) : null}
       </div>
 
       {isLoading ? (
@@ -225,22 +208,12 @@ function LeadsPage() {
           leads={leadsFiltrados}
           onMove={handleMoveLead}
           onDelete={(l) => setDel(l)}
-          onConverter={(l) => setConverter(l)}
         />
       ) : (
-        <LeadsLista leads={leadsFiltrados} onDelete={(l) => setDel(l)} onConverter={(l) => setConverter(l)} />
+        <LeadsLista leads={leadsFiltrados} onDelete={(l) => setDel(l)} />
       )}
 
       <NovoLeadDialog open={novo} onOpenChange={setNovo} onCreated={refresh} />
-
-      {converter ? (
-        <ConverterLeadModal
-          open={!!converter}
-          onOpenChange={(v) => !v && setConverter(null)}
-          lead={converter}
-          onConverted={refresh}
-        />
-      ) : null}
 
       <ConfirmDialog
         open={!!del}
@@ -254,19 +227,17 @@ function LeadsPage() {
   );
 }
 
-
-function LeadsLista({ leads, onDelete, onConverter }: { leads: LeadRow[]; onDelete: (l: LeadRow) => void; onConverter: (l: LeadRow) => void }) {
+function LeadsLista({ leads, onDelete }: { leads: LeadRow[]; onDelete: (l: LeadRow) => void }) {
   return (
     <div className="admin-card admin-table-wrap p-0">
-      <table className="w-full text-sm min-w-[820px]">
+      <table className="w-full text-sm min-w-[760px]">
         <thead className="border-b border-[color:var(--admin-borda)] text-left text-[11px] uppercase tracking-[0.16em] text-[color:var(--admin-cinza-3)]">
           <tr>
-            <th className="px-4 py-3">Lead</th>
+            <th className="px-4 py-3">Cliente</th>
             <th className="px-4 py-3">Etapa</th>
-            <th className="px-4 py-3">Nível</th>
-            <th className="px-4 py-3">Score</th>
             <th className="px-4 py-3">Expedição</th>
-            <th className="px-4 py-3">Próxima ação</th>
+            <th className="px-4 py-3">Data</th>
+            <th className="px-4 py-3">Pessoas</th>
             <th className="px-4 py-3 text-right"></th>
           </tr>
         </thead>
@@ -278,30 +249,13 @@ function LeadsLista({ leads, onDelete, onConverter }: { leads: LeadRow[]; onDele
                 <div className="text-[11px] text-[color:var(--admin-cinza-3)]">{l.protocolo ?? "—"}</div>
               </td>
               <td className="px-4 py-3"><StatusBadge status={l.status === 'abandonado' ? 'abandonado' : (l.etapa_atendimento ?? "novo")} /></td>
-              <td className="px-4 py-3">
-                <div className="flex items-center gap-0.5">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className={`h-3 w-3 ${i < (l.nivel_interesse ?? 3) ? "fill-[color:var(--admin-dourado)] text-[color:var(--admin-dourado)]" : "text-[color:var(--admin-borda)]"}`} strokeWidth={1.5} />
-                  ))}
-                </div>
-              </td>
-              <td className="px-4 py-3 text-xs">{l.lead_score ?? 0}</td>
               <td className="px-4 py-3 text-xs text-[color:var(--admin-cinza-2)]">{l.expedicao_interesse ?? "—"}</td>
-              <td className="px-4 py-3 text-xs text-amber-200/80">{l.proxima_acao ?? "—"}</td>
+              <td className="px-4 py-3 text-xs">{l.data_interesse ? new Date(l.data_interesse).toLocaleDateString("pt-BR") : "—"}</td>
+              <td className="px-4 py-3 text-xs">{l.quantidade_pessoas ?? "—"}</td>
               <td className="px-4 py-3 text-right">
-                <div className="inline-flex items-center gap-2">
-                  {l.etapa_atendimento === "reserva_pendente" ? (
-                    <button
-                      onClick={() => onConverter(l)}
-                      className="text-[11px] text-[color:var(--admin-dourado)] hover:underline inline-flex items-center gap-1"
-                    >
-                      <ArrowRight className="h-3 w-3" /> Converter
-                    </button>
-                  ) : null}
-                  <button onClick={() => onDelete(l)} className="text-[color:var(--admin-cinza-3)] hover:text-rose-300">
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
+                <button onClick={() => onDelete(l)} className="text-[color:var(--admin-cinza-3)] hover:text-rose-300">
+                  <Trash2 className="h-4 w-4" />
+                </button>
               </td>
             </tr>
           ))}
@@ -322,37 +276,27 @@ function NovoLeadDialog({ open, onOpenChange, onCreated }: { open: boolean; onOp
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="border border-[color:var(--admin-borda-strong)] bg-[color:var(--admin-carvao)] text-[color:var(--admin-cinza-1)] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-display text-2xl">Novo lead</DialogTitle>
+          <DialogTitle className="font-display text-2xl">Novo cliente</DialogTitle>
         </DialogHeader>
         <div className="space-y-3">
           <AdminField label="Nome completo"><input className="admin-input" value={form.nome ?? ""} onChange={(e) => setForm({ ...form, nome: e.target.value })} /></AdminField>
           <div className="grid grid-cols-2 gap-3">
             <AdminField label="E-mail"><input className="admin-input" value={form.email ?? ""} onChange={(e) => setForm({ ...form, email: e.target.value })} /></AdminField>
-            <AdminField label="Telefone"><input className="admin-input" value={form.telefone ?? ""} onChange={(e) => setForm({ ...form, telefone: e.target.value })} /></AdminField>
+            <AdminField label="Telefone / WhatsApp"><input className="admin-input" value={form.telefone ?? ""} onChange={(e) => setForm({ ...form, telefone: e.target.value })} /></AdminField>
           </div>
           <AdminField label="Expedição de interesse"><input className="admin-input" value={form.expedicao_interesse ?? ""} onChange={(e) => setForm({ ...form, expedicao_interesse: e.target.value })} /></AdminField>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <AdminField label="Pessoas"><input type="number" className="admin-input" value={form.quantidade_pessoas ?? 1} onChange={(e) => setForm({ ...form, quantidade_pessoas: Number(e.target.value) })} /></AdminField>
-            <AdminField label="Valor estimado (R$)"><input type="number" className="admin-input" value={form.valor_estimado ?? ""} onChange={(e) => setForm({ ...form, valor_estimado: e.target.value ? Number(e.target.value) : null })} /></AdminField>
-            <AdminField label="Nível de Interesse">
-              <select className="admin-input" value={form.nivel_interesse ?? 3} onChange={(e) => setForm({ ...form, nivel_interesse: Number(e.target.value) })}>
-                <option value={5}>⭐⭐⭐⭐⭐</option>
-                <option value={4}>⭐⭐⭐⭐</option>
-                <option value={3}>⭐⭐⭐</option>
-                <option value={2}>⭐⭐</option>
-                <option value={1}>⭐</option>
+            <AdminField label="Etapa inicial">
+              <select className="admin-input" value={form.etapa_atendimento ?? "novo"} onChange={(e) => setForm({ ...form, etapa_atendimento: e.target.value as LeadEtapaId })}>
+                {LEAD_ETAPAS.slice(0, 7).map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
               </select>
             </AdminField>
           </div>
-          <AdminField label="Etapa Inicial">
-            <select className="admin-input" value={form.etapa_atendimento ?? "novo"} onChange={(e) => setForm({ ...form, etapa_atendimento: e.target.value as LeadEtapaId })}>
-              {LEAD_ETAPAS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
-            </select>
-          </AdminField>
-          <AdminField label="Observações da equipe"><textarea className="admin-input min-h-[60px]" value={form.observacoes ?? ""} onChange={(e) => setForm({ ...form, observacoes: e.target.value })} /></AdminField>
+          <AdminField label="Observações"><textarea className="admin-input min-h-[60px]" value={form.observacoes ?? ""} onChange={(e) => setForm({ ...form, observacoes: e.target.value })} /></AdminField>
           <div className="flex justify-end gap-2 pt-2">
             <button className="admin-btn-ghost" onClick={() => onOpenChange(false)}>Cancelar</button>
-            <button className="admin-btn-primary" onClick={() => mut.mutate()} disabled={mut.isPending || !form.nome}>Criar lead</button>
+            <button className="admin-btn-primary" onClick={() => mut.mutate()} disabled={mut.isPending || !form.nome}>Criar</button>
           </div>
         </div>
       </DialogContent>

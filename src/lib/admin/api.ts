@@ -388,17 +388,24 @@ export async function deleteData(id: string): Promise<void> {
 
 // ---------- LEADS (CRM) ----------
 
-/** Etapas do Atendimento — coluna do Kanban e progresso do lead. */
+/** Etapas do Atendimento — coluna do Kanban e progresso do lead.
+ *  Inclui valores novos (Fase B) e legados (compatibilidade com leads antigos). */
 export const LEAD_ETAPAS = [
+  // Novos (Fase B — jornada operacional simplificada)
   { id: "novo", label: "Novo", descricao: "Acabou de chegar" },
+  { id: "em_atendimento", label: "Em Atendimento", descricao: "Conversando com o cliente" },
+  { id: "proposta_enviada", label: "Proposta Enviada", descricao: "Proposta de viagem enviada" },
+  { id: "reserva_confirmada", label: "Reserva Confirmada", descricao: "Vaga garantida" },
+  { id: "expedicao_realizada", label: "Expedição Realizada", descricao: "Pós-venda em andamento" },
+  { id: "perdido", label: "Perdido", descricao: "Não avançou no processo" },
+  { id: "reativacao", label: "Reativação", descricao: "Cliente a recontatar" },
+  // Legados (preservados para leads antigos)
   { id: "triagem_ia", label: "Triagem / IA", descricao: "IA ou equipe inicializando contato" },
   { id: "qualificado", label: "Qualificado", descricao: "Tem perfil para a viagem" },
-  { id: "proposta_enviada", label: "Proposta Enviada", descricao: "Proposta de viagem enviada" },
   { id: "reserva_pendente", label: "Reserva Pendente", descricao: "Aguardando sinal ou reserva" },
   { id: "participante_confirmado", label: "Participante Confirmado", descricao: "Reserva e pagamentos validados" },
   { id: "convertido", label: "Convertido", descricao: "Lead transformado em reserva" },
   { id: "concluido", label: "Pós-venda / Concluído", descricao: "Expedição realizada com sucesso" },
-  { id: "perdido", label: "Perdido", descricao: "Não avançou no processo" },
 ] as const;
 export type LeadEtapaId = (typeof LEAD_ETAPAS)[number]["id"];
 
