@@ -17,7 +17,7 @@ import {
   listExpedicoes,
   type ParticipanteRow,
 } from "@/lib/admin/api";
-import { exportarFichaGuiaPDF } from "@/lib/admin/participantes-pdf";
+// PDF é carregado sob demanda (jspdf/autotable ~420KB) — ver handler abaixo.
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
 import { useCan } from "@/hooks/use-permissions";
@@ -157,6 +157,7 @@ function ParticipantesPage() {
       return;
     }
     try {
+      const { exportarFichaGuiaPDF } = await import("@/lib/admin/participantes-pdf");
       await exportarFichaGuiaPDF({ expedicaoNome: exp.nome, participantes: ativos });
       toast.success("PDF gerado");
     } catch (e) {

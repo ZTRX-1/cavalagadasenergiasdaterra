@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { lazy, Suspense, useMemo, useState } from "react";
+
 import {
   Sparkles,
   CalendarCheck,
@@ -21,7 +22,10 @@ import { formatDateRange } from "@/lib/format";
 import { AdminPageIntro } from "@/components/admin/admin-page-intro";
 import { EmDesenvolvimentoBanner } from "@/components/admin/em-desenvolvimento-banner";
 import { useCan } from "@/hooks/use-permissions";
-import { DashboardAnalytics } from "@/components/admin/dashboard-analytics";
+const DashboardAnalytics = lazy(() =>
+  import("@/components/admin/dashboard-analytics").then((m) => ({ default: m.DashboardAnalytics }))
+);
+
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { CentralOperacional } from "@/components/admin/central-operacional";
@@ -316,7 +320,10 @@ function DashboardPage() {
             </div>
           </div>
 
-          <DashboardAnalytics range={range} />
+          <Suspense fallback={<div className="h-64 animate-pulse rounded-lg bg-muted/30" />}>
+            <DashboardAnalytics range={range} />
+          </Suspense>
+
         </div>
       </div>
     </div>
