@@ -117,12 +117,16 @@ function RootComponent() {
         <Outlet />
       </main>
       {!isAdmin && <SiteFooter />}
-      {!isAdmin && <CookieConsent />}
-      {!isAdmin && <VLibras />}
-      
-      {!isAdmin && <AccessibilityPanel />}
-      {!isAdmin && <AnalyticsTracker />}
+      {!isAdmin && (
+        <Suspense fallback={null}>
+          <CookieConsent />
+          <VLibras />
+          <AccessibilityPanel />
+          <AnalyticsTracker />
+        </Suspense>
+      )}
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );
 }
+
