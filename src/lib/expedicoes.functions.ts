@@ -138,6 +138,7 @@ export async function listProximasDatas(): Promise<DataExpedicao[]> {
     const { data, error } = await supabase
       .from("datas")
       .select("*, expedicoes:expedicao_id(nome, slug, ativo, status, moeda)")
+      .neq("status", "cancelada")
       .order("data_inicio", { ascending: true });
     if (error) throw error;
     if (!data || data.length === 0) return listProximasDatasStatic();
