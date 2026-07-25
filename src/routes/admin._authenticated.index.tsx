@@ -320,7 +320,10 @@ function DashboardPage() {
             </div>
           </div>
 
-          <DashboardAnalytics range={range} />
+          <Suspense fallback={<div className="h-64 animate-pulse rounded-lg bg-muted/30" />}>
+            <DashboardAnalytics range={range} />
+          </Suspense>
+
         </div>
       </div>
     </div>
