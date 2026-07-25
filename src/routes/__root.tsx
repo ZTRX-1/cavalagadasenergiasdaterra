@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -9,14 +10,25 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { PageLoader } from "@/components/page-loader";
 import { ScrollToTop } from "@/components/scroll-to-top";
-import { CookieConsent } from "@/components/cookie-consent";
-import { VLibras } from "@/components/vlibras";
-import { AccessibilityPanel } from "@/components/accessibility-panel";
-import { AnalyticsTracker } from "@/components/analytics-tracker";
 
 import heroOg from "@/assets/founders/ligia-rio.jpg";
 
 import { Toaster } from "@/components/ui/sonner";
+
+// Non-critical: carregado apenas após a rota principal ficar interativa.
+const CookieConsent = lazy(() =>
+  import("@/components/cookie-consent").then((m) => ({ default: m.CookieConsent }))
+);
+const VLibras = lazy(() =>
+  import("@/components/vlibras").then((m) => ({ default: m.VLibras }))
+);
+const AccessibilityPanel = lazy(() =>
+  import("@/components/accessibility-panel").then((m) => ({ default: m.AccessibilityPanel }))
+);
+const AnalyticsTracker = lazy(() =>
+  import("@/components/analytics-tracker").then((m) => ({ default: m.AnalyticsTracker }))
+);
+
 
 function NotFoundComponent() {
   return (
