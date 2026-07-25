@@ -157,6 +157,7 @@ function ParticipantesPage() {
       return;
     }
     try {
+      const { exportarFichaGuiaPDF } = await import("@/lib/admin/participantes-pdf");
       await exportarFichaGuiaPDF({ expedicaoNome: exp.nome, participantes: ativos });
       toast.success("PDF gerado");
     } catch (e) {
