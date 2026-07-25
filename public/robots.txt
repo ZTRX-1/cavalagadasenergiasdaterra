@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /admin/
 
-Sitemap: https://cavalgadasenergiasdaterra.lovable.app/sitemap.xml
+Sitemap: https://cavalgadasenergiasdaterra.com.br/sitemap.xml
