@@ -112,7 +112,7 @@ export async function getExpedicaoBySlug(
     }
     const norm = normalizeExpedicao(exp as Record<string, unknown>);
     const [datasRes, assetsRes] = await Promise.all([
-      supabase.from("datas").select("*").eq("expedicao_id", norm.id).order("data_inicio", { ascending: true }),
+      supabase.from("datas").select("*").eq("expedicao_id", norm.id).neq("status", "cancelada").order("data_inicio", { ascending: true }),
       supabase
         .from("expedicao_assets")
         .select("url, tipo, titulo, ordem, is_capa")
