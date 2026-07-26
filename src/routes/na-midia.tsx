@@ -7,20 +7,16 @@ import heroImg from "@/assets/fotos/mantiqueira/05.jpg";
 export const Route = createFileRoute("/na-midia")({
   head: () => ({
     meta: [
-      { title: "Na Mídia · Cavalgadas Energias da Terra" },
-      {
-        name: "description",
-        content:
-          "Reportagens, editoriais e entrevistas sobre a Cavalgadas Energias da Terra — Globo, Revista Horse, BSC Portugal e outros reconhecimentos institucionais.",
-      },
-      { property: "og:title", content: "Na Mídia · Cavalgadas Energias da Terra" },
-      {
-        property: "og:description",
-        content: "Reconhecimento institucional, editoriais e cobertura premium da marca.",
-      },
+      { title: "Na Mídia | Cavalgadas Energias da Terra — Globo, Revista Horse & BSC" },
+      { name: "description", content: "Reportagens, editoriais e entrevistas sobre a Cavalgadas Energias da Terra — Globo, Revista Horse, BSC Portugal e outros reconhecimentos institucionais." },
+      { property: "og:title", content: "Na Mídia | Cavalgadas Energias da Terra" },
+      { property: "og:description", content: "Reconhecimento institucional, editoriais e cobertura premium da marca." },
+      { property: "og:url", content: "https://cavalgadasenergiasdaterra.com.br/na-midia" },
       { property: "og:image", content: heroImg },
       { name: "twitter:image", content: heroImg },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://cavalgadasenergiasdaterra.com.br/na-midia" }],
   }),
   component: NaMidiaPage,
 });
