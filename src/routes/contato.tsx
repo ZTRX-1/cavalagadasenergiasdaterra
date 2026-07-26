@@ -8,9 +8,13 @@ import cavaloCloseup from "@/assets/cavalo-closeup.jpg";
 export const Route = createFileRoute("/contato")({
   head: () => ({
     meta: [
-      { title: "Contato — Cavalgadas Energias da Terra" },
-      { name: "description", content: "Fale conosco, conheça nossa história e tire suas dúvidas sobre as expedições." },
+      { title: "Contato | Cavalgadas Energias da Terra — WhatsApp & Instagram" },
+      { name: "description", content: "Fale com a Cavalgadas Energias da Terra. Tire dúvidas, reserve sua vaga e conheça nossas expedições a cavalo pelo Brasil e Mundo via WhatsApp e Instagram." },
+      { property: "og:title", content: "Contato | Cavalgadas Energias da Terra" },
+      { property: "og:description", content: "Reserve sua vaga ou tire dúvidas sobre nossas expedições a cavalo." },
+      { property: "og:url", content: "https://cavalgadasenergiasdaterra.com.br/contato" },
     ],
+    links: [{ rel: "canonical", href: "https://cavalgadasenergiasdaterra.com.br/contato" }],
   }),
   component: ContatoPage,
 });
