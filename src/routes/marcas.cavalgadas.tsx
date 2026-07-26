@@ -10,9 +10,16 @@ import { GALERIA_CAVALGADAS } from "@/lib/expedicao-images";
 export const Route = createFileRoute("/marcas/cavalgadas")({
   head: () => ({
     meta: [
-      { title: "Cavalgadas Energias da Terra — Expedições a cavalo" },
-      { name: "description", content: "A marca-mãe: expedições autorais a cavalo pelo Brasil e pelo mundo." },
+      { title: "Cavalgadas Energias da Terra | Marca-mãe de expedições a cavalo" },
+      { name: "description", content: "A marca-mãe: expedições autorais a cavalo pelo Brasil e pelo Mundo. Curadoria, cavalos próprios e profundo conhecimento do território." },
+      { property: "og:title", content: "Cavalgadas Energias da Terra — Marca-mãe" },
+      { property: "og:description", content: "Expedições a cavalo pelo Brasil e pelo Mundo, com curadoria e cavalos próprios." },
+      { property: "og:url", content: "https://cavalgadasenergiasdaterra.com.br/marcas/cavalgadas" },
+      { property: "og:image", content: hero },
+      { name: "twitter:image", content: hero },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://cavalgadasenergiasdaterra.com.br/marcas/cavalgadas" }],
   }),
   component: Page,
 });
