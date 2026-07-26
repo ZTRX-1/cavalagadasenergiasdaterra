@@ -9,11 +9,13 @@ const qo = queryOptions({ queryKey: ["expedicoes"], queryFn: () => listExpedicoe
 export const Route = createFileRoute("/expedicoes")({
   head: () => ({
     meta: [
-      { title: "Expedições, Cavalgadas Energias da Terra" },
-      { name: "description", content: "Conheça nossas expedições a cavalo: Vale da Canastra, Serra do Cipó, Chapada Diamantina e mais." },
-      { property: "og:title", content: "Expedições, Cavalgadas Energias da Terra" },
-      { property: "og:description", content: "Roteiros cinematográficos a cavalo pelo Brasil." },
+      { title: "Expedições a Cavalo pelo Brasil e Mundo | Cavalgadas Energias da Terra" },
+      { name: "description", content: "Catálogo completo de expedições a cavalo: Serra da Canastra, Mantiqueira, Jericoacoara, Patagônia Gaúcha, Peru (Vale do Colca) e Caminho de Santiago. Roteiros autorais em pequenos grupos." },
+      { property: "og:title", content: "Expedições a Cavalo | Cavalgadas Energias da Terra" },
+      { property: "og:description", content: "Roteiros autorais a cavalo pelo Brasil e pelo Mundo, em pequenos grupos com direção editorial premium." },
+      { property: "og:url", content: "https://cavalgadasenergiasdaterra.com.br/expedicoes" },
     ],
+    links: [{ rel: "canonical", href: "https://cavalgadasenergiasdaterra.com.br/expedicoes" }],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(qo),
   component: ExpedicoesPage,

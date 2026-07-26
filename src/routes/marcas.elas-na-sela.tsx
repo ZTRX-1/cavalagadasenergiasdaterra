@@ -10,9 +10,16 @@ import { GALERIA_ELAS_NA_SELA } from "@/lib/expedicao-images";
 export const Route = createFileRoute("/marcas/elas-na-sela")({
   head: () => ({
     meta: [
-      { title: "Elas na Sela — Expedições femininas a cavalo" },
-      { name: "description", content: "Travessias exclusivas para mulheres que exploram o mundo a cavalo." },
+      { title: "Elas na Sela | Cavalgadas femininas pelo Brasil e Mundo" },
+      { name: "description", content: "Elas na Sela: expedições a cavalo exclusivas para mulheres. Travessias em irmandade, liberdade e natureza — desenhadas por mulheres, para mulheres." },
+      { property: "og:title", content: "Elas na Sela — Cavalgadas femininas" },
+      { property: "og:description", content: "Expedições a cavalo desenhadas por mulheres, para mulheres." },
+      { property: "og:url", content: "https://cavalgadasenergiasdaterra.com.br/marcas/elas-na-sela" },
+      { property: "og:image", content: hero },
+      { name: "twitter:image", content: hero },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://cavalgadasenergiasdaterra.com.br/marcas/elas-na-sela" }],
   }),
   component: Page,
 });

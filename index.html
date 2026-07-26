@@ -31,21 +31,38 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Organization",
+        "@type": ["Organization", "TravelAgency", "LocalBusiness"],
+        "@id": "https://cavalgadasenergiasdaterra.com.br/#organization",
         "name": "Cavalgadas Energias da Terra",
+        "alternateName": ["Cavalgadas Energias da Terra", "Canastra a Cavalo", "Elas na Sela"],
         "url": "https://cavalgadasenergiasdaterra.com.br/",
-        "description": "Expedições autorais a cavalo pelo Brasil e pelo Mundo, em pequenos grupos, com direção editorial premium.",
-        "areaServed": ["BR", "AR", "PE", "ES"],
-        "sameAs": []
+        "logo": "https://cavalgadasenergiasdaterra.com.br/favicon.png",
+        "image": "https://cavalgadasenergiasdaterra.com.br/favicon.png",
+        "description": "Expedições autorais a cavalo pelo Brasil (Canastra, Mantiqueira, Jericoacoara, Patagônia Gaúcha) e pelo Mundo (Peru, Caminho de Santiago). Pequenos grupos, direção editorial premium.",
+        "priceRange": "$$$",
+        "areaServed": [
+          { "@type": "Country", "name": "Brasil" },
+          { "@type": "Country", "name": "Argentina" },
+          { "@type": "Country", "name": "Peru" },
+          { "@type": "Country", "name": "Espanha" }
+        ],
+        "knowsAbout": ["Cavalgadas", "Turismo Equestre", "Expedições a cavalo", "Serra da Canastra", "Mantiqueira", "Jericoacoara", "Patagônia", "Caminho de Santiago"],
+        "sameAs": [
+          "https://instagram.com/cavalgadasenergiasdaterra",
+          "https://instagram.com/canastraacavalo",
+          "https://instagram.com/elasnasela"
+        ]
       }
     </script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebSite",
+        "@id": "https://cavalgadasenergiasdaterra.com.br/#website",
         "name": "Cavalgadas Energias da Terra",
         "url": "https://cavalgadasenergiasdaterra.com.br/",
-        "inLanguage": "pt-BR"
+        "inLanguage": "pt-BR",
+        "publisher": { "@id": "https://cavalgadasenergiasdaterra.com.br/#organization" }
       }
     </script>
 
