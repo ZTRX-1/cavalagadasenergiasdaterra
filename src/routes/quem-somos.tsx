@@ -15,17 +15,16 @@ import natureza from "@/assets/fotos/mantiqueira/13.jpg";
 export const Route = createFileRoute("/quem-somos")({
   head: () => ({
     meta: [
-      { title: "Quem Somos · Cavalgadas Energias da Terra" },
-      {
-        name: "description",
-        content:
-          "A história, o propósito e as fundadoras da Cavalgadas Energias da Terra — expedições equestres boutique, cavalos próprios e hospitalidade autoral.",
-      },
-      { property: "og:title", content: "Quem Somos · Cavalgadas Energias da Terra" },
-      { property: "og:description", content: "Uma marca autoral de expedições equestres, criada por quem vive o cavalo de verdade." },
+      { title: "Quem Somos | Cavalgadas Energias da Terra — Lígia & Alinne" },
+      { name: "description", content: "Conheça as fundadoras Lígia e Alinne e o propósito da Cavalgadas Energias da Terra: expedições equestres boutique, cavalos próprios e hospitalidade autoral pelo Brasil e Mundo." },
+      { property: "og:title", content: "Quem Somos | Cavalgadas Energias da Terra" },
+      { property: "og:description", content: "Uma marca autoral de expedições a cavalo, criada por quem vive o cavalo de verdade." },
+      { property: "og:url", content: "https://cavalgadasenergiasdaterra.com.br/quem-somos" },
       { property: "og:image", content: heroPaisagem },
       { name: "twitter:image", content: heroPaisagem },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://cavalgadasenergiasdaterra.com.br/quem-somos" }],
   }),
   component: QuemSomosPage,
 });
