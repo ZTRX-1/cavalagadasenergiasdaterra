@@ -10,9 +10,16 @@ import { GALERIA_CANASTRA_MARCA, FOTO_EQUIPE } from "@/lib/expedicao-images";
 export const Route = createFileRoute("/marcas/canastra-a-cavalo")({
   head: () => ({
     meta: [
-      { title: "Canastra a Cavalo · Expedições a cavalo pela Serra da Canastra" },
-      { name: "description", content: "Expedições autorais pela Serra da Canastra, terra do queijo, do Mangalarga e das cabeceiras do São Francisco." },
+      { title: "Canastra a Cavalo | Expedições pela Serra da Canastra — MG" },
+      { name: "description", content: "Canastra a Cavalo: expedições autorais pela Serra da Canastra (MG), terra do queijo, do Mangalarga Marchador e das cabeceiras do Rio São Francisco." },
+      { property: "og:title", content: "Canastra a Cavalo | Serra da Canastra" },
+      { property: "og:description", content: "Expedições autorais pela Serra da Canastra, terra do queijo e do Mangalarga." },
+      { property: "og:url", content: "https://cavalgadasenergiasdaterra.com.br/marcas/canastra-a-cavalo" },
+      { property: "og:image", content: hero },
+      { name: "twitter:image", content: hero },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://cavalgadasenergiasdaterra.com.br/marcas/canastra-a-cavalo" }],
   }),
   component: Page,
 });
