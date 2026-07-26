@@ -10,9 +10,13 @@ const qo = queryOptions({ queryKey: ["proximas-datas-all"], queryFn: () => listP
 export const Route = createFileRoute("/datas")({
   head: () => ({
     meta: [
-      { title: "Próximas datas, Cavalgadas Energias da Terra" },
-      { name: "description", content: "Calendário completo de expedições a cavalo. Reserve sua vaga." },
+      { title: "Próximas Datas de Cavalgadas 2026 e 2027 | Cavalgadas Energias da Terra" },
+      { name: "description", content: "Calendário completo de expedições a cavalo 2026/2027: Canastra, Mantiqueira, Jericoacoara, Patagônia, Peru e Caminho de Santiago. Reserve sua vaga em pequenos grupos." },
+      { property: "og:title", content: "Próximas Datas de Cavalgadas | Cavalgadas Energias da Terra" },
+      { property: "og:description", content: "Calendário oficial 2026/2027 de expedições a cavalo pelo Brasil e Mundo." },
+      { property: "og:url", content: "https://cavalgadasenergiasdaterra.com.br/datas" },
     ],
+    links: [{ rel: "canonical", href: "https://cavalgadasenergiasdaterra.com.br/datas" }],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(qo),
   component: DatasPage,
