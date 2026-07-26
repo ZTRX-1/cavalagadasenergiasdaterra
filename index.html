@@ -34,23 +34,46 @@
         "@type": ["Organization", "TravelAgency", "LocalBusiness"],
         "@id": "https://cavalgadasenergiasdaterra.com.br/#organization",
         "name": "Cavalgadas Energias da Terra",
-        "alternateName": ["Cavalgadas Energias da Terra", "Canastra a Cavalo", "Elas na Sela"],
+        "legalName": "Cavalgadas Energias da Terra",
+        "alternateName": ["Energias da Terra", "Canastra a Cavalo", "Elas na Sela"],
         "url": "https://cavalgadasenergiasdaterra.com.br/",
-        "logo": "https://cavalgadasenergiasdaterra.com.br/favicon.png",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cavalgadasenergiasdaterra.com.br/favicon.png",
+          "width": 512,
+          "height": 512
+        },
         "image": "https://cavalgadasenergiasdaterra.com.br/favicon.png",
-        "description": "Expedições autorais a cavalo pelo Brasil (Canastra, Mantiqueira, Jericoacoara, Patagônia Gaúcha) e pelo Mundo (Peru, Caminho de Santiago). Pequenos grupos, direção editorial premium.",
+        "description": "Cavalgadas Energias da Terra: expedições autorais a cavalo pelo Brasil (Serra da Canastra, Mantiqueira, Jericoacoara, Patagônia Gaúcha) e pelo Mundo (Peru, Caminho de Santiago). Pequenos grupos, direção editorial premium.",
+        "slogan": "Expedições autorais a cavalo pelo Brasil e pelo Mundo",
         "priceRange": "$$$",
+        "telephone": "+55 11 94162-6907",
+        "email": "contato@cavalgadasenergiasdaterra.com.br",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Maria da Fé",
+          "addressRegion": "MG",
+          "addressCountry": "BR"
+        },
         "areaServed": [
           { "@type": "Country", "name": "Brasil" },
           { "@type": "Country", "name": "Argentina" },
           { "@type": "Country", "name": "Peru" },
           { "@type": "Country", "name": "Espanha" }
         ],
-        "knowsAbout": ["Cavalgadas", "Turismo Equestre", "Expedições a cavalo", "Serra da Canastra", "Mantiqueira", "Jericoacoara", "Patagônia", "Caminho de Santiago"],
+        "knowsAbout": ["Cavalgadas", "Turismo Equestre", "Expedições a cavalo", "Serra da Canastra", "Serra da Mantiqueira", "Jericoacoara", "Patagônia Gaúcha", "Caminho de Santiago", "Peru a cavalo"],
+        "contactPoint": [{
+          "@type": "ContactPoint",
+          "telephone": "+55 11 94162-6907",
+          "contactType": "customer service",
+          "areaServed": ["BR", "AR", "PE", "ES"],
+          "availableLanguage": ["Portuguese", "Spanish", "English"]
+        }],
         "sameAs": [
           "https://instagram.com/cavalgadasenergiasdaterra",
           "https://instagram.com/canastraacavalo",
-          "https://instagram.com/elasnasela"
+          "https://instagram.com/elasnasela",
+          "https://wa.me/5511941626907"
         ]
       }
     </script>
@@ -60,9 +83,15 @@
         "@type": "WebSite",
         "@id": "https://cavalgadasenergiasdaterra.com.br/#website",
         "name": "Cavalgadas Energias da Terra",
+        "alternateName": "Energias da Terra",
         "url": "https://cavalgadasenergiasdaterra.com.br/",
         "inLanguage": "pt-BR",
-        "publisher": { "@id": "https://cavalgadasenergiasdaterra.com.br/#organization" }
+        "publisher": { "@id": "https://cavalgadasenergiasdaterra.com.br/#organization" },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://cavalgadasenergiasdaterra.com.br/expedicoes?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
       }
     </script>
 
