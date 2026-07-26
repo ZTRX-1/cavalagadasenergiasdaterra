@@ -22,12 +22,42 @@ const qo = (slug: string) =>
   });
 
 export const Route = createFileRoute("/expedicoes/$slug")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `${params.slug.replace(/-/g, " ")}, Cavalgadas Energias da Terra` },
-      { name: "description", content: "Detalhes da expedição: roteiro, itens inclusos, requisitos e próximas datas." },
-    ],
-  }),
+  head: ({ loaderData, params }) => {
+    const exp = (loaderData as { expedicao?: { nome?: string; descricao_curta?: string; slug?: string; duracao?: string; nivel?: string; preco?: number; marca?: string } } | undefined)?.expedicao;
+    const capa = (loaderData as { capa_url?: string } | undefined)?.capa_url;
+    const publicSlug = exp?.slug ? getPublicExpedicaoSlug(exp.slug) : params.slug;
+    const nome = exp?.nome ?? params.slug.replace(/-/g, " ");
+    const desc = exp?.descricao_curta
+      ? `${exp.descricao_curta.slice(0, 155)}`
+      : `Expedição a cavalo ${nome} — roteiro autoral, cavalos próprios, pequenos grupos e direção editorial premium.`;
+    const title = `${nome} — Cavalgada Premium | Cavalgadas Energias da Terra`;
+    const canonical = `https://cavalgadasenergiasdaterra.com.br/expedicoes/${publicSlug}`;
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "TouristTrip",
+      name: nome,
+      description: desc,
+      url: canonical,
+      touristType: exp?.marca === "elas-na-sela" ? "Mulheres" : "Cavaleiros e amazonas",
+      image: capa,
+      provider: { "@type": "TravelAgency", "@id": "https://cavalgadasenergiasdaterra.com.br/#organization", name: "Cavalgadas Energias da Terra" },
+      ...(exp?.preco ? { offers: { "@type": "Offer", priceCurrency: "BRL", price: exp.preco, url: canonical, availability: "https://schema.org/InStock" } } : {}),
+    };
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:type", content: "article" },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: canonical },
+        ...(capa ? [{ property: "og:image" as const, content: capa }, { name: "twitter:image" as const, content: capa }] : []),
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [{ rel: "canonical", href: canonical }],
+      scripts: [{ type: "application/ld+json", children: JSON.stringify(jsonLd) }],
+    };
+  },
   loader: async ({ context, params }) => {
     const data = await context.queryClient.ensureQueryData(qo(params.slug));
     if (!data) throw notFound();
