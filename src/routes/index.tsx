@@ -27,12 +27,20 @@ const datasQO = queryOptions({ queryKey: ["proximas-datas"], queryFn: () => list
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Cavalgadas Energias da Terra · Premium horseback expeditions" },
-      { name: "description", content: "Cinematic horseback expeditions across Brazil and the world. Nature, sophistication and adventure in small curated groups." },
-      { property: "og:title", content: "Cavalgadas Energias da Terra" },
-      { property: "og:description", content: "Cinematic horseback expeditions across Brazil and the world." },
+      { title: "Cavalgadas Energias da Terra | Expedições a cavalo pelo Brasil e Mundo" },
+      { name: "description", content: "Expedições autorais a cavalo pela Serra da Canastra, Mantiqueira, Jericoacoara, Patagônia Gaúcha, Peru e Caminho de Santiago. Pequenos grupos, cavalos próprios e direção editorial premium." },
+      { name: "keywords", content: "cavalgadas, expedições a cavalo, cavalgada Canastra, cavalgada Mantiqueira, cavalgada Jericoacoara, Patagônia a cavalo, Caminho de Santiago a cavalo, turismo equestre Brasil, cavalgadas premium" },
+      { property: "og:type", content: "website" },
+      { property: "og:title", content: "Cavalgadas Energias da Terra | Expedições a cavalo pelo Brasil e Mundo" },
+      { property: "og:description", content: "Expedições autorais a cavalo pelo Brasil e pelo Mundo. Pequenos grupos, cavalos próprios, direção editorial premium." },
+      { property: "og:url", content: "https://cavalgadasenergiasdaterra.com.br/" },
       { property: "og:image", content: hero },
+      { property: "og:locale", content: "pt_BR" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: hero },
+    ],
+    links: [
+      { rel: "canonical", href: "https://cavalgadasenergiasdaterra.com.br/" },
     ],
   }),
   loader: async ({ context }) => {
