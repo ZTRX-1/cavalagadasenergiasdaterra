@@ -50,6 +50,23 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
+  // Chunk antigo desapareceu após novo deploy → recarrega para pegar o build atual.
+  if (typeof window !== "undefined") {
+    const msg = String(error?.message ?? "");
+    if (
+      /Failed to fetch dynamically imported module|Importing a module script failed|ChunkLoadError|Loading chunk [\d]+ failed|Loading CSS chunk|error loading dynamically imported module/i.test(
+        msg,
+      )
+    ) {
+      const key = "__chunk_reload_ts";
+      const last = Number(sessionStorage.getItem(key) ?? "0");
+      if (Date.now() - last > 10_000) {
+        sessionStorage.setItem(key, String(Date.now()));
+        window.location.reload();
+      }
+    }
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
