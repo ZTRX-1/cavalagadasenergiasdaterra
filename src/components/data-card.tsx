@@ -37,13 +37,19 @@ export function DataCard({ data, variant = "link" }: { data: DataExpedicao; vari
         </div>
         <div className="md:hidden overflow-hidden">
           <div className="truncate font-eyebrow text-[0.65rem] sm:text-[0.7rem] uppercase tracking-[0.18em] sm:tracking-[0.22em] text-cobre">{data.expedicao_nome}</div>
-          <div className="mt-1 truncate font-sans text-base sm:text-lg leading-tight text-foreground font-light">{formatDateRange(data.data_inicio, data.data_fim)}</div>
+          <div className="mt-1 truncate font-sans text-base sm:text-lg leading-tight text-foreground font-light">{periodo}</div>
+          {duracaoData && (
+            <div className="mt-1 font-eyebrow text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground">{duracaoData}</div>
+          )}
         </div>
       </div>
 
       <div className="hidden md:block md:flex-1">
         <div className="font-eyebrow text-[0.72rem] uppercase tracking-[0.22em] text-cobre">{data.expedicao_nome}</div>
-        <div className="mt-1.5 font-sans text-xl text-foreground font-light">{formatDateRange(data.data_inicio, data.data_fim)}</div>
+        <div className="mt-1.5 font-sans text-xl text-foreground font-light">{periodo}</div>
+        {duracaoData && (
+          <div className="mt-1.5 font-eyebrow text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">{duracaoData}</div>
+        )}
       </div>
 
 
