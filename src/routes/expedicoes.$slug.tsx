@@ -140,7 +140,7 @@ function DetalhesExpedicao() {
           )}
 
           <div className="flex items-center gap-3 font-eyebrow text-[0.7rem] uppercase tracking-[0.22em] text-areia/80">
-            <span>{expedicao.duracao}</span>
+            <span>{duracaoLabel}</span>
             <span className="h-1 w-1 rounded-full bg-cobre" />
             <span>{expedicao.nivel}</span>
             <span className="h-1 w-1 rounded-full bg-cobre" />
