@@ -215,7 +215,7 @@ function HomePage() {
       {/* MANIFESTO — texto + 1 imagem lateral */}
       <section className="bg-background py-28 md:py-36">
         <div className="container-tight grid items-center gap-14 md:grid-cols-12 md:gap-20">
-          <div className="md:col-span-5">
+          <Reveal variant="left" className="md:col-span-5">
             <EditorialFrame
               src={manifestoImg}
               alt="Mulher e cavalo em momento de conexão"
@@ -224,15 +224,16 @@ function HomePage() {
               side="left"
               className="mx-auto w-full max-w-md md:max-w-none"
             />
-          </div>
-          <div className="md:col-span-7 flex flex-col justify-center">
+          </Reveal>
+          <Reveal variant="right" delay={120} className="md:col-span-7 flex flex-col justify-center">
             <div className="eyebrow">{t("manifesto.eyebrow")}</div>
             <h2 className="mt-5 font-display text-4xl text-balance leading-[1.05] md:text-5xl lg:text-[3.5rem]">{t("manifesto.title")}</h2>
             <p className="mt-8 text-lg leading-relaxed text-foreground/80 text-pretty ">
               {t("manifesto.body")}
             </p>
-          </div>
+          </Reveal>
         </div>
+
       </section>
 
 
