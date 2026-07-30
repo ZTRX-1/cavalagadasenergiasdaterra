@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import type { DataExpedicao } from "@/lib/expedicoes.functions";
 import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
-import { formatDateRange, formatDayShort, formatPrice } from "@/lib/format";
+import { formatDateRange, formatDayShort, formatPrice, formatDuracaoRange } from "@/lib/format";
 import { buildContactWhatsappUrl } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +23,7 @@ export function DataCard({ data, variant = "link" }: { data: DataExpedicao; vari
   const isEsgotado = data.status === "esgotado";
   const publicSlug = getPublicExpedicaoSlug(data.expedicao_slug ?? "");
   const periodo = formatDateRange(data.data_inicio, data.data_fim);
+  const duracaoData = formatDuracaoRange(data.data_inicio, data.data_fim);
   const whatsappUrl = buildContactWhatsappUrl(
     `Tenho interesse na expedição "${data.expedicao_nome ?? ""}" no período de ${periodo}.`,
   );
