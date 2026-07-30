@@ -1,10 +1,12 @@
 import { Outlet, createFileRoute, useRouterState } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { listExpedicoes } from "@/lib/expedicoes.functions";
+import { listExpedicoes, listProximasDatas } from "@/lib/expedicoes.functions";
 import { ExpedicaoCard } from "@/components/expedicao-card";
+import { formatDuracaoRange } from "@/lib/format";
 
 const qo = queryOptions({ queryKey: ["expedicoes"], queryFn: () => listExpedicoes() });
+const qoDatas = queryOptions({ queryKey: ["proximas-datas-all"], queryFn: () => listProximasDatas() });
 
 export const Route = createFileRoute("/expedicoes")({
   head: () => ({
