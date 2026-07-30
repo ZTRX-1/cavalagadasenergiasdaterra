@@ -99,10 +99,11 @@ export function ExpedicaoCard({
                     : t("expedicoes.consulteValores", "Consulte valores")}
               </div>
             </div>
-            <span className="inline-flex h-9 w-9 sm:h-10 sm:w-10 flex-none items-center justify-center rounded-full border border-areia/40 text-areia transition-all group-hover:bg-cobre group-hover:border-cobre">
+            <span className="inline-flex h-9 w-9 sm:h-10 sm:w-10 flex-none items-center justify-center rounded-full border border-areia/40 text-areia transition-all duration-500 group-hover:bg-cobre group-hover:border-cobre group-hover:rotate-45">
               <span className="sr-only">{t("expedicoes.abrirExperiencia", "Abrir experiência")} {nome}</span>
-              <ArrowUpRight className="h-4 w-4" />
+              <ArrowUpRight className="h-4 w-4 transition-transform duration-500 group-hover:-rotate-45" />
             </span>
+
           </div>
         </div>
       </div>
