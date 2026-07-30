@@ -130,7 +130,7 @@ function HomePage() {
         <img
           src={hero}
           alt="Lígia montando a cavalo em travessia pelo rio"
-          className="absolute inset-0 h-full w-full object-cover object-[62%_18%] md:object-[50%_18%] xl:object-[46%_22%]"
+          className="anim-kenburns absolute inset-0 h-full w-full object-cover object-[62%_18%] md:object-[50%_18%] xl:object-[46%_22%]"
           fetchPriority="high"
           decoding="async"
           width={2000}
@@ -142,32 +142,38 @@ function HomePage() {
 
         <div className="container-tight relative flex min-h-[100svh] flex-col justify-end pb-14 pt-24 md:min-h-0 md:h-full md:pb-20 md:pt-28 lg:pb-24">
           <div className="max-w-3xl">
-            <div className="eyebrow text-areia text-shadow-strong text-[0.62rem] md:text-xs">{t("hero.eyebrow")}</div>
-            <h1 className="mt-4 font-display text-[1.85rem] leading-[1.06] text-balance text-shadow-strong text-areia xs:text-[2.1rem] sm:text-5xl md:mt-5 md:text-6xl md:leading-[0.98] lg:text-7xl">
+            <div className="anim-rise eyebrow text-areia text-shadow-strong text-[0.62rem] md:text-xs">{t("hero.eyebrow")}</div>
+            <h1 className="anim-rise delay-1 mt-4 font-display text-[1.85rem] leading-[1.06] text-balance text-shadow-strong text-areia xs:text-[2.1rem] sm:text-5xl md:mt-5 md:text-6xl md:leading-[0.98] lg:text-7xl">
               {t("hero.titlePart1")} <em className="not-italic text-cobre-soft whitespace-nowrap">{t("hero.titleAccent")}</em> {t("hero.titlePart2")}
             </h1>
-            <p className="mt-4 max-w-xl font-display text-[1.1rem] leading-[1.28] text-areia text-shadow-strong text-balance sm:text-2xl md:mt-5 md:text-[1.7rem] md:leading-[1.2]">
+            <p className="anim-rise delay-2 mt-4 max-w-xl font-display text-[1.1rem] leading-[1.28] text-areia text-shadow-strong text-balance sm:text-2xl md:mt-5 md:text-[1.7rem] md:leading-[1.2]">
               {t("hero.subtitle")}
             </p>
-            <p className="mt-3 max-w-lg text-[0.86rem] leading-relaxed text-areia/85 text-shadow-soft text-pretty md:mt-4 md:text-[0.98rem] ">
+            <p className="anim-rise delay-3 mt-3 max-w-lg text-[0.86rem] leading-relaxed text-areia/85 text-shadow-soft text-pretty md:mt-4 md:text-[0.98rem] ">
               {t("hero.support")}
             </p>
-            <div className="mt-6 flex flex-wrap gap-3 md:mt-7">
-              <Link to="/expedicoes" className="inline-flex items-center gap-2 rounded-full bg-cobre px-6 py-3.5 text-[0.74rem] uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft md:px-7 md:py-4 md:text-sm">
-                {t("hero.ctaPrimary")} <ArrowRight className="h-4 w-4" />
+            <div className="anim-rise delay-4 mt-6 flex flex-wrap gap-3 md:mt-7">
+              <Link to="/expedicoes" className="group inline-flex items-center gap-2 rounded-full bg-cobre px-6 py-3.5 text-[0.74rem] uppercase tracking-widest text-areia transition-all duration-500 hover:bg-cobre-soft hover:gap-3 md:px-7 md:py-4 md:text-sm">
+                {t("hero.ctaPrimary")} <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
               </Link>
-              <Link to="/datas" className="inline-flex items-center gap-2 rounded-full border border-areia/60 bg-carvao/30 px-6 py-3.5 text-[0.74rem] uppercase tracking-widest text-areia backdrop-blur-sm hover:bg-areia/15 md:px-7 md:py-4 md:text-sm">
+              <Link to="/datas" className="inline-flex items-center gap-2 rounded-full border border-areia/60 bg-carvao/30 px-6 py-3.5 text-[0.74rem] uppercase tracking-widest text-areia backdrop-blur-sm transition-colors duration-500 hover:bg-areia/15 md:px-7 md:py-4 md:text-sm">
                 {t("hero.ctaSecondary")}
               </Link>
             </div>
 
-            <div className="mt-5 flex items-center gap-3 md:mt-6 sm:hidden">
+            <div className="anim-rise delay-5 mt-5 flex items-center gap-3 md:mt-6 sm:hidden">
               <span className="h-px w-8 bg-areia/30" />
               <LanguageSwitcher />
             </div>
           </div>
         </div>
+
+        <span
+          aria-hidden
+          className="pointer-events-none absolute bottom-6 left-1/2 hidden h-10 w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-areia/70 to-transparent anim-scroll-hint md:block"
+        />
       </section>
+
 
 
       {/* TRÊS MARCAS — sem fundo de imagem */}
