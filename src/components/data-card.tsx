@@ -29,7 +29,7 @@ export function DataCard({ data, variant = "link" }: { data: DataExpedicao; vari
   );
 
   return (
-    <div className="group relative flex flex-col gap-4 rounded-sm border border-border bg-card p-5 transition-colors hover:border-cobre/50 md:flex-row md:items-center md:gap-8 md:p-6">
+    <div className="group lift relative flex flex-col gap-4 rounded-sm border border-border bg-card p-5 hover:border-cobre/50 md:flex-row md:items-center md:gap-8 md:p-6">
       <div className="flex items-center gap-4 sm:gap-5 md:w-48">
         <div className="flex h-14 w-14 sm:h-16 sm:w-16 flex-col items-center justify-center rounded-sm border border-cobre/30 bg-floresta-deep text-areia md:h-20 md:w-20">
           <span className="font-display text-xl sm:text-2xl leading-none md:text-3xl">{inicio.day}</span>

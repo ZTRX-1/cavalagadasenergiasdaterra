@@ -10,6 +10,7 @@ import { VideoCinematic } from "@/components/video-cinematic";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { NaMidia } from "@/components/na-midia";
 import { EditorialFrame } from "@/components/editorial-frame";
+import { Reveal } from "@/components/reveal";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 import hero from "@/assets/founders/ligia-rio.jpg";
@@ -130,7 +131,7 @@ function HomePage() {
         <img
           src={hero}
           alt="Lígia montando a cavalo em travessia pelo rio"
-          className="absolute inset-0 h-full w-full object-cover object-[62%_18%] md:object-[50%_18%] xl:object-[46%_22%]"
+          className="anim-kenburns absolute inset-0 h-full w-full object-cover object-[62%_18%] md:object-[50%_18%] xl:object-[46%_22%]"
           fetchPriority="high"
           decoding="async"
           width={2000}
@@ -142,71 +143,79 @@ function HomePage() {
 
         <div className="container-tight relative flex min-h-[100svh] flex-col justify-end pb-14 pt-24 md:min-h-0 md:h-full md:pb-20 md:pt-28 lg:pb-24">
           <div className="max-w-3xl">
-            <div className="eyebrow text-areia text-shadow-strong text-[0.62rem] md:text-xs">{t("hero.eyebrow")}</div>
-            <h1 className="mt-4 font-display text-[1.85rem] leading-[1.06] text-balance text-shadow-strong text-areia xs:text-[2.1rem] sm:text-5xl md:mt-5 md:text-6xl md:leading-[0.98] lg:text-7xl">
+            <div className="anim-rise eyebrow text-areia text-shadow-strong text-[0.62rem] md:text-xs">{t("hero.eyebrow")}</div>
+            <h1 className="anim-rise delay-1 mt-4 font-display text-[1.85rem] leading-[1.06] text-balance text-shadow-strong text-areia xs:text-[2.1rem] sm:text-5xl md:mt-5 md:text-6xl md:leading-[0.98] lg:text-7xl">
               {t("hero.titlePart1")} <em className="not-italic text-cobre-soft whitespace-nowrap">{t("hero.titleAccent")}</em> {t("hero.titlePart2")}
             </h1>
-            <p className="mt-4 max-w-xl font-display text-[1.1rem] leading-[1.28] text-areia text-shadow-strong text-balance sm:text-2xl md:mt-5 md:text-[1.7rem] md:leading-[1.2]">
+            <p className="anim-rise delay-2 mt-4 max-w-xl font-display text-[1.1rem] leading-[1.28] text-areia text-shadow-strong text-balance sm:text-2xl md:mt-5 md:text-[1.7rem] md:leading-[1.2]">
               {t("hero.subtitle")}
             </p>
-            <p className="mt-3 max-w-lg text-[0.86rem] leading-relaxed text-areia/85 text-shadow-soft text-pretty md:mt-4 md:text-[0.98rem] ">
+            <p className="anim-rise delay-3 mt-3 max-w-lg text-[0.86rem] leading-relaxed text-areia/85 text-shadow-soft text-pretty md:mt-4 md:text-[0.98rem] ">
               {t("hero.support")}
             </p>
-            <div className="mt-6 flex flex-wrap gap-3 md:mt-7">
-              <Link to="/expedicoes" className="inline-flex items-center gap-2 rounded-full bg-cobre px-6 py-3.5 text-[0.74rem] uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft md:px-7 md:py-4 md:text-sm">
-                {t("hero.ctaPrimary")} <ArrowRight className="h-4 w-4" />
+            <div className="anim-rise delay-4 mt-6 flex flex-wrap gap-3 md:mt-7">
+              <Link to="/expedicoes" className="group inline-flex items-center gap-2 rounded-full bg-cobre px-6 py-3.5 text-[0.74rem] uppercase tracking-widest text-areia transition-all duration-500 hover:bg-cobre-soft hover:gap-3 md:px-7 md:py-4 md:text-sm">
+                {t("hero.ctaPrimary")} <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
               </Link>
-              <Link to="/datas" className="inline-flex items-center gap-2 rounded-full border border-areia/60 bg-carvao/30 px-6 py-3.5 text-[0.74rem] uppercase tracking-widest text-areia backdrop-blur-sm hover:bg-areia/15 md:px-7 md:py-4 md:text-sm">
+              <Link to="/datas" className="inline-flex items-center gap-2 rounded-full border border-areia/60 bg-carvao/30 px-6 py-3.5 text-[0.74rem] uppercase tracking-widest text-areia backdrop-blur-sm transition-colors duration-500 hover:bg-areia/15 md:px-7 md:py-4 md:text-sm">
                 {t("hero.ctaSecondary")}
               </Link>
             </div>
 
-            <div className="mt-5 flex items-center gap-3 md:mt-6 sm:hidden">
+            <div className="anim-rise delay-5 mt-5 flex items-center gap-3 md:mt-6 sm:hidden">
               <span className="h-px w-8 bg-areia/30" />
               <LanguageSwitcher />
             </div>
           </div>
         </div>
+
+        <span
+          aria-hidden
+          className="pointer-events-none absolute bottom-6 left-1/2 hidden h-10 w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-areia/70 to-transparent anim-scroll-hint md:block"
+        />
       </section>
+
 
 
       {/* TRÊS MARCAS — sem fundo de imagem */}
       <section className="relative bg-background py-28 md:py-36 texture-paper">
         <div className="container-tight">
-          <div className="max-w-2xl">
+          <Reveal className="max-w-2xl">
             <div className="eyebrow">{t("marcas.eyebrow")}</div>
             <h2 className="mt-5 font-display text-4xl text-balance md:text-5xl">{t("marcas.title")}</h2>
             <p className="mt-5 text-lg leading-relaxed text-foreground/75 text-pretty ">
               {t("marcas.subtitle")}
             </p>
-          </div>
+          </Reveal>
           <div className="mt-16 grid gap-6 md:grid-cols-3">
             {[
               { logo: logoCavalgadas, nome: "Cavalgadas Energias da Terra", tagline: { pt: "Expedições a cavalo pelo Brasil e pelo mundo.", en: "Horseback expeditions across Brazil and the world.", es: "Expediciones a caballo por Brasil y el mundo." }, to: "/marcas/cavalgadas" as const },
               { logo: logoElas, nome: "Elas na Sela", tagline: { pt: "Experiências exclusivas para mulheres que exploram o mundo a cavalo.", en: "Exclusive experiences for women who explore the world on horseback.", es: "Experiencias exclusivas para mujeres que exploran el mundo a caballo." }, to: "/marcas/elas-na-sela" as const },
               { logo: logoCanastra, nome: "Canastra a Cavalo", tagline: { pt: "Explore a Serra da Canastra a cavalo por rotas cuidadosamente selecionadas.", en: "Explore Serra da Canastra on horseback through carefully curated routes.", es: "Explora la Sierra da Canastra a caballo por rutas cuidadosamente seleccionadas." }, to: "/marcas/canastra-a-cavalo" as const },
-            ].map((m) => (
-              <Link
-                key={m.nome}
-                to={m.to}
-                className="group flex flex-col items-center bg-carvao p-10 text-center text-areia transition-transform hover:-translate-y-1"
-              >
-                <img src={m.logo} alt={m.nome} loading="lazy" decoding="async" className="h-28 w-28 rounded-full object-cover ring-1 ring-cobre/40" />
-                <div className="mt-6 font-display text-[1.15rem] leading-tight text-balance whitespace-nowrap sm:whitespace-normal md:text-2xl">{m.nome}</div>
-                <p className="mt-3 text-sm leading-relaxed text-areia/80 text-pretty">{m.tagline[lng]}</p>
-                <span className="mt-6 inline-flex items-center gap-2 font-eyebrow text-[0.65rem] uppercase tracking-[0.32em] text-cobre-soft group-hover:text-areia">
-                  {t("marcas.cta")} <ArrowRight className="h-3.5 w-3.5" />
-                </span>
-              </Link>
+            ].map((m, i) => (
+              <Reveal key={m.nome} variant="blur" delay={i * 120}>
+                <Link
+                  to={m.to}
+                  className="group lift flex h-full flex-col items-center bg-carvao p-10 text-center text-areia"
+                >
+                  <img src={m.logo} alt={m.nome} loading="lazy" decoding="async" className="h-28 w-28 rounded-full object-cover ring-1 ring-cobre/40 transition-all duration-700 group-hover:ring-cobre group-hover:scale-105" />
+                  <div className="mt-6 font-display text-[1.15rem] leading-tight text-balance whitespace-nowrap sm:whitespace-normal md:text-2xl">{m.nome}</div>
+                  <p className="mt-3 text-sm leading-relaxed text-areia/80 text-pretty">{m.tagline[lng]}</p>
+                  <span className="mt-6 inline-flex items-center gap-2 font-eyebrow text-[0.65rem] uppercase tracking-[0.32em] text-cobre-soft transition-colors duration-500 group-hover:text-areia">
+                    {t("marcas.cta")} <ArrowRight className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1" />
+                  </span>
+                </Link>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
+
       {/* MANIFESTO — texto + 1 imagem lateral */}
       <section className="bg-background py-28 md:py-36">
         <div className="container-tight grid items-center gap-14 md:grid-cols-12 md:gap-20">
-          <div className="md:col-span-5">
+          <Reveal variant="left" className="md:col-span-5">
             <EditorialFrame
               src={manifestoImg}
               alt="Mulher e cavalo em momento de conexão"
@@ -215,15 +224,16 @@ function HomePage() {
               side="left"
               className="mx-auto w-full max-w-md md:max-w-none"
             />
-          </div>
-          <div className="md:col-span-7 flex flex-col justify-center">
+          </Reveal>
+          <Reveal variant="right" delay={120} className="md:col-span-7 flex flex-col justify-center">
             <div className="eyebrow">{t("manifesto.eyebrow")}</div>
             <h2 className="mt-5 font-display text-4xl text-balance leading-[1.05] md:text-5xl lg:text-[3.5rem]">{t("manifesto.title")}</h2>
             <p className="mt-8 text-lg leading-relaxed text-foreground/80 text-pretty ">
               {t("manifesto.body")}
             </p>
-          </div>
+          </Reveal>
         </div>
+
       </section>
 
 
@@ -231,30 +241,32 @@ function HomePage() {
       {/* VÍDEO CINEMATOGRÁFICO */}
       <section className="bg-carvao py-24 md:py-32">
         <div className="container-tight">
-          <VideoCinematic
-            youtubeId="nf2b6gTJ_j8"
-            poster={acampamento}
-            eyebrow="Energias da Terra · filme oficial"
-            title={lng === "en" ? "Horseback expeditions. Memories for a lifetime." : lng === "es" ? "Expediciones a caballo. Memorias para toda la vida." : "Expedições a cavalo. Memórias para a vida toda."}
-            subtitle={lng === "en" ? "Tap to watch with sound" : lng === "es" ? "Toca para ver con sonido" : "Toque para assistir com som"}
-          />
+          <Reveal variant="scale">
+            <VideoCinematic
+              youtubeId="nf2b6gTJ_j8"
+              poster={acampamento}
+              eyebrow="Energias da Terra · filme oficial"
+              title={lng === "en" ? "Horseback expeditions. Memories for a lifetime." : lng === "es" ? "Expediciones a caballo. Memorias para toda la vida." : "Expedições a cavalo. Memórias para a vida toda."}
+              subtitle={lng === "en" ? "Tap to watch with sound" : lng === "es" ? "Toca para ver con sonido" : "Toque para assistir com som"}
+            />
+          </Reveal>
         </div>
       </section>
 
       {/* INCLUI — sem imagem de fundo, apenas ícones */}
       <section className="bg-floresta-deep py-28 text-areia md:py-36">
         <div className="container-tight">
-          <div className="max-w-2xl">
+          <Reveal className="max-w-2xl">
             <div className="eyebrow text-cobre-soft">{t("inclui.eyebrow")}</div>
             <h2 className="mt-5 font-display text-4xl text-balance md:text-5xl">{t("inclui.title")}</h2>
-          </div>
+          </Reveal>
           <div className="mt-16 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-            {INCLUI.map(({ icon: Icon, key }) => (
-              <div key={key}>
-                <Icon className="h-7 w-7 text-cobre-soft" />
+            {INCLUI.map(({ icon: Icon, key }, i) => (
+              <Reveal key={key} delay={(i % 3) * 110} className="group">
+                <Icon className="h-7 w-7 text-cobre-soft transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-110" />
                 <div className="mt-5 font-display text-xl">{incluiCopy[key].label}</div>
                 <p className="mt-2 text-sm leading-relaxed text-areia/70 ">{incluiCopy[key].desc}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -263,17 +275,21 @@ function HomePage() {
       {/* EXPEDIÇÕES */}
       <section className="bg-background py-28 md:py-36">
         <div className="container-tight">
-          <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+          <Reveal className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
             <div className="max-w-2xl">
               <div className="eyebrow">{t("expedicoes.eyebrow")}</div>
               <h2 className="mt-5 font-display text-4xl text-balance md:text-5xl">{t("expedicoes.title")}</h2>
             </div>
-            <Link to="/expedicoes" className="inline-flex items-center gap-2 text-sm uppercase tracking-widest text-foreground hover:text-cobre">
-              {t("expedicoes.verTodas")} <ArrowRight className="h-4 w-4" />
+            <Link to="/expedicoes" className="group inline-flex items-center gap-2 text-sm uppercase tracking-widest text-foreground transition-colors hover:text-cobre">
+              {t("expedicoes.verTodas")} <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
             </Link>
-          </div>
+          </Reveal>
           <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {expedicoes.map((e) => <ExpedicaoCard key={e.id} expedicao={e} />)}
+            {expedicoes.map((e, i) => (
+              <Reveal key={e.id} variant="blur" delay={(i % 4) * 110}>
+                <ExpedicaoCard expedicao={e} />
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
@@ -281,20 +297,25 @@ function HomePage() {
       {/* PRÓXIMAS DATAS */}
       <section className="bg-secondary/40 py-28 md:py-36">
         <div className="container-tight">
-          <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+          <Reveal className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
             <div>
               <div className="eyebrow">{t("datas.eyebrow")}</div>
               <h2 className="mt-5 font-display text-4xl text-balance md:text-5xl">{t("datas.title")}</h2>
             </div>
-            <Link to="/datas" className="inline-flex items-center gap-2 text-sm uppercase tracking-widest hover:text-cobre">
-              {t("datas.verTodas")} <ArrowRight className="h-4 w-4" />
+            <Link to="/datas" className="group inline-flex items-center gap-2 text-sm uppercase tracking-widest transition-colors hover:text-cobre">
+              {t("datas.verTodas")} <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
             </Link>
-          </div>
+          </Reveal>
           <div className="mt-12 space-y-3">
-            {proximasDatas.map((d) => <DataCard key={d.id} data={d} />)}
+            {proximasDatas.map((d, i) => (
+              <Reveal key={d.id} delay={Math.min(i, 4) * 80}>
+                <DataCard data={d} />
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
+
 
       {/* DEPOIMENTOS — 3 shorts cinematográficos */}
       <DepoimentosShorts />
@@ -308,30 +329,31 @@ function HomePage() {
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-carvao/15 to-transparent" />
         <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:radial-gradient(circle_at_1px_1px,var(--carvao)_1px,transparent_0)] [background-size:22px_22px]" />
         <div className="container-tight relative">
-          <div className="max-w-2xl">
+          <Reveal className="max-w-2xl">
             <div className="eyebrow text-couro">{t("passos.eyebrow")}</div>
             <h2 className="mt-5 font-display text-4xl text-balance md:text-5xl text-carvao">{t("passos.title")}</h2>
-          </div>
+          </Reveal>
           <div className="mt-16 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
             {passos.map((p, i) => (
-              <div key={p.n} className="relative">
+              <Reveal key={p.n} delay={i * 130} className="relative">
                 {i > 0 && (
                   <span aria-hidden className="absolute -left-5 top-1 hidden h-10 w-px bg-carvao/15 lg:block" />
                 )}
                 <div className="font-display text-[2.75rem] leading-none text-cobre">{p.n}</div>
                 <div className="mt-5 font-display text-xl text-carvao">{p.t}</div>
                 <p className="mt-3 text-sm leading-relaxed text-carvao/70 ">{p.d}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
+
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-carvao/15 to-transparent" />
       </section>
 
       {/* FAQ — única seção oficial, editorial e premium */}
       <section className="bg-background py-28 md:py-40">
         <div className="container-tight grid gap-16 md:grid-cols-12 md:gap-12">
-          <div className="md:col-span-4">
+          <Reveal variant="left" className="md:col-span-4">
             <div className="eyebrow">{t("faq.eyebrow")}</div>
             <h2 className="mt-5 font-display text-4xl text-balance leading-[1.05] md:text-5xl">
               {t("faq.title")}
@@ -340,7 +362,7 @@ function HomePage() {
             <p className="mt-8 max-w-sm text-pretty text-base leading-relaxed text-muted-foreground ">
               {t("faq.intro")}
             </p>
-          </div>
+          </Reveal>
           <div className="md:col-span-7 md:col-start-6">
             <Accordion type="single" collapsible className="border-t border-border/70">
               {faq.map((f, i) => (
@@ -371,22 +393,29 @@ function HomePage() {
 
       {/* CTA FINAL — uma imagem cinematográfica forte */}
       <section className="relative isolate overflow-hidden bg-floresta-deep py-36 text-areia md:py-48">
-        <img src={ctaFinal} alt="" aria-hidden loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover opacity-35" />
+        <img src={ctaFinal} alt="" aria-hidden loading="lazy" decoding="async" className="anim-kenburns absolute inset-0 h-full w-full object-cover opacity-35" />
         <div className="absolute inset-0 bg-gradient-to-t from-carvao via-floresta-deep/85 to-floresta-deep/50" />
         <div className="container-tight relative text-center">
-          <div className="eyebrow text-cobre-soft">{t("ctaFinal.eyebrow")}</div>
-          <h2 className="mx-auto mt-7 max-w-3xl font-display text-5xl text-balance leading-[1.02] md:text-7xl">
-            {t("ctaFinal.title")}
-          </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-pretty text-areia/82 text-lg ">
-            {t("ctaFinal.subtitle")}
-          </p>
-          <Link to="/expedicoes" className="mt-12 inline-flex items-center gap-3 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">
-            {t("ctaFinal.cta")} <ArrowRight className="h-4 w-4" />
-          </Link>
+          <Reveal>
+            <div className="eyebrow text-cobre-soft">{t("ctaFinal.eyebrow")}</div>
+          </Reveal>
+          <Reveal delay={120}>
+            <h2 className="mx-auto mt-7 max-w-3xl font-display text-5xl text-balance leading-[1.02] md:text-7xl">
+              {t("ctaFinal.title")}
+            </h2>
+          </Reveal>
+          <Reveal delay={220}>
+            <p className="mx-auto mt-6 max-w-2xl text-pretty text-areia/82 text-lg ">
+              {t("ctaFinal.subtitle")}
+            </p>
+            <Link to="/expedicoes" className="group mt-12 inline-flex items-center gap-3 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia transition-all duration-500 hover:bg-cobre-soft hover:gap-4">
+              {t("ctaFinal.cta")} <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
+            </Link>
+          </Reveal>
         </div>
 
       </section>
+
     </>
   );
 }

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { listExpedicoes, listProximasDatas } from "@/lib/expedicoes.functions";
 import { ExpedicaoCard } from "@/components/expedicao-card";
 import { formatDuracaoRange } from "@/lib/format";
+import { Reveal } from "@/components/reveal";
 
 const qo = queryOptions({ queryKey: ["expedicoes"], queryFn: () => listExpedicoes() });
 const qoDatas = queryOptions({ queryKey: ["proximas-datas-all"], queryFn: () => listProximasDatas() });
@@ -58,23 +59,25 @@ function ExpedicoesCatalog() {
     <div className="bg-background pb-24 pt-32 md:pb-32 md:pt-40">
       <div className="container-tight">
         <div className="max-w-3xl">
-          <div className="eyebrow">{t("expedicoes.catalogoEyebrow")}</div>
-          <h1 className="mt-4 font-display text-[2.2rem] xs:text-5xl text-balance leading-tight md:text-7xl">{t("expedicoes.catalogoTitle")}</h1>
-          <p className="mt-6 max-w-xl text-lg text-muted-foreground text-pretty">
+          <div className="anim-rise eyebrow">{t("expedicoes.catalogoEyebrow")}</div>
+          <h1 className="anim-rise delay-1 mt-4 font-display text-[2.2rem] xs:text-5xl text-balance leading-tight md:text-7xl">{t("expedicoes.catalogoTitle")}</h1>
+          <p className="anim-rise delay-2 mt-6 max-w-xl text-lg text-muted-foreground text-pretty">
             {t("expedicoes.catalogoIntro")}
           </p>
         </div>
         <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {expedicoes.map((e) => (
-            <ExpedicaoCard
-              key={e.id}
-              expedicao={e}
-              duracoesDatas={infoPorSlug.get(e.slug)?.duracoes ?? []}
-              totalDatas={infoPorSlug.get(e.slug)?.total ?? 0}
-            />
+          {expedicoes.map((e, i) => (
+            <Reveal key={e.id} variant="blur" delay={(i % 4) * 110}>
+              <ExpedicaoCard
+                expedicao={e}
+                duracoesDatas={infoPorSlug.get(e.slug)?.duracoes ?? []}
+                totalDatas={infoPorSlug.get(e.slug)?.total ?? 0}
+              />
+            </Reveal>
           ))}
         </div>
       </div>
+
     </div>
   );
 }
