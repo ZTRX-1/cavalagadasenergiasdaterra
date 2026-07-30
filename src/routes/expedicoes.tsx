@@ -39,6 +39,21 @@ function ExpedicoesPage() {
 function ExpedicoesCatalog() {
   const { t } = useTranslation();
   const { data: expedicoes } = useSuspenseQuery(qo);
+  const { data: datas } = useSuspenseQuery(qoDatas);
+
+  // Agrupa as datas publicadas por expedição para exibir a duração real
+  // (dias/noites) de cada saída — inclusive quando há mais de uma duração.
+  const infoPorSlug = new Map<string, { duracoes: string[]; total: number }>();
+  for (const d of datas ?? []) {
+    const slug = d.expedicao_slug;
+    if (!slug) continue;
+    const entry = infoPorSlug.get(slug) ?? { duracoes: [], total: 0 };
+    const label = formatDuracaoRange(d.data_inicio, d.data_fim);
+    if (label && !entry.duracoes.includes(label)) entry.duracoes.push(label);
+    entry.total += 1;
+    infoPorSlug.set(slug, entry);
+  }
+
   return (
     <div className="bg-background pb-24 pt-32 md:pb-32 md:pt-40">
       <div className="container-tight">
