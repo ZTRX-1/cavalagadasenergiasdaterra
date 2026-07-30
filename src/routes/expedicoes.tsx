@@ -19,7 +19,11 @@ export const Route = createFileRoute("/expedicoes")({
     ],
     links: [{ rel: "canonical", href: "https://cavalgadasenergiasdaterra.com.br/expedicoes" }],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(qo),
+  loader: ({ context }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(qo),
+      context.queryClient.ensureQueryData(qoDatas),
+    ]),
   component: ExpedicoesPage,
 });
 
