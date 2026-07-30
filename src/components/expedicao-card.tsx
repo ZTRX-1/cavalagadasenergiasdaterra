@@ -36,7 +36,7 @@ export function ExpedicaoCard({
     <Link
       to="/expedicoes/$slug"
       params={{ slug: getPublicExpedicaoSlug(slug) }}
-      className="group relative block overflow-hidden rounded-sm bg-card shadow-card"
+      className="group lift relative block overflow-hidden rounded-sm bg-card shadow-card"
       aria-label={`${nome}${regiao ? ` — ${regiao}` : ""}`}
     >
       <div className="relative aspect-[4/5] overflow-hidden">
