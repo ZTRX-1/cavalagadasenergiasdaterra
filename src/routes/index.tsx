@@ -241,30 +241,32 @@ function HomePage() {
       {/* VÍDEO CINEMATOGRÁFICO */}
       <section className="bg-carvao py-24 md:py-32">
         <div className="container-tight">
-          <VideoCinematic
-            youtubeId="nf2b6gTJ_j8"
-            poster={acampamento}
-            eyebrow="Energias da Terra · filme oficial"
-            title={lng === "en" ? "Horseback expeditions. Memories for a lifetime." : lng === "es" ? "Expediciones a caballo. Memorias para toda la vida." : "Expedições a cavalo. Memórias para a vida toda."}
-            subtitle={lng === "en" ? "Tap to watch with sound" : lng === "es" ? "Toca para ver con sonido" : "Toque para assistir com som"}
-          />
+          <Reveal variant="scale">
+            <VideoCinematic
+              youtubeId="nf2b6gTJ_j8"
+              poster={acampamento}
+              eyebrow="Energias da Terra · filme oficial"
+              title={lng === "en" ? "Horseback expeditions. Memories for a lifetime." : lng === "es" ? "Expediciones a caballo. Memorias para toda la vida." : "Expedições a cavalo. Memórias para a vida toda."}
+              subtitle={lng === "en" ? "Tap to watch with sound" : lng === "es" ? "Toca para ver con sonido" : "Toque para assistir com som"}
+            />
+          </Reveal>
         </div>
       </section>
 
       {/* INCLUI — sem imagem de fundo, apenas ícones */}
       <section className="bg-floresta-deep py-28 text-areia md:py-36">
         <div className="container-tight">
-          <div className="max-w-2xl">
+          <Reveal className="max-w-2xl">
             <div className="eyebrow text-cobre-soft">{t("inclui.eyebrow")}</div>
             <h2 className="mt-5 font-display text-4xl text-balance md:text-5xl">{t("inclui.title")}</h2>
-          </div>
+          </Reveal>
           <div className="mt-16 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-            {INCLUI.map(({ icon: Icon, key }) => (
-              <div key={key}>
-                <Icon className="h-7 w-7 text-cobre-soft" />
+            {INCLUI.map(({ icon: Icon, key }, i) => (
+              <Reveal key={key} delay={(i % 3) * 110} className="group">
+                <Icon className="h-7 w-7 text-cobre-soft transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-110" />
                 <div className="mt-5 font-display text-xl">{incluiCopy[key].label}</div>
                 <p className="mt-2 text-sm leading-relaxed text-areia/70 ">{incluiCopy[key].desc}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -273,17 +275,21 @@ function HomePage() {
       {/* EXPEDIÇÕES */}
       <section className="bg-background py-28 md:py-36">
         <div className="container-tight">
-          <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+          <Reveal className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
             <div className="max-w-2xl">
               <div className="eyebrow">{t("expedicoes.eyebrow")}</div>
               <h2 className="mt-5 font-display text-4xl text-balance md:text-5xl">{t("expedicoes.title")}</h2>
             </div>
-            <Link to="/expedicoes" className="inline-flex items-center gap-2 text-sm uppercase tracking-widest text-foreground hover:text-cobre">
-              {t("expedicoes.verTodas")} <ArrowRight className="h-4 w-4" />
+            <Link to="/expedicoes" className="group inline-flex items-center gap-2 text-sm uppercase tracking-widest text-foreground transition-colors hover:text-cobre">
+              {t("expedicoes.verTodas")} <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
             </Link>
-          </div>
+          </Reveal>
           <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {expedicoes.map((e) => <ExpedicaoCard key={e.id} expedicao={e} />)}
+            {expedicoes.map((e, i) => (
+              <Reveal key={e.id} variant="blur" delay={(i % 4) * 110}>
+                <ExpedicaoCard expedicao={e} />
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
@@ -291,20 +297,25 @@ function HomePage() {
       {/* PRÓXIMAS DATAS */}
       <section className="bg-secondary/40 py-28 md:py-36">
         <div className="container-tight">
-          <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+          <Reveal className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
             <div>
               <div className="eyebrow">{t("datas.eyebrow")}</div>
               <h2 className="mt-5 font-display text-4xl text-balance md:text-5xl">{t("datas.title")}</h2>
             </div>
-            <Link to="/datas" className="inline-flex items-center gap-2 text-sm uppercase tracking-widest hover:text-cobre">
-              {t("datas.verTodas")} <ArrowRight className="h-4 w-4" />
+            <Link to="/datas" className="group inline-flex items-center gap-2 text-sm uppercase tracking-widest transition-colors hover:text-cobre">
+              {t("datas.verTodas")} <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
             </Link>
-          </div>
+          </Reveal>
           <div className="mt-12 space-y-3">
-            {proximasDatas.map((d) => <DataCard key={d.id} data={d} />)}
+            {proximasDatas.map((d, i) => (
+              <Reveal key={d.id} delay={Math.min(i, 4) * 80}>
+                <DataCard data={d} />
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
+
 
       {/* DEPOIMENTOS — 3 shorts cinematográficos */}
       <DepoimentosShorts />
