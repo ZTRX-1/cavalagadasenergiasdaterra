@@ -49,3 +49,13 @@ export function formatPrice(n: number, moeda: string = "BRL"): string {
 // financeira deve respeitar a moeda original da operação.
 
 
+
+/** Duração calculada a partir do período real da data (ex.: "5 dias / 4 noites"). */
+export function formatDuracaoRange(inicio: string, fim: string): string {
+  const a = parseDate(inicio);
+  const b = parseDate(fim);
+  const dias = Math.round((b.getTime() - a.getTime()) / 86400000) + 1;
+  if (!Number.isFinite(dias) || dias < 1) return "";
+  const noites = Math.max(dias - 1, 0);
+  return `${dias} ${dias === 1 ? "dia" : "dias"} / ${noites} ${noites === 1 ? "noite" : "noites"}`;
+}

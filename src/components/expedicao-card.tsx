@@ -5,7 +5,15 @@ import type { Expedicao } from "@/lib/expedicoes.functions";
 import { getExpedicaoImage } from "@/lib/expedicao-images";
 import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
 
-export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
+export function ExpedicaoCard({
+  expedicao,
+  duracoesDatas = [],
+  totalDatas = 0,
+}: {
+  expedicao: Expedicao;
+  duracoesDatas?: string[];
+  totalDatas?: number;
+}) {
   const { t } = useTranslation();
   const isElas = expedicao.marca === "elas-na-sela";
   const slug = expedicao.slug;
@@ -18,7 +26,10 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
   const descricao = t(`expedicoes.cards.${slug}.descricao`, {
     defaultValue: expedicao.descricao_curta,
   });
-  const duracao = t(`expedicoes.cards.${slug}.duracao`, { defaultValue: expedicao.duracao });
+  const duracao =
+    duracoesDatas.length > 0
+      ? duracoesDatas.join(" · ")
+      : t(`expedicoes.cards.${slug}.duracao`, { defaultValue: expedicao.duracao });
   const nivel = t(`expedicoes.cards.${slug}.nivel`, { defaultValue: expedicao.nivel });
 
   return (
@@ -67,9 +78,15 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
             {descricao}
           </p>
           <div className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[0.58rem] sm:text-[0.62rem] uppercase tracking-[0.18em] text-areia/75 whitespace-nowrap">
-            <span>{duracao}</span>
+            <span className="whitespace-normal">{duracao}</span>
             <span className="h-1 w-1 rounded-full bg-cobre" />
             <span>{nivel}</span>
+            {totalDatas > 1 && (
+              <>
+                <span className="h-1 w-1 rounded-full bg-cobre" />
+                <span>{totalDatas} datas</span>
+              </>
+            )}
           </div>
 
           <div className="mt-4 flex items-end justify-between gap-3">

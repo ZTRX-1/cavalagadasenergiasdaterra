@@ -1,10 +1,12 @@
 import { Outlet, createFileRoute, useRouterState } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { listExpedicoes } from "@/lib/expedicoes.functions";
+import { listExpedicoes, listProximasDatas } from "@/lib/expedicoes.functions";
 import { ExpedicaoCard } from "@/components/expedicao-card";
+import { formatDuracaoRange } from "@/lib/format";
 
 const qo = queryOptions({ queryKey: ["expedicoes"], queryFn: () => listExpedicoes() });
+const qoDatas = queryOptions({ queryKey: ["proximas-datas-all"], queryFn: () => listProximasDatas() });
 
 export const Route = createFileRoute("/expedicoes")({
   head: () => ({
@@ -17,7 +19,11 @@ export const Route = createFileRoute("/expedicoes")({
     ],
     links: [{ rel: "canonical", href: "https://cavalgadasenergiasdaterra.com.br/expedicoes" }],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(qo),
+  loader: ({ context }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(qo),
+      context.queryClient.ensureQueryData(qoDatas),
+    ]),
   component: ExpedicoesPage,
 });
 
@@ -33,6 +39,21 @@ function ExpedicoesPage() {
 function ExpedicoesCatalog() {
   const { t } = useTranslation();
   const { data: expedicoes } = useSuspenseQuery(qo);
+  const { data: datas } = useSuspenseQuery(qoDatas);
+
+  // Agrupa as datas publicadas por expedição para exibir a duração real
+  // (dias/noites) de cada saída — inclusive quando há mais de uma duração.
+  const infoPorSlug = new Map<string, { duracoes: string[]; total: number }>();
+  for (const d of datas ?? []) {
+    const slug = d.expedicao_slug;
+    if (!slug) continue;
+    const entry = infoPorSlug.get(slug) ?? { duracoes: [], total: 0 };
+    const label = formatDuracaoRange(d.data_inicio, d.data_fim);
+    if (label && !entry.duracoes.includes(label)) entry.duracoes.push(label);
+    entry.total += 1;
+    infoPorSlug.set(slug, entry);
+  }
+
   return (
     <div className="bg-background pb-24 pt-32 md:pb-32 md:pt-40">
       <div className="container-tight">
@@ -44,7 +65,14 @@ function ExpedicoesCatalog() {
           </p>
         </div>
         <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {expedicoes.map((e) => <ExpedicaoCard key={e.id} expedicao={e} />)}
+          {expedicoes.map((e) => (
+            <ExpedicaoCard
+              key={e.id}
+              expedicao={e}
+              duracoesDatas={infoPorSlug.get(e.slug)?.duracoes ?? []}
+              totalDatas={infoPorSlug.get(e.slug)?.total ?? 0}
+            />
+          ))}
         </div>
       </div>
     </div>
