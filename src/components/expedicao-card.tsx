@@ -5,7 +5,15 @@ import type { Expedicao } from "@/lib/expedicoes.functions";
 import { getExpedicaoImage } from "@/lib/expedicao-images";
 import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
 
-export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
+export function ExpedicaoCard({
+  expedicao,
+  duracoesDatas = [],
+  totalDatas = 0,
+}: {
+  expedicao: Expedicao;
+  duracoesDatas?: string[];
+  totalDatas?: number;
+}) {
   const { t } = useTranslation();
   const isElas = expedicao.marca === "elas-na-sela";
   const slug = expedicao.slug;
@@ -18,7 +26,10 @@ export function ExpedicaoCard({ expedicao }: { expedicao: Expedicao }) {
   const descricao = t(`expedicoes.cards.${slug}.descricao`, {
     defaultValue: expedicao.descricao_curta,
   });
-  const duracao = t(`expedicoes.cards.${slug}.duracao`, { defaultValue: expedicao.duracao });
+  const duracao =
+    duracoesDatas.length > 0
+      ? duracoesDatas.join(" · ")
+      : t(`expedicoes.cards.${slug}.duracao`, { defaultValue: expedicao.duracao });
   const nivel = t(`expedicoes.cards.${slug}.nivel`, { defaultValue: expedicao.nivel });
 
   return (
