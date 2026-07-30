@@ -65,7 +65,14 @@ function ExpedicoesCatalog() {
           </p>
         </div>
         <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {expedicoes.map((e) => <ExpedicaoCard key={e.id} expedicao={e} />)}
+          {expedicoes.map((e) => (
+            <ExpedicaoCard
+              key={e.id}
+              expedicao={e}
+              duracoesDatas={infoPorSlug.get(e.slug)?.duracoes ?? []}
+              totalDatas={infoPorSlug.get(e.slug)?.total ?? 0}
+            />
+          ))}
         </div>
       </div>
     </div>
