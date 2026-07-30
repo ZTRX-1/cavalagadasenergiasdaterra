@@ -179,35 +179,37 @@ function HomePage() {
       {/* TRÊS MARCAS — sem fundo de imagem */}
       <section className="relative bg-background py-28 md:py-36 texture-paper">
         <div className="container-tight">
-          <div className="max-w-2xl">
+          <Reveal className="max-w-2xl">
             <div className="eyebrow">{t("marcas.eyebrow")}</div>
             <h2 className="mt-5 font-display text-4xl text-balance md:text-5xl">{t("marcas.title")}</h2>
             <p className="mt-5 text-lg leading-relaxed text-foreground/75 text-pretty ">
               {t("marcas.subtitle")}
             </p>
-          </div>
+          </Reveal>
           <div className="mt-16 grid gap-6 md:grid-cols-3">
             {[
               { logo: logoCavalgadas, nome: "Cavalgadas Energias da Terra", tagline: { pt: "Expedições a cavalo pelo Brasil e pelo mundo.", en: "Horseback expeditions across Brazil and the world.", es: "Expediciones a caballo por Brasil y el mundo." }, to: "/marcas/cavalgadas" as const },
               { logo: logoElas, nome: "Elas na Sela", tagline: { pt: "Experiências exclusivas para mulheres que exploram o mundo a cavalo.", en: "Exclusive experiences for women who explore the world on horseback.", es: "Experiencias exclusivas para mujeres que exploran el mundo a caballo." }, to: "/marcas/elas-na-sela" as const },
               { logo: logoCanastra, nome: "Canastra a Cavalo", tagline: { pt: "Explore a Serra da Canastra a cavalo por rotas cuidadosamente selecionadas.", en: "Explore Serra da Canastra on horseback through carefully curated routes.", es: "Explora la Sierra da Canastra a caballo por rutas cuidadosamente seleccionadas." }, to: "/marcas/canastra-a-cavalo" as const },
-            ].map((m) => (
-              <Link
-                key={m.nome}
-                to={m.to}
-                className="group flex flex-col items-center bg-carvao p-10 text-center text-areia transition-transform hover:-translate-y-1"
-              >
-                <img src={m.logo} alt={m.nome} loading="lazy" decoding="async" className="h-28 w-28 rounded-full object-cover ring-1 ring-cobre/40" />
-                <div className="mt-6 font-display text-[1.15rem] leading-tight text-balance whitespace-nowrap sm:whitespace-normal md:text-2xl">{m.nome}</div>
-                <p className="mt-3 text-sm leading-relaxed text-areia/80 text-pretty">{m.tagline[lng]}</p>
-                <span className="mt-6 inline-flex items-center gap-2 font-eyebrow text-[0.65rem] uppercase tracking-[0.32em] text-cobre-soft group-hover:text-areia">
-                  {t("marcas.cta")} <ArrowRight className="h-3.5 w-3.5" />
-                </span>
-              </Link>
+            ].map((m, i) => (
+              <Reveal key={m.nome} variant="blur" delay={i * 120}>
+                <Link
+                  to={m.to}
+                  className="group lift flex h-full flex-col items-center bg-carvao p-10 text-center text-areia"
+                >
+                  <img src={m.logo} alt={m.nome} loading="lazy" decoding="async" className="h-28 w-28 rounded-full object-cover ring-1 ring-cobre/40 transition-all duration-700 group-hover:ring-cobre group-hover:scale-105" />
+                  <div className="mt-6 font-display text-[1.15rem] leading-tight text-balance whitespace-nowrap sm:whitespace-normal md:text-2xl">{m.nome}</div>
+                  <p className="mt-3 text-sm leading-relaxed text-areia/80 text-pretty">{m.tagline[lng]}</p>
+                  <span className="mt-6 inline-flex items-center gap-2 font-eyebrow text-[0.65rem] uppercase tracking-[0.32em] text-cobre-soft transition-colors duration-500 group-hover:text-areia">
+                    {t("marcas.cta")} <ArrowRight className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1" />
+                  </span>
+                </Link>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
+
 
       {/* MANIFESTO — texto + 1 imagem lateral */}
       <section className="bg-background py-28 md:py-36">
