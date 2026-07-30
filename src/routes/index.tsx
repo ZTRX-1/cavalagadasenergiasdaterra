@@ -329,23 +329,24 @@ function HomePage() {
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-carvao/15 to-transparent" />
         <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:radial-gradient(circle_at_1px_1px,var(--carvao)_1px,transparent_0)] [background-size:22px_22px]" />
         <div className="container-tight relative">
-          <div className="max-w-2xl">
+          <Reveal className="max-w-2xl">
             <div className="eyebrow text-couro">{t("passos.eyebrow")}</div>
             <h2 className="mt-5 font-display text-4xl text-balance md:text-5xl text-carvao">{t("passos.title")}</h2>
-          </div>
+          </Reveal>
           <div className="mt-16 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
             {passos.map((p, i) => (
-              <div key={p.n} className="relative">
+              <Reveal key={p.n} delay={i * 130} className="relative">
                 {i > 0 && (
                   <span aria-hidden className="absolute -left-5 top-1 hidden h-10 w-px bg-carvao/15 lg:block" />
                 )}
                 <div className="font-display text-[2.75rem] leading-none text-cobre">{p.n}</div>
                 <div className="mt-5 font-display text-xl text-carvao">{p.t}</div>
                 <p className="mt-3 text-sm leading-relaxed text-carvao/70 ">{p.d}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
+
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-carvao/15 to-transparent" />
       </section>
 
