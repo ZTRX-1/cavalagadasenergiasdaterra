@@ -353,7 +353,7 @@ function HomePage() {
       {/* FAQ — única seção oficial, editorial e premium */}
       <section className="bg-background py-28 md:py-40">
         <div className="container-tight grid gap-16 md:grid-cols-12 md:gap-12">
-          <div className="md:col-span-4">
+          <Reveal variant="left" className="md:col-span-4">
             <div className="eyebrow">{t("faq.eyebrow")}</div>
             <h2 className="mt-5 font-display text-4xl text-balance leading-[1.05] md:text-5xl">
               {t("faq.title")}
@@ -362,7 +362,7 @@ function HomePage() {
             <p className="mt-8 max-w-sm text-pretty text-base leading-relaxed text-muted-foreground ">
               {t("faq.intro")}
             </p>
-          </div>
+          </Reveal>
           <div className="md:col-span-7 md:col-start-6">
             <Accordion type="single" collapsible className="border-t border-border/70">
               {faq.map((f, i) => (
@@ -393,22 +393,29 @@ function HomePage() {
 
       {/* CTA FINAL — uma imagem cinematográfica forte */}
       <section className="relative isolate overflow-hidden bg-floresta-deep py-36 text-areia md:py-48">
-        <img src={ctaFinal} alt="" aria-hidden loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover opacity-35" />
+        <img src={ctaFinal} alt="" aria-hidden loading="lazy" decoding="async" className="anim-kenburns absolute inset-0 h-full w-full object-cover opacity-35" />
         <div className="absolute inset-0 bg-gradient-to-t from-carvao via-floresta-deep/85 to-floresta-deep/50" />
         <div className="container-tight relative text-center">
-          <div className="eyebrow text-cobre-soft">{t("ctaFinal.eyebrow")}</div>
-          <h2 className="mx-auto mt-7 max-w-3xl font-display text-5xl text-balance leading-[1.02] md:text-7xl">
-            {t("ctaFinal.title")}
-          </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-pretty text-areia/82 text-lg ">
-            {t("ctaFinal.subtitle")}
-          </p>
-          <Link to="/expedicoes" className="mt-12 inline-flex items-center gap-3 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia transition-colors hover:bg-cobre-soft">
-            {t("ctaFinal.cta")} <ArrowRight className="h-4 w-4" />
-          </Link>
+          <Reveal>
+            <div className="eyebrow text-cobre-soft">{t("ctaFinal.eyebrow")}</div>
+          </Reveal>
+          <Reveal delay={120}>
+            <h2 className="mx-auto mt-7 max-w-3xl font-display text-5xl text-balance leading-[1.02] md:text-7xl">
+              {t("ctaFinal.title")}
+            </h2>
+          </Reveal>
+          <Reveal delay={220}>
+            <p className="mx-auto mt-6 max-w-2xl text-pretty text-areia/82 text-lg ">
+              {t("ctaFinal.subtitle")}
+            </p>
+            <Link to="/expedicoes" className="group mt-12 inline-flex items-center gap-3 rounded-full bg-cobre px-8 py-4 text-sm uppercase tracking-widest text-areia transition-all duration-500 hover:bg-cobre-soft hover:gap-4">
+              {t("ctaFinal.cta")} <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
+            </Link>
+          </Reveal>
         </div>
 
       </section>
+
     </>
   );
 }
