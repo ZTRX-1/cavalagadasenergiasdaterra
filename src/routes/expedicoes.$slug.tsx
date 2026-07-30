@@ -9,7 +9,7 @@ import { CarrosselNarrativo } from "@/components/carrossel-narrativo";
 import { GaleriaEditorial } from "@/components/galeria-editorial";
 import { VideoCinematic } from "@/components/video-cinematic";
 import { getPublicExpedicaoSlug } from "@/lib/expedicao-slugs";
-import { formatDateRange } from "@/lib/format";
+import { formatDateRange, formatDuracaoRange } from "@/lib/format";
 import { DataCard } from "@/components/data-card";
 import { ExpeditionMetaCard } from "@/components/expedicao-meta-card";
 import { buildContactWhatsappUrl } from "@/lib/whatsapp";
@@ -99,6 +99,15 @@ function DetalhesExpedicao() {
   const acomodacao = findInRequisitos(["acomodação"]);
   const participantes = findInRequisitos(["participantes"]);
   const tipo = findInRequisitos(["tipo"]);
+
+  // Durações reais calculadas a partir das datas publicadas.
+  // Se houver mais de uma duração diferente, mostramos todas no topo.
+  const duracoesDatas: string[] = Array.from(
+    new Set((datas ?? []).map((d: any) => formatDuracaoRange(d.data_inicio, d.data_fim)).filter(Boolean)),
+  );
+  const duracaoLabel = duracoesDatas.length > 0 ? duracoesDatas.join(" · ") : expedicao.duracao;
+
+
 
 
 
