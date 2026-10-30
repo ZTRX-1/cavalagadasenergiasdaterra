@@ -19,7 +19,7 @@ const SECTION_LABELS: Record<string, string> = {
   card: "Card nas listagens",
   meta: "Faixa de duração / nível / preço",
   descricao: "Bloco 'Sobre a expedição'",
-  inclui: "Caixa 'O que está incluso'",
+  inclui: "Caixa 'O que está incluído'",
   preco: "Caixa 'Condições de pagamento'",
   roteiro: "Seção 'Como cada dia se desenrola'",
   "como-chegar": "Seção 'Como chegar'",
@@ -221,7 +221,7 @@ export function ExpedicaoPreview({
               </div>
               <aside className="md:col-span-5 space-y-5">
                 <div data-section="inclui" className={`rounded border border-stone-200 bg-white p-6 shadow-sm ${sectionClass("inclui")}`}>
-                  <div className="text-[10px] uppercase tracking-[0.22em] text-amber-700">O que está incluso</div>
+                  <div className="text-[10px] uppercase tracking-[0.22em] text-amber-700">O que está incluído</div>
                   <ul className="mt-4 space-y-2 text-sm">
                     {inclui.length === 0 ? (
                       <li className="text-stone-400">Liste os itens em Comercial → O que inclui</li>
