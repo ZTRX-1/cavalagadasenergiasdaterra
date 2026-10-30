@@ -84,6 +84,7 @@ function DetalhesExpedicao() {
 
   const isMantiqueira4 = expedicao.slug === "mantiqueira-4-dias";
   const isMantiqueira5 = expedicao.slug === "mantiqueira-5-dias";
+  const mostrarReferencia = expedicao.slug !== "mantiqueira-5-dias";
 
   // Helper para extrair informações dos requisitos
   const findInRequisitos = (keywords: string[]) => {
@@ -289,7 +290,7 @@ function DetalhesExpedicao() {
           </div>
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {expedicao.como_chegar_referencia && (
+            {mostrarReferencia && expedicao.como_chegar_referencia && (
               <ExpeditionMetaCard
                 icon={MapPin}
                 label={t("expedicoes.logistica.referencia")}

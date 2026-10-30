@@ -180,6 +180,7 @@ export const SLUG_IMAGE: Record<string, string> = {
   "entre-redeas-e-cachoeiras": "/uploads/2.jfif",
   "travessia-rio-sao-francisco-casca-danta": "/uploads/7.jfif",
   "serra-da-canastra": canNew01,     // cavaleira no rio — capa da expedição
+  "canastra-grande": canNew01,
   "mantiqueira-5-dias": manNew01,   // tropa em movimento na estrada de terra
   "mantiqueira-4-dias": manNew01,   // tropa em movimento na estrada de terra
   "berco-do-marchador": berco01,     // cavaleiros no berço do Marchador — Cruzília/MG
@@ -195,6 +196,7 @@ export const SLUG_IMAGE: Record<string, string> = {
 // ============================================================
 export const SLUG_GALERIA: Record<string, string[]> = {
   "serra-da-canastra": [canNew01, canNew02, canNew03, canNew04, canNew05, canNew06, canNew07, canNew08],
+  "canastra-grande": [canNew01, canNew02, canNew03, canNew04, canNew05, canNew06, canNew07, canNew08],
   "mantiqueira-5-dias": [manNew01, manNew02, manNew03, manNew04, manNew05, manNew06, manNew07, manNew08],
   "mantiqueira-4-dias": [manNew01, manNew02, manNew03, manNew04, manNew05, manNew06, manNew07, manNew08],
   "berco-do-marchador": [berco01, berco02, berco03, berco04, berco05, berco06, berco07, berco08],
@@ -289,6 +291,16 @@ export interface CenaNarrativa {
 
 export const SLUG_NARRATIVA: Record<string, CenaNarrativa[]> = {
   "serra-da-canastra": [
+    { src: canNew01, eyebrow: "", titulo: "Serra da Canastra não se visita. Se vive a cavalo." },
+    { src: canNew02, eyebrow: "", titulo: "Entre cânions, cachoeiras e estradas de terra, a Canastra revela um Brasil raro." },
+    { src: canNew03, eyebrow: "", titulo: "Dias guiados pelo ritmo do cavalo e pelo silêncio da natureza." },
+    { src: canNew04, eyebrow: "", titulo: "Alguns lugares não ficam nas fotos. Ficam na gente." },
+    { src: canNew05, eyebrow: "", titulo: "Almoços ao ar livre, sabores mineiros e pausas que fazem parte da jornada." },
+    { src: canNew06, eyebrow: "", titulo: "Estranhos no primeiro dia. Manada no último." },
+    { src: canNew07, eyebrow: "", titulo: "Café mineiro, hospitalidade local e o tempo correndo mais devagar." },
+    { src: canNew08, eyebrow: "", titulo: "E quando a expedição termina… uma parte sua ainda fica na Canastra." },
+  ],
+  "canastra-grande": [
     { src: canNew01, eyebrow: "", titulo: "Serra da Canastra não se visita. Se vive a cavalo." },
     { src: canNew02, eyebrow: "", titulo: "Entre cânions, cachoeiras e estradas de terra, a Canastra revela um Brasil raro." },
     { src: canNew03, eyebrow: "", titulo: "Dias guiados pelo ritmo do cavalo e pelo silêncio da natureza." },
