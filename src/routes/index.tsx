@@ -354,7 +354,7 @@ function HomePage() {
       <section className="bg-background py-28 md:py-40">
         <div className="container-tight grid gap-16 md:grid-cols-12 md:gap-12">
           <Reveal variant="left" className="md:col-span-4">
-            <div className="eyebrow">{t("faq.eyebrow")}</div>
+            <div className="eyebrow">FAQ</div>
             <h2 className="mt-5 font-display text-4xl text-balance leading-[1.05] md:text-5xl">
               FAQ
             </h2>
