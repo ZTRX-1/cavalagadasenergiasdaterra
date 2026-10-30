@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Instagram, MapPin } from "lucide-react";
+import { Instagram } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { buildContactWhatsappUrl } from "@/lib/whatsapp";
@@ -47,13 +47,6 @@ function ContatoPage() {
                   <div className="text-sm text-muted-foreground">@cavalgadasenergiasdaterra</div>
                 </div>
               </a>
-              <div className="flex items-center gap-4 rounded-sm border border-border bg-card p-5">
-                <MapPin className="h-6 w-6 text-cobre" />
-                <div>
-                  <div className="font-display text-lg">{t("contato.baseLabel")}</div>
-                  <div className="text-sm text-muted-foreground">{t("contato.baseValor")}</div>
-                </div>
-              </div>
             </div>
           </div>
           <div className="md:col-span-5">
