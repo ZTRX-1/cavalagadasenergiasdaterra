@@ -27,9 +27,11 @@ export function ExpedicaoCard({
     defaultValue: expedicao.descricao_curta,
   });
   const duracao =
-    duracoesDatas.length > 0
-      ? duracoesDatas.join(" · ")
-      : t(`expedicoes.cards.${slug}.duracao`, { defaultValue: expedicao.duracao });
+    slug === "caminho-de-santiago"
+      ? t(`expedicoes.cards.${slug}.duracao`, { defaultValue: expedicao.duracao })
+      : duracoesDatas.length > 0
+        ? duracoesDatas.join(" · ")
+        : t(`expedicoes.cards.${slug}.duracao`, { defaultValue: expedicao.duracao });
   const nivel = t(`expedicoes.cards.${slug}.nivel`, { defaultValue: expedicao.nivel });
 
   return (

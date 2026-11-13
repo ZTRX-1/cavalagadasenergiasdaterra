@@ -81,6 +81,7 @@ function DetalhesExpedicao() {
   const whatsappUrl = buildContactWhatsappUrl(whatsappMsg);
   const isJeri = expedicao.slug === "jericoacoara";
   const isElas = expedicao.marca === "elas-na-sela";
+  const isSantiago = expedicao.slug === "caminho-de-santiago";
 
   const isMantiqueira4 = expedicao.slug === "mantiqueira-4-dias";
   const isMantiqueira5 = expedicao.slug === "mantiqueira-5-dias";
@@ -106,7 +107,18 @@ function DetalhesExpedicao() {
   const duracoesDatas: string[] = Array.from(
     new Set((datas ?? []).map((d: any) => formatDuracaoRange(d.data_inicio, d.data_fim)).filter(Boolean)),
   );
-  const duracaoLabel = duracoesDatas.length > 0 ? duracoesDatas.join(" · ") : expedicao.duracao;
+  const duracaoLabel = isSantiago
+    ? t("expedicoes.cards.caminho-de-santiago.duracao")
+    : duracoesDatas.length > 0
+      ? duracoesDatas.join(" · ")
+      : expedicao.duracao;
+  const precoTarja = isSantiago
+    ? null
+    : expedicao.mensagem_comercial_publica
+      ? expedicao.mensagem_comercial_publica
+      : expedicao.preco > 0
+        ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(expedicao.preco)
+        : null;
 
 
 
@@ -144,8 +156,12 @@ function DetalhesExpedicao() {
             <span>{duracaoLabel}</span>
             <span className="h-1 w-1 rounded-full bg-cobre" />
             <span>{expedicao.nivel}</span>
-            <span className="h-1 w-1 rounded-full bg-cobre" />
-            <span>{expedicao.mensagem_comercial_publica ? expedicao.mensagem_comercial_publica : (expedicao.ativo ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(expedicao.preco) : t("expedicoes.consulteValores"))}</span>
+            {precoTarja && (
+              <>
+                <span className="h-1 w-1 rounded-full bg-cobre" />
+                <span>{precoTarja}</span>
+              </>
+            )}
           </div>
           <h1 className="mt-5 max-w-3xl font-display text-[1.8rem] xs:text-4xl leading-tight sm:text-5xl md:text-7xl">{expedicao.nome}</h1>
           <p className="mt-5 max-w-2xl text-lg text-areia/85 text-pretty">{expedicao.descricao_curta}</p>

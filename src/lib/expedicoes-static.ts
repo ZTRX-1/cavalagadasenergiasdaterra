@@ -483,13 +483,13 @@ const EXPEDICOES: Expedicao[] = [
             "Cavalos experientes selecionados conforme o perfil do cavaleiro",
             "Alforjes para itens pessoais essenciais",
             "Transporte de bagagem entre os alojamentos",
-            "Hospedagem em hotéis rurais, casas típicas galegas ou pousadas",
-            "Alimentação completa (café da manhã, almoço e jantar)",
+            "Hospedagem: Inclusa durante a vigência do pacote, a partir do check-in até o check-out.",
+            "Alimentação: Inclusa durante a vigência do pacote, a partir do check-in até o check-out.",
             "Capas de chuva e material de proteção disponíveis",
             "Credencial do peregrino para emissão da Compostela"
         ],
-        "regiao": "Galícia, Espanha",
-        "duracao": "7 dias / 6 noites",
+        "regiao": "Santiago de Compostela — Espanha",
+        "duracao": "5 dias",
         "galeria": [
         ],
         "roteiro": [
@@ -513,6 +513,7 @@ const EXPEDICOES: Expedicao[] = [
         "requisitos": [
             "Peso máximo: 110 kg",
             "Experiência mínima em montaria obrigatória",
+            "Mediante assinatura do contrato de prestação de serviços e quitação integral (100%) do valor do pacote contratado.",
             "Informar previamente: nome, altura, peso, idade, eventuais lesões e nível de equitação",
             "Selas inglesas (principalmente) e algumas brasileiras/endurance, adaptáveis com gel ou lã",
             "Suplemento quarto individual: € 300 (6 noites)"
